@@ -1,45 +1,53 @@
 <template>
-  <section class="w-full py-20 px-4 bg-slate-950 text-white text-center border-b border-slate-900">
-    <div class="max-w-4xl mx-auto">
-      <span class="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-emerald-400 bg-emerald-500/10 rounded-full mb-4">
-        به دنیای توسعه و خلاقیت خوش آمدید
-      </span>
+  <div class="max-w-6xl mx-auto mt-12 text-center " dir="rtl">
+    <h1 class="text-4xl font-bold text-slate-900 mb-8">
+      از یک جرقه، تا یک <span class="text-[#2D7A6F]">کسب و کار</span> ماندگار!
+    </h1>
 
-      <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
-        ایده‌های شما را با <span class="text-emerald-400">کدنویسی مدرن</span> به واقعیت تبدیل می‌کنیم
-      </h1>
+    <div class="relative z-10 w-full h-[500px] rounded-[3rem] overflow-hidden shadow-2xl">
+      <div 
+        v-for="(slide, index) in slides" 
+        :key="index"
+        v-show="currentSlide === index"
+        class="w-full h-full transition-opacity duration-500"
+      >
 
-      <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-        ما در نادر تک تیم، سیستم‌های تحت وب قدرتمند، ربات‌های هوشمند تلگرام و پلتفرم‌های اختصاصی را با بالاترین کیفیت و امنیت برای کسب‌وکار شما توسعه می‌دهیم.
-      </p>
-
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <button 
-          @click="scrollToContact"
-          class="w-full sm:w-auto px-8 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all duration-200"
-        >
-          سفارش پروژه فوری
-        </button>
-
-        <NuxtLink 
-          to="/events"
-          class="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 font-medium rounded-lg transition-all duration-200"
-        >
-          مشاهده قرعه‌کشی آنلاین
-        </NuxtLink>
+      
+        <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover" />
       </div>
     </div>
-  </section>
+
+    <div class="flex justify-center gap-4 mt-6 z-20">
+
+        <SliderButton 
+    direction="left" 
+    @click="nextSlide" 
+  />
+
+  
+  <SliderButton 
+    direction="right" 
+    @click="prevSlide" 
+  />
+  
+
+</div>
+  </div>
 </template>
 
 <script setup>
-// تابعی برای اسکرول نرم به فرم تماس در انتهای صفحه
-const scrollToContact = () => {
-  const contactSection = document.getElementById('contact-section')
-  if (contactSection) {
-    contactSection.scrollIntoView({ behavior: 'smooth' })
-  } else {
-    console.log('فرم تماس هنوز در صفحه لود نشده است.')
-  }
-}
+const currentSlide = ref(0);
+
+// در components/HeroSlider.vue
+const slides = [
+  { image: '/images/hero-imgae.png', title: 'تیم حرفه‌ای' }, // مسیر باید با اسلش شروع شود
+  { image: '/images/slide2.jpg', title: 'محیط کاری' }
+];
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % slides.length;
+};
+
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length;
+};
 </script>

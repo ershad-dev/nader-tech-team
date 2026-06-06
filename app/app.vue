@@ -1,9 +1,9 @@
 <!-- app.vue -->
 <template>
-  <div>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <div dir="rtl">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 

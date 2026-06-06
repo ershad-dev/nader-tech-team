@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Rokh';
+  src: url('/fonts/Rokh-Bold.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* اعمال فونت به کلِ بدنه سایت */
+body {
+  font-family: 'Rokh', sans-serif;
+}

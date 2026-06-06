@@ -1,11 +1,20 @@
 <template>
-  <div class="min-h-screen bg-slate-950 text-white dir-rtl">
+  <div class="bg-[#F8F5F0] min-h-screen">
+    <Navbar />
+
     <HomeHeroSection />
 
-    <HomeServicesCard />
+    <HomeLeadMembersa />
 
-    <HomeTeamMembers />
+    <HomeProjectShowcase />
 
-    <HomeContactForm />
+    <HomeEvent-req/>
+  
+    <HomeTeamMembers/>
+
+    <HomeChatBox/>
+
+  
   </div>
 </template>
+

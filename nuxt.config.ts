@@ -1,14 +1,28 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2026-05-30',
-  devtools: { enabled: true },
-  
-  // ۱. فعال‌سازی ماژول‌هایی که در package.json قرار دادیم
-  modules: ['@nuxtjs/tailwindcss', //'@vueuse/nuxt'
-  '@pinia/nuxt', '@vee-validate/nuxt'],
+  compatibilityDate: '2026-06-06', // این خط را اضافه کنید
+  css: ['~/assets/css/main.css'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxtjs/color-mode'
+  ],
 
-  // ۲. فعال‌سازی ساختار مدرن Nuxt 4 (پوشه app)
-  future: {
-    compatibilityVersion: 4,
+  // استفاده از as any برای دور زدن خطای تایپ‌اسکریپت
+i18n: {
+  locales: [
+    { code: 'fa', iso: 'fa-IR', name: 'Persian', dir: 'rtl', file: 'fa.json' },
+    { code: 'en', iso: 'en-US', name: 'English', dir: 'ltr', file: 'en.json' }
+  ],
+  lazy: true,
+  // مسیر را با یک / شروع کنید تا از ریشه پروژه شروع به جستجو کند
+  langDir: '../locales/', 
+  defaultLocale: 'fa',
+  strategy: 'prefix_except_default',
+},
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+    classSuffix: ''
   }
 })
