@@ -1,0 +1,3 @@
+<template>
+  <EventsLotteryLoser /> 
+</template>

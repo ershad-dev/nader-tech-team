@@ -12,16 +12,24 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.9.0",
+    "@heroicons/vue": "^2.2.0",
+    "@nuxt/icon": "^2.2.3",
+    "@nuxtjs/color-mode": "^4.0.0",
+    "@nuxtjs/i18n": "^10.4.0",
+    "@pinia/nuxt": "^0.11.3",
     "@vueuse/nuxt": "^12.0.0",
+    "canvas-confetti": "^1.9.4",
     "nuxt": "^4.4.2",
     "pinia": "^3.0.0",
+    "swiper": "^12.2.0",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4",
+    "yup": "^1.7.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.14.0"
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@types/canvas-confetti": "^1.9.0"
   }
 }

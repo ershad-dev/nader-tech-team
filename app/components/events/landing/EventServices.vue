@@ -1,0 +1,74 @@
+<template>
+<section class="bg-[#ABD7D8] p-10 rounded-[20px] mt-8 mx-auto w-[1110px] max-w-full">
+      
+    <!-- بخش توضیحات -->
+    <div class="mb-10 ">
+      
+      <p class="max-w-[3xl] text-balck text-[20px] leading-relaxed">
+          ما با ارائه خدمات تخصصی در برنامه‌ریزی، مدیریت و اجرای رویدادها، از ایده‌پردازی تا برگزاری نهایی در کنار شما هستیم.
+
+        <br>
+        <br>
+          برگزاری انواع همایش‌ها، سمینارها، کنفرانس‌ها، بوت‌کمپ‌ها و کارگاه‌های آموزشی در حوزه‌های فناوری، برنامه‌نویسی، هوش مصنوعی، تولید محتوا، رسانه‌های دیجیتال و کارآفرینی، همراه با خدمات اجرایی، آموزشی، رسانه‌ای، فنی، تبلیغاتی، شبکه‌سازی حرفه‌ای و جذب سرمایه‌گذار، بخشی از راهکارهای ما برای خلق رویدادهای اثرگذار و ماندگار است.
+
+       </p>
+    </div>
+
+        <h2 class="text-2xl text-[#A36C53] font-bold mb-4 pr-[90px] ">خدمات ایونت</h2>
+
+    <!-- لیست کارت‌ها (فراخوانی کامپوننت) -->
+    <div class="space-y-6 mb-12 flex flex-col items-center text-center">
+      <ServiceCard />
+    </div>
+
+    <!-- بخش دکمه و فلش -->
+<div class="flex items-center justify-between mt-10 px-4">
+  
+
+      <!-- متن (سمت راست) -->
+  <div class="text-right">
+    <span class="text-lg font-bold text-[#747893] block">رویداد بعدی خود را</span>
+    <span class="text-lg font-bold text-[#747893] block">حرفه‌ای برگزار کنید</span>
+  </div>
+
+
+
+
+  <!-- فلش (وسط) -->
+<div class="flex-1 flex justify-center px-4">
+  <img src="/images/curved-arrow.png" alt="فلش" class="w-[650px] object-contain" />
+</div>
+
+
+    <!-- دکمه ( درخواست همکاری) -->
+  <button class="bg-[#ECD0A0] px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] transition w-[263px] h-[48px]">
+    درخواست همکاری
+  </button>
+
+</div>
+  </section>
+</template>
+
+<script setup>
+// وارد کردن کامپوننت کارت خدمات
+import ServiceCard from '@/components/events/landing/ServiceCard.vue'
+
+// لیست خدمات (قابل استفاده برای رندر کردن پویا در کارت‌ها)
+const services = [
+  { 
+    title: 'مدیریت و اجرای رویداد', 
+    description: 'از برنامه‌ریزی و طراحی سناریو تا هماهنگی تیم اجرایی، ثبت‌نام شرکت‌کنندگان و مدیریت کامل فرآیند برگزاری رویداد.',
+    image: '/images/about-img.jpg' 
+  },
+  { 
+    title: 'رویدادهای آموزشی و تخصصی', 
+    description: 'برگزاری بوت‌کمپ‌ها، سمینارها و رویدادهای تخصصی در حوزه فناوری، برنامه‌نویسی، هوش مصنوعی، تولید محتوا و کارآفرینی.',
+    image: '/images/man-about.jpg' 
+  },
+  { 
+    title: 'رسانه، شبکه‌سازی و توسعه کسب‌وکار', 
+    description: 'ارائه خدمات رسانه‌ای و فنی، جذب حامی مالی، برگزاری جلسات B2B، شبکه‌سازی حرفه‌ای و ایجاد فرصت‌های همکاری و رشد کسب‌وکار.',
+    image: '/images/about-img.jpg' 
+  }
+];
+</script>

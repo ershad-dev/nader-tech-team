@@ -12,7 +12,6 @@ const emit = defineEmits(['update:modelValue'])
 
 const showPassword = ref(false)
 
-// مدیریتِ هوشمندِ نوعِ اینپوت (اگر رمز باشد، تغییرش می‌دهد)
 const inputType = computed(() => {
   if (props.type === 'password') {
     return showPassword.value ? 'text' : 'password'
@@ -29,11 +28,10 @@ const inputType = computed(() => {
         :type="inputType"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        class="w-full h-12 bg-[#ffffff] rounded-[25px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-[#2d6a66]"
-        
+        class="w-full h-12 bg-[#ffffff] rounded-[25px] px-4 pr-4 focus:outline-none focus:ring-2 focus:ring-[#2d6a66] border border-gray-200"
       />
       
-      <div class="absolute right-4 top-3.5 text-[#1a2333]">
+      <div v-if="$slots.icon" class="absolute right-4 top-3.5 text-[#1a2333]">
         <slot name="icon" />
       </div>
 

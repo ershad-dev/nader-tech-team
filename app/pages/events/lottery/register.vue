@@ -1,0 +1,3 @@
+<template>
+  <EventsLotteryRegister /> 
+</template>

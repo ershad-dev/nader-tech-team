@@ -1,13 +1,34 @@
-<!-- pages/events/index.vue -->
 <template>
-  <div class="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-4 md:p-10 dir-rtl">
-    <!-- ۱. تایمر معکوس -->
-    <EventsEventTimer />
+  <div class="min-h-screen bg-[#F5F3EF]">
+    <!-- Navbar قبلاً ساخته شده است -->
+    <Navbar />
 
-    <!-- ۲. شبیه‌ساز اعلام برندگان لایو -->
-    <EventsLiveWinner />
+    <main>
+      <!-- بخش Hero (تصویر تمام عرض با افکت شیشه‌ای و هلال) -->
+      <EventsLandingEventHero />
+        <EventsLandingEventServices />
+        <EventsLandingLotterySection />
+        
+        <EventsLandingEventFeedback />
 
-    <!-- ۳. لیست کارت‌های بلیت کاربر -->
-    <EventsTicketCard />
+
+      <!-- بخش‌های دیگر لندینگ -->
+      <!-- <div class="container mx-auto px-4 py-12 space-y-16">
+        <EventsLandingEventInfo />
+        <EventsLandingEventServices />
+        <EventsLandingRaffleCta />
+        <EventsLandingEventGallery />
+      </div> -->
+    </main>
+
+    <!-- Footer قبلاً ساخته شده است -->
+    <Footer />
   </div>
 </template>
+
+<script setup>
+// استفاده از layout اختصاصی اگر لازم است
+definePageMeta({
+  layout: 'default' // یا هر لایوتی که برای سایت اصلی دارید
+})
+</script>

@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@nuxtjs/i18n',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@nuxt/icon'
   ],
 
   // استفاده از as any برای دور زدن خطای تایپ‌اسکریپت
@@ -24,5 +25,14 @@ i18n: {
     preference: 'system',
     fallback: 'light',
     classSuffix: ''
+  },
+
+  // nuxt.config.ts
+
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://e4b86f15-0377-4025-9449-7dabf6f08fe6.mock.pstmn.io'
+    }
   }
+
 })
