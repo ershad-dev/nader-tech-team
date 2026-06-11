@@ -12,7 +12,6 @@
   
     <HomeTeamMembers/>
 
-    <HomeChatBox/>
 
   
   </div>

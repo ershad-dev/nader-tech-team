@@ -1,5 +1,6 @@
 <template>
   <section class="max-w-6xl mx-auto py-20 px-4" dir="rtl">
+    
     <div class="mb-12">
       <h2 class="text-3xl font-bold text-slate-900 mb-4">تیم ما</h2>
       <p class="text-slate-600 max-w-2xl">
@@ -30,18 +31,18 @@
         <div class="w-2 h-2 bg-slate-200 rounded-full"></div>
       </div>
 
-<div class="flex gap-4">
-  <SliderButton 
-    direction="left" 
-    @click="scroll('left')" 
-    class=" hover:bg-[#2D7A6F] hover:text-gray transition" 
-  />
-  <SliderButton 
-    direction="right" 
-    @click="scroll('right')" 
-    class=" hover:bg-[#2D7A6F] hover:text-gray transition" 
-  />
-</div>
+      <div class="flex gap-4">
+        <SliderButton 
+          direction="left" 
+          @click="scroll('left')" 
+          class="hover:bg-[#2D7A6F] hover:text-gray transition" 
+        />
+        <SliderButton 
+          direction="right" 
+          @click="scroll('right')" 
+          class="hover:bg-[#2D7A6F] hover:text-gray transition" 
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -49,18 +50,21 @@
 <script setup>
 import { ref } from 'vue';
 
+// ارجاع به کانتینر اسکرول برای کنترل مستقیم DOM
 const scrollContainer = ref(null);
 
+// تابع پیمایش افقی در لیست کارت‌ها
 const scroll = (direction) => {
   if (scrollContainer.value) {
-    const scrollAmount = 320; // عرض کارت + گپ
+    const scrollAmount = 320; // میزان حرکت در هر کلیک (عرض کارت + گپ)
     scrollContainer.value.scrollBy({
       left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
+      behavior: 'smooth' // حرکت نرم و روان
     });
   }
 };
 
+// داده‌های نمونه اعضای تیم
 const team = [
   { id: 1, name: 'نام و نام خانوادگی', role: 'سمت شخص', bio: 'توضیحات این قسمت', image: '/images/avatar.png' },
   { id: 2, name: 'نام و نام خانوادگی', role: 'سمت شخص', bio: 'توضیحات این قسمت', image: '/images/avatar.png' },

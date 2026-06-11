@@ -41,9 +41,7 @@
         :style="{ left: indicatorLeft + 'px', width: '120px' }"
         style="border-radius: 0 0 70% 70% / 0 0 100% 100%; transform: translateX(-50%);"
       >
-        <svg class="w-6 h-6 text-[#A36C53] mt-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
+        <img src="/images/arrow-on-team2.png" alt="">
       </div>
 
       <!-- متن نظرات -->

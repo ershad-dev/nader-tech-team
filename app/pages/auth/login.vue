@@ -1,41 +1,55 @@
 <script setup>
+/**
+ * کامپوننت لاگین : مدیریت احراز هویت کاربران
+ * شامل دو حالت ورود: رمز عبور و کد یک‌بار مصرف
+ */
 import { ref } from 'vue'
 
 definePageMeta({ layout: 'auth' })
 
 const config = useRuntimeConfig()
-const activeTab = ref('password')
-const loading = ref(false) // ۱. متغیر جدید برای وضعیت لودینگ
 
+// State: مدیریت وضعیت‌های رابط کاربری
+const activeTab = ref('password') // تعیین تب فعال (رمز عبور یا OTP)
+const loading = ref(false)         // مدیریت وضعیت لودینگ دکمه
+const errors = ref({})             // ذخیره‌سازی خطاهای اعتبارسنجی
+const toast = ref({ message: '', type: '' }) // مدیریت پیام‌های هشدار
+
+// مدل فرم ورود
 const form = ref({
   login: '',
   password: ''
 });
 
-const errors = ref({});
-const toast = ref({ message: '', type: '' });
-
+/**
+ * نمایش پیام‌های Toast به کاربر
+ * @param {string} message - متن پیام
+ * @param {string} type - نوع پیام (success یا error)
+ */
 const showToast = (message, type = 'error') => {
   toast.value = { message, type };
   setTimeout(() => { toast.value = { message: '', type: '' }; }, 4000);
 };
 
+/**
+ * عملیات لاگین: اعتبارسنجی ورودی‌ها و ارسال درخواست به سرور
+ */
 const loginUser = async () => {
   errors.value = {};
-
   const loginValue = String(form.value.login || '').trim();
 
+  // اعتبارسنجی پایه
   if (loginValue.length !== 11) {
     showToast("لطفاً شماره موبایل را دقیقاً ۱۱ رقم وارد کنید");
     return;
   }
   
-  if (!form.value.password || form.value.password.length < 6) {
+  if (activeTab.value === 'password' && (!form.value.password || form.value.password.length < 6)) {
     showToast("رمز عبور باید حداقل ۶ کاراکتر باشد");
     return;
   }
 
-  loading.value = true; // ۲. شروع لودینگ
+  loading.value = true;
 
   try {
     const response = await $fetch('/api/auth/login', {
@@ -49,24 +63,26 @@ const loginUser = async () => {
     });
 
     if (response?.data?.login_token) {
-// اصلاح در login.vue
-localStorage.setItem('access_token', response.data.login_token);
+      localStorage.setItem('access_token', response.data.login_token);
       await navigateTo('/auth/verify'); 
     } else {
       showToast("نام کاربری یا رمز عبور اشتباه است");
     }
   } catch (err) {
-    console.error("خطا:", err);
+    console.error("Auth Error:", err);
     showToast("خطایی در ارتباط با سرور رخ داد");
   } finally {
-    loading.value = false; // ۳. پایان لودینگ (چه موفق چه خطا)
+    loading.value = false;
   }
 };
 </script>
 
 <template>
   <div class="text-center" dir="rtl">
-    <div v-if="toast.message" :class="['fixed top-5 left-5 p-4 rounded text-white z-50', toast.type === 'success' ? 'bg-green-500' : 'bg-red-500']">
+    <div 
+      v-if="toast.message" 
+      :class="['fixed top-5 left-5 p-4 rounded text-white z-50 transition-opacity', toast.type === 'success' ? 'bg-green-500' : 'bg-red-500']"
+    >
       {{ toast.message }}
     </div>
 
@@ -88,8 +104,13 @@ localStorage.setItem('access_token', response.data.login_token);
     </div>
 
     <div class="text-right">
-      <AuthInput v-model="form.login" label="شماره تلفن همراه یا ایمیل" type="text" />
-      <AuthInput v-if="activeTab === 'password'" v-model="form.password" label="رمز عبور" type="password" />
+      <AuthInput v-model="form.login" label="شماره تلفن همراه" type="text" />
+      <AuthInput 
+        v-if="activeTab === 'password'" 
+        v-model="form.password" 
+        label="رمز عبور" 
+        type="password" 
+      />
     </div>
     
     <div class="text-right mb-8">

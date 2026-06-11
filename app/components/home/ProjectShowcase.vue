@@ -1,8 +1,6 @@
 <template>
-  <section class="max-w-6xl mx-auto py-16 px-4" dir="rtl">
+  <section class="max-w-6xl mx-auto py-16 px-4 mt-[100px]" dir="rtl">
     
-
-
     <div class="flex justify-center mb-10">
       <div class="bg-white rounded-[48px] p-1 shadow-sm border border-gray-100 flex items-center">
         <button 
@@ -21,7 +19,7 @@
       </div>
     </div>
 
-        <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center justify-between mb-8">
       <h2 class="text-2xl font-bold text-slate-800">پیش نمایش از پروژه ها</h2>
       <button class="bg-[#2C7379] text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-[#25665d] transition-all flex items-center gap-2">
         مشاهده بیشتر <span>←</span>
@@ -44,30 +42,26 @@
     </div>
 
     <div class="flex items-center justify-between mt-12 px-2 dir-rtl">
-      
+      <div class="flex gap-4">
+        <SliderButton direction="left" @click="prevSlide" />
+        <SliderButton direction="right" @click="nextSlide" />
+      </div>
 
-<div class="flex items-center justify-between mt-12 px-2 dir-rtl">
-  
-  <div class="flex gap-4">
-    <SliderButton direction="left" @click="prevSlide" />
-    <SliderButton direction="right" @click="nextSlide" />
-  </div>
-
-
-    </div>
       <div class="flex gap-2">
-    <div class="w-8 h-2 bg-[#2D7A6F] rounded-full"></div>
-    <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
-    <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
-  </div>
-</div>
+        <div class="w-8 h-2 bg-[#2D7A6F] rounded-full"></div>
+        <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+        <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup>
+// مدیریت دسته فعال
 const activeCategory = ref('طراحی سایت')
 const categories = ['طراحی سایت', 'تولید محتوا', 'برگزاری ایونت']
 
+// دیتای پروژه‌ها
 const projects = [
   { id: 1, title: 'نام پروژه اول', category: 'طراحی سایت', image: '/images/hero-imgae.png' },
   { id: 2, title: 'نام پروژه دوم', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
@@ -75,6 +69,7 @@ const projects = [
   { id: 4, title: 'نام پروژه چهارم', category: 'طراحی سایت', image: '/images/hero-imgae.png' },
 ]
 
+// فیلتر کردن پروژه‌ها بر اساس دسته انتخاب شده
 const filteredProjects = computed(() => {
   return projects.filter(p => p.category === activeCategory.value)
 })
