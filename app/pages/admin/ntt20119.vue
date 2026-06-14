@@ -6,5 +6,6 @@ definePageMeta({
 </script>
 
 <template>
-  <AuthResetPass/>
+  <!-- فراخوانی کامپوننتِ لاگین ادمین -->
+  <AdminLogin />
 </template>

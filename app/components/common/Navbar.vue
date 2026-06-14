@@ -14,7 +14,7 @@
       >خانه</NuxtLink>
 
       <NuxtLink 
-        to="/projects" 
+        to="/order" 
         exact-active-class="!text-black !font-bold" 
         class="hover:text-teal-700 transition flex items-center gap-1"
       >
@@ -55,11 +55,11 @@
   </nav>
 </template>
 
-
 <script setup>
+// استفاده از هوک مسیر برای چک کردن آدرس فعلی مرورگر
 const route = useRoute();
 
-// تعریف آرایه‌ای از مسیرهایی که نباید نوار در آن‌ها نمایش داده شود
+// لیستی از مسیرهای اختصاصی قرعه‌کشی که نباید نوار در آن‌ها دیده شود
 const lotteryRoutes = [
   '/events/lottery/register',
   '/events/lottery/login',
@@ -69,7 +69,7 @@ const lotteryRoutes = [
   '/events/lottery/loser'
 ];
 
-// بررسی اینکه آیا مسیر فعلی جزو مسیرهای بالا هست یا خیر
+// ویژگی محاسباتی برای بررسی بودن یا نبودن در صفحات قرعه‌کشی
 const isLotteryPage = computed(() => {
   return lotteryRoutes.includes(route.path);
 });
