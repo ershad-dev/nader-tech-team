@@ -12,7 +12,10 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/solid'
 const props = defineProps({
   label: { type: String, required: true },
   modelValue: { type: String, default: '' },
-  type: { type: String, default: 'text' }
+  type: { type: String, default: 'text' },
+//برای ارتفاع اینپوت ها
+    inputClass: { type: String, default: 'h-12' } //  
+
 })
 
 // تعریف رویدادها (Emits) برای v-model
@@ -34,8 +37,8 @@ const inputType = computed(() => {
 </script>
 
 <template>
-  <div class="text-right mb-4">
-    <label class="block text-sm font-bold text-[#1a2333] mb-2">{{ label }}</label>
+  <div class="text-right mb-4 ">
+    <label class="block mb-2 text-[#3D3E41] text-[14px] ">{{ label }}</label>
     
     <div class="relative">
       <input 

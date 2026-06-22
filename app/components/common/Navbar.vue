@@ -1,65 +1,87 @@
 <template>
-  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] max-w-6xl mx-auto bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100 transition-colors duration-300" dir="rtl">
+  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[1110px] h-[70px] mx-auto bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100 transition-colors duration-300" dir="rtl">
     
     <!-- فضای خالی برای تراز‌بندی -->
     <div class="w-10"></div>
 
     <!-- لینک‌های ناوبری -->
-    <div class="flex items-center gap-8 text-slate-600 font-medium text-sm">
+    <div class="flex items-center gap-8 text-[#0F184B] font-roboto font-normal text-[16px]">
       
       <NuxtLink 
         to="/" 
-        exact-active-class="!text-black !font-bold" 
+        exact-active-class="!text-[#0F184B] !font-bold" 
         class="hover:text-teal-700 transition"
       >خانه</NuxtLink>
 
       <NuxtLink 
         to="/order" 
-        exact-active-class="!text-black !font-bold" 
+        exact-active-class="!text-[#0F184B] !font-bold" 
         class="hover:text-teal-700 transition flex items-center gap-1"
       >
-        سفارش‌گیری پروژه
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        سفارش‌ پروژه
       </NuxtLink>
 
       <NuxtLink 
         to="/events" 
-        exact-active-class="!text-black !font-bold" 
+        exact-active-class="!text-[#0F184B] !font-bold" 
         class="hover:text-teal-700 transition"
       >برگزاری ایونت</NuxtLink>
 
       <NuxtLink 
-        to="/portfolio" 
-        exact-active-class="!text-black !font-bold" 
+        to="/articles" 
+        exact-active-class="!text-[#0F184B] !font-bold" 
         class="hover:text-teal-700 transition"
-      >نمونه‌ها</NuxtLink>
+      >مقالات</NuxtLink>
 
       <NuxtLink 
         to="/about" 
-        exact-active-class="!text-black !font-bold" 
-        class="hover:text-balck-900 transition text-bold"
+        exact-active-class="!text-[#0F184B] !font-bold" 
+        class="hover:text-teal-700 transition"
       >درباره ما</NuxtLink>
+
+      <NuxtLink 
+        to="/faq" 
+        exact-active-class="!text-[#0F184B] !font-bold" 
+        class="hover:text-teal-700 transition"
+      >سوالات متداول</NuxtLink>
 
     </div>
 
     <!-- بخش ورود و جستجو -->
     <div class="flex items-center gap-3" dir="ltr">
-      <NuxtLink to="/Auth/login" class="bg-[#2D7A6F] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-800 transition shadow-sm">
-        ورود / ثبت‌نام
+      <NuxtLink 
+        v-if="!isLoggedIn"
+        to="/auth/login"
+        class="bg-[#2D7A6F] w-[184px] h-[44px] text-white px-6 py-2.5 font-roboto rounded-full text-[16px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
+      >
+        <div class="flex items-center justify-center gap-4 ">
+          <span>ورود / ثبت‌نام</span>
+          <img src="/images/Vector-profile.svg" alt="">
+        </div>
       </NuxtLink>
 
-      <button class="w-10 h-10 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-full transition">
-        <img src="/images/search-icon.png" alt="Search" class="w-5 h-5 opacity-70" />
-      </button>
+      <NuxtLink 
+        v-else
+        to="/profile"
+        class="bg-[#2D7A6F] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-800 transition shadow-sm"
+      >
+        <span> پروفایل</span>
+        <Icon name="heroicons:user-solid" class="w-6 h-6" />
+      </NuxtLink>
     </div>
   </nav>
 </template>
 
 <script setup>
-// استفاده از هوک مسیر برای چک کردن آدرس فعلی مرورگر
-const route = useRoute();
+import { computed } from 'vue'
 
-// لیستی از مسیرهای اختصاصی قرعه‌کشی که نباید نوار در آن‌ها دیده شود
+const route = useRoute()
+const { token, logout } = useAuth()
+
+const isLoggedIn = computed(() => {
+  return !!token.value
+})
+
 const lotteryRoutes = [
   '/events/lottery/register',
   '/events/lottery/login',
@@ -67,10 +89,9 @@ const lotteryRoutes = [
   '/events/lottery/waiting',
   '/events/lottery/winner',
   '/events/lottery/loser'
-];
+]
 
-// ویژگی محاسباتی برای بررسی بودن یا نبودن در صفحات قرعه‌کشی
 const isLotteryPage = computed(() => {
-  return lotteryRoutes.includes(route.path);
-});
+  return lotteryRoutes.includes(route.path)
+})
 </script>

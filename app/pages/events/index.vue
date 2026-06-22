@@ -31,4 +31,10 @@
 definePageMeta({
   layout: 'default' // یا هر لایوتی که برای سایت اصلی دارید
 })
+
+  const footerConfig = useState('footerConfig');
+footerConfig.value = {
+  title: ' شروع یک تجربه متفاوت ',
+  bgColor: 'bg-purple-800'
+};
 </script>

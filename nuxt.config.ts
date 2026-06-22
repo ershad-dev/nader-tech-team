@@ -27,12 +27,13 @@ i18n: {
     classSuffix: ''
   },
 
-  // nuxt.config.ts
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://e4b86f15-0377-4025-9449-7dabf6f08fe6.mock.pstmn.io'
+      // آدرس پایه بک‌اِند (بدون /api/auth/login)
+        apiBase: 'https://nadertechnologyteam.ir/api'
     }
   }
+
 
 })

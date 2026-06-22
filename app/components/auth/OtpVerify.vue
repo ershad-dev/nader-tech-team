@@ -1,101 +1,149 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 
 definePageMeta({ layout: 'auth' })
 
-const config = useRuntimeConfig();
-const otp = ref(['', '', '', '', '', '']); // آرایه ۶ تایی برای کدها
-const token = ref('');
-const timer = ref(120); // تایمر ۲ دقیقه‌ای
-const inputRefs = ref([]);
+const config = useRuntimeConfig()
+
+const otp = ref(['', '', '', '', '', ''])
+const loginToken = ref('')
+const timer = ref(120)
+const inputRefs = ref([])
+
+let interval = null
 
 onMounted(() => {
-  // خواندن توکنی که در مرحله قبل ذخیره کردیم
-  token.value = localStorage.getItem('login_token');
-  startTimer();
-});
+  const storedToken = localStorage.getItem('login_token')
 
-// مدیریتِ تایمر
+  if (!storedToken) {
+    navigateTo('/auth/login')
+    return
+  }
+
+  loginToken.value = storedToken
+  startTimer()
+})
+
+onBeforeUnmount(() => {
+  if (interval) {
+    clearInterval(interval)
+  }
+})
+
+// تایمر
 const startTimer = () => {
-  const interval = setInterval(() => {
-    if (timer.value > 0) timer.value--;
-    else clearInterval(interval);
-  }, 1000);
-};
+  interval = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--
+    } else {
+      clearInterval(interval)
+    }
+  }, 1000)
+}
 
+// نمایش تایمر
 const formattedTimer = computed(() => {
-  const m = Math.floor(timer.value / 60);
-  const s = timer.value % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-});
+  const m = Math.floor(timer.value / 60)
+  const s = timer.value % 60
 
-// مدیریت فوکوس برای تجربه کاربری بهتر
+  return `${m}:${s.toString().padStart(2, '0')}`
+})
+
+// مدیریت ورود اعداد و فوکوس خودکار
 const handleInput = (index) => {
-  if (otp.value[index].length === 1 && index < 5) {
-    inputRefs.value[index + 1].focus();
-  }
-};
+  otp.value[index] = otp.value[index].replace(/\D/g, '')
 
+  if (otp.value[index] && index < 5) {
+    inputRefs.value[index + 1]?.focus()
+  }
+}
+
+// تایید OTP
 const verifyCode = async () => {
-  const code = otp.value.join('');
+  const code = otp.value.join('')
 
-  // ۱. بررسیِ اینکه آیا کد کامل وارد شده یا نه
   if (code.length !== 6) {
-    alert("لطفاً کد ۶ رقمی را کامل وارد کنید");
-    return; // اجازه نمی‌دهد درخواست به سرور برود
+    alert('کد ۶ رقمی را کامل وارد کنید')
+    return
   }
-  
-  // ۲. (اختیاری) اگر می‌خواهی فعلاً تست کنی کدِ فرضیِ "123456" درست است:
-  /*
-  if (code !== "123456") {
-    alert("کد وارد شده اشتباه است (تست)");
-    return;
+
+  if (!loginToken.value) {
+    alert('توکن ورود پیدا نشد')
+    await navigateTo('/auth/login')
+    return
   }
-  */
 
   try {
-    const response = await $fetch('/api/auth/verify', {
+    const response = await $fetch('/auth/verify-otp', {
       baseURL: config.public.apiBase,
       method: 'POST',
-      body: { token: token.value, code: code }
-    });
-    
-    // حالا فقط در صورت دریافتِ توکنِ نهایی وارد شو
-    if (response && response.token) {
-        localStorage.setItem('access_token', response.token);
-        navigateTo('/profile');
-    } else {
-        alert("سرور پاسخ درستی نداد.");
+      headers: {
+        Accept: 'application/json'
+      },
+      body: {
+        login_token: loginToken.value,
+        code
+      }
+    })
+
+    console.log('VERIFY RESPONSE =>', response)
+
+    const accessToken = response?.data?.access_token
+    const user = response?.data?.user
+
+    if (!accessToken) {
+      alert('توکن دریافت نشد')
+      return
     }
-  } catch (err) {
-    alert("کد وارد شده صحیح نیست.");
+
+    localStorage.setItem('access_token', accessToken)
+
+    if (user) {
+      localStorage.setItem(
+        'user',
+        JSON.stringify(user)
+      )
+    }
+
+    localStorage.removeItem('login_token')
+
+    await navigateTo('/profile')
+
+  } catch (error) {
+    console.error('VERIFY OTP ERROR =>', error)
+
+    alert(
+      error?.data?.message ||
+      error?.response?._data?.message ||
+      'کد وارد شده نامعتبر یا منقضی شده است'
+    )
   }
-};
+}
 </script>
 
-<template>
-  <div class="text-center" dir="rtl">
-    <h1 class="text-xl font-bold text-[#1a2333] mb-10">کد تأیید را وارد کنید</h1>
+  <template>
+    <div class="text-center" dir="rtl">
+      <h1 class="text-xl font-bold text-[#1a2333] mb-10">کد تأیید را وارد کنید</h1>
 
-    <div class="flex justify-center gap-2 mb-6">
-      <input 
-        v-for="i in 6" :key="i"
-        v-model="otp[i-1]"
-        :ref="el => inputRefs[i-1] = el"
-        @input="handleInput(i-1)"
-        type="text" maxlength="1" 
-        class="w-12 h-16 bg-[#cedce0] rounded-xl text-center text-2xl font-bold text-[#1a2333] focus:outline-none focus:ring-2 focus:ring-[#2d6a66]"
-      />
-    </div>
+      <div class="flex justify-center gap-2 mb-6">
+        <input 
+          v-for="i in 6" :key="i"
+          v-model="otp[i-1]"
+          :ref="el => inputRefs[i-1] = el"
+          @input="handleInput(i-1)"
+          type="text" maxlength="1" 
+          class="w-12 h-16 bg-[#cedce0] rounded-xl text-center text-2xl font-bold text-[#1a2333] focus:outline-none focus:ring-2 focus:ring-[#2d6a66]"
+        />
+      </div>
 
-    <div class="mb-10 text-sm text-[#1a2333] font-medium">
-      {{ formattedTimer }}
-    </div>
-    
-    <AuthButton @click="verifyCode">تایید کد</AuthButton>
+      <div class="mb-10 text-sm text-[#1a2333] font-medium">
+        {{ formattedTimer }}
+      </div>
+      
+      <AuthButton @click="verifyCode">تایید کد</AuthButton>
 
-    <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer">
-      <NuxtLink to="/auth/login">بازگشت به صفحه ورود</NuxtLink>
+      <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer">
+        <NuxtLink to="/auth/login">بازگشت به صفحه ورود</NuxtLink>
+      </div>
     </div>
-  </div>
-</template>
+  </template>

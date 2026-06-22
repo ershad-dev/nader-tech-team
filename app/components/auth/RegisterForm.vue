@@ -70,6 +70,9 @@ const registerUser = handleSubmit(async (values) => {
   }
 }
 })
+
+
+
 </script>
 
 <template>
@@ -78,49 +81,74 @@ const registerUser = handleSubmit(async (values) => {
       {{ toast.message }}
     </div>
 
-    <h1 class="text-lg font-bold text-[#1a2333] mb-8">اطلاعات خود را وارد کنید</h1>
-
-    <form @submit="registerUser">
-      <div class="grid grid-cols-2 gap-x-4">
-        <div class="flex flex-col mb-2">
-          <AuthInput v-model="username" label="نام کاربری" />
-          <ErrorMessage name="username" class="text-red-500 text-[10px] text-right" />
-        </div>
-        
-        <div class="flex flex-col mb-2">
-          <AuthInput v-model="full_name" label="نام و نام خانوادگی" />
-          <ErrorMessage name="full_name" class="text-red-500 text-[10px] text-right" />
-        </div>
-        
-        <div class="flex flex-col mb-2">
-          <AuthInput v-model="email" label="ایمیل" />
-          <ErrorMessage name="email" class="text-red-500 text-[10px] text-right" />
-        </div>
-        
-        <div class="flex flex-col mb-2">
-          <AuthInput v-model="mobile" label="شماره تماس" />
-          <ErrorMessage name="mobile" class="text-red-500 text-[10px] text-right" />
-        </div>
-      </div>
-
-      <div class="flex flex-col mb-2">
-        <AuthInput v-model="password" label="رمز عبور" type="password" />
-        <ErrorMessage name="password" class="text-red-500 text-[10px] text-right" />
-      </div>
-      
-      <div class="flex flex-col mb-2">
-        <AuthInput v-model="password_confirmation" label="تکرار رمز عبور" type="password" />
-        <ErrorMessage name="password_confirmation" class="text-red-500 text-[10px] text-right" />
-      </div>
-      
-      <div class="mt-4">
-        <AuthButton type="submit" :disabled="loading">
-          {{ loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام' }}
-        </AuthButton>
-      </div>
-    </form>
+    <h1 class="text-lg font-bold text-[#000000] mb-8 font-roboto"> برای ثبت نام ، شماره همراه خود را وارد کنید</h1>
+<form @submit="registerUser">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6" dir="ltr">
     
-    <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer underline">
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="username" label="نام کاربری" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="username" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+    
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="full_name" label="نام و نام خانوادگی" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="full_name" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+    
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="email" label="ایمیل" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="email" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+    
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="mobile" label="شماره تماس" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="mobile" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="national_code" label="کد ملی" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="national_code" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+    
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="birth_date" label="تاریخ تولد" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="birth_date" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+    
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="province" label="استان" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="province" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+    
+    <div class="flex flex-col font-roboto">
+      <AuthInput v-model="postal_code" label="کد پستی" class="h-[44px] [&>div>input]:h-[44px]" />
+      <ErrorMessage name="postal_code" class="text-red-500 text-[10px] text-right mt-1" />
+    </div>
+  </div>
+
+  <div class="flex flex-col mt-6 font-roboto">
+    <AuthInput v-model="adress" label="آدرس و نشانی" class="h-[106px] [&>div>input]:h-[106px] [&>div>input]:py-4" />
+    <ErrorMessage name="adress" class="text-red-500 text-[10px] text-right mt-1" />
+  </div>
+
+  <div class="flex flex-col mt-6 font-roboto">
+    <AuthInput v-model="password" label="رمز عبور" type="password" class="h-[44px] [&>div>input]:h-[44px]" />
+    <ErrorMessage name="password" class="text-red-500 text-[10px] text-right mt-1" />
+  </div>
+  
+  <div class="flex flex-col mt-6 font-roboto">
+    <AuthInput v-model="password_confirmation" label="تکرار رمز عبور" type="password" class="h-[44px] [&>div>input]:h-[44px]" />
+    <ErrorMessage name="password_confirmation" class="text-red-500 text-[10px] text-right mt-1" />
+  </div>
+  
+  <div class="mt-8 ">
+    <AuthButton type="submit" :disabled="loading" >
+      {{ loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام' }}
+    </AuthButton>
+  </div>
+</form>
+    
+    <div class="mt-6 text-sm text-[#1a2333] font-bold cursor-pointer underline font-roboto">
       <NuxtLink to="/auth/login">ورود / حساب کاربری دارم</NuxtLink>
     </div>
   </div>

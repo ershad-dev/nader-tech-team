@@ -1,28 +1,28 @@
 <template>
   <div class="max-w-6xl mx-auto mt-12 text-center" dir="rtl">
     
-    <h1 class="text-4xl font-bold text-slate-900 mb-8">
-      از یک جرقه، تا یک <span class="text-[#2D7A6F]">کسب و کار</span> ماندگار!
+    <h1 class="text-[32px] font-bold text-[#0F184B] mb-8">
+با قدرت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55]">فتح </span> میکنیم
     </h1>
 
-    <div class="relative z-10 w-full h-[500px] rounded-[3rem] overflow-hidden shadow-2xl">
+    <div class="relative z-10 w-[1062px] h-[444px] rounded-[17px] overflow-hidden mx-auto">
       <div 
         v-for="(slide, index) in slides" 
         :key="index"
         v-show="currentSlide === index"
         class="w-full h-full transition-opacity duration-500"
       >
-        <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover" />
+        <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover " />
       </div>
     </div>
 
-    <div class="flex justify-center gap-4 mt-6 z-20">
-      <SliderButton 
+    <div class="flex justify-center gap-4 z-20 ">
+      <HomeIconsSliderButton 
         direction="left" 
         @click="nextSlide" 
       />
 
-      <SliderButton 
+      <HomeIconsSliderButton 
         direction="right" 
         @click="prevSlide" 
       />

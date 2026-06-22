@@ -1,35 +1,122 @@
 <script setup>
-definePageMeta({ layout: 'auth' })
+import { ref } from 'vue'
 
-// تابعی برای نهایی کردن تغییر رمز
-const handleConfirmPassword = () => {
-  // منطق ارسال رمز عبور جدید به سرور
-  console.log("Password updated successfully");
-  // هدایت به صفحه اصلی یا لاگین
-  navigateTo('/login') 
+definePageMeta({
+  layout: 'auth'
+})
+
+const config = useRuntimeConfig()
+
+const loading = ref(false)
+
+const form = ref({
+  password: '',
+  password_confirmation: ''
+})
+
+const resetPassword = async () => {
+  const login =
+    localStorage.getItem('reset_login')
+
+  const resetToken =
+    localStorage.getItem('reset_token')
+
+  if (!login || !resetToken) {
+    navigateTo('/auth/forgot-password')
+    return
+  }
+
+  if (!form.value.password) {
+    alert('رمز عبور را وارد کنید')
+    return
+  }
+
+  if (form.value.password.length < 8) {
+    alert('رمز عبور باید حداقل ۸ کاراکتر باشد')
+    return
+  }
+
+  if (
+    form.value.password !==
+    form.value.password_confirmation
+  ) {
+    alert('تکرار رمز عبور مطابقت ندارد')
+    return
+  }
+
+  loading.value = true
+
+  try {
+    const response = await $fetch(
+      '/auth/reset-password',
+      {
+        baseURL: config.public.apiBase,
+        method: 'POST',
+        headers: {
+          Accept: 'application/json'
+        },
+        body: {
+          login,
+          reset_token: resetToken,
+          password: form.value.password,
+          password_confirmation:
+            form.value.password_confirmation
+        }
+      }
+    )
+
+    localStorage.removeItem('reset_login')
+    localStorage.removeItem('reset_token')
+
+    form.value = {
+      password: '',
+      password_confirmation: ''
+    }
+
+    alert(
+      response.message ||
+      'رمز عبور با موفقیت تغییر کرد'
+    )
+
+    navigateTo('/auth/login')
+
+  } catch (error) {
+    alert(
+      error?.response?._data?.message ||
+      'خطا در تغییر رمز عبور'
+    )
+  } finally {
+    loading.value = false
+  }
 }
 </script>
-
 <template>
   <div class="text-center" dir="rtl">
 
+    <h1 class="text-xl font-bold text-[#1a2333] mb-8">
+      تعیین رمز عبور جدید
+    </h1>
 
-    <h1 class="text-xl font-bold text-[#1a2333] mb-8">رمز عبور جدید خود را وارد کنید.</h1>
-    
-    <AuthInput 
-      label="رمز عبور" 
+    <AuthInput
+      v-model="form.password"
       type="password"
-      placeholder="••••••••"
+      label="رمز عبور جدید"
     />
 
-    <AuthInput 
-      label="تکرار رمز عبور" 
+    <AuthInput
+      v-model="form.password_confirmation"
       type="password"
-      placeholder="••••••••"
+      label="تکرار رمز عبور جدید"
     />
-    
-    <div class="mt-6">
-      <AuthButton @click="handleConfirmPassword">تایید رمز</AuthButton>
+
+    <div class="mt-4">
+      <AuthButton
+        @click="resetPassword"
+        :disabled="loading"
+      >
+        ذخیره رمز عبور
+      </AuthButton>
     </div>
+
   </div>
 </template>

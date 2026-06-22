@@ -1,10 +1,16 @@
 <template>
-<section class="bg-[#ABD7D8] p-10 rounded-[20px] mt-8 mx-auto w-[1110px] max-w-full">
-      
+<section class="relative bg-[#ABD7D8] p-10 rounded-[20px] mt-8 mx-auto w-[1110px] max-w-full">
+
+<img
+  src="/images/texture.png"
+  alt=""
+  class="absolute w-[900px] h-auto object-contain opacity-30 pointer-events-none -mt-[350px] -mr-[100px]"
+/>
+
     <!-- بخش توضیحات -->
     <div class="mb-10 ">
       
-      <p class="max-w-[3xl] text-balck text-[20px] leading-relaxed">
+      <p class="max-w-[865ox] font-400 font-roboto text-[#0F184B] text-[20px] leading-[40px]">
           ما با ارائه خدمات تخصصی در برنامه‌ریزی، مدیریت و اجرای رویدادها، از ایده‌پردازی تا برگزاری نهایی در کنار شما هستیم.
 
         <br>
@@ -14,7 +20,7 @@
        </p>
     </div>
 
-        <h2 class="text-2xl text-[#A36C53] font-bold mb-4 pr-[90px] ">خدمات ایونت</h2>
+        <h2 class="text-[32px] text-[#A36C53] font-bold mb-4 pr-[90px] ">خدمات ایونت</h2>
 
     <!-- لیست کارت‌ها (فراخوانی کامپوننت) -->
     <div class="space-y-6 mb-12 flex flex-col items-center text-center">
@@ -26,9 +32,9 @@
   
 
       <!-- متن (سمت راست) -->
-  <div class="text-right">
-    <span class="text-lg font-bold text-[#747893] block">رویداد بعدی خود را</span>
-    <span class="text-lg font-bold text-[#747893] block">حرفه‌ای برگزار کنید</span>
+  <div class="text-right mr-[20px] -mt-[100px]">
+    <span class="text-[24px] font-bold text-[#747893] block">رویداد بعدی خود را</span>
+    <span class="text-[24px] font-bold text-[#747893] block">حرفه‌ای برگزار کنید</span>
   </div>
 
 
@@ -36,14 +42,16 @@
 
   <!-- فلش (وسط) -->
 <div class="flex-1 flex justify-center px-4">
-  <img src="/images/curved-arrow.png" alt="فلش" class="w-[650px] object-contain" />
+  <img src="/images/curved-arrow.png" alt="فلش" class="min-w-[700px] -ml-[195px] object-contain" />
 </div>
 
 
     <!-- دکمه ( درخواست همکاری) -->
-  <button class="bg-[#ECD0A0] px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] transition w-[263px] h-[48px]">
-    درخواست همکاری
-  </button>
+    <NuxtLink to="/order/requestProject">
+      <button class="bg-[#ECD0A0] px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] transition w-[263px] h-[48px] mt-[90px]">
+        درخواست همکاری
+      </button>
+    </NuxtLink>
 
 </div>
   </section>

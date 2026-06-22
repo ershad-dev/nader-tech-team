@@ -9,7 +9,7 @@
     /> -->
 
     <!-- باکس فرم که روی عکس قرار می‌گیرد -->
-    <div class="relative z-10 w-full max-w-lg bg-[#ABD7D880]/50 backdrop-blur-sm rounded-3xl p-10 shadow-xl border border-white">
+    <div class="relative z-10 w-[701px] bg-[#ABD7D880]/50 backdrop-blur-sm rounded-3xl p-10 shadow-xl border border-white">
       
       <!-- آیکون بازگشت -->
       <button @click="router.back()" class="mb-6 block text-[#1a2333] hover:opacity-70 transition">

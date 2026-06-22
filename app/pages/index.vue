@@ -4,16 +4,25 @@
 
     <HomeHeroSection />
 
-    <HomeLeadMembersa />
+    <HomeLeadMembers />
 
     <HomeProjectShowcase />
 
-    <HomeEvent-req/>
   
-    <HomeTeamMembers/>
+    <HomeFeedback/>
 
 
   
   </div>
 </template>
+
+<script setup>
+  const footerConfig = useState('footerConfig');
+footerConfig.value = {
+  title: ' شروع یک تجربه متفاوت ',
+  bgColor: 'bg-purple-800'
+};
+</script>
+
+
 
