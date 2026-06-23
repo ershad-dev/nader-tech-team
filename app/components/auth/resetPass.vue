@@ -101,12 +101,16 @@ const resetPassword = async () => {
       v-model="form.password"
       type="password"
       label="رمز عبور جدید"
+      class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+
     />
 
     <AuthInput
       v-model="form.password_confirmation"
       type="password"
       label="تکرار رمز عبور جدید"
+      class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+
     />
 
     <div class="mt-4">

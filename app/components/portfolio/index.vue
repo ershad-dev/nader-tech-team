@@ -1,8 +1,6 @@
 <template>
   
-  <div class=" p-10 bg-[#cfdadc] -mt-[100px]">
-    
-
+<div class="min-h-screen p-10 bg-[#cfdadc] -mt-[100px]">
 <div class="text-center mt-[100px] flex justify-center items-center gap-2">
   <h2 class="text-3xl font-bold text-[#2C7379] flex items-baseline">
     <span class="rotate-12 origin-bottom translate-y-3 inline-block">آینده</span>
@@ -55,8 +53,7 @@
     </div>
 
 
-
-    <hr class="border-t border-gray-400 w-3/4 mx-auto mb-10" />
+<div class="w-3/4 mx-auto mb-10 h-[1.5px] bg-gradient-to-r from-white/75 to-gray-400"></div>
 
 <div class="mt-16 max-w-[900px] mx-auto ">
   <h3 class="text-[#2C7379] font-bold text-[36px] mb-8 flex flex-col items-center">اعتماد مشتریان</h3>
@@ -64,22 +61,23 @@
   <div class="w-full shadow-sm  ">
     
     <div class="flex items-center gap-4 mb-6">
-        <img src="/images/avater-man.jpg" alt="Customer" class="w-[293px] h-[283px] rounded-[20px] border-4 border-white shadow-md" />
+        <img src="/images/avater-man.jpg" alt="Customer" class="w-[293px] h-[283px] rounded-[50px] border-4 border-white shadow-md" />
         
-        <div class="text-right">
-            <p class="font-bold text-[#747893] text-[24px] font-roboto font-600">نام و نام خانوادگی</p>
-            <p class="text-[24px] text-[#747893] font-roboto font-600">سمت فرد</p>
+        <div class="text-right mr-[20px]">
+            <p class=" text-[#747893] text-[24px] font-roboto font-medium">نام و نام خانوادگی</p>
+            <p class="text-[24px] text-[#747893] font-roboto font-medium">سمت فرد</p>
         </div>
     </div>
 
-    <div class="w-full h-[414px] bg-white/60 p-6 rounded-tl-[40px] rounded-br-[40px] rounded-bl-[40px] ">
+    <div class=" mb-[300px] w-full h-[414px] bg-white/60 p-6 rounded-tl-[40px] rounded-br-[40px] rounded-bl-[40px] ">
       <h4 class="text-[#0F184B] font-bold mb-3 text-[24px] font-700 mt-[20px]">تجربه همکاری از زبان مشتری</h4>
-      <p class="text-[#616474] leading-relaxed mt-[50px] text-[24px] font-roboto ">
+      <p class="text-[#616474] leading-relaxed mt-[50px] text-[24px] font-noto-regular mb-[200px] ">
         "همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد."
       </p>
     </div>
   </div>
 </div>
+
   </div>
 </template>
 

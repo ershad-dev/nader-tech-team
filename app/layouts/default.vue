@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-[#F8F5F0]">
-    <CommonNavbar />
-    <main class="flex-grow">
+<div class="min-h-screen flex flex-col bg-[#F8F5F0]">
+      <CommonNavbar />
+    <main class="flex-1">
       <slot />
     </main>
     <CommonFooterMain 

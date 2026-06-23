@@ -113,16 +113,23 @@ const sendResetCode = async () => {
       بازیابی رمز عبور
     </h1>
 
+
+
+    <!-- کلاس اینئوت بخاط اینه که اینئوت ها در یک کامئوننت جدا تعریف شده اند و بخاطر  ارتفاع متفاوت اینپوت های از این کلاس ااستفاده شده  -->
     <AuthInput
       v-model="form.login"
-      label="شماره تلفن یا ایمیل"
-      hint="شماره موبایل یا ایمیل"
+      label="شماره تلفن  "
+      hint="شماره موبایل  "
+      class="[&>div>input]:h-[44px] [&>div>input]:py-4"
     />
 
     <div class="mt-4">
-      <AuthButton
+      <AuthButton "
+      
         @click="sendResetCode"
         :disabled="loading"
+        
+
       >
         {{
           loading

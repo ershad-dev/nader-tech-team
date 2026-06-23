@@ -153,11 +153,12 @@ const loginUser = async () => {
   </button>
 </div>  
 
-    <div class="text-right font-roboto">
+    <div class="text-right font-roboto [&>div>input]:h-[44px] [&>div>input]:py-4">
         <AuthInput
           v-model="form.login"
           label="شماره تلفن همراه یا ایمیل"
           type="text"
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
         />
 
           <AuthInput 
@@ -165,6 +166,8 @@ const loginUser = async () => {
             v-model="form.password" 
             label="رمز عبور" 
             type="password" 
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+
           />
     </div>
     

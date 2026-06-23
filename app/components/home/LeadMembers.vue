@@ -62,7 +62,7 @@
         <h3
           :class="[
             'text-[16px] font-normal text-[#0F184B] mb-3 -mt-[20px] font-roboto transition-all duration-300',
-            selectedIndex === 1 ? 'mr-[60px]' : 'mr-[175px]'
+            selectedIndex === 1 ? 'mr-[70px]' : 'mr-[175px]'
           ]"
         >
           {{ teamMembers[selectedIndex].name }}

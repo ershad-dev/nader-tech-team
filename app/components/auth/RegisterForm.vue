@@ -5,28 +5,35 @@ import * as yup from 'yup'
 
 definePageMeta({ layout: 'auth' })
 
-// قوانین اعتبارسنجی
+// ۱. به‌روزرسانی اسکیما برای شامل شدن تمام فیلدها
 const schema = yup.object({
   username: yup.string().required('نام کاربری الزامی است'),
   full_name: yup.string().required('نام و نام خانوادگی الزامی است'),
   email: yup.string().email('ایمیل معتبر نیست').required('ایمیل الزامی است'),
   mobile: yup.string().min(11, 'شماره تماس باید ۱۱ رقم باشد').required('شماره تماس الزامی است'),
+  national_code: yup.string().required('کد ملی الزامی است'),
+  birth_date: yup.string().required('تاریخ تولد الزامی است'),
+  province: yup.string().required('استان الزامی است'),
+  postal_code: yup.string().required('کد پستی الزامی است'),
+  adress: yup.string().required('آدرس الزامی است'),
   password: yup.string().min(6, 'رمز عبور حداقل ۶ کاراکتر باشد').required('رمز عبور الزامی است'),
   password_confirmation: yup.string()
     .oneOf([yup.ref('password')], 'رمز عبور مطابقت ندارد')
     .required('تکرار رمز عبور الزامی است'),
 })
 
-// تنظیمات فرم
-const { handleSubmit, setErrors } = useForm({
-  validationSchema: schema,
-})
+const { handleSubmit, setErrors } = useForm({ validationSchema: schema })
 
-// تعریف فیلدها
+// ۲. تعریف تمام فیلدها با useField
 const { value: username } = useField('username')
 const { value: full_name } = useField('full_name')
 const { value: email } = useField('email')
 const { value: mobile } = useField('mobile')
+const { value: national_code } = useField('national_code')
+const { value: birth_date } = useField('birth_date')
+const { value: province } = useField('province')
+const { value: postal_code } = useField('postal_code')
+const { value: adress } = useField('adress')
 const { value: password } = useField('password')
 const { value: password_confirmation } = useField('password_confirmation')
 
@@ -87,58 +94,58 @@ const registerUser = handleSubmit(async (values) => {
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="username" label="نام کاربری" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="username" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="username" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="full_name" label="نام و نام خانوادگی" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="full_name" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="full_name" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="email" label="ایمیل" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="email" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="email" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="mobile" label="شماره تماس" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="mobile" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="mobile" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
 
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="national_code" label="کد ملی" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="national_code" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="national_code" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="birth_date" label="تاریخ تولد" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="birth_date" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="birth_date" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="province" label="استان" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="province" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="province" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
     
     <div class="flex flex-col font-roboto">
       <AuthInput v-model="postal_code" label="کد پستی" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="postal_code" class="text-red-500 text-[10px] text-right mt-1" />
+      <ErrorMessage name="postal_code" class="text-red-500 text-[10px] text-right mt-4" />
     </div>
   </div>
 
   <div class="flex flex-col mt-6 font-roboto">
     <AuthInput v-model="adress" label="آدرس و نشانی" class="h-[106px] [&>div>input]:h-[106px] [&>div>input]:py-4" />
-    <ErrorMessage name="adress" class="text-red-500 text-[10px] text-right mt-1" />
+    <ErrorMessage name="adress" class="text-red-500 text-[10px] text-right mt-4" />
   </div>
 
   <div class="flex flex-col mt-6 font-roboto">
     <AuthInput v-model="password" label="رمز عبور" type="password" class="h-[44px] [&>div>input]:h-[44px]" />
-    <ErrorMessage name="password" class="text-red-500 text-[10px] text-right mt-1" />
+    <ErrorMessage name="password" class="text-red-500 text-[10px] text-right mt-4" />
   </div>
   
   <div class="flex flex-col mt-6 font-roboto">
     <AuthInput v-model="password_confirmation" label="تکرار رمز عبور" type="password" class="h-[44px] [&>div>input]:h-[44px]" />
-    <ErrorMessage name="password_confirmation" class="text-red-500 text-[10px] text-right mt-1" />
+    <ErrorMessage name="password_confirmation" class="text-red-500 text-[10px] text-right mt-4" />
   </div>
   
   <div class="mt-8 ">
