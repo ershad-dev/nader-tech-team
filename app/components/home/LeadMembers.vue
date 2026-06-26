@@ -60,14 +60,12 @@
           هنگام انتخاب کارت دوم، عنوان کمی به سمت راست منتقل می‌شود.
         -->
         <h3
-          :class="[
-            'text-[16px] font-normal text-[#0F184B] mb-3 -mt-[20px] font-roboto transition-all duration-300',
-            selectedIndex === 1 ? 'mr-[70px]' : 'mr-[175px]'
-          ]"
+          class="
+            text-[14px] font-normal text-[#0F184B] mb-3 font-medium transition-all duration-300"
         >
           {{ teamMembers[selectedIndex].name }}
         </h3>
-        <p class="text-slate-700 leading-relaxed text-sm md:text-base font-medium text-rught mx-auto font-roboto mt-[20px]">
+        <p class="text-slate-700 text-[14px] md:text-base text-rught mx-auto font-roboto mt-[10px]">
           {{ teamMembers[selectedIndex].bio }}
         </p>
       </div>

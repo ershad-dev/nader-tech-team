@@ -8,17 +8,38 @@
     <div 
       ref="scrollContainer" 
       class="flex gap-6 overflow-x-auto scroll-smooth pb-8"
-      style="scrollbar-width: none; -ms-overflow-style: none;" dir="ltr"
+      style="scrollbar-width: none; -ms-overflow-style: none;" 
     >
-      <div 
-        v-for="customer in customers" :key="customer.id"
-        class="min-w-[400px] h-[500px]  border border-slate-300 rounded-[2.5rem] p-8 text-center shadow-sm transition-all hover:shadow-xl" dir="rtl"
-      >
-        <img :src="customer.image" :alt="customer.name" class="w-[246px] h-[210px] rounded-[20px] mx-auto mb-6 object-cover object-top" />
-        <h3 class="text-[20px] font-extrabold text-[#0F184B] mb-1 rokh-bold">{{ customer.name }}</h3>
-        <p class="text-[#0F184B] font-normal text-[20px] mb-4 font-roboto">{{ customer.role }}</p>
-        <p class="text-[#747893] text-[20px] leading-relaxed font-roboto text-right">{{ customer.comment }}</p>
-      </div>
+<div 
+  v-for="customer in customers"
+  :key="customer.id"
+  class="min-w-[390px] h-[410px] border border-slate-300 rounded-[17px] overflow-hidden shadow-xl transition-all hover:shadow-xl"
+  dir="rtl"
+>
+  <!-- بخش پروفایل -->
+  <div class="bg-[#EDEDED] px-8 pt-8 pb-6 border-b border-slate-200 shadow-xl -mt-[20px]">
+    <img
+      :src="customer.image"
+      :alt="customer.name"
+      class="w-[246px] h-[210px] rounded-[20px] mx-auto mb-6 object-cover object-top"
+    />
+
+    <h3 class="text-[14px] font-extrabold text-[#0F184B] mb-1 rokh-bold text-center">
+      {{ customer.name }}
+    </h3>
+
+    <p class="text-[#0F184B] font-roboto font-medium text-[14px] text-center">
+      {{ customer.role }}
+    </p>
+  </div>
+
+  <!-- بخش نظر -->
+  <div class="bg-white p-8 h-[115px]">
+    <p class="text-[#747893] text-[15px] leading-relaxed font-roboto text-right -mt-[20px]">
+      {{ customer.comment }}
+    </p>
+  </div>
+</div>
     </div>
 
     <div class="flex items-center justify-between mt-4 gap-5">

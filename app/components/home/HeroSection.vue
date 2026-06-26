@@ -5,7 +5,7 @@
 با قدرت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55]">فتح </span> میکنیم
     </h1>
 
-    <div class="relative z-10 w-[1062px] h-[444px] rounded-[17px] overflow-hidden mx-auto">
+    <div class="relative z-10 w-[976px] h-[406px] rounded-[17px] overflow-hidden mx-auto">
       <div 
         v-for="(slide, index) in slides" 
         :key="index"

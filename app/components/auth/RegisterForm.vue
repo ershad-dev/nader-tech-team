@@ -118,8 +118,8 @@ const registerUser = handleSubmit(async (values) => {
     </div>
     
     <div class="flex flex-col font-roboto">
-      <AuthInput v-model="birth_date" label="تاریخ تولد" class="h-[44px] [&>div>input]:h-[44px]" />
-      <ErrorMessage name="birth_date" class="text-red-500 text-[10px] text-right mt-4" />
+      <AuthInput v-model="birth_date" placeholder="1370/01/01" label="تاریخ تولد" class="h-[44px] [&>div>input]:h-[44px] "  />
+      <ErrorMessage name="birth_date" class="text-red-500 text-[10px] text-right mt-4"  />
     </div>
     
     <div class="flex flex-col font-roboto">

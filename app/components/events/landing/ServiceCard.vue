@@ -11,7 +11,7 @@
     <!-- متن سمت چپ -->
 <div class="flex-1 -mr-[40px] text-right">
         <h3 class="text-[24px] font-bold text-[#606792] mb-2 ">{{ service.title }}</h3>
-      <p class="text-[20px] font-roboto text-[#606792] leading-relaxed mt-[20px]">{{ service.description }}</p>
+      <p class="text-[16px] font-roboto text-[#606792] leading-relaxed mt-[20px]">{{ service.description }}</p>
     </div>
   </div>
 </template>

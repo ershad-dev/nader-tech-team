@@ -17,12 +17,13 @@
       </div>
 
       <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
-        <div class="w-[350px] h-[50px] bg-[#2C7379] absolute top-4" style="border-radius: 0 0 20px 20px;"></div>
+        <div class="shape ">
         <NuxtLink to="/order/requestProject">
-          <button class="bg-[#ECD0A0] text-[#0F184B] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 hover:scale-105 transition-all h-[48px] w-[263px] flex items-center justify-center">
+          <button class="bg-[#ECD0A0] text-[#0F184B] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 hover:scale-105 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block scale-y-[-1] mr-[55px] mt-[10px]">
             درخواست همکاری
           </button>
         </NuxtLink>
+        </div>
       </div>
     </div>
 
@@ -100,3 +101,47 @@ defineProps({
   title1: String
 });
 </script>
+
+
+
+  <style scoped>
+  :nth-child(1 of .shape) {
+    clip-path: shape(
+      from 0 100%,
+      arc by var(--r) calc(-1*var(--r)) of var(--r),
+      vline to var(--r),
+      arc by var(--r) calc(-1*var(--r)) of var(--r) cw,
+      hline to calc(100% - 2*var(--r)),
+      arc by var(--r) var(--r) of var(--r) cw,
+      vline to calc(100% - var(--r)),
+      arc by var(--r) var(--r) of var(--r)
+    )
+  }
+  :nth-child(2 of .shape) {
+    clip-path: shape(
+      from 0 100%,
+      curve by var(--r) calc(-1*var(--r)) with var(--r) 0,
+      vline to var(--r),
+      curve by var(--r) calc(-1*var(--r)) with 0 calc(-1*var(--r)),
+      hline to calc(100% - 2*var(--r)),
+      curve by var(--r) var(--r) with var(--r) 0,
+      vline to calc(100% - var(--r)),
+      curve by var(--r) var(--r) with 0 var(--r)
+    )
+  }
+.shape {
+  --r: 26px;
+
+  margin-bottom: -27px;
+  width: 379px;
+  height: 60px;
+
+  background: #2C7379;
+  color: #fff;
+  transform: scaleY(-1);
+
+
+}
+
+
+  </style>

@@ -2,20 +2,21 @@
   <section class="max-w-6xl mx-auto py-20 px-6" dir="rtl">
     
     <div class="flex flex-col items-center mb-20">
-      <div class="bg-[#ABD7D8] w-16 h-16 rounded-full border border-gray-300 flex items-center justify-center mb-6 ">
+      <div class="bg-[#ABD7D887] w-16 h-16 rounded-full border border-gray-300 flex items-center justify-center mb-6 ">
         <img src="/images/faq.png" alt="FAQ" class="w-8 h-8 object-contain" />
       </div>
       <h2 class="text-3xl font-bold text-[#0F184B]">پرسش‌های متداول</h2>
     </div>
 
-    <div class="bg-[#F9F7F2] rounded-2xl p-2">
-      <div v-for="(item, index) in faqs" :key="index" class="border-b-2 border-[#2C7379] last:border-0">
+    <div class="flex flex-col gap-4">
+      <div v-for="(item, index) in faqs" :key="index" 
+           class="bg-[#2C7379]/10 rounded-2xl overflow-hidden border border-[##BFD1D53B] transition-all">
         
         <button 
             @click="toggle(index)" 
-            class="w-full py-8 px-4 flex justify-between items-center text-right hover:bg-black/5 transition-colors rounded-lg"
+            class="w-full py-6 px-6 flex justify-between items-center text-right hover:bg-[#2C7379]/5 transition-colors"
             >
-            <p class="text-[#0F184B] font-[200] text-[24px] font-roboto">{{ item.question }}</p> 
+            <p class="text-[#0F184B] font-bold text-[20px] font-noto-light">{{ item.question }}</p> 
             
             <svg 
                 class="w-6 h-6 text-[#747893] transition-transform duration-300 flex-shrink-0" 
@@ -28,8 +29,10 @@
             </svg>
         </button>
         
-        <div v-if="isOpen === index" class="px-4 pb-8 pt-2 text-[#616474] text-[24px]leading-[32px] font-roboto">
-          {{ item.answer }}
+        <div v-if="isOpen === index" class="px-6 pb-6 pt-0 text-[#616474] text-[18px] leading-[32px] font-roboto">
+          <div class=" pt-4">
+            {{ item.answer }}
+          </div>
         </div>
       </div>
     </div>

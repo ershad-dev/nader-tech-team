@@ -122,7 +122,7 @@ const verifyCode = async () => {
 </script>
 
   <template>
-    <div class="text-center" dir="rtl">
+    <div class="text-center" dir="ltr">
       <h1 class="text-xl font-bold text-[#1a2333] mb-10">کد تأیید را وارد کنید</h1>
 
       <div class="flex justify-center gap-2 mb-6">

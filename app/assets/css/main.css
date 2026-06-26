@@ -22,6 +22,16 @@ body {
 }
 
 
+@font-face {
+  font-family: 'rokh-light';
+  src: url('/fonts/Rokh-Medium.otf') format('truetype');
+
+}
+.rokh-light {
+  font-family: 'rokh-light', sans-serif;
+}
+
+
 
 @font-face {
   font-family: 'rokh-bold';

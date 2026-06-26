@@ -17,23 +17,20 @@
   <div class="absolute inset-0 rounded-[25px] "></div>
 
   <!-- تصویر -->
-  <div class="relative h-[220px] rounded-[25px] overflow-hidden bg-white">
-    <img :src="post.image" class="w-full h-full object-cover" />
+  <div class=" img-wrap relative h-[220px] rounded-[25px] overflow-hidden">
+    <img :src="post.image" class="inner-curve w-full h-full object-cover shadow-[0_8px_0_0_rgba(0,0,0,0.15)]" />
 
-    <div
-      class="notch absolute bottom-0 left-1/2 -translate-x-1/2 w-[60px] pointer-events-none"
-    ></div>
   </div>
 
 </div>
 <div class="absolute top-[190px] left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center">
   <NuxtLink :to="`/articles/${post.id}`">
     <div class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer">
-      <ArrowUpRight class="w-[32px] h-[32px] text-[#2D7A6F] mt-[15px]" />
+      <ArrowUpRight class="w-[36px] h-[36px] text-[#2D7A6F]  hover:bg-white/50 rounded-full" />
     </div>
   </NuxtLink>
 </div>
-        <h3 class="mt-10 text-slate-800 font-bold text-right px-4 text-[16px] leading-6 mb-[40px]">
+        <h3 class="mt-5 text-[#000000] font-bold text-right px-4 text-[16px] leading-6 mb-[40px]">
           {{ post.title }}
         </h3>
         
@@ -94,41 +91,33 @@ const articles = ref([
 
 
 <style scoped>
+/* HTML: <img class="inner-curve" src="" alt=""> */
+.inner-curve {
+  --r: 10px;  /* control the rounded part */
+  --s: 40px;  /* control the size of the cut */
+  --a: 20deg; /* control the depth of the curvature */
+  --p: 50%;   /* control the position */
 
-.notch {
-  position: absolute;
-  /* ارتفاع را کم می‌کنیم چون اکنون قوس رو به بالاست */
-  height: 33px; 
-  background: #dbf3f4;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-  /* box-shadow: inset 0 10px 10px rgba(0,0,0,0.2); */
+  height: 207px;
+  aspect-ratio: 3/2;
+  background: #ED303C;
+  border-radius: var(--r);
+  --_m:calc(100% - var(--r)),#000 calc(100% - 1px),#0000;
+  --_d:(var(--s) + var(--r))*cos(var(--a));
+  mask:
+    radial-gradient(var(--r) at calc(var(--p) + var(--_d)) var(--_m)),
+    radial-gradient(var(--r) at calc(var(--p) - var(--_d)) var(--_m)),
+    radial-gradient(var(--s) at var(--p) calc(100% + sin(var(--a))*var(--s)),
+      #0000 100%,#000 calc(100% + 1px)) 0 calc(var(--r)*(sin(var(--a)) - 1)) no-repeat,
+    linear-gradient(90deg,#000 calc(var(--p) - var(--_d)),#0000 0 calc(var(--p) + var(--_d)),#000 0);
+
 }
 
-.notch::before, .notch::after {
-  content: "";
-  position: absolute;
-  bottom: 0; /* تغییر از top به bottom */
-  width: 20px;
-  height: 20px;
-  background: transparent;
-}
+.img-wrap {
+  width: 100%;
+  height: 220px;
+  border-radius: 25px;
+filter: drop-shadow(0 5px 0 rgba(0,0,0,0.12));}
 
-/* قوس چپ معکوس */
-.notch::before {
-  left: -16px;
-  border-bottom-right-radius: 20px;
-  box-shadow: 10px 10px 0 #dbf3f4; /* تغییر جهت سایه به سمت پایین */
-  
-}
-
-/* قوس راست معکوس */
-.notch::after {
-  right: -16px;
-  border-bottom-left-radius: 20px;
-  box-shadow: -10px 10px 0 #dbf3f4,
-  inset 0 10px 10px rgba(0,0,0,0.2)
-   /* تغییر جهت سایه به سمت پایین */
-}
 
 </style>

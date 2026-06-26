@@ -3,11 +3,11 @@
     
     <section class="flex flex-col md:flex-row items-center gap-12 mb-20">
 <div class="flex-1">
-  <h1 class="text-4xl font-900 text-[34px] mb-6"> 
-    نادر تکنولوژی فقط یک نام نیست؛<br> یک <span class="text-[#2C7379]">نگاه</span> است.
+  <h1 class=" text-[#0F184B] font-900 text-[32px] mb-6"> 
+    نادر تکنولوژی فقط یک نام نیست؛ یک <span class="text-[#2C7379]">نگاه</span> <br> است.
   </h1>
   
-  <p class="text-[#000000] font-normal leading-relaxed text-[30px] mb-8">
+  <p class="text-[#0F184B] font-bold leading-relaxed text-[26px] rokh-light mb-8">
     نگاهی که از جسارت، دقت و ساختن مسیرهای تازه الهام <br> گرفته شده است. در دنیایی که تکنولوژی هر روز در حال<br> تغییر است، ما باور داریم موفقیت فقط در همراه شدن با<br> این تغییرات نیست؛ بلکه در خلق مسیرهای جدید و <br> ساختن راه‌حل‌هایی است که بتوانند رشد واقعی ایجاد <br>کنند.
   </p>
 
@@ -25,7 +25,7 @@
     </section>
     <section class="mb-20">
       <img src="/images/about-img.png" class="w-full h-[490px] object-cover rounded-[3rem]" />
-      <p class="text-[24px] mt-8 leading-[50px] font-roboto font-normal text-[#0F184B] ">
+      <p class="text-[14px] mt-8 leading-[50px] font-roboto font-normal text-[#0F184B] ">
           نادر تکنولوژی مجموعه‌ای تخصصی در حوزه تکنولوژی، توسعه وب، تولید محتوا و توسعه برند است که با ترکیب خلاقیت، استراتژی و فناوری، ایده‌ها را به پروژه‌هایی قابل رشد و ماندگار تبدیل می‌کند. ما معتقدیم هر پروژه فراتر از یک سفارش است؛ فرصتی برای ساختن تجربه‌ای ارزشمند که بتواند برای یک کسب‌وکار مسیر تازه‌ای ایجاد کند.
       </p>  
     </section>
@@ -49,9 +49,9 @@
       </div>
 
       <div class="p-6 text-right flex-1 overflow-hidden">
-        <h3 class="text-xl font-bold text-[#2D4745] mb-1">{{ member.name }}</h3>
-        <p class="text-[#5A6E6C] font-medium mb-2">{{ member.role }}</p>
-        <p class="text-sm text-[#334155] leading-relaxed line-clamp-3">
+        <h3 class="text-[20px] font-bold text-[#2D4745] mb-1">{{ member.name }}</h3>
+        <p class="text-[#5A6E6C] text-[20px] font-medium mb-2">{{ member.role }}</p>
+        <p class="text-[16px] text-[#747893] font-roboto leading-relaxed line-clamp-3">
           {{ member.desc }}
         </p>
       </div>
@@ -61,7 +61,7 @@
     
   </div>
       <div>
-      <p class="font-roboto text-[24px] font-normal text-[#0F184B] leading-[40px] mt-[20px]">
+      <p class="font-roboto text-[14px] font-normal text-[#0F184B] leading-[40px] mt-[20px]">
         تیم ما با بیش از ۱۵ سال تجربه حرفه‌ای، پروژه‌ها را از مرحله ایده تا اجرا و توسعه همراهی می‌کند. از طراحی و توسعه وب‌سایت‌های اختصاصی، فروشگاه‌های اینترنتی و سیستم‌های تحت وب گرفته تا تولید محتوای حرفه‌ای، هویت بصری و راهکارهای رسانه‌ای؛ تمرکز ما تنها روی اجرا نیست، بلکه روی ساخت درست است؛ جایی که عملکرد، تجربه کاربری، امنیت و رشد بلندمدت در کنار یکدیگر معنا پیدا می‌کنند.
       </p>
     </div>
@@ -71,15 +71,15 @@
 
   <div class="p-8 rounded-[2.5rem] transition-all duration-500">
 
-    <h3 class="flex items-center justify-center text-center text-[16px] font-bold text-black mb-8 bg-[#67A9A8] py-2 rounded-[17.68px] w-[247px] h-[65px] mx-auto px-6">
+    <h3 class="flex items-center justify-center text-center text-[15px] font-bold text-white mb-8 bg-[#67A9A8] py-2 rounded-[17px] w-[178px] h-[43px] mx-auto px-6">
       {{ currentCategory.title }}
     </h3>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-[20px] gap-x-12 max-w-[800px] mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-[20px] gap-x-12 max-w-[662px] mx-auto">
       <div
         v-for="(service, index) in currentCategory.items"
         :key="index"
-        class="flex items-center justify-center border-[1.5px] border-[#CFD2E3] h-[80px] w-[391px] rounded-[32px] text-center hover:border-[#2D7A6F] transition font-roboto cursor-pointer text-[#081035]"
+        class="flex items-center justify-center border-[1.5px] border-[#CFD2E3] h-[80px] w-[317px] h-[60px] rounded-[17px] text-center hover:border-[#2D7A6F] transition cursor-pointer text-[#0F184B]"
       >
         {{ service }}
       </div>
@@ -87,7 +87,7 @@
 
   </div>
 
-  <div class="flex items-center justify-center gap-4 mt-8 -mb-[100px]">
+  <div class="flex items-center justify-center gap-4 mt-8 ">
     <SliderButton
       direction="left"
       @click="prevCategory"

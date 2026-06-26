@@ -156,7 +156,7 @@ const loginUser = async () => {
     <div class="text-right font-roboto [&>div>input]:h-[44px] [&>div>input]:py-4">
         <AuthInput
           v-model="form.login"
-          label="شماره تلفن همراه یا ایمیل"
+          label="شماره تلفن همراه  "
           type="text"
           class="[&>div>input]:h-[44px] [&>div>input]:py-4"
         />

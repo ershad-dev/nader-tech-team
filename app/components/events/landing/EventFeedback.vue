@@ -47,22 +47,22 @@
       <!-- بخش نمایش متن انتخاب شده (در صورت انتخاب یک کارت) -->
           <div
             v-if="selectedIndex !== null"
-            class="testimonial-box relative bg-[#ABD7D840] w-[919px] min-h-[496px] rounded-[40px] p-8 mt-12 mx-auto transition-all duration-500"
+            class="testimonial-box relative bg-[#ABD7D840] w-[919px] min-h-[239px] rounded-[40px] p-8 mt-12 mx-auto transition-all duration-500 h-"
           >
         
         <!-- نشانگر زبانه (Indicator) که به سمت کارت انتخاب شده اشاره می‌کند -->
           <div 
-            class="notch absolute -top-[30px] w-[120px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[30px]"
+            class="notch absolute -top-[30px]  w-[120px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[30px]"
             :style="{ left: indicatorLeft + 'px', width: '140px', transform: 'translateX(-50%)' }"
           >
             <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[35px] h-[69px]">
           </div>
 
         <!-- متن نظرات -->
-        <h1 class="font-bold text-[#0F184B] text-[24px] mt-[50px]">
+        <h1 class="font-bold text-[#0F184B] text-[26px] mt-[50px]">
           تجربه همکاری از زبان مشتری 
         </h1>
-  <p class="text-[#616474] text-right text-[24px] font-light leading-[50px] pt-4 text-center font-roboto">
+  <p class="text-[#616474] text-right text-[14px] font-light leading-[50px] pt-4 text-center font-roboto">
     {{ testimonials[selectedIndex].text }}
   </p>
       </div>
@@ -171,7 +171,7 @@ const prevSlide = async () => {
 
   .notch {
     position: absolute;
-    height: 25px;
+    height: 15px;
     background: #F7F3EB;
 
     border-bottom-left-radius: 30px;

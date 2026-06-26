@@ -24,6 +24,10 @@ const userData = ref({
   username: '',
   mobile: '',
   email: '',
+  birth_date: '', // جدید
+  national_code: '', // جدید
+  province: '', // جدید
+  address: '', // جدید
   avatar: ''
 })
 
@@ -254,7 +258,7 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto p-4 md:p-8">
+  <div class="max-w-[1110px] mx-auto p-4 md:p-8">
     
     <div
       v-if="toast.message"
@@ -268,39 +272,39 @@ const logout = () => {
       {{ toast.message }}
     </div>
 
-    <div class="bg-[#BFD1D5]/50 p-6 md:p-10 rounded-[40px] shadow-sm">
+    <div class="bg-[#2C73792B] p-6 md:p-10 rounded-[40px] shadow-sm">
       
    <div class="flex justify-center w-full">
-  <div class="bg-[#BFD1D5] p-6 rounded-3xl mb-8 flex items-center justify-end gap-6 w-fit">
+  <div class="bg-[#ffffff]/10 p-6 rounded-[27px] mb-8 flex flex-row items-center justify-center gap-6 w-[652px] h-[187px] shadow-xl">
 
     <img
-      :src="userData.avatar || '/images/hero-imgae.png'"
-      class="w-20 h-20 rounded-full border-4 border-white shadow-sm object-cover"
+      :src="userData.avatar || '/images/avater-man.jpg'"
+      class="w-[143px] h-[143px] rounded-full border-4 border-white shadow-sm object-cover"
     />
 
     <div class="flex flex-col items-center gap-2">
-      <span class="text-[#1a2333] font-bold text-sm mb-1">
+      <span class="text-[#0F184B] font-bold text-[16px] mb-1">
         عکس پروفایل
       </span>
 
       <input
         type="file"
         ref="fileInput"
-        class="hidden"
+        class="hidden w-[143px] h-[143px]"
         accept="image/*"
         @change="uploadAvatar"
       />
 
-      <button
-        class="bg-[#2d6a66] text-white text-sm font-bold py-2 px-6 rounded-xl hover:bg-[#235652] transition"
-        @click="fileInput?.click()"
-        :disabled="loading"
-      >
-        انتخاب تصویر جدید
-      </button>
+<button
+  class="bg-[#2C7379] w-[143px] h-[39px] text-white text-[15px] font-normal py-2 px-6 rounded-[17px] hover:bg-[#235652] transition font-roboto whitespace-nowrap flex items-center justify-center mt-[10px]"
+  @click="fileInput?.click()"
+  :disabled="loading"
+>
+  انتخاب تصویر جدید
+</button>
 
       <button
-        class="text-red-500 text-xs font-bold mt-1"
+        class="text-[#747893] text-[15px] font-normal mt-[10px] font-roboto"
         @click="deleteAvatar"
         :disabled="loading || !userData.avatar"
       >
@@ -311,81 +315,57 @@ const logout = () => {
   </div>
 </div>
 
-      <div class="bg-[#BFD1D5] p-8 rounded-3xl mt-8">
+      <div class="bg-[#ffffff]/10 p-8 rounded-3xl border-[0.5px] border-[#D9D9D9] shadow-xl mt-8">
 
         <!-- Profile Tab -->
-        <div
-          v-if="activeTab === 'profile'"
-          class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6"
-        >
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-[#1a2333] mr-1">
-              نام کاربری
-            </label>
+<div v-if="activeTab === 'profile'" 
+     class="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 font-roboto justify-items-center" 
+     dir="rtl">
+  
+  <div class="flex flex-col gap-2 w-fit"> <label class="text-[15px] font-normal text-black mr-1">نام کاربری</label>
+    <input v-model="userData.username" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
+  </div>
 
-            <div class="relative">
-              <input
-                v-model="userData.username"
-                class="w-full h-14 bg-white rounded-[17px] px-4 pr-12"
-              >
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">نام و نام خانوادگی</label>
+    <input v-model="userData.full_name" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
+  </div>
 
-              <div class="absolute right-4 top-4">
-                <UserIcon class="w-5 h-5" />
-              </div>
-            </div>
-          </div>
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">شماره موبایل</label>
+    <input v-model="userData.mobile" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
+  </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-[#1a2333] mr-1">
-              نام و نام خانوادگی
-            </label>
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">ایمیل</label>
+    <input v-model="userData.email" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
+  </div>
 
-            <div class="relative">
-              <input
-                v-model="userData.full_name"
-                class="w-full h-14 bg-white rounded-[17px] px-4 pr-12"
-              >
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">تاریخ تولد</label>
+    <input v-model="userData.birth_date" placeholder="1370/01/01" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
+  </div>
 
-              <div class="absolute right-4 top-4">
-                <UserIcon class="w-5 h-5" />
-              </div>
-            </div>
-          </div>
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">کد ملی</label>
+    <input v-model="userData.national_code" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
+  </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-[#1a2333] mr-1">
-              شماره موبایل
-            </label>
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">استان</label>
+    <input v-model="userData.province" class="w-[300px] h-14 bg-white rounded-[17px] " />
+  </div>
 
-            <div class="relative">
-              <input
-                v-model="userData.mobile"
-                class="w-full h-14 bg-white rounded-[17px] px-4 pr-12"
-              >
+  <div class="flex flex-col gap-2 w-fit">
+    <label class="text-[15px] font-normal text-black mr-1">کد پستی</label>
+    <input v-model="userData.postal_code" class="w-[300px] h-14 bg-white rounded-[17px] " />
+  </div>
 
-              <div class="absolute right-4 top-4">
-                <PhoneIcon class="w-5 h-5" />
-              </div>
-            </div>
-          </div>
+  <div class="flex flex-col gap-2 w-[625px] md:col-span-2"> <label class="text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
+    <textarea v-model="userData.address" class="w-[689px] h-24 bg-white rounded-[17px] px-4 py-4"></textarea>
+  </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-[#1a2333] mr-1">
-              ایمیل
-            </label>
-
-            <div class="relative">
-              <input
-                v-model="userData.email"
-                class="w-full h-14 bg-white rounded-[17px] px-4 pr-12"
-              >
-
-              <div class="absolute right-4 top-4">
-                <EnvelopeIcon class="w-5 h-5" />
-              </div>
-            </div>
-          </div>
-        </div>
+</div>
 
         <!-- Security Tab -->
         <div v-else class="space-y-6">
