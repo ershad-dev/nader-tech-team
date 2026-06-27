@@ -43,15 +43,22 @@
   </div>
 
       <!-- گرید پروژه‌ها (اسلایدشونده) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div v-for="project in visibleProjects" :key="project.id" 
-             class="relative w-[250px] h[350px] bg-white rounded-[48px] border-[1px] border-gray-300 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-          <img :src="project.image" class="w-[250px] h-[344px] object-cover" />
-          <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 p-5 border-t border-white/30 text-center">
-            <h3 class="text-[#0F184B] font-bold text-[20px]">{{ project.title }}</h3>
-          </div>
-        </div>
+<!-- گرید پروژه‌ها -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div v-for="project in visibleProjects" :key="project.id" 
+       class="relative w-[250px] h-[350px] bg-white rounded-[48px] border-[1px] border-gray-300 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+    
+    <!-- افزودن NuxtLink برای هدایت به صفحه جزئیات -->
+    <NuxtLink :to="`/order/${project.id}`">
+      <img :src="project.image" class="w-[250px] h-[344px] object-cover" />
+      
+      <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 p-5 border-t border-white/30 text-center">
+        <h3 class="text-[#0F184B] font-bold text-[20px]">{{ project.title }}</h3>
       </div>
+    </NuxtLink>
+
+  </div>
+</div>
 
       <!-- کنترل‌های اسلایدر -->
       <div class="flex items-center justify-between mt-12 px-2">
@@ -107,56 +114,84 @@
 </template>
 
 <script setup>
-const activeCategory = ref('طراحی سایت')
-const currentIndex = ref(0)
-const categories = ['طراحی سایت', 'تولید محتوا', 'برگزاری ایونت']
+import { ref, computed, watch } from 'vue';
 
+// --- وضعیت‌های اصلی ---
+const activeCategory = ref('طراحی سایت');
+const currentIndex = ref(0);
+const categories = ['طراحی سایت', 'تولید محتوا', 'برگزاری ایونت'];
+
+// --- محتوای متنی و تصویری (Dynamic Content) ---
 const contentMap = {
   'طراحی سایت': { 
-    title: 'طراحی سایت ', 
+    title: 'طراحی سایت', 
     description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.', 
-    image: '/images/img-services.png' // آدرس اختصاصی
+    image: '/images/img-services.png' 
   },
   'تولید محتوا': { 
     title: 'تولید محتوا', 
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فرصتی برای ایجاد ارتباط، یادگیری و تجربه‌ای متفاوت فراهم می‌کنیم. از برنامه‌ریزی و هماهنگی تا اجرای نهایی، تمامی مراحل با دقت انجام می‌شود تا رویدادی منظم، جذاب و به‌یادماندنی برای شرکت‌کنندگان رقم بخورد.', 
-    image: '/images/img-services.png' // آدرس اختصاصی
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.', 
+    image: '/images/img-services.png' 
   },
   'برگزاری ایونت': { 
     title: 'برگزاری ایونت', 
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فرصتی برای ایجاد ارتباط، یادگیری و تجربه‌ای متفاوت فراهم می‌کنیم. از برنامه‌ریزی و هماهنگی تا اجرای نهایی، تمامی مراحل با دقت انجام می‌شود تا رویدادی منظم، جذاب و به‌یادماندنی برای شرکت‌کنندگان رقم بخورد.', 
-    image: '/images/img-services.png' // آدرس اختصاصی
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.', 
+    image: '/images/img-services.png' 
   }
-}
+};
 
+// --- لیست پروژه‌ها ---
 const projects = [
-  { id: 1, title: 'توضیحات و نام پروژه', category: 'طراحی سایت', image: '/images/preview3.jpg' },
-  { id: 2, title: 'توضیحات و نام پروژه', category: 'طراحی سایت', image: '/images/preview2.jpg' },
-  { id: 3, title: 'توضیحات و نام پروژه', category: 'طراحی سایت', image: '/images/preview.jpg' },
-  { id: 4, title: 'توضیحات و نام پروژه', category: 'طراحی سایت', image: '/images/content1.jpg' },
-  { id: 5, title: ' توضیحات و نام پروژه', category: 'طراحی سایت', image: '/images/content2.jpg' },
-  { id: 6, title: ' توضیحات و نام پروژه', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
-  { id: 7, title: 'توضیحات و نام پروژه ', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
-  { id: 8, title: ' توضیحات و نام پروژه', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
-  { id: 9, title: ' توضیحات و نام پروژه', category: 'تولید محتوا', image: '/images/content2.jpg' },
-  { id: 10, title: ' توضیحات و نام پروژه', category: 'تولید محتوا', image: '/images/content2.jpg' },
+  { id: 1, title: 'نام پروژه ۱', category: 'طراحی سایت', image: '/images/preview3.jpg' },
+  { id: 2, title: 'نام پروژه ۲', category: 'طراحی سایت', image: '/images/preview2.jpg' },
+  { id: 3, title: 'نام پروژه ۳', category: 'طراحی سایت', image: '/images/preview.jpg' },
+  { id: 4, title: 'نام پروژه ۴', category: 'طراحی سایت', image: '/images/content1.jpg' },
+  { id: 5, title: 'نام پروژه ۵', category: 'طراحی سایت', image: '/images/content2.jpg' },
+  { id: 6, title: 'نام پروژه ۶', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
+  { id: 7, title: 'نام پروژه ۷', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
+  { id: 8, title: 'نام پروژه ۸', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
+  { id: 9, title: 'نام پروژه ۹', category: 'تولید محتوا', image: '/images/content2.jpg' },
+  { id: 10, title: 'نام پروژه ۱۰', category: 'تولید محتوا', image: '/images/content2.jpg' },
+  { id: 11, title: 'نام پروژه ۱۱', category: 'برگزاری ایونت', image: '/images/hero-imgae.png' },
+];
 
-  { id: 11, title: 'توضیحات و نام پروژه', category: 'برگزاری ایونت', image: '/images/hero-imgae.png' },
-]
+// --- کامپیوتدها ---
+const currentContent = computed(() => contentMap[activeCategory.value]);
+const filteredProjects = computed(() => projects.filter(p => p.category === activeCategory.value));
 
-const currentContent = computed(() => contentMap[activeCategory.value])
-const filteredProjects = computed(() => projects.filter(p => p.category === activeCategory.value))
+// محاسبه تعداد صفحات بر اساس ۴ آیتم در هر اسلاید
+const totalSlides = computed(() => Math.ceil(filteredProjects.value.length / 4));
 
-// منطق اسلایدر ۴تایی
-const totalSlides = computed(() => Math.ceil(filteredProjects.value.length / 4))
+// منطق چرخشی (Loop) برای نمایش پروژه‌ها در صفحه جاری
 const visibleProjects = computed(() => {
-  const start = currentIndex.value * 4
-  return filteredProjects.value.slice(start, start + 4)
-})
+  const all = filteredProjects.value;
+  if (all.length === 0) return [];
+  
+  const start = currentIndex.value * 4;
+  const result = [];
+  
+  for (let i = 0; i < 4; i++) {
+    const index = (start + i) % all.length;
+    result.push(all[index]);
+  }
+  return result;
+});
 
-const nextSlide = () => { if (currentIndex.value < totalSlides.value - 1) currentIndex.value++ }
-const prevSlide = () => { if (currentIndex.value > 0) currentIndex.value-- }
+// --- توابع اسلایدر ---
+const nextSlide = () => {
+  if (totalSlides.value > 0) {
+    currentIndex.value = (currentIndex.value + 1) % totalSlides.value;
+  }
+};
 
-// ریست کردن اسلایدر هنگام تغییر تب
-watch(activeCategory, () => currentIndex.value = 0)
+const prevSlide = () => {
+  if (totalSlides.value > 0) {
+    currentIndex.value = (currentIndex.value - 1 + totalSlides.value) % totalSlides.value;
+  }
+};
+
+// ریست کردن ایندکس در هنگام تغییر دسته بندی
+watch(activeCategory, () => {
+  currentIndex.value = 0;
+});
 </script>

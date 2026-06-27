@@ -1,25 +1,39 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-// ۱. فراخوانی داده‌ها از composable
 const { getProjectsByType } = useProjects();
-
-// ۲. فیلتر کردن پروژه‌های نوع content
 const projects = computed(() => getProjectsByType('content'));
 
 const currentIndex = ref(0);
 
-// ۳. محاسبه پروژه‌های قابل نمایش در اسلایدر (۴ تایی)
+// محاسبه ۴ آیتم قابل نمایش به صورت چرخشی
 const visibleProjects = computed(() => {
-  return projects.value.slice(currentIndex.value, currentIndex.value + 4);
+  const items = [];
+  const total = projects.value.length;
+  
+  // اگر دیتایی وجود نداشت، آرایه خالی برگردان
+  if (total === 0) return [];
+
+  for (let i = 0; i < 4; i++) {
+    // فرمول چرخشی: (ایندکس فعلی + i) تقسیم بر تعداد کل پروژه‌ها
+    const index = (currentIndex.value + i) % total;
+    items.push(projects.value[index]);
+  }
+  return items;
 });
 
-// ۴. منطق اسلایدر
-const nextSlide = () => { 
-  if (currentIndex.value < projects.value.length - 4) currentIndex.value++; 
+// منطق اسلایدر برای لوپ
+const nextSlide = () => {
+  if (projects.value.length > 0) {
+    currentIndex.value = (currentIndex.value + 1) % projects.value.length;
+  }
 };
-const prevSlide = () => { 
-  if (currentIndex.value > 0) currentIndex.value--; 
+
+const prevSlide = () => {
+  if (projects.value.length > 0) {
+    // برای جلوگیری از مقدار منفی، طول آرایه را اضافه می‌کنیم
+    currentIndex.value = (currentIndex.value - 1 + projects.value.length) % projects.value.length;
+  }
 };
 </script>
 

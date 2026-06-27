@@ -68,37 +68,34 @@
 </section>
 <!-- بخش خدمات (اسلایدر سوئیچ شونده) -->
 <section class="mt-20">
-
+  <!-- اضافه کردن یک کانتینر برای کنترل افکت -->
   <div class="p-8 rounded-[2.5rem] transition-all duration-500">
+    
+    <!-- استفاده از Transition برای ایجاد افکت نرم هنگام تغییر دسته‌بندی -->
+    <transition name="fade" mode="out-in">
+      <div :key="currentCategory.title">
+        
+        <h3 class="flex items-center justify-center text-center text-[15px] font-bold text-white mb-8 bg-[#67A9A8] py-2 rounded-[17px] w-[178px] h-[43px] mx-auto px-6">
+          {{ currentCategory.title }}
+        </h3>
 
-    <h3 class="flex items-center justify-center text-center text-[15px] font-bold text-white mb-8 bg-[#67A9A8] py-2 rounded-[17px] w-[178px] h-[43px] mx-auto px-6">
-      {{ currentCategory.title }}
-    </h3>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-[20px] gap-x-12 max-w-[662px] mx-auto">
-      <div
-        v-for="(service, index) in currentCategory.items"
-        :key="index"
-        class="flex items-center justify-center border-[1.5px] border-[#CFD2E3] h-[80px] w-[317px] h-[60px] rounded-[17px] text-center hover:border-[#2D7A6F] transition cursor-pointer text-[#0F184B]"
-      >
-        {{ service }}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-[20px] gap-x-12 max-w-[662px] mx-auto">
+          <div
+            v-for="(service, index) in currentCategory.items"
+            :key="index"
+            class="flex items-center justify-center border-[1.5px] border-[#CFD2E3] w-[317px] h-[60px] rounded-[17px] text-center hover:border-[#2D7A6F] transition cursor-pointer text-[#0F184B]"
+          >
+            {{ service }}
+          </div>
+        </div>
       </div>
-    </div>
-
+    </transition>
   </div>
 
-  <div class="flex items-center justify-center gap-4 mt-8 ">
-    <SliderButton
-      direction="left"
-      @click="prevCategory"
-    />
-
-    <SliderButton
-      direction="right"
-      @click="nextCategory"
-    />
+  <div class="flex items-center justify-center gap-4 mt-8">
+    <SliderButton direction="left" @click="prevCategory" />
+    <SliderButton direction="right" @click="nextCategory" />
   </div>
-
 </section>
 
 
@@ -225,6 +222,8 @@ onMounted(() => {
   })
 })
 
+
+//loop slide
 
 
 </script>

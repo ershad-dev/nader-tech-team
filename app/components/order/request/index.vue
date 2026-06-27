@@ -59,47 +59,55 @@
 
   <div class="grid grid-cols-2 gap-4">
 
-    <div>
-      <label class="block mb-2 text-[#0F184B] font-medium font-roboto">
-        نام و نام خانوادگی
-      </label>
-      <div class="relative">
-        <OrderRequestIconsPerson class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-           
-          class="w-full pr-10 p-4 bg-white/35 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)]"
-        />
-      </div>
+<div>
+  <label class="block mb-2 text-[#0F184B] font-medium font-roboto">نام و نام خانوادگی</label>
+  <div class="relative group">
+    <!-- آیکون را داخل این div بگذارید -->
+    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 group-focus-within:opacity-0">
+      <OrderRequestIconsPerson />
+    </div>
+    
+    <input
+      class="w-full pr-10 p-4 bg-white/35 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)]"
+    />
+  </div>
+</div>
+
+<div>
+  <label class="block mb-2 text-[#0F184B] font-medium font-roboto">
+    شماره تماس
+  </label>
+  <div class="relative group">
+    
+    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 group-focus-within:opacity-0 pointer-events-none">
+      <OrderRequestIconsCall />
     </div>
 
-    <div>
-      <label class="block mb-2 text-[#0F184B] font-medium font-roboto">
-        شماره تماس
-      </label>
-      <div class="relative">
-      <OrderRequestIconsCall class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-
-        <input
-           
-          class="w-full pr-10 p-4 bg-white/35 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)]"
-        />
-      </div>
-    </div>
+    <input
+      placeholder=" "
+      class="w-full pr-10 p-4 bg-white/35 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)]"
+    />
+  </div>
+</div>
 
   </div>
 
-  <div>
-    <label class="block mb-2 text-[#0F184B] font-medium font-roboto">
-      ایمیل
-    </label>
-    <div class="relative">
-      <OrderRequestIconsEmail class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-      <input
-         
-        class="w-full pr-10 p-4 bg-white/35 rounded-[17px] border border-gray-300 outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)]"
-      />
+<div>
+  <label class="block mb-2 text-[#0F184B] font-medium font-roboto">
+    ایمیل
+  </label>
+  <div class="relative group">
+    
+    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 group-focus-within:opacity-0 pointer-events-none">
+      <OrderRequestIconsEmail />
     </div>
+
+    <input
+      placeholder=" "
+      class="w-full pr-10 p-4 bg-white/35 rounded-[17px] border border-gray-300 outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)]"
+    />
   </div>
+</div>
 
   <div>
     <label class="block mb-2 text-[#0F184B] font-medium font-roboto">
@@ -109,21 +117,21 @@
     <div class="relative">
       <div
         @click="isOpen = !isOpen"
-        class="w-full p-4 bg-white/35 rounded-[17px] border border-gray-300 cursor-pointer flex justify-between items-center shadow-[0_3px_0px_rgba(0,0,0,0.15)] -mb-[30px]"
+        class="w-full p-4 bg-white/35 rounded-[17px] border border-gray-300 cursor-pointer flex justify-between items-center shadow-[0_3px_0px_rgba(0,0,0,0.15)] -mb-[5px] "
       >
-        <span class="text-gray-500">{{ selected || 'انتخاب کنید' }}</span>
+        <span class="text-gray-500 ">{{ selected || 'انتخاب کنید' }}</span>
         <Icon name="heroicons:chevron-down" class="text-gray-400" />
       </div>
 
 <ul
   v-if="isOpen"
-  class="absolute w-full bg-white mt-2 rounded-[17px] shadow-xl z-50 border border-gray-200 overflow-hidden "
+  class="absolute w-full  bg-white mt-2 rounded-[17px] shadow-xl z-50 border border-gray-200 overflow-hidden "
 >
   <li
     v-for="(option, index) in options"
     :key="index"
     @click="select(option)"
-    class="p-3 text-[#747893] font-noto-light font-bold text-[20px] text-center cursor-pointer transition hover:bg-gray-100 border-b border-gray-200 last:border-b-0"
+    class="p-3 text-[#747893] h-[47px] font-noto-light font-bold text-[20px] text-center cursor-pointer transition hover:bg-gray-100 border-b border-gray-400 last:border-b-0 h-[47px]"
   >
     {{ option }}
   </li>

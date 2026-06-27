@@ -1,29 +1,32 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-// ۱. فراخوانی تابع از composable
 const { getProjectsByType } = useProjects();
-
-// ۲. دریافت پروژه‌های نوع web و ذخیره در یک متغیر ثابت
 const webProjects = computed(() => getProjectsByType('web'));
-
-// ۳. تعریف ایندکس اسلایدر
 const currentIndex = ref(0);
 
-// ۴. اسلایس کردن دیتای فیلتر شده
+// محاسبه آیتم‌های قابل نمایش (با استفاده از عملگر باقی‌مانده %)
 const visibleProjects = computed(() => {
-  return webProjects.value.slice(currentIndex.value, currentIndex.value + 3);
+  const items = [];
+  for (let i = 0; i < 3; i++) {
+    // فرمول کلیدی برای لوپ: (ایندکس فعلی + i) تقسیم بر کل تعداد آیتم‌ها
+    const index = (currentIndex.value + i) % webProjects.value.length;
+    items.push(webProjects.value[index]);
+  }
+  return items;
 });
 
-// ۵. منطق اسلایدر
-const nextSlide = () => { 
-  if (currentIndex.value < webProjects.value.length - 3) currentIndex.value++; 
-};
-const prevSlide = () => { 
-  if (currentIndex.value > 0) currentIndex.value--; 
+// منطق اسلایدر برای لوپ
+const nextSlide = () => {
+  // افزایش ایندکس و بازگشت به صفر در صورت عبور از طول آرایه
+  currentIndex.value = (currentIndex.value + 1) % webProjects.value.length;
 };
 
-// ثابت‌های مراحل همکاری
+const prevSlide = () => {
+  // کاهش ایندکس و پرش به انتهای آرایه در صورت منفی شدن
+  currentIndex.value = (currentIndex.value - 1 + webProjects.value.length) % webProjects.value.length;
+};
+
 const steps = [
   { title: 'سفارش', desc: 'سفارش نیازهای خود را با ما در میان بگذارید و سفارش پروژه را ثبت کنید.' },
   { title: 'تحلیل', desc: 'تحلیل نیازها و اهداف شما به دقت بررسی و تحلیل می‌شود.' },
@@ -31,7 +34,7 @@ const steps = [
   { title: 'تحویل', desc: 'تحویل پروژه در موعد مقرر با کیفیت نهایی به شما تحویل داده می‌شود.' },
   { title: 'پشتیبانی', desc: 'پشتیبانی پس از تحویل، همراهی و پشتیبانی ما ادامه خواهد داشت.' }
 ];
-</script> 
+</script>
 
 <template>
   <div class="relative z-0 h-[900px] bg-[url('/images/order-bg.png')] bg-cover bg-center py-10 -mt-[70px]">
