@@ -19,12 +19,20 @@ const errors = ref({
 
 // تابع ارسال کد
 const sendResetCode = async () => {
-  // پاک کردن خطاهای قبلی قبل از شروع عملیات
+  // پاک کردن خطاهای قبلی
   errors.value.login = ''
+
+  // الگوی شماره موبایل: شروع با 09 و دقیقا 11 رقم
+  const mobileRegex = /^09\d{9}$/
 
   // اعتبارسنجی اولیه
   if (!form.value.login.trim()) {
-    errors.value.login = 'شماره موبایل  را وارد کنید'
+    errors.value.login = 'شماره موبایل را وارد کنید'
+    return
+  }
+
+  if (!mobileRegex.test(form.value.login.trim())) {
+    errors.value.login = 'شماره موبایل باید ۱۱ رقم باشد و با 09 شروع شود'
     return
   }
 
@@ -58,6 +66,12 @@ const sendResetCode = async () => {
     loading.value = false
   }
 }
+
+// تابع محدودکننده برای فقط عدد و حداکثر 11 رقم
+const handleInput = (event) => {
+  form.value.login = form.value.login.replace(/\D/g, '').slice(0, 11)
+  errors.value.login = ''
+}
 </script>
 
 <template>
@@ -71,16 +85,16 @@ const sendResetCode = async () => {
       فراموشی رمز عبور
     </h3>
 
-    <!-- بخش اینپوت -->
     <div class="mb-6">
       <AuthInput
         v-model="form.login"
         label="شماره تلفن"
         hint="شماره موبایل"
+        maxlength="11"
         class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
-        @input="errors.login = ''" 
+        @input="handleInput" 
       />
-      <!-- نمایش خطا زیر اینپوت -->
+      
       <div v-if="errors.login" class="text-red-500 text-[12px] text-right mt-1 px-1">
         {{ errors.login }}
       </div>
