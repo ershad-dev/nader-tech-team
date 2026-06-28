@@ -6,73 +6,100 @@
     >
       <!-- Sidebar -->
       <aside
+  @mouseenter="isSidebarOpen = true"
+  @mouseleave="isSidebarOpen = false"
+  :class="[
+    'bg-[#BFD1D5] flex flex-col py-8 z-10 shadow-2xl transition-all duration-500 ease-out',
+    isSidebarOpen ? 'w-[253px]' : 'w-[90px]'
+  ]"
+>
+  <!-- Profile -->
+  <div
+    :class="[
+      'flex mb-10',
+      isSidebarOpen
+        ? 'items-center justify-end gap-4 px-6'
+        : 'justify-center'
+    ]"
+  >
+    <img
+      src="/images/admin-avatar.jpg"
+      alt="Profile"
+      :class="[
+        'rounded-full border-4 border-white shadow-lg object-cover transition-all duration-500 ease-out',
+        isSidebarOpen
+          ? 'w-[90px] h-[90px] rotate-0'
+          : 'w-[55px] h-[55px] '
+      ]"
+    />
+
+    <div
+      :class="[
+        'text-right overflow-hidden transition-all duration-500 ease-out',
+        isSidebarOpen
+          ? 'opacity-100 max-w-[180px] translate-x-0'
+          : 'opacity-0 max-w-0 translate-x-4'
+      ]"
+    >
+      <h2 class="font-bold text-[#0F184B] text-[16px] whitespace-nowrap">
+        ثمین زارعی
+      </h2>
+
+      <p class="text-gray-500 text-[13px] mt-1 whitespace-nowrap">
+        0912 123 4567
+      </p>
+
+      <p class="text-gray-500 text-[14px] mt-1 whitespace-nowrap">
+        samin@example.com
+      </p>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <nav
+    :class="[
+      'flex flex-col gap-2 transition-all duration-500',
+      isSidebarOpen ? 'w-[252px] pr-4' : 'w-full px-2'
+    ]"
+  >
+    <button
+      v-for="item in navItems"
+      :key="item.name"
+      @click="selectItem(item.component)"
+      :class="[
+        'p-4 flex items-center transition-all duration-300 hover:scale-[1.03] font-bold border',
+  
+  isSidebarOpen
+    ? (
+        activeComponent === item.component
+          ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B] gap-4 rounded-br-3xl rounded-tl-3xl text-right'
+          : 'bg-[#67A9A8] text-[#0F184B]/80 hover:bg-[#8FB0B2] border-transparent gap-4 rounded-br-3xl rounded-tl-3xl text-right'
+      )
+    : (
+        activeComponent === item.component
+          ? 'bg-transparent border-transparent text-[#0F184B] justify-center'
+          : 'bg-transparent border-transparent text-[#0F184B]/80 justify-center hover:scale-110'
+      )
+]"
+    >
+      <component
+        :is="item.icon"
+        class="w-6 h-6 flex-shrink-0 transition-all duration-300"
+      />
+
+      <span
         :class="[
-          'bg-[#BFD1D5] flex flex-col py-8 z-10 shadow-2xl transition-all duration-300',
-          isSidebarOpen ? 'w-[253px]' : 'w-[90px]'
+          'overflow-hidden whitespace-nowrap transition-all duration-500 ease-out',
+          isSidebarOpen
+            ? 'opacity-100 max-w-[150px]'
+            : 'opacity-0 max-w-0'
         ]"
       >
-        <!-- Profile -->
-        <div
-          :class="[
-            'flex mb-10',
-            isSidebarOpen
-              ? 'items-center justify-end gap-4 px-6'
-              : 'justify-center'
-          ]"
-        >
-          <img
-            src="/images/admin-avatar.jpg"
-            alt="Profile"
-            :class="[
-              'rounded-full border-4 border-white shadow-lg object-cover',
-              isSidebarOpen
-                ? 'w-[90px] h-[90px]'
-                : 'w-[55px] h-[55px]'
-            ]"
-          />
-
-          <div v-if="isSidebarOpen" class="text-right">
-            <h2 class="font-bold text-[#0F184B] text-[16px]">
-              ثمین زارعی
-            </h2>
-            <p class="text-gray-500 text-[13px] mt-1">
-              0912 123 4567
-            </p>
-            <p class="text-gray-500 text-[14px] mt-1">
-              samin@example.com
-            </p>
-          </div>
-        </div>
-
-        <!-- Menu -->
-        <nav
-          :class="[
-            'flex flex-col gap-2',
-            isSidebarOpen ? 'w-[252px] pr-4' : 'w-full px-2'
-          ]"
-        >
-          <button
-            v-for="item in navItems"
-            :key="item.name"
-            @click="selectItem(item.component)"
-            :class="[
-              'p-4 flex items-center transition-all font-bold border',
-              activeComponent === item.component
-                ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B]'
-                : 'bg-[#67A9A8] text-[#0F184B]/80 hover:bg-[#8FB0B2]',
-              isSidebarOpen
-                ? 'gap-4 rounded-br-3xl rounded-tl-3xl text-right'
-                : 'justify-center rounded-2xl'
-            ]"
-          >
-                      <component :is="item.icon" class="w-6 h-6 flex-shrink-0" />
-
-            <span v-if="isSidebarOpen">
-              {{ item.name }}
-            </span>
-          </button>
-        </nav>
-      </aside>
+        {{ item.name }}
+      </span>
+    </button>
+  </nav>
+</aside>
 
       <!-- Main Content -->
       <main
@@ -141,12 +168,10 @@ const Articles = defineAsyncComponent(() =>
 
 const isSidebarOpen = ref(false)
 
-/* در ابتدا هیچ کامپوننتی انتخاب نشده */
 const activeComponent = shallowRef(null)
 
 const selectItem = (component) => {
   activeComponent.value = component
-  isSidebarOpen.value = true
 }
 
 const navItems = [
