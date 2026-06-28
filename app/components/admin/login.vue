@@ -16,11 +16,11 @@ const showToast = (message) => {
   <div class="h[600px] w-full flex items-center justify-center p-4" dir="rtl">
     
     <div >
-      <h1 class="text-center font-bold text-lg mb-10 text-[#1a2333] ">اطلاعات خود را وارد کنید</h1>
+      <h1 class="text-center font-bold font-roboto text-lg mb-10 text-[#1a2333] ">اطلاعات خود را وارد کنید</h1>
 
       <div class="space-y-4 text-right w-[400px] ">
-        <AuthInput label="شماره تلفن همراه یا ایمیل" type="text" />
-        <AuthInput label="رمز عبور" type="password" />
+        <AuthInput label="شماره تلفن همراه یا ایمیل" type="text" class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto" />
+        <AuthInput label="رمز عبور" type="password" class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto" />
         
         <AuthButton class="w-full mt-8 !bg-[#2d6a66]">
           ورود
