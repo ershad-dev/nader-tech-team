@@ -46,7 +46,7 @@
       </h2>
 
       <p class="text-gray-500 text-[13px] mt-1 whitespace-nowrap font-roboto">
-        0912 123 4567
+        09121234567
       </p>
 
       <p class="w-[139px] text-gray-500 text-[10px] mt-1 whitespace-nowrap font-roboto  ">

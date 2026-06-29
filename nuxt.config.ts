@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
     '@nuxt/icon'
+    
   ],
 
   // استفاده از as any برای دور زدن خطای تایپ‌اسکریپت
