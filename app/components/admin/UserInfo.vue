@@ -27,7 +27,7 @@
 
 <div
   v-if="expandedId === user.id"
-  class="px-6 pb-6 bg-[#FDFBF7]"
+  class="px-6 pb-6 bg-[#F7F3EB]"
 >
   <div class="flex justify-center items-center gap-6">
 
@@ -37,7 +37,7 @@
     />
 
     <div
-      class="border border-[#BFD1D5] rounded-2xl bg-white p-6 w-full max-w-[850px]"
+      class="border border-[#BFD1D5] rounded-2xl bg-white/20 p-6 w-full max-w-[850px]"
     >
       <div class="grid grid-cols-3 gap-4">
 
