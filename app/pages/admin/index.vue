@@ -1,5 +1,5 @@
 <template>
-  <div class="p-[20px] bg-[#ffffff] h-screen">
+  <div class="pr-[60px] pl-[60px] pt-[10px] pb-[10px] bg-[#ffffff] h-screen">
     <div
       class="flex h-full bg-white rounded-[30px] overflow-hidden shadow-xl font-sans"
       dir="rtl"
@@ -9,8 +9,8 @@
   @mouseenter="isSidebarOpen = true"
   @mouseleave="isSidebarOpen = false"
   :class="[
-    'bg-[#BFD1D5] flex flex-col py-8 z-10 shadow-2xl transition-all duration-500 ease-out',
-    isSidebarOpen ? 'w-[253px]' : 'w-[90px]'
+    'bg-[#BFD1D5] flex flex-col py-8 z-10 shadow-2xl transition-all duration-500 ease-out ',
+    isSidebarOpen ? 'w-[253px] ' : 'w-[90px]'
   ]"
 >
   <!-- Profile -->
@@ -18,8 +18,8 @@
     :class="[
       'flex mb-10',
       isSidebarOpen
-        ? 'items-center justify-end gap-4 px-6'
-        : 'justify-center'
+        ? 'items-center justify-end gap-4 px-6 mb-[35px]'
+        : 'justify-center mb-[80px]'
     ]"
   >
     <img
@@ -35,7 +35,7 @@
 
     <div
       :class="[
-        'text-right overflow-hidden transition-all duration-500 ease-out',
+        'text-right overflow-hidden transition-all duration-500 ease-out ',
         isSidebarOpen
           ? 'opacity-100 max-w-[180px] translate-x-0'
           : 'opacity-0 max-w-0 translate-x-4'
@@ -45,11 +45,11 @@
         ثمین زارعی
       </h2>
 
-      <p class="text-gray-500 text-[13px] mt-1 whitespace-nowrap">
+      <p class="text-gray-500 text-[13px] mt-1 whitespace-nowrap font-roboto">
         0912 123 4567
       </p>
 
-      <p class="text-gray-500 text-[14px] mt-1 whitespace-nowrap">
+      <p class="w-[139px] text-gray-500 text-[10px] mt-1 whitespace-nowrap font-roboto  ">
         samin@example.com
       </p>
     </div>
@@ -58,8 +58,8 @@
   <!-- Menu -->
   <nav
     :class="[
-      'flex flex-col gap-2 transition-all duration-500',
-      isSidebarOpen ? 'w-[252px] pr-4' : 'w-full px-2'
+      'flex flex-col gap-1 transition-all duration-500 ',
+      isSidebarOpen ? 'w-[252px] h-[78px]  ' : 'w-full'
     ]"
   >
     <button
@@ -67,29 +67,32 @@
       :key="item.name"
       @click="selectItem(item.component)"
       :class="[
-        'p-4 flex items-center transition-all duration-300 hover:scale-[1.03] font-bold border',
+        ' p-4 flex items-center  transition-all duration-300 hover:scale-[1.03] font-bold border ',
   
   isSidebarOpen
     ? (
         activeComponent === item.component
-          ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B] gap-4 rounded-br-3xl rounded-tl-3xl text-right'
-          : 'bg-[#67A9A8] text-[#0F184B]/80 hover:bg-[#8FB0B2] border-transparent gap-4 rounded-br-3xl rounded-tl-3xl text-right'
+          ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B] gap-4 rounded-br-3xl rounded-tl-3xl text-right '
+          : 'bg-[#67A9A880] text-[#0F184B]/80 hover:bg-[#8FB0B2] border-transparent gap-4 rounded-br-3xl rounded-tl-3xl text-right border border-white  '
       )
     : (
         activeComponent === item.component
-          ? 'bg-transparent border-transparent text-[#0F184B] justify-center'
+          ? 'bg-transparent border-transparent text-[#0F184B] justify-center '
           : 'bg-transparent border-transparent text-[#0F184B]/80 justify-center hover:scale-110'
       )
 ]"
     >
-      <component
-        :is="item.icon"
-        class="w-6 h-6 flex-shrink-0 transition-all duration-300"
-      />
+<component
+  :is="item.icon"
+  :class="[
+    'w-[25px] h-[25px] flex-shrink-0 transition-all duration-300',
+    !isSidebarOpen ? '-mt-[90px] w-[40px] h-[40px] ' : ''
+  ]"
+/>
 
       <span
         :class="[
-          'overflow-hidden whitespace-nowrap transition-all duration-500 ease-out',
+          'overflow-hidden whitespace-nowrap transition-all duration-500 ease-out text-[20px]',
           isSidebarOpen
             ? 'opacity-100 max-w-[150px]'
             : 'opacity-0 max-w-0'
@@ -129,14 +132,13 @@
 
 <script setup>
 import { ref, shallowRef, defineAsyncComponent } from 'vue'
-import {
-  UserIcon,
-  PhotoIcon,
-  DocumentTextIcon,
-  FolderIcon,
-  GiftIcon,
-  DocumentIcon
-} from '@heroicons/vue/24/outline'
+import HomeIcon from '~/components/admin/icons/home.vue'
+import UserAvatarIcon from '~/components/admin/icons/userAvatar.vue'
+import BannerEditIcon from '~/components/admin/icons/bannerEdit.vue'
+import UserRequestIcon from '~/components/admin/icons/userRequest.vue'
+import ResumeIcon from '~/components/admin/icons/rezume.vue'
+import LotteryIcon from '~/components/admin/icons/lottery.vue'
+import ArticlesIcon from '~/components/admin/icons/articles.vue'
 
 definePageMeta({
   layout: false
@@ -176,34 +178,40 @@ const selectItem = (component) => {
 
 const navItems = [
   {
+    name: 'خانه',
+    path: '/',
+    icon: HomeIcon
+  },
+
+  {
     name: 'اطلاعات کاربران',
     component: UserInfo,
-    icon: UserIcon
+    icon: UserAvatarIcon
   },
   {
     name: 'تغییر عکس بنر',
     component: BannerEdit,
-    icon: PhotoIcon
+    icon: BannerEditIcon
   },
   {
     name: 'درخواست کاربران',
     component: UserRequests,
-    icon: DocumentTextIcon
+    icon: UserRequestIcon
   },
   {
     name: 'کنترل رزومه',
     component: ResumeControl,
-    icon: FolderIcon
+    icon: ResumeIcon
   },
   {
     name: 'قرعه کشی',
     component: Lottery,
-    icon: GiftIcon
+    icon: LotteryIcon
   },
   {
     name: 'مقالات',
     component: Articles,
-    icon: DocumentIcon
+    icon: ArticlesIcon
   }
 ]
 </script>
