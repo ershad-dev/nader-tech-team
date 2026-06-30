@@ -108,7 +108,6 @@ const verifyCode = async () => {
     localStorage.removeItem('login_token')
 
     await navigateTo('/profile')
-
   } catch (error) {
     console.error('VERIFY OTP ERROR =>', error)
 
@@ -121,17 +120,23 @@ const verifyCode = async () => {
 }
 </script>
 
-  <template>
-    <div class="text-center" dir="ltr">
-      <h1 class="text-xl font-bold text-[#1a2333] mb-10">کد تأیید را وارد کنید</h1>
+<template>
+  <div class="text-center" dir="ltr">
+    <h1 class="text-xl font-bold text-[#1a2333] mb-10">
+      کد تأیید را وارد کنید
+    </h1>
 
+    <form @submit.prevent="verifyCode">
       <div class="flex justify-center gap-2 mb-6">
-        <input 
-          v-for="i in 6" :key="i"
-          v-model="otp[i-1]"
-          :ref="el => inputRefs[i-1] = el"
-          @input="handleInput(i-1)"
-          type="text" maxlength="1" 
+        <input
+          v-for="i in 6"
+          :key="i"
+          v-model="otp[i - 1]"
+          :ref="el => inputRefs[i - 1] = el"
+          @input="handleInput(i - 1)"
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
           class="w-12 h-16 bg-[#cedce0] rounded-xl text-center text-2xl font-bold text-[#1a2333] focus:outline-none focus:ring-2 focus:ring-[#2d6a66]"
         />
       </div>
@@ -139,11 +144,16 @@ const verifyCode = async () => {
       <div class="mb-10 text-sm text-[#1a2333] font-medium">
         {{ formattedTimer }}
       </div>
-      
-      <AuthButton @click="verifyCode">تایید کد</AuthButton>
 
-      <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer">
-        <NuxtLink to="/auth/login">بازگشت به صفحه ورود</NuxtLink>
-      </div>
+      <AuthButton type="submit">
+        تایید کد
+      </AuthButton>
+    </form>
+
+    <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer">
+      <NuxtLink to="/auth/login">
+        بازگشت به صفحه ورود
+      </NuxtLink>
     </div>
-  </template>
+  </div>
+</template>

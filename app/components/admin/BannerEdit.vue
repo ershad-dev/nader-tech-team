@@ -22,7 +22,7 @@
     <button class="w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] rounded-[27px] font-bold text-black flex items-center justify-center text-[16px]">
       تایید
     </button>
-    <button @click="deleteBanner(banner.id)" class="w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] rounded-[27px] font-bold text-black flex items-center justify-center text-[16px]"">
+    <button @click="deleteBanner(banner.id)" class="w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] rounded-[27px] font-bold text-black flex items-center justify-center text-[16px]">
       حذف
     </button>
   </div>

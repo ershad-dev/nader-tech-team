@@ -170,7 +170,7 @@ const loginUser = async () => {
           <AuthInput
             v-model="form.login"
             label="شماره تلفن همراه"
-            type="text"
+            type="num"
             inputmode="numeric"
             pattern="\d*"
             maxlength="11"
