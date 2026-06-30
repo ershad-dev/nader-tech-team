@@ -1,6 +1,6 @@
 <template>
   <div class=" p-6 ">
-    <div class="w-[812px] bg-[#F7F3EB] border-[1px] border-[#BFD1D5] text-[#0F184B] py-3 px-6 rounded-full  mx-auto mb-8 font-bold text-[24px] flex justify-center items-center ">
+    <div class="w-[812px] bg-[#F7F3EB] text-[#0F184B] py-3 px-6 rounded-full  mx-auto mb-8 font-bold text-[24px] flex justify-center items-center shadow-xl ">
       اطلاعات کاربران
     </div>
 
@@ -33,7 +33,7 @@
 
     <img
       src="/images/user-avatar.jpg"
-      class="w-[128px] h-[128px] rounded-full border-4 border-white shadow-lg object-cover shrink-0"
+      class="w-[128px] h-[128px] rounded-full shadow-lg object-cover shrink-0"
     />
 
     <div

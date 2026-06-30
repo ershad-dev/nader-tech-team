@@ -1,5 +1,5 @@
 <template>
-  <div class="pr-[60px] pl-[60px] pt-[10px] pb-[10px] bg-[#ffffff] h-screen">
+  <div class="pr-[80px] pl-[80px] pt-[10px] pb-[10px] bg-[#ffffff] h-screen">
     <div
       class="flex h-full bg-white rounded-[30px] overflow-hidden shadow-xl font-sans"
       dir="rtl"
@@ -26,7 +26,7 @@
       src="/images/admin-avatar.jpg"
       alt="Profile"
       :class="[
-        'rounded-full border-4 border-white shadow-lg object-cover transition-all duration-500 ease-out',
+        'rounded-full shadow-lg object-cover transition-all duration-500 ease-out',
         isSidebarOpen
           ? 'w-[90px] h-[90px] rotate-0'
           : 'w-[55px] h-[55px] '
@@ -62,45 +62,43 @@
       isSidebarOpen ? 'w-[252px] h-[78px]  ' : 'w-full'
     ]"
   >
-    <button
-      v-for="item in navItems"
-      :key="item.name"
-      @click="selectItem(item.component)"
-      :class="[
-        ' p-4 flex items-center  transition-all duration-300 hover:scale-[1.03] font-bold border ',
-  
-  isSidebarOpen
-    ? (
-        activeComponent === item.component
-          ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B] gap-4 rounded-br-3xl rounded-tl-3xl text-right '
-          : 'bg-[#67A9A880] text-[#0F184B]/80 hover:bg-[#8FB0B2] border-transparent gap-4 rounded-br-3xl rounded-tl-3xl text-right border border-white  '
-      )
-    : (
-        activeComponent === item.component
-          ? 'bg-transparent border-transparent text-[#0F184B] justify-center '
-          : 'bg-transparent border-transparent text-[#0F184B]/80 justify-center hover:scale-110'
-      )
-]"
-    >
-<component
-  :is="item.icon"
+<button
+  v-for="item in navItems"
+  :key="item.name"
+  @click="selectItem(item.component)"
   :class="[
-    'w-[25px] h-[25px] flex-shrink-0 transition-all duration-300',
-    !isSidebarOpen ? '-mt-[90px] w-[40px] h-[40px] ' : ''
+    'px-4 py-2 flex items-center transition-all duration-300 hover:scale-[1.03] font-bold border min-h-[62px]',
+    // استایل‌های پس‌زمینه و شکل دکمه
+    isSidebarOpen
+      ? (activeComponent === item.component
+          ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B] gap-4 rounded-br-3xl rounded-tl-3xl text-right'
+          : 'bg-[#67A9A880] text-[#0F184B]/80 hover:bg-[#8FB0B2] border-transparent gap-4 rounded-br-3xl rounded-tl-3xl text-right border border-white')
+      : (activeComponent === item.component
+          ? 'bg-transparent border-transparent text-[#0F184B] justify-center'
+          : 'bg-transparent border-transparent text-[#0F184B]/80 justify-center hover:scale-110')
   ]"
-/>
+>
+  <component
+    :is="item.icon"
+    :class="[
+      'flex-shrink-0 transition-all duration-300',
+      isSidebarOpen ? 'w-[25px] h-[25px]' : 'w-[28px] h-[28px] -mt-[90px]',
+      // تغییر رنگ آیکون فقط در صورت انتخاب شدن
+      activeComponent === item.component 
+        ? 'text-[#2C7379]' // رنگ آیکون فعال (تیره)
+        : 'text-[#454C6A]'  // رنگ آیکون غیرفعال
+    ]"
+  />
 
-      <span
-        :class="[
-          'overflow-hidden whitespace-nowrap transition-all duration-500 ease-out text-[20px]',
-          isSidebarOpen
-            ? 'opacity-100 max-w-[150px]'
-            : 'opacity-0 max-w-0'
-        ]"
-      >
-        {{ item.name }}
-      </span>
-    </button>
+  <span
+    :class="[
+      'overflow-hidden whitespace-nowrap transition-all duration-500 ease-out text-[20px]',
+      isSidebarOpen ? 'opacity-100 max-w-[150px]' : 'opacity-0 max-w-0'
+    ]"
+  >
+    {{ item.name }}
+  </span>
+</button>
   </nav>
 </aside>
 
@@ -114,9 +112,9 @@
           class="w-full h-full flex items-center justify-center"
         >
           <img
-            src="/images/empty-page.jpg"
+            src="/images/empty-page1.png"
             alt="Empty State"
-            class="max-w-[900px] max-h-full object-contain"
+            class="w-[1200px] max-h-[700px] object-contain"
           />
         </div>
 
