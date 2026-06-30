@@ -31,49 +31,26 @@ watch(password, () => {
   errors.value.general = ''
 })
 
-const handleLogin = () => {
-  errors.value = {
-    identifier: '',
-    password: '',
-    general: ''
-  }
+const handleLogin = async () => {
+  errors.value = { identifier: '', password: '', general: '' }
 
   const userIdentifier = identifier.value.trim()
   const userPassword = password.value.trim()
 
-  // شناسه
-  if (!userIdentifier) {
-    errors.value.identifier = 'شماره تلفن یا ایمیل الزامی است'
-  }
+  // اعتبارسنجی‌ها (همان منطق قبلی شما)
+  if (!userIdentifier) errors.value.identifier = 'شماره تلفن یا ایمیل الزامی است'
+  if (userIdentifier.includes('@') && !validateEmail(userIdentifier)) errors.value.identifier = 'فرمت ایمیل صحیح نیست'
+  if (!userPassword) errors.value.password = 'رمز عبور الزامی است'
+  else if (userPassword.length < 3) errors.value.password = 'رمز عبور حداقل ۳ کاراکتر باشد'
 
-  // اگر ایمیل وارد شده باشد فرمتش بررسی شود
-  if (
-    userIdentifier.includes('@') &&
-    !validateEmail(userIdentifier)
-  ) {
-    errors.value.identifier = 'فرمت ایمیل صحیح نیست'
-  }
+  if (errors.value.identifier || errors.value.password) return
 
-  // رمز عبور
-  if (!userPassword) {
-    errors.value.password = 'رمز عبور الزامی است'
-  } else if (userPassword.length < 3) {
-    errors.value.password = 'رمز عبور حداقل ۳ کاراکتر باشد'
-  }
-
-  if (
-    errors.value.identifier ||
-    errors.value.password
-  ) {
-    return
-  }
-
-  if (
-    userIdentifier === MOCK_USER.identifier &&
-    userPassword === MOCK_USER.password
-  ) {
+  // لاگین موفق
+  if (userIdentifier === MOCK_USER.identifier && userPassword === MOCK_USER.password) {
     localStorage.setItem('isAdminLoggedIn', 'true')
-    router.push('/admin')
+    
+    // استفاده از navigateTo برای هدایت صحیح
+    await navigateTo('/admin')
   } else {
     errors.value.general = 'ایمیل یا رمز عبور اشتباه است'
   }
@@ -81,7 +58,8 @@ const handleLogin = () => {
 </script>
 
 <template>
-  <div
+ <form>
+   <div
     class="h-[600px] w-full flex items-center justify-center p-4"
     dir="rtl"
   >
@@ -131,6 +109,7 @@ const handleLogin = () => {
         </p>
 
         <AuthButton
+        type="submit"
           @click="handleLogin"
           class="w-full mt-8 !bg-[#2d6a66]"
         >
@@ -139,4 +118,5 @@ const handleLogin = () => {
       </div>
     </div>
   </div>
+ </form>
 </template>

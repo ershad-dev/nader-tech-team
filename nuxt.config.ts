@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  compatibilityDate: '2026-06-06', // این خط را اضافه کنید
+  compatibilityDate: '2026-06-06',
   css: ['~/assets/css/main.css'],
   modules: [
     '@nuxtjs/tailwindcss',
@@ -7,34 +7,28 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
     '@nuxt/icon'
-    
   ],
 
-  // استفاده از as any برای دور زدن خطای تایپ‌اسکریپت
-i18n: {
-  locales: [
-    { code: 'fa', iso: 'fa-IR', name: 'Persian', dir: 'rtl', file: 'fa.json' },
-    { code: 'en', iso: 'en-US', name: 'English', dir: 'ltr', file: 'en.json' }
-  ],
-  lazy: true,
-  // مسیر را با یک / شروع کنید تا از ریشه پروژه شروع به جستجو کند
-  langDir: '../locales/', 
-  defaultLocale: 'fa',
-  strategy: 'prefix_except_default',
-},
+  i18n: {
+    locales: [
+      { code: 'fa', iso: 'fa-IR', name: 'Persian', dir: 'rtl', file: 'fa.json' },
+      { code: 'en', iso: 'en-US', name: 'English', dir: 'ltr', file: 'en.json' }
+    ],
+    lazy: true,
+    langDir: 'locales/', 
+    defaultLocale: 'fa',
+    strategy: 'prefix_except_default',
+  },
+
   colorMode: {
     preference: 'system',
     fallback: 'light',
     classSuffix: ''
   },
 
-
   runtimeConfig: {
     public: {
-      // آدرس پایه بک‌اِند (بدون /api/auth/login)
-        apiBase: 'https://nadertechnologyteam.ir/api'
+      apiBase: 'https://nadertechnologyteam.ir/api'
     }
   }
-
-
 })

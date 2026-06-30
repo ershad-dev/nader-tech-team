@@ -85,29 +85,34 @@ const handleInput = (event) => {
       فراموشی رمز عبور
     </h3>
 
-    <div class="mb-6">
-      <AuthInput
-        v-model="form.login"
-        label="شماره تلفن"
-        hint="شماره موبایل"
-        maxlength="11"
-        class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
-        @input="handleInput" 
-      />
-      
-      <div v-if="errors.login" class="text-red-500 text-[12px] text-right mt-1 px-1">
-        {{ errors.login }}
-      </div>
-    </div>
+    <form @submit.prevent="sendResetCode">
+      <div class="mb-6">
+        <AuthInput
+          v-model="form.login"
+          label="شماره تلفن"
+          hint="شماره موبایل"
+          maxlength="11"
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
+          @input="handleInput"
+        />
 
-    <div class="mt-16 text-[18px] font-roboto">
-      <AuthButton
-        @click="sendResetCode"
-        :disabled="loading"
-      >
-        {{ loading ? 'در حال ارسال...' : 'ارسال کد بازیابی' }}
-      </AuthButton>
-    </div>
+        <div
+          v-if="errors.login"
+          class="text-red-500 text-[12px] text-right mt-1 px-1"
+        >
+          {{ errors.login }}
+        </div>
+      </div>
+
+      <div class="mt-16 text-[18px] font-roboto">
+        <AuthButton
+          type="submit"
+          :disabled="loading"
+        >
+          {{ loading ? 'در حال ارسال...' : 'ارسال کد بازیابی' }}
+        </AuthButton>
+      </div>
+    </form>
 
     <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer underline font-roboto">
       <NuxtLink to="/auth/login">

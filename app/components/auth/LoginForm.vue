@@ -128,15 +128,21 @@ const loginUser = async () => {
   <div class="text-center" dir="rtl">
     <div
       v-if="toast.message"
-      :class="['fixed top-5 left-5 p-4 rounded text-white z-50 transition-opacity', toast.type === 'success' ? 'bg-green-500' : 'bg-red-500']"
+      :class="[
+        'fixed top-5 left-5 p-4 rounded text-white z-50 transition-opacity',
+        toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+      ]"
     >
       {{ toast.message }}
     </div>
 
-    <h1 class="text-lg font-bold text-[#0F184B] mb-[100px] font-roboto">خوش آمدید، وارد حساب کاربری خود شوید.</h1>
+    <h1 class="text-lg font-bold text-[#0F184B] mb-[100px] font-roboto">
+      خوش آمدید، وارد حساب کاربری خود شوید.
+    </h1>
 
     <div class="flex gap-6 mb-6 text-[16px] font-medium font-roboto">
       <button
+        type="button"
         @click="activeTab = 'password'"
         :class="[
           'text-[#0F184B]',
@@ -147,6 +153,7 @@ const loginUser = async () => {
       </button>
 
       <button
+        type="button"
         @click="activeTab = 'otp'"
         :class="[
           'text-[#0F184B]',
@@ -157,50 +164,74 @@ const loginUser = async () => {
       </button>
     </div>
 
-    <div class="text-right font-roboto">
-      <!-- فیلد شماره موبایل -->
-      <div class="mb-4">
-        <AuthInput
-          v-model="form.login"
-          label="شماره تلفن همراه"
-          type="text"
-          inputmode="numeric"
-          pattern="\d*"
-          maxlength="11"
-          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-          :class="{ '[&>div>input]:border-red-500 [&>div>input]:ring-red-300': errors.login }"
-          @input="handleLoginInput"
-        />
-        <p v-if="errors.login" class="text-red-500 text-xs mt-1 pr-1">{{ errors.login }}</p>
+    <form @submit.prevent="loginUser">
+      <div class="text-right font-roboto">
+        <div class="mb-4">
+          <AuthInput
+            v-model="form.login"
+            label="شماره تلفن همراه"
+            type="text"
+            inputmode="numeric"
+            pattern="\d*"
+            maxlength="11"
+            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+            :class="{ '[&>div>input]:border-red-500 [&>div>input]:ring-red-300': errors.login }"
+            @input="handleLoginInput"
+          />
+
+          <p
+            v-if="errors.login"
+            class="text-red-500 text-xs mt-1 pr-1"
+          >
+            {{ errors.login }}
+          </p>
+        </div>
+
+        <div
+          v-if="activeTab === 'password'"
+          class="mb-4"
+        >
+          <AuthInput
+            v-model="form.password"
+            label="رمز عبور"
+            type="password"
+            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+            :class="{ '[&>div>input]:border-red-500 [&>div>input]:ring-red-300': errors.password }"
+            @input="handlePasswordInput"
+            @keydown="handlePasswordKeydown"
+          />
+
+          <p
+            v-if="errors.password"
+            class="text-red-500 text-xs mt-1 pr-1"
+          >
+            {{ errors.password }}
+          </p>
+        </div>
       </div>
 
-      <!-- فیلد رمز عبور -->
-      <div v-if="activeTab === 'password'" class="mb-4">
-        <AuthInput
-          v-model="form.password"
-          label="رمز عبور"
-          type="password"
-          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-          :class="{ '[&>div>input]:border-red-500 [&>div>input]:ring-red-300': errors.password }"
-          @input="handlePasswordInput"
-          @keydown="handlePasswordKeydown"
-        />
-        <p v-if="errors.password" class="text-red-500 text-xs mt-1 pr-1">{{ errors.password }}</p>
+      <div class="text-right mb-[70px]">
+        <NuxtLink
+          to="/auth/forgot-password"
+          class="text-sm font-bold text-[#1a2333] underline decoration-2 underline-offset-4 font-roboto"
+        >
+          فراموشی رمز
+        </NuxtLink>
       </div>
-    </div>
 
-    <div class="text-right mb-[70px]">
-      <NuxtLink to="/auth/forgot-password" class="text-sm font-bold text-[#1a2333] underline decoration-2 underline-offset-4 font-roboto">
-        فراموشی رمز
-      </NuxtLink>
-    </div>
-
-    <AuthButton @click="loginUser" :disabled="loading" class="mb-[25px] text-[22px]">
-      {{ loading ? 'در حال انتقال...' : 'ورود به حساب کاربری' }}
-    </AuthButton>
+<AuthButton
+  type="submit"
+  :disabled="loading"
+  class="mb-[25px] text-[22px]"
+>
+  {{ loading ? 'در حال انتقال...' : 'ورود به حساب کاربری' }}
+</AuthButton>
+    </form>
 
     <div class="mt-6 text-[16px] text-[#0F184B] font-bold cursor-pointer font-roboto">
-      <NuxtLink to="/auth/register">ثبت‌نام / حساب کاربری ندارم</NuxtLink>
+      <NuxtLink to="/auth/register">
+        ثبت‌نام / حساب کاربری ندارم
+      </NuxtLink>
     </div>
   </div>
 </template>

@@ -99,7 +99,9 @@
     {{ item.name }}
   </span>
 </button>
+<button @click="logout" class="text-red-500">خروج از پنل</button>
   </nav>
+  
 </aside>
 
       <!-- Main Content -->
@@ -123,12 +125,15 @@
           v-else
           :is="activeComponent"
         />
+
+
       </main>
     </div>
   </div>
 </template>
 
 <script setup>
+
 import { ref, shallowRef, defineAsyncComponent } from 'vue'
 import HomeIcon from '~/components/admin/icons/home.vue'
 import UserAvatarIcon from '~/components/admin/icons/userAvatar.vue'
@@ -212,4 +217,9 @@ const navItems = [
     icon: ArticlesIcon
   }
 ]
+//logout
+const logout = () => {
+  localStorage.removeItem('isAdminLoggedIn')
+  navigateTo('/admin/ntt20119')
+}
 </script>

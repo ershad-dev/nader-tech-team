@@ -83,42 +83,52 @@ const resetPassword = async () => {
       تعیین رمز عبور جدید
     </h1>
 
-    <!-- اینپوت رمز عبور -->
-    <div class="mb-4">
-      <AuthInput
-        v-model="form.password"
-        type="password"
-        label="رمز عبور جدید"
-        class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-        @input="errors.password = ''"
-      />
-      <p v-if="errors.password" class="text-red-500 text-[12px] text-right mt-1 px-1">
-        {{ errors.password }}
-      </p>
-    </div>
+    <form @submit.prevent="resetPassword">
 
-    <!-- اینپوت تکرار رمز عبور -->
-    <div class="mb-4">
-      <AuthInput
-        v-model="form.password_confirmation"
-        type="password"
-        label="تکرار رمز عبور جدید"
-        class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-        @input="errors.password_confirmation = ''"
-      />
-      <p v-if="errors.password_confirmation" class="text-red-500 text-[12px] text-right mt-1 px-1">
-        {{ errors.password_confirmation }}
-      </p>
-    </div>
+      <!-- اینپوت رمز عبور -->
+      <div class="mb-4">
+        <AuthInput
+          v-model="form.password"
+          type="password"
+          label="رمز عبور جدید"
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+          @input="errors.password = ''"
+        />
+        <p
+          v-if="errors.password"
+          class="text-red-500 text-[12px] text-right mt-1 px-1"
+        >
+          {{ errors.password }}
+        </p>
+      </div>
 
-    <div class="mt-8">
-      <AuthButton
-        @click="resetPassword"
-        :disabled="loading"
-      >
-        {{ loading ? 'در حال ذخیره...' : 'ذخیره رمز عبور' }}
-      </AuthButton>
-    </div>
+      <!-- اینپوت تکرار رمز عبور -->
+      <div class="mb-4">
+        <AuthInput
+          v-model="form.password_confirmation"
+          type="password"
+          label="تکرار رمز عبور جدید"
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+          @input="errors.password_confirmation = ''"
+        />
+        <p
+          v-if="errors.password_confirmation"
+          class="text-red-500 text-[12px] text-right mt-1 px-1"
+        >
+          {{ errors.password_confirmation }}
+        </p>
+      </div>
+
+      <div class="mt-8">
+        <AuthButton
+          type="submit"
+          :disabled="loading"
+        >
+          {{ loading ? 'در حال ذخیره...' : 'ذخیره رمز عبور' }}
+        </AuthButton>
+      </div>
+
+    </form>
 
   </div>
 </template>

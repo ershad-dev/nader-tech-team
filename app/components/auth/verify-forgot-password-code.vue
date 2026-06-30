@@ -91,47 +91,46 @@ const verifyCode = async () => {
     <h1 class="text-xl font-bold text-[#0F184B] mb-20 font-roboto">کد تایید را وارد کنید.</h1>
 
     <!-- اینپوت‌های کد -->
-    <div class="flex justify-center gap-3 mb-4" dir="ltr">
-      <input
-        v-for="(_, index) in otp" :key="index"
-        :ref="el => inputRefs[index] = el"
-        v-model="otp[index]"
-        maxlength="1"
-        type="text"
-        inputmode="numeric"
-        class="w-12 h-14 text-center text-xl font-bold rounded-xl border border-gray-300 bg-white focus:border-[#2d6a66] focus:outline-none"
-        @input="handleInput(index)"
-        @keydown="handleBackspace($event, index)"
-      />
-    </div>
+   <form @submit.prevent="verifyCode">
+  <!-- اینپوت‌های کد -->
+  <div class="flex justify-center gap-3 mb-4" dir="ltr">
+    <input
+      v-for="(_, index) in otp"
+      :key="index"
+      :ref="el => inputRefs[index] = el"
+      v-model="otp[index]"
+      maxlength="1"
+      type="text"
+      inputmode="numeric"
+      class="w-12 h-14 text-center text-xl font-bold rounded-xl border border-gray-300 bg-white focus:border-[#2d6a66] focus:outline-none"
+      @input="handleInput(index)"
+      @keydown="handleBackspace($event, index)"
+    />
+  </div>
 
-    <!-- نمایش خطا -->
-    <div class="h-6 mb-2">
-      <p v-if="errorMessage" class="text-red-500 text-sm font-bold">
-        {{ errorMessage }}
-      </p>
-    </div>
+  <!-- نمایش خطا -->
+  <div class="h-6 mb-2">
+    <p
+      v-if="errorMessage"
+      class="text-red-500 text-sm font-bold"
+    >
+      {{ errorMessage }}
+    </p>
+  </div>
 
-    <!-- باکس خاکستری تایمر -->
-    <div class="bg-[#ebebeb] w-fit mx-auto px-4 py-2 rounded-lg mb-6 text-[#2d6a66] font-bold text-sm">
-      زمان باقی مانده: {{ formattedTimer }}
-    </div>
+  <!-- باکس خاکستری تایمر -->
+  <div class="bg-[#ebebeb] w-fit mx-auto px-4 py-2 rounded-lg mb-6 text-[#2d6a66] font-bold text-sm">
+    زمان باقی مانده: {{ formattedTimer }}
+  </div>
 
-    <!-- دکمه تایید -->
-    <AuthButton @click="verifyCode" :disabled="loading" class="mb-4">
-      {{ loading ? 'در حال بررسی...' : 'تایید کد' }}
-    </AuthButton>
-
-    <!-- دکمه ارسال مجدد -->
-    <div class="mt-2">
-      <button 
-        @click="resendCode" 
-        :disabled="timer > 0"
-        class="text-sm font-bold underline transition-colors"
-        :class="timer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#2d6a66] cursor-pointer'"
-      >
-        ارسال مجدد کد
-      </button>
-    </div>
+  <!-- دکمه تایید -->
+  <AuthButton
+    type="submit"
+    :disabled="loading"
+    class="mb-4"
+  >
+    {{ loading ? 'در حال بررسی...' : 'تایید کد' }}
+  </AuthButton>
+</form>
   </div>
 </template>
