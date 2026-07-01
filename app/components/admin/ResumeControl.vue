@@ -5,17 +5,17 @@ const itemsPerPage = 6; // تعداد آیتم در هر صفحه
 const currentPage = ref(1);
 
 const resumeItems = ref([
-  { id: 1, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-  { id: 2, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
+  { id: 1, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article3.jpg' },
+  { id: 2, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article2.jpg' },
   { id: 3, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-  { id: 4, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-  { id: 5, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
+  { id: 4, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article3.jpg' },
+  { id: 5, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article2.jpg' },
   { id: 6, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-    { id: 7, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-  { id: 8, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
+    { id: 7, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article3.jpg' },
+  { id: 8, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article2.jpg' },
   { id: 9, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-  { id: 10, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
-  { id: 11, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
+  { id: 10, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article3.jpg' },
+  { id: 11, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article2.jpg' },
   { id: 12, title: 'تفاوت طراحی سایت اختصاصی با قالب آماده', image: '/images/article1.jpg' },
 ]);
 
@@ -52,15 +52,11 @@ const paginatedItems = computed(() => {
         </h3>
         
         <div class="flex justify-between w-full mt-auto gap-2 px-2 pb-2">
-          <button class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-xs hover:bg-gray-200 flex items-center justify-center gap-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
-            بازدید
-          </button>
-          <button class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-xs hover:bg-gray-200 flex items-center justify-center gap-1">
+          <button class="flex-1 bg-[#BFD1D5] text-black py-2 rounded-lg text-xs hover:bg-gray-200 flex items-center justify-center gap-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6H21" stroke="currentColor" stroke-width="2"/><path d="M8 6V4H16V6" stroke="currentColor" stroke-width="2"/><path d="M19 6L18 20H6L5 6" stroke="currentColor" stroke-width="2"/></svg>
             حذف
           </button>
-          <button class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-xs hover:bg-blue-100 flex items-center justify-center gap-1">
+          <button class="flex-1 bg-[#BFD1D5] text-black py-2 rounded-lg text-xs hover:bg-blue-100 flex items-center justify-center gap-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20H8L18.5 9.5C19.3 8.7 19.3 7.3 18.5 6.5C17.7 5.7 16.3 5.7 15.5 6.5L5 17V20H4Z" stroke="currentColor" stroke-width="2"/></svg>
             ویرایش
           </button>
@@ -71,7 +67,7 @@ const paginatedItems = computed(() => {
     <!-- بخش صفحه‌بندی -->
 <!-- Pagination -->
 <div class="flex justify-end items-center mt-8">
-  <div dir="ltr" class="flex items-center gap-2">
+  <div dir="ltr" class="flex items-center gap-2 ml-[150px]">
 
     <button
       v-for="page in totalPages"
