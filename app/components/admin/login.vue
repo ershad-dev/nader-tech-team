@@ -51,7 +51,7 @@ const handleLogin = async () => {
 
 <template>
   <form @submit.prevent="handleLogin">
-    <div class="h-[600px] w-full flex items-center justify-center p-4" dir="rtl">
+    <div class="h-[400px] w-full flex items-center justify-center p-4" dir="rtl">
       <div>
         <h1 class="text-center font-bold text-lg mb-10 text-[#1a2333] font-roboto">
           اطلاعات خود را وارد کنید

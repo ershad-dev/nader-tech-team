@@ -16,7 +16,7 @@
         <!-- Profile -->
         <div
           class="flex items-center mb-10 px-[18px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          :class="isSidebarOpen ? 'justify-start gap-4 mb-[75px]' : 'justify-start mb-[80px]'"
+          :class="isSidebarOpen ? 'justify-start gap-4 mb-[50px]' : 'justify-start mb-[50px]'"
         >
           <div class="w-[55px] h-[55px] shrink-0 grow-0 flex items-center justify-center">
             <img
@@ -98,9 +98,9 @@
           class="w-full h-full flex items-center justify-center"
         >
           <img
-            src="/images/empty-page1.png"
+            src="/images/empty-page4.png"
             alt="Empty State"
-            class="w-[1200px] max-h-[700px] object-contain"
+            class="w-[1200px] max-h-[500px] object-contain"
           />
         </div>
 
