@@ -123,211 +123,114 @@ const saveChanges = async () => {
 <!-- فرم ویرایش/افزودن (بخش دوم) -->
 <div v-else class="max-w-[1200px] mx-auto bg-[#F4F6F8] p-8 rounded-[40px] border border-gray-200 shadow-inner" dir="rtl">
   
-  <!-- دکمه بازگشت -->
   <button @click="closeForm" class="mb-8 text-gray-500 font-bold hover:text-black">← بازگشت</button>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     
-    <!-- ستون راست: اطلاعات پروژه -->
-    <div class="space-y-8">
-      <!-- باکس اطلاعات پروژه -->
-      <div class=" p-6 rounded-[30px] h-[250px]  border border-gray-100 ">
+    <div class="flex flex-col gap-8">
+      <div class=" p-6 rounded-[30px] border border-gray-100 min-h-[300px]">
         <div class="flex items-center gap-2 text-[#1a2333] font-bold mb-6">
-          <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div>
-          <h3>اطلاعات پروژه</h3>
+          <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> <h3>اطلاعات پروژه</h3>
         </div>
-        
-        <div class="space-y-4 font-roboto">
-          <div>
-            <label class="block text-sm mb-2 text-black ">نام پروژه</label>
-            <input :value="selectedItem?.title" class="w-[365px] h-[45px] p-4 bg-[#ffffff]/50 rounded-[17px] border border-gray-300" />
-          </div>
-          <div>
-            <label class="block text-sm mb-2 text-black">دسته بندی پروژه</label>
-            <select class="w-[365px] h-[45px] p-4 bg-[#ffffff]/50 rounded-[17px] border border-gray-300 text-black">
-            
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm mb-2 text-black">تاریخ ثبت</label>
-            <input class="w-[365px] h-[45px] p-4 bg-[#ffffff]/50 rounded-[17px] border border-gray-300" />
-          </div>
+        <div class="space-y-3 font-roboto">
+
+<!-- نام پروژه -->
+<div>
+  <label class="block mb-2 text-[14px] font-medium text-gray-700">
+    نام پروژه
+  </label>
+
+  <input
+    :value="selectedItem?.title"
+    type="text"
+    placeholder="نام پروژه را وارد کنید"
+    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white focus:outline-none focus:border-[#2D6A66]"
+  />
+</div>
+
+<!-- دسته‌بندی -->
+<div>
+  <label class="block mb-2 text-[14px] font-medium text-gray-700">
+    دسته‌بندی
+  </label>
+
+  <select
+    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white focus:outline-none focus:border-[#2D6A66]"
+  >
+    <option disabled selected>انتخاب دسته‌بندی</option>
+    <option>طراحی سایت</option>
+    <option>فرانت اند</option>
+    <option>بک اند</option>
+  </select>
+</div>
+
+<!-- تاریخ ثبت -->
+<div>
+  <label class="block mb-2 text-[14px] font-medium text-gray-700">
+    تاریخ ثبت
+  </label>
+
+  <input
+    type="date"
+    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white focus:outline-none focus:border-[#2D6A66]"
+  />
+</div>
 
 </div>
       </div>
 
-      <!-- باکس پایین ستون راست: نمایش تصاویر -->
-      <div class=" h-[384px] p-6 rounded-[30px] shadow-sm border border-gray-100">
-        <div class="flex items-center gap-2 text-[#1a2333] font-bold mb-6">
-          <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div>
-          <h3>اطلاعات پروژه</h3>
+      <div class=" p-6 rounded-[30px] border border-gray-100 min-h-[300px]">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-bold flex items-center gap-2"><div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> اطلاعات پروژه</h3>
+          <button class="px-4 py-1 border rounded-xl text-xs font-bold">ویرایش</button>
         </div>
-<div class="flex justify-end mb-4">
-  <button class="px-4 py-2 bg-white border border-gray-300 rounded-xl text-xs font-bold hover:bg-gray-50">
-    ویرایش
-  </button>
-</div>
-<div class="flex gap-4 items-start">
-
-  <!-- عکس اول -->
-  <div class="relative">
-    <button
-      class="absolute top-1 right-1 w-8 h-8 rounded-lg shadow flex items-center justify-center hover:bg-red-50"
-    >
-      <svg
-        class="w-4 h-4 text-[#0F184B]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M3 6h18" />
-        <path d="M8 6V4h8v2" />
-        <path d="M19 6l-1 14H6L5 6" />
-      </svg>
-    </button>
-
-    <img
-      src="/images/site1.jpg"
-      alt=""
-      class="w-[101px] h-[186px] object-cover rounded-2xl"
-    />
-  </div>
-
-  <!-- عکس دوم -->
-  <div class="relative">
-    <button
-      class="absolute top-1 right-1 w-8 h-8 rounded-lg shadow flex items-center justify-center hover:bg-red-50"
-    >
-      <svg
-        class="w-4 h-4 text-[#0F184B]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M3 6h18" />
-        <path d="M8 6V4h8v2" />
-        <path d="M19 6l-1 14H6L5 6" />
-      </svg>
-    </button>
-
-    <img
-      src="/images/site1.jpg"
-      alt=""
-      class="w-[101px] h-[186px] object-cover rounded-2xl"
-    />
-  </div>
-
-  <!-- باکس سوم -->
-  <div class="relative">
-    <button
-      class="absolute top-1 right-1 w-8 h-8  rounded-lg shadow flex items-center justify-center hover:bg-red-50"
-    >
-      <svg
-        class="w-4 h-4 text-[#0F184B]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M3 6h18" />
-        <path d="M8 6V4h8v2" />
-        <path d="M19 6l-1 14H6L5 6" />
-      </svg>
-    </button>
-
-    <div
-      class="w-[101px] h-[186px] bg-gray-100 rounded-2xl border border-dashed border-gray-300"
-    ></div>
-  </div>
-
-</div>
+        <div class="flex gap-4">
+          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl"></div>
+          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl"></div>
+          <div class="w-[101px] h-[186px] bg-gray-100 rounded-2xl border border-dashed"></div>
+        </div>
       </div>
     </div>
 
-    <!-- ستون چپ: جزئیات خدمات و مشتری -->
-    <div class="space-y-8">
-      <!-- جزئیات خدمات -->
-      <div class="h-[232px] p-6 rounded-[30px] shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-2 text-[#1a2333] font-bold">
-            <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div>
-            <h3>جزئیات خدمات</h3>
-          </div>
-          <div class="flex gap-2 ">
-            <button class="w-[84px] h-[26px] text-[10px] bg-[#BFD1D5] px-3 py-1 rounded-lg">حذف</button>
-            <button class="w-[84px] h-[26px] text-[10px] bg-[#BFD1D5] px-3 py-1 rounded-lg">ویرایش</button>
+    <div class="flex flex-col gap-8">
+      <h3 class="font-bold flex items-center gap-2"><div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> جزئیات خدمات</h3>
+
+      <div class=" p-6 rounded-[30px] border border-gray-100 min-h-[300px] border border-gray-300">
+        <div class="flex justify-start mb-6">
+  <div class="flex gap-2 ml-auto">
+            <button class="w-20 py-1 text-[10px] bg-[#BFD1D5] rounded-lg">حذف</button>
+            <button class="w-20 py-1 text-[10px] bg-[#BFD1D5] rounded-lg">ویرایش</button>
           </div>
         </div>
-        <ul class="text-[14px] text-black space-y-5 pr-2 font-roboto">
+        <ul class="text-sm space-y-4 pr-2">
           <li>• طراحی رابط کاربری</li>
           <li>• کد نویسی فرانت اند</li>
-          <li>• کد نویسی فرانت اند</li>
           <li>• بهینه سازی سایت</li>
-
         </ul>
       </div>
 
-      <!-- اطلاعات مشتری -->
-<div class="border border-gray-300 rounded-[25px] p-6 w-full h-[384px]">
-  <!-- عنوان و دایره آبی -->
-  <div class="flex items-center justify-start gap-2 text-[#1a2333] font-bold mb-6">
-    <h3>اطلاعات مشتری</h3>
-    <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div>
-  </div>
-
-  <div class="flex flex-col">
-<div class="flex items-center justify-between">
-
-  <!-- سمت راست: تصویر و اطلاعات -->
-  <div class="flex items-center gap-6">
-    <div class="w-[120px] h-[120px] rounded-full overflow-hidden border-2 border-white shadow-lg">
-      <img
-        src="/images/site1.jpg"
-        alt="Profile"
-        class="w-full h-full object-cover"
-      />
-    </div>
-
-    <div class="text-right font-roboto">
-      <p class="font-bold text-[16px]">سارا احمدی</p>
-      <p class="text-[14px] text-gray-500">مدیر مارکتینگ</p>
+      <div class=" p-6 rounded-[30px] border border-gray-100 min-h-[300px]">
+        <div class="flex items-center gap-2 text-[#1a2333] font-bold mb-6">
+          <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> <h3>اطلاعات مشتری</h3>
+        </div>
+        <div class="flex justify-between items-start">
+          <div class="flex items-center gap-4">
+             <div class="w-20 h-20 bg-gray-300 rounded-full"></div>
+             <div><p class="font-bold">سارا احمدی</p><p class="text-sm text-gray-500">مدیر مارکتینگ</p></div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button class="w-20 py-1 text-[10px] bg-[#BFD1D5] rounded-lg">ویرایش</button>
+            <button class="w-20 py-1 text-[10px] bg-[#BFD1D5] rounded-lg text-red-800">حذف تصویر</button>
+          </div>
+        </div>
+        <p class="mt-6 text-sm text-gray-600 bg-gray-50 p-4 rounded-xl">«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود...»</p>
+      </div>
     </div>
   </div>
 
-  <!-- سمت چپ: دکمه‌ها -->
-  <div class="flex flex-col gap-3 font-roboto">
-    <button
-      class="w-[84px] h-[26px] flex items-center gap-2 px-4 py-2 bg-[#BFD1D5] rounded-[10px] text-[12px] font-bold hover:bg-[#BFD1D5] transition"
-    >
-      <span class="text-lg">✎</span>
-      <span>ویرایش</span>
-    </button>
-
-    <button
-      class="w-[84px] h-[26px] flex items-center gap-2 px-4 py-2 bg-[#BFD1D5] rounded-[10px] text-[12px] font-bold hover:bg-red-100 transition"
-    >
-      <span class="text-lg">🗑</span>
-      <span>حذف تصویر</span>
-    </button>
-  </div>
-
-</div>
-
-    <!-- متن توضیحات در پایین -->
-    <p class="text-[14px] text-gray-600 mt-6 leading-8 text-right  p-4 rounded-xl font-roboto">
-      «همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»
-    </p>
-  </div>
-</div>
-    </div>
-  </div>
-
-  <!-- فوتر فرم -->
   <div class="flex justify-between items-center mt-10 pt-6 border-t border-gray-200">
-    <span class="text-gray-400 text-xs flex items-center gap-2">👁 216 بازدید</span>
-    <button @click="saveChanges" class="bg-[#2d6a66] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#235754] transition-all">ذخیره تغییرات</button>
+    <span class="text-gray-400 text-xs">👁 216 بازدید</span>
+    <button @click="saveChanges" class="bg-[#2d6a66] text-white px-8 py-3 rounded-2xl font-bold">ذخیره تغییرات</button>
   </div>
 </div>
 
