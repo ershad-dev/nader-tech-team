@@ -64,7 +64,7 @@ const saveChanges = async () => {
       <div class="flex items-center justify-between w-[812px] h-[60px] mx-auto mb-8 px-6 bg-white rounded-[27px]">
         <h2 class="text-[20px] font-bold text-[#1a2333]">کنترل رزومه</h2>
         <!-- دکمه افزودن -->
-        <button @click="openForm()" class="bg-[#2d6a66] text-white px-6 py-2 rounded-full text-sm hover:bg-[#235754] transition-all">
+        <button @click="openForm()" class="bg-[#67A9A880] text-black px-6 py-2 rounded-full text-sm hover:bg-[#235754] transition-all">
           + افزودن رزومه
         </button>
       </div>
@@ -75,10 +75,9 @@ const saveChanges = async () => {
           <h3 class="text-right font-bold text-gray-800 text-[16px] mt-2 w-full px-2">{{ item.title }}</h3>
           
           <div class="flex justify-between w-full mt-auto gap-2 px-2 pb-2">
-            <button class="flex-1 bg-[#BFD1D5] py-2 rounded-lg text-xs">بازدید</button>
-            <button class="flex-1 bg-[#BFD1D5] py-2 rounded-lg text-xs">حذف</button>
+            <button class="flex-1 bg-[#BFD1D5] py-2 rounded-lg text-xs w-[66px]">حذف</button>
             <!-- دکمه ویرایش -->
-            <button @click="openForm(item)" class="flex-1 bg-[#BFD1D5] py-2 rounded-lg text-xs hover:bg-blue-100">ویرایش</button>
+            <button @click="openForm(item)" class="flex-1 bg-[#BFD1D5] py-2 rounded-lg text-xs w-[66px] hover:bg-blue-100">ویرایش</button>
           </div>
         </div>
       </div>
@@ -123,7 +122,7 @@ const saveChanges = async () => {
 <!-- فرم ویرایش/افزودن (بخش دوم) -->
 <div v-else class="max-w-[1200px] mx-auto bg-[#F4F6F8] p-8 rounded-[40px] border border-gray-200 shadow-inner" dir="rtl">
   
-  <button @click="closeForm" class="mb-8 text-gray-500 font-bold hover:text-black">← بازگشت</button>
+  <!-- <button @click="closeForm" class="mb-8 text-gray-500 font-bold hover:text-black">← بازگشت</button> -->
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     
@@ -144,7 +143,7 @@ const saveChanges = async () => {
     :value="selectedItem?.title"
     type="text"
     placeholder="نام پروژه را وارد کنید"
-    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white focus:outline-none focus:border-[#2D6A66]"
+    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
   />
 </div>
 
@@ -155,12 +154,10 @@ const saveChanges = async () => {
   </label>
 
   <select
-    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white focus:outline-none focus:border-[#2D6A66]"
+    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
   >
-    <option disabled selected>انتخاب دسته‌بندی</option>
-    <option>طراحی سایت</option>
-    <option>فرانت اند</option>
-    <option>بک اند</option>
+    <option disabled selected> </option>
+
   </select>
 </div>
 
@@ -172,7 +169,7 @@ const saveChanges = async () => {
 
   <input
     type="date"
-    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white focus:outline-none focus:border-[#2D6A66]"
+    class="w-full h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
   />
 </div>
 
@@ -182,12 +179,16 @@ const saveChanges = async () => {
       <div class=" p-6 rounded-[30px] border border-gray-100 min-h-[300px]">
         <div class="flex items-center justify-between mb-6">
           <h3 class="font-bold flex items-center gap-2"><div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> اطلاعات پروژه</h3>
-          <button class="px-4 py-1 border rounded-xl text-xs font-bold">ویرایش</button>
+          <button class="px-4 py-1 border rounded-xl text-xs font-bold bg-[#BFD1D5]">ویرایش</button>
         </div>
         <div class="flex gap-4">
-          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl"></div>
-          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl"></div>
-          <div class="w-[101px] h-[186px] bg-gray-100 rounded-2xl border border-dashed"></div>
+          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl">
+            <img src="/images/article3.jpg" alt="" class="object-cover">
+          </div>
+          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl">
+            <img src="/images/article3.jpg" alt="" class="object-cover">
+          </div>
+          <div class="w-[101px] h-[186px] bg-gray-200 rounded-2xl border border-dashed"></div>
         </div>
       </div>
     </div>
@@ -215,12 +216,13 @@ const saveChanges = async () => {
         </div>
         <div class="flex justify-between items-start">
           <div class="flex items-center gap-4">
-             <div class="w-20 h-20 bg-gray-300 rounded-full"></div>
+             
+              <img src="/images/article3.jpg" alt="" class="rounded-full h-[90px] w-[90px]">
              <div><p class="font-bold">سارا احمدی</p><p class="text-sm text-gray-500">مدیر مارکتینگ</p></div>
           </div>
           <div class="flex flex-col gap-2">
-            <button class="w-20 py-1 text-[10px] bg-[#BFD1D5] rounded-lg">ویرایش</button>
-            <button class="w-20 py-1 text-[10px] bg-[#BFD1D5] rounded-lg text-red-800">حذف تصویر</button>
+            <button class="w-20 py-1 text-[14px] bg-[#BFD1D5] rounded-lg">ویرایش</button>
+            <button class="w-20 py-1 text-[14px] bg-[#BFD1D5] rounded-lg ">حذف تصویر</button>
           </div>
         </div>
         <p class="mt-6 text-sm text-gray-600 bg-gray-50 p-4 rounded-xl">«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود...»</p>
@@ -228,10 +230,21 @@ const saveChanges = async () => {
     </div>
   </div>
 
-  <div class="flex justify-between items-center mt-10 pt-6 border-t border-gray-200">
-    <span class="text-gray-400 text-xs">👁 216 بازدید</span>
-    <button @click="saveChanges" class="bg-[#2d6a66] text-white px-8 py-3 rounded-2xl font-bold">ذخیره تغییرات</button>
-  </div>
+<div class="flex justify-end items-center gap-4 mt-10 pt-6 border-t border-gray-200" dir="ltr">
+
+<button
+  @click="saveChanges"
+  class="w-[84px] h-[26px] bg-[#BFD1D5] text-black rounded-2xl text-xs font-bold flex items-center justify-center"
+>
+  ذخیره تغییرات
+</button>
+  <span class="text-gray-400 text-xs flex items-center gap-2">
+    <AdminIconsEyeVector />
+    216 بازدید
+  </span>
+
+
+</div>
 </div>
 
   </div>
