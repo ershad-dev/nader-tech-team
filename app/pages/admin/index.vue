@@ -1,15 +1,20 @@
 <template>
-  <div class="pr-[80px] pl-[80px] pt-[10px] pb-[10px] bg-[#ffffff] h-screen">
+<div 
+    class="pr-[80px] pl-[80px] pt-[10px] pb-[10px] h-screen transition-colors duration-700"
+    :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ffffff]'"
+  >
     <div
-      class="flex h-full bg-white rounded-[30px] overflow-hidden shadow-xl font-sans"
+      class="flex h-full rounded-[30px] overflow-hidden shadow-xl font-sans transition-colors duration-700"
+      :class="isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-white'"
       dir="rtl"
     >
       <!-- Sidebar -->
-      <aside
+<aside
         @mouseenter="isSidebarOpen = true"
         @mouseleave="isSidebarOpen = false"
         :class="[
-          'bg-[#BFD1D5] flex flex-col py-8 z-10 shadow-2xl transition-[width] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] overflow-hidden',
+          'flex flex-col py-8 z-10 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] overflow-hidden',
+          isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]',
           isSidebarOpen ? 'w-[253px]' : 'w-[90px]'
         ]"
       >
@@ -89,33 +94,21 @@
       </aside>
 
       <!-- Main Content -->
-      <main
-        class="flex-1 bg-[#ECEDF4] rounded-l-[40px] p-10 mr-[-20px] overflow-y-auto"
+<main
+        class="flex-1 rounded-l-[40px] p-10 mr-[-20px] overflow-y-auto transition-colors duration-700"
+        :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ECEDF4]'"
       >
-        <!-- Empty State -->
-        <div
-          v-if="!activeComponent"
-          class="w-full h-full flex items-center justify-center"
-        >
-          <img
-            src="/images/empty-page4.png"
-            alt="Empty State"
-            class="w-[1200px] max-h-[500px] object-contain"
-          />
+        <div v-if="!activeComponent" class="w-full h-full flex items-center justify-center">
+          <img src="/images/empty-page4.png" alt="Empty State" class="w-[1200px] max-h-[500px] object-contain" />
         </div>
-
-        <!-- Selected Component -->
-        <component
-          v-else
-          :is="activeComponent"
-        />
+        <component v-else :is="activeComponent" />
       </main>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, shallowRef, defineAsyncComponent } from 'vue'
+import { ref, shallowRef, defineAsyncComponent, provide } from 'vue'
 import HomeIcon from '~/components/admin/icons/home.vue'
 import UserAvatarIcon from '~/components/admin/icons/userAvatar.vue'
 import BannerEditIcon from '~/components/admin/icons/bannerEdit.vue'
@@ -143,15 +136,27 @@ const ResumeControl = defineAsyncComponent(() =>
 const Lottery = defineAsyncComponent(() =>
   import('~/components/admin/Lottery.vue')
 )
+const LotteryDraw = defineAsyncComponent(() =>
+  import('~/components/admin/LotteryDraw.vue')
+)
 const Articles = defineAsyncComponent(() =>
   import('~/components/admin/Articles.vue')
 )
 
 const isSidebarOpen = ref(false)
 const activeComponent = shallowRef(null)
+const isGalaxyTheme = ref(false)
+
+provide('setGalaxyTheme', (value) => {
+  isGalaxyTheme.value = value
+})
 
 const selectItem = (component) => {
   activeComponent.value = component
+  
+  // اگر کاربر روی "قرعه‌کشی" کلیک کند، تم کهکشانی فعال شود
+  // با این شرط، هر دو کامپوننت Lottery و LotteryDraw تم را تیره می‌کنند
+  isGalaxyTheme.value = ( component === LotteryDraw)
 }
 
 const navItems = [
