@@ -5,7 +5,7 @@
   >
     <div
       class="flex h-full rounded-[30px] overflow-hidden shadow-xl font-sans transition-colors duration-700"
-      :class="isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-white'"
+      :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-white'"
       dir="rtl"
     >
       <!-- Sidebar -->
@@ -63,24 +63,32 @@
             :key="item.name"
             @click="selectItem(item.component)"
             :style="isSidebarOpen ? { transitionDelay: (200 + index * 50) + 'ms' } : { transitionDelay: '0ms' }"
-            :class="[
-              'px-4 py-2 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[62px]',
-              isSidebarOpen
-                ? (activeComponent === item.component
-                    ? 'bg-[#67A9A880] border-[#67A9A8] text-[#0F184B] gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right'
-                    : 'bg-[#67A9A880] text-[#0F184B]/80 hover:bg-[#8FB0B2] border-transparent gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right border border-white')
-                : (activeComponent === item.component
-                    ? 'bg-transparent border-transparent text-[#0F184B] justify-center'
-                    : 'bg-transparent border-transparent text-[#0F184B]/80 justify-center hover:scale-110')
-            ]"
+              :class="[
+  'px-4 py-2 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[62px]',
+  isSidebarOpen
+    ? (
+        activeComponent === item.component
+          ? `bg-[#67A9A880] border-[#67A9A8] ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'} gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right`
+          : `bg-[#67A9A880] ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]/80'} hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right`
+      )
+    : (
+        activeComponent === item.component
+          ? `bg-transparent border-transparent ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'} justify-center`
+          : `bg-transparent border-transparent ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]/80'} justify-center hover:scale-110`
+      )
+]"
           >
             <component
               :is="item.icon"
-              :class="[
-                'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
-                isSidebarOpen ? 'w-[25px] h-[25px]' : 'w-[28px] h-[28px]',
-                activeComponent === item.component ? 'text-[#2C7379]' : 'text-[#454C6A]'
-              ]"
+            :class="[
+              'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+              isSidebarOpen ? 'w-[25px] h-[25px]' : 'w-[28px] h-[28px]',
+              isGalaxyTheme
+                ? 'text-white'
+                : (activeComponent === item.component
+                    ? 'text-[#2C7379]'
+                    : 'text-[#454C6A]')
+            ]"
             />
             <span
               class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[18px]"
@@ -89,13 +97,36 @@
               {{ item.name }}
             </span>
           </button>
-          <button @click="logout" class="text-red-500">خروج از پنل</button>
+<button
+  @click="logout"
+  :class="[
+    'px-4 py-2 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[62px]',
+    isSidebarOpen
+      ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
+      : `bg-transparent border-transparent justify-center hover:scale-110 ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
+  ]"
+>
+  <admin-icons-logout
+    :class="[
+      'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+      isSidebarOpen ? 'w-[25px] h-[25px]' : 'w-[28px] h-[28px]',
+      isGalaxyTheme ? 'text-white' : 'text-red-500'
+    ]"
+  />
+
+  <span
+    class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[18px]"
+    :class="isSidebarOpen ? 'opacity-100 max-w-[150px]' : 'opacity-0 max-w-0'"
+  >
+    خروج از پنل
+  </span>
+</button>
         </nav>
       </aside>
 
       <!-- Main Content -->
 <main
-        class="flex-1 rounded-l-[40px] p-10 mr-[-20px] overflow-y-auto transition-colors duration-700"
+        class="flex-1 rounded-l-[40px]  mr-[-20px] overflow-y-auto transition-colors duration-700 hide-scrollbar"
         :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ECEDF4]'"
       >
         <div v-if="!activeComponent" class="w-full h-full flex items-center justify-center">
@@ -174,3 +205,15 @@ const logout = () => {
   navigateTo('/admin/ntt20119')
 }
 </script>
+
+
+<style scoped>
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

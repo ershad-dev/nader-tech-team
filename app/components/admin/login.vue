@@ -61,7 +61,7 @@ const handleLogin = async () => {
           <div>
             <AuthInput
               v-model="identifier"
-              label="شماره تلفن یا ایمیل"
+              label="  نام کاربری "
               type="text"
               class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
             />

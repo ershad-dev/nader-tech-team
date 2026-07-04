@@ -122,7 +122,7 @@ const saveChanges = async () => {
 <!-- فرم ویرایش/افزودن (بخش دوم) -->
 <div v-else class="max-w-[1200px] mx-auto bg-[#F4F6F8] p-8 rounded-[40px] border border-gray-200 shadow-inner" dir="rtl">
   
-  <!-- <button @click="closeForm" class="mb-8 text-gray-500 font-bold hover:text-black">← بازگشت</button> -->
+  <button @click="closeForm" class="mb-8 text-gray-500 font-bold hover:text-black">← بازگشت</button>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     
