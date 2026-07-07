@@ -5,7 +5,7 @@
       <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem]" alt="Background" />
 
       <div class="flex justify-center w-full px-4 -mt-[81px] sm:-mt-[106px] md:-mt-[170px] xl:-mt-[230px]">
-        <!-- بقیه دقیقاً همون چیزیه که داشتی، بدون تغییر -->
+
         
         <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 w-[300px] sm:w-[400px] md:w-[600px] xl:w-[853px]">
           

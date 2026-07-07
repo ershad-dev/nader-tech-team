@@ -44,7 +44,7 @@ const steps = [
 </script>
 
 <template>
-<div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] bg-[url('/images/order-bg.png')] bg-cover bg-center py-10 -mt-[80px] md:-mt-[50px] xl:-mt-[70px]">
+<div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] bg-[url('/images/order-bg.png')] bg-cover bg-center py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px]">
     <div class="max-w-[1054px] mx-auto px-4 xl:px-0">
 <h1
   class="ml-auto bg-[#fcfaf4] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] text-[#2d6a66] flex items-center justify-center rounded-[19px] shadow-sm mt-[80px] md:mt-[70px] xl:mt-[100px]"
@@ -112,13 +112,13 @@ const steps = [
     </div>
   </div>
 
-  <div
-    class="relative z-20 mt-4 md:-mt-24 xl:-mt-[150px] py-14 md:py-16 xl:py-20 px-4 w-full max-w-[1200px] min-h-[420px] md:min-h-[500px] xl:min-h-[600px]
-           bg-[#67A9A8] bg-none
-           md:bg-transparent md:bg-[url('/images/bg-flow-2.png')] md:bg-cover md:bg-center md:bg-no-repeat
-           rounded-tl-[50px] rounded-tr-[50px] md:rounded-tl-[70px] md:rounded-tr-[70px] xl:rounded-tl-[90px] xl:rounded-tr-[90px] overflow-hidden text-center mx-auto flex flex-col items-center"
-    dir="rtl"
-  >
+<div
+  class="relative z-20 mt-4 md:mt-6 xl:-mt-[150px] py-14 md:py-16 xl:py-20 px-4 w-full max-w-[1200px] min-h-[420px] md:min-h-[500px] xl:min-h-[600px]
+         bg-[#67A9A8] bg-none
+         xl:bg-transparent xl:bg-[url('/images/bg-flow-2.png')] xl:bg-cover xl:bg-center xl:bg-no-repeat
+         rounded-tl-[50px] rounded-tr-[50px] md:rounded-tl-[70px] md:rounded-tr-[70px] xl:rounded-tl-[90px] xl:rounded-tr-[90px] overflow-hidden text-center mx-auto flex flex-col items-center"
+  dir="rtl"
+>
 <div class="max-w-6xl mx-auto">
   <div class="flex flex-col items-center text-center mb-8 md:mb-10">
     <h3 class="text-[#2d6a66] md:text-white text-[18px] md:text-[22px] xl:text-[26px] font-medium mb-2">فرایند همکاری</h3>
