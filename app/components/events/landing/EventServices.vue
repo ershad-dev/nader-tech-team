@@ -1,61 +1,56 @@
 <template>
-<section class="relative bg-[#ABD7D8] p-10 rounded-[20px] mt-8 mx-auto w-[1110px] max-w-full">
+  <section class="relative bg-[#ABD7D8] p-5 sm:p-8 md:p-10 rounded-[16px] md:rounded-[20px] mt-8 mx-auto w-full md:w-[1110px] max-w-full">
 
-<img
-  src="/images/texture.png"
-  alt=""
-  class="absolute w-[900px] h-auto object-contain opacity-30 pointer-events-none -mt-[350px] -mr-[100px]"
-/>
+    <img
+      src="/images/texture.png"
+      alt=""
+      class="absolute w-[220px] sm:w-[380px] md:w-[900px] h-auto object-contain opacity-30 pointer-events-none -mt-[60px] sm:-mt-[120px] md:-mt-[350px] -mr-[20px] sm:-mr-[40px] md:-mr-[100px] top-0 right-0 md:top-auto md:right-auto"
+    />
 
     <!-- بخش توضیحات -->
-    <div class="mb-10 ">
-      
-      <p class="max-w-[865ox] font-400  text-[#0F184B] text-[16px] leading-[40px]">
-          ما با ارائه خدمات تخصصی در برنامه‌ریزی، مدیریت و اجرای رویدادها، از ایده‌پردازی تا برگزاری نهایی در کنار شما هستیم.
+    <div class="mb-8 md:mb-10 relative z-10">
+
+      <p class="max-w-full md:max-w-[865px] font-400 text-[#0F184B] text-[14px] sm:text-[15px] md:text-[16px] leading-[26px] sm:leading-[32px] md:leading-[40px]">
+        ما با ارائه خدمات تخصصی در برنامه‌ریزی، مدیریت و اجرای رویدادها، از ایده‌پردازی تا برگزاری نهایی در کنار شما هستیم.
 
         <br>
         <br>
-      <p class="max-w-[865ox] font-roboto font-light  text-[#0F184B] text-[16px] leading-[40px]">
-                  برگزاری انواع همایش‌ها، سمینارها، کنفرانس‌ها، بوت‌کمپ‌ها و کارگاه‌های آموزشی در حوزه‌های فناوری، برنامه‌نویسی، هوش مصنوعی، تولید محتوا، رسانه‌های دیجیتال و کارآفرینی، همراه با خدمات اجرایی، آموزشی، رسانه‌ای، فنی، تبلیغاتی، شبکه‌سازی حرفه‌ای و جذب سرمایه‌گذار، بخشی از راهکارهای ما برای خلق رویدادهای اثرگذار و ماندگار است.
+      <p class="max-w-full md:max-w-[865px] font-roboto font-light text-[#0F184B] text-[14px] sm:text-[15px] md:text-[16px] leading-[26px] sm:leading-[32px] md:leading-[40px]">
+        برگزاری انواع همایش‌ها، سمینارها، کنفرانس‌ها، بوت‌کمپ‌ها و کارگاه‌های آموزشی در حوزه‌های فناوری، برنامه‌نویسی، هوش مصنوعی، تولید محتوا، رسانه‌های دیجیتال و کارآفرینی، همراه با خدمات اجرایی، آموزشی، رسانه‌ای، فنی، تبلیغاتی، شبکه‌سازی حرفه‌ای و جذب سرمایه‌گذار، بخشی از راهکارهای ما برای خلق رویدادهای اثرگذار و ماندگار است.
       </p>
 
-       </p>
+      </p>
     </div>
 
-        <h2 class="text-[26px] text-[#A36C53] font-bold mb-4 pr-[90px] ">خدمات ایونت</h2>
+    <h2 class="relative z-10 text-[20px] sm:text-[22px] md:text-[26px] text-[#A36C53] font-bold mb-4 pr-0 sm:pr-[40px] md:pr-[90px] text-center sm:text-right">خدمات ایونت</h2>
 
     <!-- لیست کارت‌ها (فراخوانی کامپوننت) -->
-    <div class="space-y-6 mb-12 flex flex-col items-center text-center">
+    <div class="relative z-10 space-y-6 mb-10 md:mb-12 flex flex-col items-center text-center">
       <ServiceCard />
     </div>
 
     <!-- بخش دکمه و فلش -->
-<div class="flex items-center justify-between mt-10 px-4">
-  
+    <div class="relative z-10 flex flex-col md:flex-row items-center md:justify-between mt-6 md:mt-10 px-2 md:px-4 gap-6 md:gap-0">
 
       <!-- متن (سمت راست) -->
-  <div class="text-right mr-[20px] -mt-[100px]">
-    <span class="text-[24px] font-bold text-[#747893] block">رویداد بعدی خود را</span>
-    <span class="text-[24px] font-bold text-[#747893] block">حرفه‌ای برگزار کنید</span>
-  </div>
+      <div class="text-center md:text-right mr-0 md:mr-[20px] mt-0 md:-mt-[100px] order-1">
+        <span class="text-[18px] sm:text-[20px] md:text-[24px] font-bold text-[#747893] block">رویداد بعدی خود را</span>
+        <span class="text-[18px] sm:text-[20px] md:text-[24px] font-bold text-[#747893] block">حرفه‌ای برگزار کنید</span>
+      </div>
 
+      <!-- فلش (وسط) - فقط در دسکتاپ نمایش داده می‌شود -->
+      <div class="hidden md:flex flex-1 justify-center px-4 order-2">
+        <img src="/images/curved-arrow.png" alt="فلش" class="min-w-[700px] -ml-[195px] object-contain" />
+      </div>
 
+      <!-- دکمه ( درخواست همکاری) -->
+      <NuxtLink to="/order/requestProject" class="order-3">
+        <button class="bg-[#ECD0A0] px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] transition w-full max-w-[263px] md:w-[263px] h-[48px] mt-0 md:mt-[90px]">
+          درخواست همکاری
+        </button>
+      </NuxtLink>
 
-
-  <!-- فلش (وسط) -->
-<div class="flex-1 flex justify-center px-4">
-  <img src="/images/curved-arrow.png" alt="فلش" class="min-w-[700px] -ml-[195px] object-contain" />
-</div>
-
-
-    <!-- دکمه ( درخواست همکاری) -->
-    <NuxtLink to="/order/requestProject">
-      <button class="bg-[#ECD0A0] px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] transition w-[263px] h-[48px] mt-[90px]">
-        درخواست همکاری
-      </button>
-    </NuxtLink>
-
-</div>
+    </div>
   </section>
 </template>
 

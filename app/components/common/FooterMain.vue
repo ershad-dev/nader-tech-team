@@ -1,78 +1,125 @@
 <template>
-  <footer v-if="!isLotteryPage" class="w-full" dir="rtl">
-    
-    <div v-if="showGreenSection" class="relative w-full">
-      <div class="bg-[#2C7379] h-[200px] w-full pt-10 pb-20 flex flex-col items-center">
-        <div class="flex justify-center items-center overflow-hidden">
-          <svg viewBox="0 0 700 150" class="w-[500px] h-[120px]">
-            <path id="curve-path" d="M 50,120 Q 350,50 650,120" fill="transparent" />
-            <text font-size="50" font-weight="bold" fill="white">
-              <textPath href="#curve-path" startOffset="50%" text-anchor="middle">
-                {{ title }}
-              </textPath>
-            </text>
-          </svg>
-        </div>
-        <div v-html="title1" class="text-white text-[32px] font-bold mt-4 text-center px-4"></div>
+
+<footer v-if="!isLotteryPage" class="w-full" dir="rtl">
+
+<div v-if="showGreenSection" class="relative w-full">
+
+  <!-- ===================== نسخه دسکتاپ - دقیقاً کد اصلی، بدون هیچ تغییر ===================== -->
+  <div class="hidden lg:block relative w-full">
+
+    <div class="bg-[#2C7379] h-[200px] w-full pt-10 pb-20 flex flex-col items-center">
+
+      <div class="flex justify-center items-center overflow-hidden">
+
+        <svg viewBox="0 0 700 150" class="w-[500px] h-[120px]">
+          <path id="curve-path-desktop" d="M 50,120 Q 350,50 650,120" fill="transparent" />
+          <text font-size="50" font-weight="bold" fill="white">
+            <textPath href="#curve-path-desktop" startOffset="50%" text-anchor="middle">
+              {{ title }}
+            </textPath>
+          </text>
+        </svg>
+
       </div>
 
-      <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
-        <div class="shape ">
+      <div v-html="title1" class="text-white text-[32px] font-bold mt-4 text-center px-4"></div>
+
+    </div>
+
+    <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
+
+      <div class="shape">
         <NuxtLink to="/order/requestProject">
           <button class="bg-[#ECD0A0] text-[#0F184B] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 hover:scale-105 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block scale-y-[-1] mr-[55px] mt-[10px]">
             درخواست همکاری
           </button>
         </NuxtLink>
-        </div>
       </div>
+
     </div>
 
-    <div class="bg-[#BFD1D5] w-full pt-16">
-      <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-center pb-12">
-        
-        <div class="flex flex-col items-center leading-[40px] font-roboto">
-          <h3 class="text-[#2D4745] text-[20px] mb-4">لینک های مهم</h3>
-          <ul class="space-y-3">
-            <li v-for="link in links" :key="link" class="flex items-center gap-2 text-[#2D4745]">
-              <span class="w-2 h-2 bg-[#2D7A6F] rounded-full flex-shrink-0 text-[18px]"></span>
-              <span>{{ link }}</span>
-            </li>
-          </ul>
-        </div>
+  </div>
 
-        <div class="flex flex-col items-center gap-6">
-          <p class="text-[#0F184B] font-bold text-[18px] whitespace-nowrap">
-            نادر تکنولوژی، ارائه دهنده راهکارهای نوین فناوری، توسعه نرم‌افزار و خدمات دیجیتال
-          </p>
-          <div class="flex justify-center gap-3">
-            <img 
-              v-for="icon in socialIcons" 
-              :key="icon" 
-              :src="`/images/${icon}.png`" 
-              alt="social" 
-              class="w-10 h-10 object-contain hover:opacity-80 transition cursor-pointer" 
-            />
-          </div>
-        </div>
+  <!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
+  <div class="lg:hidden w-full">
 
-        <div class="flex flex-row md:flex-col gap-4 items-center">
-          <img src="/images/enamad2.png" alt="Enamad" class="w-[153px] h-[157px] object-contain" />
-          <img src="/images/zarrinpall.png" alt="Zarrinpal" class="w-[153px] h-[157px] object-contain" />
-        </div>
+<div class="lg:hidden w-full">
 
-      </div>
-    </div>
-  </footer>
+  <div class="bg-[#2C7379] w-full pt-3 pb-4 sm:pt-6 sm:pb-7 px-4 flex flex-col items-center gap-1.5 sm:gap-2">
+
+    <h2 class="text-white text-[16px] sm:text-[22px] font-bold text-center leading-snug">
+      {{ title }}
+    </h2>
+
+    <div v-html="title1" class="text-white text-[12px] sm:text-[15px] font-bold text-center leading-snug"></div>
+
+<NuxtLink to="/order/requestProject" class="mt-2 sm:mt-3 w-full flex justify-center">
+  <button class="bg-[#ECD0A0] text-[#0F184B] text-[11px] sm:text-[14px] font-bold px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-[12px] sm:rounded-[14px] shadow-lg hover:scale-105 transition-all w-full max-w-[150px] sm:max-w-[230px] h-[32px] sm:h-[42px] flex items-center justify-center">
+    درخواست همکاری
+  </button>
+</NuxtLink>
+  </div>
+
+</div>
+
+  </div>
+
+</div>
+
+<div class="bg-[#BFD1D5] w-full pt-8 sm:pt-10 lg:pt-16">
+
+<div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 sm:gap-8 lg:gap-12 text-center pb-8 sm:pb-10 lg:pb-12 px-4 lg:px-0">
+
+<div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[40px] font-roboto">
+
+<h3 class="text-[#2D4745] text-[16px] sm:text-[18px] lg:text-[20px] mb-4">لینک های مهم</h3>
+
+<ul class="space-y-2 sm:space-y-3">
+<li v-for="link in links" :key="link" class="flex items-center gap-2 text-[#2D4745] text-[14px] sm:text-[15px] lg:text-[16px]">
+<span class="w-2 h-2 bg-[#2D7A6F] rounded-full flex-shrink-0"></span>
+<span>{{ link }}</span>
+</li>
+</ul>
+
+</div>
+
+<div class="flex flex-col items-center gap-4 sm:gap-5 lg:gap-6">
+
+<p class="text-[#0F184B] font-bold text-[13px] sm:text-[15px] lg:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
+نادر تکنولوژی، ارائه دهنده راهکارهای نوین فناوری، توسعه نرم‌افزار و خدمات دیجیتال
+</p>
+
+<div class="flex justify-center gap-2 sm:gap-3 flex-wrap">
+<img
+v-for="icon in socialIcons"
+:key="icon"
+:src="`/images/${icon}.png`"
+alt="social"
+class="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain hover:opacity-80 transition cursor-pointer"
+/>
+</div>
+
+</div>
+
+<div class="flex flex-row lg:flex-col gap-3 sm:gap-4 lg:gap-4 items-center">
+<img src="/images/enamad2.png" alt="Enamad" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[153px] lg:h-[157px] object-contain" />
+<img src="/images/zarrinpall.png" alt="Zarrinpal" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[153px] lg:h-[157px] object-contain" />
+</div>
+
+</div>
+
+</div>
+
+</footer>
+
 </template>
 
 <script setup>
 const route = useRoute();
 
-// داده‌های استاتیک
 const links = ['خانه', 'سفارش گیری پروژه', 'برگزاری ایونت', 'درباره ما'];
 const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 
-// مسیرهایی که نباید نوار در آن‌ها نمایش داده شود
 const lotteryRoutes = [
   '/events/lottery/register',
   '/events/lottery/login',
@@ -82,17 +129,14 @@ const lotteryRoutes = [
   '/events/lottery/loser'
 ];
 
-// مسیرهایی که نباید بخش سبز رنگ (درخواست همکاری) در آن‌ها نمایش داده شود
 const hiddenGreenSectionRoutes = [
-  '/order/request', 
+  '/order/request',
   '/articles'
 ];
 
-// بررسی مسیرها
 const isLotteryPage = computed(() => lotteryRoutes.includes(route.path));
 
 const showGreenSection = computed(() => {
-  // چک می‌کند که آیا مسیر فعلی با هیچ‌کدام از مسیرهای لیست شروع نمی‌شود
   return !hiddenGreenSectionRoutes.some(path => route.path.startsWith(path));
 });
 
@@ -102,46 +146,40 @@ defineProps({
 });
 </script>
 
+<style scoped>
+:nth-child(1 of .shape) {
+  clip-path: shape(
+    from 0 100%,
+    arc by var(--r) calc(-1*var(--r)) of var(--r),
+    vline to var(--r),
+    arc by var(--r) calc(-1*var(--r)) of var(--r) cw,
+    hline to calc(100% - 2*var(--r)),
+    arc by var(--r) var(--r) of var(--r) cw,
+    vline to calc(100% - var(--r)),
+    arc by var(--r) var(--r) of var(--r)
+  )
+}
 
+:nth-child(2 of .shape) {
+  clip-path: shape(
+    from 0 100%,
+    curve by var(--r) calc(-1*var(--r)) with var(--r) 0,
+    vline to var(--r),
+    curve by var(--r) calc(-1*var(--r)) with 0 calc(-1*var(--r)),
+    hline to calc(100% - 2*var(--r)),
+    curve by var(--r) var(--r) with var(--r) 0,
+    vline to calc(100% - var(--r)),
+    curve by var(--r) var(--r) with 0 var(--r)
+  )
+}
 
-  <style scoped>
-  :nth-child(1 of .shape) {
-    clip-path: shape(
-      from 0 100%,
-      arc by var(--r) calc(-1*var(--r)) of var(--r),
-      vline to var(--r),
-      arc by var(--r) calc(-1*var(--r)) of var(--r) cw,
-      hline to calc(100% - 2*var(--r)),
-      arc by var(--r) var(--r) of var(--r) cw,
-      vline to calc(100% - var(--r)),
-      arc by var(--r) var(--r) of var(--r)
-    )
-  }
-  :nth-child(2 of .shape) {
-    clip-path: shape(
-      from 0 100%,
-      curve by var(--r) calc(-1*var(--r)) with var(--r) 0,
-      vline to var(--r),
-      curve by var(--r) calc(-1*var(--r)) with 0 calc(-1*var(--r)),
-      hline to calc(100% - 2*var(--r)),
-      curve by var(--r) var(--r) with var(--r) 0,
-      vline to calc(100% - var(--r)),
-      curve by var(--r) var(--r) with 0 var(--r)
-    )
-  }
 .shape {
   --r: 26px;
-
   margin-bottom: -27px;
   width: 379px;
   height: 60px;
-
   background: #2C7379;
   color: #fff;
   transform: scaleY(-1);
-
-
 }
-
-
-  </style>
+</style>

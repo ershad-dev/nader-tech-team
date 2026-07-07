@@ -263,7 +263,7 @@ const logout = () => {
     <div
       v-if="toast.message"
       :class="[
-        'fixed top-5 left-5 p-4 rounded text-white z-50',
+        'fixed top-5 left-5 right-5 sm:right-auto p-3 sm:p-4 rounded text-white z-50 text-[13px] sm:text-[15px]',
         toast.type === 'success'
           ? 'bg-green-500'
           : 'bg-red-500'
@@ -272,107 +272,112 @@ const logout = () => {
       {{ toast.message }}
     </div>
 
-    <div class="bg-[#2C73792B] p-6 md:p-10 rounded-[40px] shadow-sm">
+    <div class="bg-[#2C73792B] p-4 sm:p-6 md:p-10 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] shadow-sm">
       
-   <div class="flex justify-center w-full">
-  <div class="bg-[#ffffff]/10 p-6 rounded-[27px] mb-8 flex flex-row items-center justify-center gap-6 w-[652px] h-[187px] shadow-xl">
+      <div class="flex justify-center w-full">
+        <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] mb-6 sm:mb-8 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 w-full max-w-[652px] h-auto sm:h-[187px] shadow-xl" dir="rtl">
 
-    <img
-      :src="userData.avatar || '/images/avater-man.jpg'"
-      class="w-[143px] h-[143px] rounded-full border-4 border-white shadow-sm object-cover"
-    />
+          <img
+            :src="userData.avatar || '/images/avater-man.jpg'"
+            class="w-[70px] h-[70px] sm:w-[120px] sm:h-[120px] md:w-[143px] md:h-[143px] rounded-full border-4 border-white shadow-sm object-cover flex-shrink-0"
+          />
 
-    <div class="flex flex-col items-center gap-2">
-      <span class="text-[#0F184B] font-bold text-[16px] mb-1">
-        عکس پروفایل
-      </span>
+          <div class="flex flex-col items-start sm:items-center gap-2">
+            <span class="text-[#0F184B] font-bold text-[13px] sm:text-[15px] md:text-[16px] mb-1">
+              عکس پروفایل
+            </span>
 
-      <input
-        type="file"
-        ref="fileInput"
-        class="hidden w-[143px] h-[143px]"
-        accept="image/*"
-        @change="uploadAvatar"
-      />
+            <input
+              type="file"
+              ref="fileInput"
+              class="hidden"
+              accept="image/*"
+              @change="uploadAvatar"
+            />
 
-<button
-  class="bg-[#2C7379] w-[143px] h-[39px] text-white text-[15px] font-normal py-2 px-6 rounded-[17px] hover:bg-[#235652] transition font-roboto whitespace-nowrap flex items-center justify-center mt-[10px]"
-  @click="fileInput?.click()"
-  :disabled="loading"
->
-  انتخاب تصویر جدید
-</button>
+            <button
+              class="bg-[#2C7379] w-[120px] sm:w-[143px] h-[32px] sm:h-[39px] text-white text-[11px] sm:text-[15px] font-normal py-2 px-3 sm:px-6 rounded-[12px] sm:rounded-[17px] hover:bg-[#235652] transition font-roboto whitespace-nowrap flex items-center justify-center mt-[6px] sm:mt-[10px]"
+              @click="fileInput?.click()"
+              :disabled="loading"
+            >
+              انتخاب تصویر جدید
+            </button>
 
-      <button
-        class="text-[#747893] text-[15px] font-normal mt-[10px] font-roboto"
-        @click="deleteAvatar"
-        :disabled="loading || !userData.avatar"
-      >
-        حذف عکس
-      </button>
-    </div>
+            <button
+              class="text-[#747893] text-[11px] sm:text-[15px] font-normal mt-[6px] sm:mt-[10px] font-roboto"
+              @click="deleteAvatar"
+              :disabled="loading || !userData.avatar"
+            >
+              حذف عکس
+            </button>
+          </div>
 
-  </div>
-</div>
+        </div>
+      </div>
 
-      <div class="bg-[#ffffff]/10 p-8 rounded-3xl border-[0.5px] border-[#D9D9D9] shadow-xl mt-8">
+      <div class="bg-[#ffffff]/10 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border-[0.5px] border-[#D9D9D9] shadow-xl mt-6 sm:mt-8">
 
         <!-- Profile Tab -->
-<div v-if="activeTab === 'profile'" 
-     class="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 font-roboto justify-items-center" 
-     dir="rtl">
-  
-  <div class="flex flex-col gap-2 w-fit"> <label class="text-[15px] font-normal text-black mr-1">نام کاربری</label>
-    <input v-model="userData.username" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
-  </div>
+        <div v-if="activeTab === 'profile'" 
+             class="grid grid-cols-2 md:grid-cols-2 gap-x-2 sm:gap-x-3 md:gap-x-1 gap-y-3 sm:gap-y-4 font-roboto justify-items-center" 
+             dir="rtl">
+          
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام کاربری</label>
+            <input v-model="userData.username" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">نام و نام خانوادگی</label>
-    <input v-model="userData.full_name" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام و نام خانوادگی</label>
+            <input v-model="userData.full_name" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">شماره موبایل</label>
-    <input v-model="userData.mobile" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">شماره موبایل</label>
+            <input v-model="userData.mobile" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">ایمیل</label>
-    <input v-model="userData.email" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">ایمیل</label>
+            <input v-model="userData.email" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">تاریخ تولد</label>
-    <input v-model="userData.birth_date" placeholder="1370/01/01" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">تاریخ تولد</label>
+            <input v-model="userData.birth_date" placeholder="1370/01/01" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">کد ملی</label>
-    <input v-model="userData.national_code" class="w-[300px] h-14 bg-white rounded-[17px] px-4" />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد ملی</label>
+            <input v-model="userData.national_code" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">استان</label>
-    <input v-model="userData.province" class="w-[300px] h-14 bg-white rounded-[17px] " />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">استان</label>
+            <input v-model="userData.province" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-fit">
-    <label class="text-[15px] font-normal text-black mr-1">کد پستی</label>
-    <input v-model="userData.postal_code" class="w-[300px] h-14 bg-white rounded-[17px] " />
-  </div>
+          <div class="flex flex-col gap-2 w-full sm:w-fit">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد پستی</label>
+            <input v-model="userData.postal_code" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+          </div>
 
-  <div class="flex flex-col gap-2 w-[625px] md:col-span-2"> <label class="text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
-    <textarea v-model="userData.address" class="w-[689px] h-24 bg-white rounded-[17px] px-4 py-4"></textarea>
-  </div>
-
+          <!-- فیلد آدرس: همیشه تمام عرض و یک ستونه (حتی در موبایل) -->
+ <!-- فیلد آدرس: همیشه تمام عرض و یک ستونه (حتی در موبایل)، دقیقاً هم‌عرض با دو اینپوت کنار هم در دسکتاپ -->
+<div class="flex flex-col gap-2 w-full col-span-2 md:col-span-2 md:w-[604px]">
+  <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
+  <textarea v-model="userData.address" class="w-full md:w-[604px] h-20 sm:h-24 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 py-3 sm:py-4 text-[13px] sm:text-[15px]"></textarea>
 </div>
 
+        </div>
+
         <!-- Security Tab -->
-        <div v-else class="space-y-6">
+        <div v-else class="space-y-5 sm:space-y-6">
           <AuthInput
             label="رمز عبور فعلی"
             type="password"
             v-model="passwordData.current_password"
+            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
           >
             <template #icon>
               <LockClosedIcon class="w-5 h-5" />
@@ -383,6 +388,7 @@ const logout = () => {
             label="رمز عبور جدید"
             type="password"
             v-model="passwordData.new_password"
+            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
           >
             <template #icon>
               <LockClosedIcon class="w-5 h-5" />
@@ -393,6 +399,7 @@ const logout = () => {
             label="تکرار رمز عبور جدید"
             type="password"
             v-model="passwordData.new_password_confirmation"
+            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
           >
             <template #icon>
               <LockClosedIcon class="w-5 h-5" />
@@ -414,11 +421,11 @@ const logout = () => {
 
         <!-- Profile Actions -->
         <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10"
+          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-8 sm:mt-10"
           v-if="activeTab === 'profile'"
         >
           <button
-            class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] font-bold h-12"
+            class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] font-bold h-12 text-[14px] sm:text-[16px]"
             @click="getProfile"
           >
             بازنشانی اطلاعات
@@ -439,7 +446,7 @@ const logout = () => {
 
         <!-- Bottom Menu -->
         <div
-          class="flex justify-center gap-12 mt-8 text-[#1a2333] font-bold"
+          class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 md:gap-12 mt-8 text-[#1a2333] font-bold text-[14px] sm:text-[16px]"
         >
           <button
             @click="activeTab = activeTab === 'profile' ? 'security' : 'profile'"
@@ -453,12 +460,12 @@ const logout = () => {
 
             <ShieldCheckIcon
               v-if="activeTab === 'profile'"
-              class="w-6 h-6"
+              class="w-5 h-5 sm:w-6 sm:h-6"
             />
 
             <UserCircleIcon
               v-else
-              class="w-6 h-6"
+              class="w-5 h-5 sm:w-6 sm:h-6"
             />
           </button>
 
@@ -468,7 +475,7 @@ const logout = () => {
           >
             خروج از حساب کاربری
 
-            <ArrowRightOnRectangleIcon class="w-6 h-6" />
+            <ArrowRightOnRectangleIcon class="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 

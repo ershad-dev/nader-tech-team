@@ -1,42 +1,43 @@
 <template>
-  <div class="max-w-[1106px] mx-auto py-20 px-4" dir="rtl">
-    <h1 class="text-[24px] text-[#0F184B] font-bold mb-16 text-center">دانش خود را به‌روز نگه دارید <span class="text-[#2C7379]">هر هفته</span> مقالات جدیدی در حوزه طراحی سایت، تولید محتوا منتشر می‌کنیم.</h1>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8 justify-items-center" dir="ltr">
-      <NuxtLink 
-        v-for="post in articles" 
-        :key="post.id" 
+  <div class="max-w-[1106px] mx-auto py-12 md:py-20 px-4" dir="rtl">
+    <h1 class="text-[18px] sm:text-[20px] md:text-[24px] text-[#0F184B] font-bold mb-8 sm:mb-10 md:mb-16 text-center leading-relaxed">
+      دانش خود را به‌روز نگه دارید <span class="text-[#2C7379]">هر هفته</span> مقالات جدیدی در حوزه طراحی سایت، تولید محتوا منتشر می‌کنیم.
+    </h1>
 
-        class="w-[281px] h-[379px] bg-[#ABD7D8]/35 rounded-[25px] p-4 flex flex-col relative transition-transform "
+    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-y-6 sm:gap-y-8 md:gap-y-12 gap-x-3 sm:gap-x-5 md:gap-x-8 justify-items-center" dir="ltr">
+      <NuxtLink
+        v-for="post in articles"
+        :key="post.id"
+
+        class="w-full md:w-[281px] h-[210px] sm:h-[260px] md:h-[379px] bg-[#ABD7D8]/35 rounded-[16px] sm:rounded-[20px] md:rounded-[25px] p-2 sm:p-3 md:p-4 flex flex-col relative transition-transform"
       >
         <!-- اصلاح شده: اضافه شدن flex, items-center, justify-center به کانتینرِ تصویر -->
-<div class="relative w-full">
-  
-  <!-- فقط سایه -->
-   <!-- shadow-[0_10px_15px_-3px_rgba(0,0,0,0.35)] -->
-  <div class="absolute inset-0 rounded-[25px] "></div>
+        <div class="relative w-full">
 
-  <!-- تصویر -->
-  <div class=" img-wrap relative h-[220px] rounded-[25px] overflow-hidden">
-    <img :src="post.image" class="inner-curve w-full h-full object-cover shadow-[0_8px_0_0_rgba(0,0,0,0.15)]" />
+          <!-- فقط سایه -->
+          <!-- shadow-[0_10px_15px_-3px_rgba(0,0,0,0.35)] -->
+          <div class="absolute inset-0 rounded-[16px] sm:rounded-[20px] md:rounded-[25px]"></div>
 
-  </div>
+          <!-- تصویر -->
+          <div class="img-wrap relative h-[100px] sm:h-[140px] md:h-[220px] rounded-[16px] sm:rounded-[20px] md:rounded-[25px] overflow-hidden">
+            <img :src="post.image" class="inner-curve w-full h-full object-cover shadow-[0_8px_0_0_rgba(0,0,0,0.15)]" />
+          </div>
 
-</div>
-<div class="absolute top-[190px] left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center">
-  <NuxtLink :to="`/articles/${post.id}`">
-    <div class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer">
-      <ArrowUpRight class="w-[36px] h-[36px] text-[#2D7A6F]  hover:bg-white/50 rounded-full" />
-    </div>
-  </NuxtLink>
-</div>
-        <h3 class="mt-5 text-[#000000] font-bold text-right px-4 text-[16px] leading-6 mb-[40px]">
-          {{ post.title }}
-        </h3>
-        
-        <div class="absolute bottom-4 right-4 flex items-center gap-2 text-slate-500 text-xs mr-[15px] mt-[20px]">
-        <span>{{ post.date }}</span>
-        <DateVector class="w-[18px] h-[18px] text-[#2D7A6F]" />
+        </div>
+        <div class="absolute top-[85px] sm:top-[120px] md:top-[190px] left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center">
+          <NuxtLink :to="`/articles/${post.id}`">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center cursor-pointer">
+              <ArrowUpRight class="w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] md:w-[36px] md:h-[36px] text-[#2D7A6F] hover:bg-white/50 rounded-full" />
+            </div>
+          </NuxtLink>
+        </div>
+<h3 class="mt-[20px] sm:mt-4 md:mt-5 text-[#000000] font-bold text-right px-1 sm:px-2 md:px-4 text-[11px] sm:text-[13px] md:text-[16px] leading-[16px] sm:leading-5 md:leading-6 mb-[24px] sm:mb-[32px] md:mb-[40px]">
+  {{ post.title }}
+</h3>
+
+        <div class="absolute bottom-2 sm:bottom-3 md:bottom-4 right-2 sm:right-3 md:right-4 flex items-center gap-1 sm:gap-2 text-slate-500 text-[10px] sm:text-xs mr-0 sm:mr-[10px] md:mr-[15px] mt-0 md:mt-[20px]">
+          <span>{{ post.date }}</span>
+          <DateVector class="w-[13px] h-[13px] sm:w-[15px] sm:h-[15px] md:w-[18px] md:h-[18px] text-[#2D7A6F]" />
         </div>
       </NuxtLink>
     </div>
@@ -85,10 +86,7 @@ const articles = ref([
     image: '/images/article3.jpg' 
   }
 ]);
-
-
 </script>
-
 
 <style scoped>
 /* HTML: <img class="inner-curve" src="" alt=""> */
@@ -110,14 +108,42 @@ const articles = ref([
     radial-gradient(var(--s) at var(--p) calc(100% + sin(var(--a))*var(--s)),
       #0000 100%,#000 calc(100% + 1px)) 0 calc(var(--r)*(sin(var(--a)) - 1)) no-repeat,
     linear-gradient(90deg,#000 calc(var(--p) - var(--_d)),#0000 0 calc(var(--p) + var(--_d)),#000 0);
-
 }
 
 .img-wrap {
   width: 100%;
   height: 220px;
   border-radius: 25px;
-filter: drop-shadow(0 5px 0 rgba(0,0,0,0.12));}
+  filter: drop-shadow(0 5px 0 rgba(0,0,0,0.12));
+}
 
+/* موبایل کوچیک: کارت‌ها با 2 ستون خیلی باریک می‌شن، پس بریدگی و شعاع باید کوچیک‌تر بشن */
+@media (max-width: 639px) {
+  .img-wrap {
+    height: 100px;
+    border-radius: 16px;
+  }
+  .inner-curve {
+    --r: 5px;
+    --s: 16px;
+    --a: 16deg;
+    height: 100px;
+    border-radius: 16px;
+  }
+}
 
+/* تبلت کوچیک / موبایل بزرگ: هنوز 2 ستونه ولی فضای بیشتری داریم */
+@media (min-width: 640px) and (max-width: 767px) {
+  .img-wrap {
+    height: 140px;
+    border-radius: 20px;
+  }
+  .inner-curve {
+    --r: 7px;
+    --s: 22px;
+    --a: 18deg;
+    height: 140px;
+    border-radius: 20px;
+  }
+}
 </style>

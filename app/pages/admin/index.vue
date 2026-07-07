@@ -1,33 +1,86 @@
 <template>
-<div 
-    class="pr-[80px] pl-[80px] pt-[10px] pb-[10px] h-screen transition-colors duration-700"
+  <div
+    class="px-[12px] pt-[10px] pb-[10px] sm:px-[20px] md:px-[40px] lg:pr-[80px] lg:pl-[80px] lg:pt-[10px] lg:pb-[10px] h-screen transition-colors duration-700"
     :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ffffff]'"
   >
     <div
-      class="flex h-full rounded-[30px] overflow-hidden shadow-xl font-sans transition-colors duration-700"
+      class="flex flex-col lg:flex-row h-full rounded-[16px] lg:rounded-[30px] overflow-hidden shadow-xl font-sans transition-colors duration-700 relative"
       :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-white'"
       dir="rtl"
     >
+      <!-- Mobile / Tablet Top Bar -->
+      <div
+        class="flex lg:hidden items-center justify-between px-4 py-3 shadow-md z-20 transition-colors duration-700"
+        :class="isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]'"
+      >
+        <div class="flex items-center gap-3">
+          <img
+            src="/images/admin-avatar.jpg"
+            alt="Profile"
+            class="w-[42px] h-[42px] rounded-full object-cover shadow-lg"
+          />
+          <div class="text-right">
+            <h2
+              class="font-bold text-[14px] whitespace-nowrap"
+              :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
+            >
+              ثمین زارعی
+            </h2>
+          </div>
+        </div>
+
+        <button
+          @click="isMobileMenuOpen = true"
+          class="p-2 rounded-lg"
+          :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Overlay -->
+      <div
+        v-if="isMobileMenuOpen"
+        @click="isMobileMenuOpen = false"
+        class="fixed inset-0 bg-black/50 z-30 lg:hidden transition-opacity duration-300"
+      ></div>
+
       <!-- Sidebar -->
-<aside
+      <aside
         @mouseenter="isSidebarOpen = true"
         @mouseleave="isSidebarOpen = false"
         :class="[
-          'flex flex-col py-8 z-10 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] overflow-hidden',
+          'flex flex-col py-8 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] overflow-hidden',
+          'fixed top-0 right-0 h-full w-[270px] max-w-[80vw] z-40 transform transition-transform duration-500',
+          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full',
+          'lg:static lg:top-auto lg:right-auto lg:h-auto lg:max-w-none lg:translate-x-0 lg:z-10',
           isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]',
-          isSidebarOpen ? 'w-[253px]' : 'w-[90px]'
+          isSidebarOpen ? 'lg:w-[253px]' : 'lg:w-[90px]'
         ]"
       >
-        <!-- Profile -->
-        <div
-          class="flex items-center mb-10 px-[18px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          :class="isSidebarOpen ? 'justify-start gap-4 mb-[50px]' : 'justify-start mb-[50px]'"
+        <!-- Close button (only mobile/tablet) -->
+        <button
+          @click="isMobileMenuOpen = false"
+          class="lg:hidden self-start mr-[18px] mb-4 p-1"
+          :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
         >
-          <div class="w-[55px] h-[55px] shrink-0 grow-0 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Profile (دقیقاً حالت دسکتاپ قبلی، فقط زیر lg مخفی است) -->
+        <div
+          class="hidden lg:flex items-center mb-6 px-[18px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          :class="isSidebarOpen ? 'justify-start gap-4 mb-[30px]' : 'justify-start mb-[30px]'"
+        >
+          <div class="w-[45px] h-[45px] shrink-0 grow-0 flex items-center justify-center">
             <img
               src="/images/admin-avatar.jpg"
               alt="Profile"
-              style="width: 90px; height: 90px; min-width: 90px; min-height: 90px;"
+              style="width: 70px; height: 70px; min-width: 70px; min-height: 70px;"
               class="block rounded-full shadow-lg object-cover shrink-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center"
               :class="isSidebarOpen ? 'scale-100 mr-[20px]' : 'scale-[0.611]'"
             />
@@ -39,13 +92,13 @@
               ? 'opacity-100 max-w-[180px] translate-x-0 delay-200'
               : 'opacity-0 max-w-0 -translate-x-2 delay-0'"
           >
-            <h2 class="font-bold text-[#0F184B] text-[16px] whitespace-nowrap">
+            <h2 class="font-bold text-[#0F184B] text-[14px] whitespace-nowrap">
               ثمین زارعی
             </h2>
-            <p class="text-gray-500 text-[13px] mt-1 whitespace-nowrap font-roboto">
+            <p class="text-gray-500 text-[12px] mt-1 whitespace-nowrap font-roboto">
               09121234567
             </p>
-            <p class="w-[139px] text-gray-500 text-[10px] mt-1 whitespace-nowrap font-roboto">
+            <p class="w-[139px] text-gray-500 text-[9px] mt-1 whitespace-nowrap font-roboto">
               samin@example.com
             </p>
           </div>
@@ -55,7 +108,8 @@
         <nav
           :class="[
             'flex flex-col gap-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
-            isSidebarOpen ? 'w-[252px]' : 'w-full'
+            'w-full mt-[15px]',
+            isSidebarOpen ? 'lg:w-[252px]' : 'lg:w-full'
           ]"
         >
           <button
@@ -63,74 +117,67 @@
             :key="item.name"
             @click="selectItem(item.component)"
             :style="isSidebarOpen ? { transitionDelay: (200 + index * 50) + 'ms' } : { transitionDelay: '0ms' }"
-              :class="[
-  'px-4 py-2 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[62px]',
-  isSidebarOpen
-    ? (
-        activeComponent === item.component
-          ? `bg-[#67A9A880] border-[#67A9A8] ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'} gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right`
-          : `bg-[#67A9A880] ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]/80'} hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right`
-      )
-    : (
-        activeComponent === item.component
-          ? `bg-transparent border-transparent ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'} justify-center`
-          : `bg-transparent border-transparent ${isGalaxyTheme ? 'text-white' : 'text-[#0F184B]/80'} justify-center hover:scale-110`
-      )
-]"
+            class="px-4 py-1.5 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[48px] lg:min-h-[44px] "
+            :class="getNavItemClasses(item)"
           >
             <component
               :is="item.icon"
-            :class="[
-              'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
-              isSidebarOpen ? 'w-[25px] h-[25px]' : 'w-[28px] h-[28px]',
-              isGalaxyTheme
-                ? 'text-white'
-                : (activeComponent === item.component
-                    ? 'text-[#2C7379]'
-                    : 'text-[#454C6A]')
-            ]"
+              :class="[
+                'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                'w-[30px] h-[30px]',
+                isSidebarOpen ? 'lg:h-[40px]' : 'lg:w-[22px] lg:h-[40px]',
+                isGalaxyTheme
+                  ? 'text-white'
+                  : (activeComponent === item.component
+                      ? 'text-[#2C7379]'
+                      : 'text-[#454C6A]')
+              ]"
             />
             <span
-              class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[18px]"
-              :class="isSidebarOpen ? 'opacity-100 max-w-[150px] ml-0' : 'opacity-0 max-w-0'"
+              class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] lg:text-[15px]"
+              :class="isSidebarOpen
+                ? 'opacity-100 max-w-[150px] ml-0'
+                : 'opacity-100 max-w-[150px] ml-0 lg:opacity-0 lg:max-w-0'"
             >
               {{ item.name }}
             </span>
           </button>
-<button
-  @click="logout"
-  :class="[
-    'px-4 py-2 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[62px]',
-    isSidebarOpen
-      ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
-      : `bg-transparent border-transparent justify-center hover:scale-110 ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
-  ]"
->
-  <admin-icons-logout
-    :class="[
-      'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
-      isSidebarOpen ? 'w-[25px] h-[25px]' : 'w-[28px] h-[28px]',
-      isGalaxyTheme ? 'text-white' : 'text-red-500'
-    ]"
-  />
 
-  <span
-    class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[18px]"
-    :class="isSidebarOpen ? 'opacity-100 max-w-[150px]' : 'opacity-0 max-w-0'"
-  >
-    خروج از پنل
-  </span>
-</button>
+          <button
+            @click="logout"
+            class="px-4 py-1.5 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[40px] lg:min-h-[40px]"
+            :class="isSidebarOpen
+              ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right  ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
+              : `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'} lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0` "
+          >
+            <admin-icons-logout
+              :class="[
+                'flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                'w-[30px] h-[30px]',
+                isSidebarOpen ? '' : 'lg:w-[22px] lg:h-[40px]',
+                isGalaxyTheme ? 'text-white' : 'text-red-500'
+              ]"
+            />
+
+            <span
+              class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px]"
+              :class="isSidebarOpen
+                ? 'opacity-100 max-w-[150px]'
+                : 'opacity-100 max-w-[150px] lg:opacity-0 lg:max-w-0 '"
+            >
+              خروج از پنل
+            </span>
+          </button>
         </nav>
       </aside>
 
       <!-- Main Content -->
-<main
-        class="flex-1 rounded-l-[40px]  mr-[-20px] overflow-y-auto transition-colors duration-700 hide-scrollbar"
+      <main
+        class="flex-1 rounded-b-[16px] lg:rounded-b-none lg:rounded-l-[40px] mr-0 lg:mr-[-20px] overflow-y-auto transition-colors duration-700 hide-scrollbar"
         :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ECEDF4]'"
       >
-        <div v-if="!activeComponent" class="w-full h-full flex items-center justify-center">
-          <img src="/images/empty-page4.png" alt="Empty State" class="w-[1200px] max-h-[500px] object-contain" />
+        <div v-if="!activeComponent" class="w-full h-full flex items-center justify-center p-4">
+          <img src="/images/empty-page4.png" alt="Empty State" class="w-full max-w-[1200px] max-h-[260px] lg:max-h-[500px] object-contain" />
         </div>
         <component v-else :is="activeComponent" />
       </main>
@@ -175,6 +222,7 @@ const Articles = defineAsyncComponent(() =>
 )
 
 const isSidebarOpen = ref(false)
+const isMobileMenuOpen = ref(false)
 const activeComponent = shallowRef(null)
 const isGalaxyTheme = ref(false)
 
@@ -184,10 +232,12 @@ provide('setGalaxyTheme', (value) => {
 
 const selectItem = (component) => {
   activeComponent.value = component
-  
+
   // اگر کاربر روی "قرعه‌کشی" کلیک کند، تم کهکشانی فعال شود
-  // با این شرط، هر دو کامپوننت Lottery و LotteryDraw تم را تیره می‌کنند
-  isGalaxyTheme.value = ( component === LotteryDraw)
+  isGalaxyTheme.value = (component === LotteryDraw)
+
+  // بعد از انتخاب آیتم، منوی موبایل بسته شود
+  isMobileMenuOpen.value = false
 }
 
 const navItems = [
@@ -200,12 +250,26 @@ const navItems = [
   { name: 'مقالات', component: Articles, icon: ArticlesIcon }
 ]
 
+// کلاس‌های آیتم‌های منو: در موبایل همیشه حالت "باز" نمایش داده می‌شود
+// و در دسکتاپ (lg) دقیقاً همان رفتار قبلی هاور حفظ شده است
+const getNavItemClasses = (item) => {
+  const isActive = activeComponent.value === item.component
+
+  const openClasses = isActive
+    ? `bg-[#67A9A880] border-[#67A9A8] ${isGalaxyTheme.value ? 'text-white' : 'text-[#0F184B]'} gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right`
+    : `bg-[#67A9A880] ${isGalaxyTheme.value ? 'text-white' : 'text-[#0F184B]/80'} hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right`
+
+  const closedClassesDesktop = isActive
+    ? `lg:bg-transparent lg:border-transparent lg:justify-center lg:gap-0 lg:px-0 ${isGalaxyTheme.value ? 'lg:text-white' : 'lg:text-[#0F184B]'}`
+    : `lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 ${isGalaxyTheme.value ? 'lg:text-white' : 'lg:text-[#0F184B]/80'}`
+
+  return isSidebarOpen.value ? openClasses : `${openClasses} ${closedClassesDesktop}`
+}
 const logout = () => {
   localStorage.removeItem('isAdminLoggedIn')
   navigateTo('/admin/ntt20119')
 }
 </script>
-
 
 <style scoped>
 .hide-scrollbar::-webkit-scrollbar {

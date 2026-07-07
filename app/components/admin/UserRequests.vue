@@ -37,15 +37,15 @@ const toggleAccordion = (id) => {
 </script>
 
 <template>
-  <div class="p-6" dir="rtl">
+  <div class="p-4 sm:p-5 lg:p-6" dir="rtl">
 
-    <div class="flex flex-wrap justify-center items-center gap-2 mb-8 bg-[#F7F3EB] h-[78px] rounded-[27px]">
+    <div class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0">
       <button 
         v-for="tab in tabs"
         :key="tab.id"
         @click="activeTab = tab.id"
         :class="[
-          'px-5 py-2 rounded-full transition-all text-[14px] font-medium h-[41px]',
+          'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
           activeTab === tab.id
             ? 'bg-[#67A9A8] text-[#0F184B] shadow-md'
             : 'text-[] hover:bg-gray-200'
@@ -57,32 +57,36 @@ const toggleAccordion = (id) => {
 
     <div class="space-y-4">
       <div v-for="user in filteredUsers" :key="user.id" 
-           class="bg-[#FFFFFF3B] p-6 rounded-2xl border border-gray-300 transition-all duration-300">
+           class="bg-[#FFFFFF3B] p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 transition-all duration-300">
         
         <div class="flex justify-between items-start">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-3 sm:gap-4">
             <!-- استفاده از avatar هر کاربر -->
-            <img :src="user.avatar" :alt="user.name" class="w-[114px] h-[114px] rounded-full border border-gray-200 object-cover" />
+            <img
+              :src="user.avatar"
+              :alt="user.name"
+              class="w-[64px] h-[64px] sm:w-[80px] sm:h-[80px] lg:w-[114px] lg:h-[114px] rounded-full border border-gray-200 object-cover shrink-0"
+            />
             <div>
-              <h3 class="font-bold text-[20px] text-[#000000] font-roboto -mt-[40px]">{{ user.name }}</h3>
-              <p class="text-black mt-2 font-roboto text-[20px]">{{ user.phone }}</p>
-              <p v-if="openUserId === user.id" class="text-[20px] text-black font-roboto">{{ user.email }}</p>
+              <h3 class="font-bold text-[15px] sm:text-[17px] lg:text-[20px] text-[#000000] font-roboto lg:-mt-[40px]">{{ user.name }}</h3>
+              <p class="text-black mt-1 lg:mt-2 font-roboto text-[13px] sm:text-[15px] lg:text-[20px]">{{ user.phone }}</p>
+              <p v-if="openUserId === user.id" class="text-[13px] sm:text-[15px] lg:text-[20px] text-black font-roboto break-all">{{ user.email }}</p>
             </div>
           </div>
         </div>
 
-        <div v-if="openUserId === user.id" class="mt-6 pt-6">
-          <div class="w-full h-32 p-4 border border-[#2C7379] rounded-[5px] bg-white/17 text-balck text-[14px] mb-4 font-roboto">
+        <div v-if="openUserId === user.id" class="mt-4 lg:mt-6 pt-4 lg:pt-6">
+          <div class="w-full h-28 sm:h-32 p-3 sm:p-4 border border-[#2C7379] rounded-[5px] bg-white/17 text-balck text-[13px] sm:text-[14px] mb-4 font-roboto">
             {{ user.details }}
           </div>
         </div>
 
-        <div :class="`font-roboto ${openUserId === user.id ? '' : 'mr-[120px]'}`">
+        <div :class="`font-roboto ${openUserId === user.id ? '' : 'lg:mr-[120px]'}`">
           <button
             @click="toggleAccordion(user.id)"
             :class="[
-              'text-gray-600 text-sm flex items-center gap-1 hover:text-[#2d6a66] transition-colors',
-              openUserId === user.id ? 'mt-0' : '-mt-[30px]'
+              'text-gray-600 text-xs sm:text-sm flex items-center gap-1 hover:text-[#2d6a66] transition-colors mt-2 lg:mt-0',
+              openUserId === user.id ? 'lg:mt-0' : 'lg:-mt-[30px]'
             ]"
           >
             {{ openUserId === user.id ? 'بستن اطلاعات' : 'دیدن کامل اطلاعات' }}

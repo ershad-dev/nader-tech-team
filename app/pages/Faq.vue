@@ -1,5 +1,5 @@
 <template>
-  <section class="max-w-6xl mx-auto py-20 px-6" dir="rtl">
+  <section class="max-w-6xl mx-auto py-20 px-4 md:px-6" dir="rtl">
     
     <div class="flex flex-col items-center mb-20">
       <div class="bg-[#ABD7D887] w-16 h-16 rounded-full border border-gray-300 flex items-center justify-center mb-6 ">
@@ -10,16 +10,19 @@
 
     <div class="flex flex-col gap-4">
       <div v-for="(item, index) in faqs" :key="index" 
-           class="bg-[#2C7379]/10 rounded-2xl overflow-hidden border border-[##BFD1D53B] transition-all">
+           class="bg-[#2C7379]/10 rounded-2xl overflow-hidden border border-[#BFD1D53B] transition-all">
         
         <button 
             @click="toggle(index)" 
-            class="w-full py-6 px-6 flex justify-between items-center text-right hover:bg-[#2C7379]/5 transition-colors"
+            class="w-full py-6 px-4 md:px-6 flex justify-between items-center text-right hover:bg-[#2C7379]/5 transition-colors"
             >
-            <p class="text-[#0F184B] font-bold text-[20px] font-noto-light">{{ item.question }}</p> 
+            <!-- تغییر سایز فونت فقط برای موبایل -->
+            <p class="text-[#0F184B] font-bold text-[16px] md:text-[20px] font-noto-light leading-tight">
+              {{ item.question }}
+            </p> 
             
             <svg 
-                class="w-6 h-6 text-[#747893] transition-transform duration-300 flex-shrink-0" 
+                class="w-6 h-6 text-[#747893] transition-transform duration-300 flex-shrink-0 mr-2" 
                 :class="{ 'rotate-180': isOpen === index }"
                 fill="none" 
                 stroke="currentColor" 
@@ -29,8 +32,8 @@
             </svg>
         </button>
         
-        <div v-if="isOpen === index" class="px-6 pb-6 pt-0 text-[#616474] text-[18px] leading-[32px] font-roboto">
-          <div class=" pt-4">
+        <div v-if="isOpen === index" class="px-4 md:px-6 pb-6 pt-0 text-[#616474] text-[16px] md:text-[18px] leading-[22px] md:leading-[30px] font-roboto">
+          <div class="pt-4">
             {{ item.answer }}
           </div>
         </div>
@@ -43,26 +46,21 @@
 import { ref } from 'vue';
 
 const isOpen = ref(null); 
-
-const toggle = (index) => { 
-  isOpen.value = isOpen.value === index ? null : index; 
-};
+const toggle = (index) => { isOpen.value = isOpen.value === index ? null : index; };
 
 const faqs = [
-  { 
-    question: 'فرآیند کار از ابتدا تا انتها به چه صورت است؟', 
-    answer: 'فرآیند کار ما از ابتدا تا انتها در ۶ مرحله‌ی شفاف و منظم انجام می‌شود تا شما در هر لحظه از پیشرفت پروژه خود مطلع باشید.' 
-  },
+  { question: 'فرآیند کار از ابتدا تا انتها به چه صورت است؟', answer: 'فرآیند کار ما از ابتدا تا انتها در ۶ مرحله‌ی شفاف و منظم انجام می‌شود تا شما در هر لحظه از پیشرفت پروژه خود مطلع باشید.' },
   { question: 'تولید محتوا فقط متنی است یا تصویر و ویدیو هم شامل می‌شود؟', answer: 'خیر، خدمات ما شامل تولید محتوای متنی، تصویری، ویدئویی و گرافیک‌های اختصاصی می‌باشد.' },
-  { question: 'سایت من با چه سیستمی (وردپرس، کدنویسی اختصاصی یا ...) طراحی می‌شود؟', answer: 'بسته به نیاز و اهداف شما، ما از بهترین تکنولوژی‌ها استفاده می‌کنیم.' },
+  { question: 'سایت من با چه سیستمی طراحی می‌شود؟', answer: 'بسته به نیاز و اهداف شما، ما از بهترین تکنولوژی‌ها استفاده می‌کنیم.' },
   { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' },
-    { question: 'تولید محتوا فقط متنی است یا تصویر و ویدیو هم شامل می‌شود؟', answer: 'خیر، خدمات ما شامل تولید محتوای متنی، تصویری، ویدئویی و گرافیک‌های اختصاصی می‌باشد.' },
-    { question: 'تولید محتوا فقط متنی است یا تصویر و ویدیو هم شامل می‌شود؟', answer: 'خیر، خدمات ما شامل تولید محتوای متنی، تصویری، ویدئویی و گرافیک‌های اختصاصی می‌باشد.' },
-    { question: 'تولید محتوا فقط متنی است یا تصویر و ویدیو هم شامل می‌شود؟', answer: 'خیر، خدمات ما شامل تولید محتوای متنی، تصویری، ویدئویی و گرافیک‌های اختصاصی می‌باشد.' },
-    { question: 'تولید محتوا فقط متنی است یا تصویر و ویدیو هم شامل می‌شود؟', answer: 'خیر، خدمات ما شامل تولید محتوای متنی، تصویری، ویدئویی و گرافیک‌های اختصاصی می‌باشد.' },
+  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' },
+  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' },
+  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' }
+
+
 ];
 
-  const footerConfig = useState('footerConfig');
+const footerConfig = useState('footerConfig');
 footerConfig.value = {
   title: ' شروع یک تجربه متفاوت ',
   bgColor: 'bg-purple-800'

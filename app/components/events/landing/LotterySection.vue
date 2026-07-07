@@ -1,8 +1,6 @@
-
-
 <template>
   <!-- کانتینر اصلی با تراز بندی بالا و راست -->
-  <section class="relative w-[1110px] max-w-full mx-auto h-[629px] rounded-[17px] overflow-hidden flex flex-col justify-between p-12 mt-[75px]">
+  <section class="relative w-full md:w-[1110px] max-w-full mx-auto h-[420px] sm:h-[480px] md:h-[629px] rounded-[12px] sm:rounded-[17px] overflow-hidden flex flex-col justify-between p-6 sm:p-8 md:p-12 mt-[50px] sm:mt-[60px] md:mt-[75px]">
     
     <!-- تصویر پس‌زمینه -->
     <img src="/images/lottery-bg.png" alt="قرعه کشی" class="absolute inset-0 w-full h-full object-cover" />
@@ -12,24 +10,24 @@
 
     <!-- بخش متن‌ها (بالا سمت راست) -->
     <div class="relative z-10 text-white text-right">
-      <h2 class="text-[36px] font-bold mb-2">قرعه‌کشی ایونت</h2>
-      <p class="text-[24px] font-normal opacity-90 font-roboto mt-[20px]">توضیحات قرعه‌کشی</p>
+      <h2 class="text-[24px] sm:text-[28px] md:text-[36px] font-bold mb-2">قرعه‌کشی ایونت</h2>
+      <p class="text-[16px] sm:text-[20px] md:text-[24px] font-normal opacity-90 font-roboto mt-[10px] sm:mt-[15px] md:mt-[20px]">توضیحات قرعه‌کشی</p>
     </div>
 
-<!-- بخش دکمه‌ها (پایین و وسط‌چین) -->
-<div class="relative z-10 flex gap-4 self-center">
-<NuxtLink to="/events/lottery/register">
-  <button class="bg-white/90 text-[#333B6A] px-8 py-3 rounded-[17px] text-[24px] font-bold hover:bg-white transition w-[313px] h-[75px]">
-    ثبت‌نام در قرعه‌کشی
-  </button>
-</NuxtLink>
+    <!-- بخش دکمه‌ها (پایین و وسط‌چین) -->
+    <div class="relative z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 self-center w-full sm:w-auto items-center">
+      <NuxtLink to="/events/lottery/register" class="w-full sm:w-auto">
+        <button class="bg-white/90 text-[#333B6A] px-6 sm:px-8 py-3 rounded-[12px] sm:rounded-[17px] text-[16px] sm:text-[20px] md:text-[24px] font-bold hover:bg-white transition w-full sm:w-[260px] md:w-[313px] h-[52px] sm:h-[62px] md:h-[75px]">
+          ثبت‌نام در قرعه‌کشی
+        </button>
+      </NuxtLink>
 
-<NuxtLink to="/events/lottery/login">
-  <button class="bg-white/90 text-[#333B6A] px-8 py-3 rounded-[17px] text-[24px] font-bold hover:bg-white transition w-[313px] h-[75px]">
-    ورود به ایونت
-  </button>
-</NuxtLink>
-</div>
+      <NuxtLink to="/events/lottery/login" class="w-full sm:w-auto">
+        <button class="bg-white/90 text-[#333B6A] px-6 sm:px-8 py-3 rounded-[12px] sm:rounded-[17px] text-[16px] sm:text-[20px] md:text-[24px] font-bold hover:bg-white transition w-full sm:w-[260px] md:w-[313px] h-[52px] sm:h-[62px] md:h-[75px]">
+          ورود به ایونت
+        </button>
+      </NuxtLink>
+    </div>
 
   </section>
 </template>
