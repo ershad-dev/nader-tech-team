@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+
 const { getProjectsByType } = useProjects();
 const projects = computed(() => getProjectsByType('content'));
 const currentIndex = ref(0);
@@ -41,8 +42,8 @@ const prevSlide = () => {
 </script>
 
 <template>
-<div class=" bg-center py-10 md:py-14 xl:py-16 xl:-mt-[70px]">
-      <div class="max-w-6xl mx-auto px-4 xl:px-0">
+  <div class="bg-center py-10 md:py-14 xl:py-16 xl:-mt-[70px]">
+    <div class="max-w-6xl mx-auto px-4 xl:px-0">
       <h1
         class="ml-auto bg-[#BFD1D5] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] text-[#0F184B] rounded-[19px] shadow-sm flex items-center justify-center mt-[50px] md:mt-[70px] xl:mt-[100px]"
       >
@@ -73,18 +74,20 @@ const prevSlide = () => {
         </div>
       </div>
 
-      <!-- تبلت و دسکتاپ: نمایش لیست داینامیک (طرح اصلی) -->
+      <!--
+        تبلت و دسکتاپ: گرید نسبی (fr-based) به‌جای عرض ثابت پیکسلی.
+        md/lg (۷۶۸ تا ۱۲۷۹ - iPad mini/Air/Pro در پرتره و لندسکیپ): ۳ ستون
+        xl/2xl (۱۲۸۰ به بالا): ۴ ستون
+        چون ستون‌ها نسبی (fr) هستن، در هیچ عرضی (حتی مرزهای دقیق آی‌پد) لبریز نمی‌شن.
+      -->
       <div
-        class="hidden md:flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-6 xl:gap-[70px] xl:h-80 mt-8 md:mt-10 xl:mt-[50px]"
+        class="hidden md:grid grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 xl:gap-8 2xl:gap-[60px] justify-items-center mt-8 md:mt-10 xl:mt-[50px]"
       >
         <div
           v-for="(card, index) in visibleProjects"
           :key="card.id"
-          class="w-full max-w-[312px] aspect-[312/358] md:w-[240px] md:h-[280px] md:aspect-auto xl:w-[312px] xl:h-[358px] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all hover:scale-105"
-          :class="[
-            index >= 3 ? 'md:hidden xl:block' : '',
-            index % 2 !== 0 ? 'xl:mt-12' : '',
-          ]"
+          class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all hover:scale-105"
+          :class="[index >= 3 ? 'hidden xl:block' : '']"
         >
           <NuxtLink :to="`/order/${card.id}`">
             <img

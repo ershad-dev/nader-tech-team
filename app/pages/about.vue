@@ -15,12 +15,12 @@
     </p>
 
     <!-- تصویر فلش: فقط در دسکتاپ نمایش داده می‌شود -->
-    <div class="hidden md:flex justify-center px-4">
-      <img src="/images/curved-arrow.png" alt="فلش" class="w-[700px] object-contain -mt-10" />
-    </div>
+    <div class="hidden lg:flex justify-center px-4">
+  <img src="/images/curved-arrow.png" alt="فلش" class="w-[700px] object-contain -mt-10" />
+</div>
 
     <!-- دکمه: در موبایل وسط‌چین و در دسکتاپ طبق طراحی شما -->
-<div class="flex justify-center md:justify-end mt-6 md:-mt-10">
+    <div class="flex justify-center md:justify-end mt-10 md:mt-6 lg:-mt-10">
   <NuxtLink
     to="/order/requestProject"
     class="bg-[#ECD0A0] border border-white w-full md:w-[241px] h-[57px] px-8 py-3 text-[20px] rounded-[16px] font-bold text-[#000000] shadow-lg md:ml-[80px] flex items-center justify-center"

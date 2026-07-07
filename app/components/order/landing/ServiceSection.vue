@@ -6,18 +6,18 @@
     </h2>
 
     <!-- بخش اول -->
-    <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-0 mb-10 lg:mb-16">
-      <div class="order-2 lg:order-none w-full lg:w-1/2 grid gap-3 md:gap-4">
+    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-6 lg:gap-0 mb-10 md:mb-12 lg:mb-16">
+      <div class="order-2 md:order-none w-full md:w-1/2 grid gap-3 md:gap-4">
         <div
           v-for="service in contentServices"
           :key="service"
-          class="border-[1.5px] w-full max-w-[317px] mx-auto lg:mx-0 lg:ml-[100px] lg:w-[317px] h-[50px] md:h-[55px] lg:h-[60px] bg-white border-[#BFD1D5] rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 transition cursor-pointer text-[13px] md:text-[14px] flex items-center justify-center text-[#081035]"
+          class="border-[1.5px] w-full max-w-[317px] mx-auto md:mx-0 md:ml-[50px] lg:ml-[100px] md:w-[280px] lg:w-[317px] h-[50px] md:h-[55px] lg:h-[60px] bg-white border-[#BFD1D5] rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 transition cursor-pointer text-[13px] md:text-[14px] flex items-center justify-center text-[#081035]"
         >
           {{ service }}
         </div>
       </div>
 
-      <div class="order-1 lg:order-none w-full max-w-[305px] h-[260px] md:h-[290px] lg:w-[305px] lg:h-[315px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] overflow-hidden">
+      <div class="order-1 md:order-none w-full max-w-[305px] md:w-[280px] lg:w-[305px] h-[260px] md:h-[290px] lg:h-[315px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] overflow-hidden">
         <img
           src="/images/content-service.jpg"
           class="w-full h-full object-cover"
@@ -71,18 +71,18 @@
     </div>
 
     <!-- بخش دوم -->
-    <div class="flex flex-col lg:flex-row-reverse items-center gap-8">
-      <div class="order-2 lg:order-none w-full lg:w-1/2 grid gap-3 md:gap-4">
+    <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-6 lg:gap-0">
+      <div class="order-2 md:order-none w-full md:w-1/2 grid gap-3 md:gap-4">
         <div
           v-for="service in webServices"
           :key="service"
-          class="border-[1.5px] w-full max-w-[317px] mx-auto lg:mx-0 lg:w-[317px] h-[50px] md:h-[55px] lg:h-[60px] bg-white border-[#BFD1D5] rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 transition cursor-pointer text-[13px] md:text-[14px] flex items-center justify-center text-[#081035]"
+          class="border-[1.5px] w-full max-w-[317px] mx-auto md:mx-0 md:mr-[50px] lg:mr-0 md:w-[280px] lg:w-[317px] h-[50px] md:h-[55px] lg:h-[60px] bg-white border-[#BFD1D5] rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 transition cursor-pointer text-[13px] md:text-[14px] flex items-center justify-center text-[#081035]"
         >
           {{ service }}
         </div>
       </div>
 
-      <div class="order-1 lg:order-none w-full max-w-[305px] h-[260px] md:h-[290px] lg:w-[305px] lg:h-[315px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] overflow-hidden">
+      <div class="order-1 md:order-none w-full max-w-[305px] md:w-[280px] lg:w-[305px] h-[260px] md:h-[290px] lg:h-[315px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] overflow-hidden">
 
         <img
           src="/images/web-service.jpg"

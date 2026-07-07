@@ -122,7 +122,7 @@ const steps = [
 <div class="max-w-6xl mx-auto">
   <div class="flex flex-col items-center text-center mb-8 md:mb-10">
     <h3 class="text-[#2d6a66] md:text-white text-[18px] md:text-[22px] xl:text-[26px] font-medium mb-2">فرایند همکاری</h3>
-    <h1 class="text-[#0F184B] text-[22px] md:text-[27px] xl:text-[32px] font-bold">از ایده تا نتیجه، در کنار شما هستیم</h1>
+    <h1 class="text-[#0F184B] text-[22px] md:text-[29px] xl:text-[32px] font-bold">از ایده تا نتیجه، در کنار شما هستیم</h1>
   </div>
 
 <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-3 xl:gap-12 items-start md:items-center xl:items-start">
@@ -130,22 +130,22 @@ const steps = [
     v-for="(step, index) in steps"
     :key="index"
     :class="[
-      'relative bg-[#E4E6EB] rounded-[1.5rem] md:rounded-[2rem] w-[105px] sm:w-[140px] md:w-[140px] xl:w-[182px] h-[160px] sm:h-[190px] md:h-[190px] xl:h-[235px] flex flex-col shadow-lg transition-transform duration-500 mt-[12px] sm:mt-[20px] md:mt-[20px] xl:mt-[50px]',
+      'relative bg-[#E4E6EB] rounded-[1.5rem] md:rounded-[1.75rem] w-[105px] sm:w-[140px] md:w-[140px] xl:w-[182px] h-[160px] sm:h-[190px] md:h-[195px] xl:h-[235px] flex flex-col shadow-lg transition-transform duration-500 mt-[12px] sm:mt-[20px] md:mt-[20px] xl:mt-[50px]',
       index % 2 !== 0 ? 'xl:translate-y-12' : '',
     ]"
   >
-      <div class="absolute -right-1 top-5 md:top-6 w-1.5 h-[28px] sm:h-[34px] md:h-[41px] bg-[#EAAA3C] rounded-full -mt-[6px] md:-mt-[7.5px]"></div>
+      <div class="absolute -right-1 top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[30px] bg-[#EAAA3C] rounded-full -mt-[6px] md:-mt-[6px]"></div>
 
-      <div class="bg-white p-2 sm:p-3 md:p-4 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[2rem] md:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[70px]">
-        <div class="flex items-center gap-1">
-          <span class="text-[20px] sm:text-[26px] md:text-[36px] xl:text-[40px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[20px] text-[#EAAA3C] rokh-bold-num">
+      <div class="bg-white p-2 sm:p-3 md:p-2.5 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] h-[48px] sm:h-[58px] md:h-[52px]">
+        <div class="flex items-center h-full gap-1">
+          <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[10px] text-[#EAAA3C] rokh-bold-num mt-2">
             {{ (index + 1).toLocaleString('fa-IR') }}
           </span>
-          <h3 class="text-[#EAAA3C] font-bold text-[12px] sm:text-[15px] md:text-[20px] xl:text-[22px] truncate rokh-bold-num">{{ step.title }}</h3>
+          <h3 class="text-[#EAAA3C] font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] truncate rokh-bold-num">{{ step.title }}</h3>
         </div>
       </div>
 
-      <div class="px-2 sm:px-3 pb-2 sm:pb-3 md:p-4 flex-grow text-[#747893] text-[10px] sm:text-[12px] md:text-[18px] xl:text-[20px] font-normal font-roboto leading-relaxed -mt-1 md:-mt-[15px]">
+      <div class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow text-[#747893] text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 ">
         {{ step.desc }}
       </div>
     </div>

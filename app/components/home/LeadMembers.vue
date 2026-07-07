@@ -1,13 +1,13 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 mt-2 sm:mt-14 md:mt-2 relative">
+  <div class="max-w-6xl mx-auto px-4 mt-2 sm:mt-14 md:mt-10 xl:mt-2 relative">
     
     <div class="relative w-full">
-      <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[3rem]" alt="Background" />
+      <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem]" alt="Background" />
 
-      <div class="flex justify-center w-full px-4 -mt-[81px] sm:-mt-[106px] md:-mt-[230px]">
+      <div class="flex justify-center w-full px-4 -mt-[81px] sm:-mt-[106px] md:-mt-[170px] xl:-mt-[230px]">
         <!-- بقیه دقیقاً همون چیزیه که داشتی، بدون تغییر -->
         
-        <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 w-[300px] sm:w-[400px] md:w-[853px]">
+        <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 w-[300px] sm:w-[400px] md:w-[600px] xl:w-[853px]">
           
           <div 
             v-for="(member, index) in teamMembers" 
@@ -15,10 +15,10 @@
             :ref="el => { cardRefs[index] = el }"
             @click="selectMember(index)"
             :class="[
-              'bg-white rounded-[14px] sm:rounded-[20px] md:rounded-[40px] h-[65px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[185px] md:w-[200px] shadow-lg transition-all duration-300 cursor-pointer flex flex-col overflow-hidden'
+              'bg-white rounded-[14px] sm:rounded-[20px] md:rounded-[28px] xl:rounded-[40px] h-[65px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[130px] md:w-[140px] xl:h-[185px] xl:w-[200px] shadow-lg transition-all duration-300 cursor-pointer flex flex-col overflow-hidden'
             ]"
           >
-            <div class="w-full h-[48px] sm:h-[62px] md:h-[155px] overflow-hidden">
+            <div class="w-full h-[48px] sm:h-[62px] md:h-[105px] xl:h-[155px] overflow-hidden">
               <img 
                 :src="member.image" 
                 :alt="member.name"
@@ -27,10 +27,10 @@
             </div>
 
             <div 
-              class="mt-auto py-1 sm:py-1.5 md:py-4 px-1 md:px-2 text-center relative"
+              class="mt-auto py-1 sm:py-1.5 md:py-2.5 xl:py-4 px-1 md:px-1.5 xl:px-2 text-center relative"
               style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
             >
-                <p class="text-[#747893] font-normal text-[8px] sm:text-[10px] md:text-[16px] font-roboto truncate">{{ member.name }}</p>
+                <p class="text-[#747893] font-normal text-[8px] sm:text-[10px] md:text-[13px] xl:text-[16px] font-roboto truncate">{{ member.name }}</p>
               
                 <div v-if="selectedIndex === index" class="absolute -top-3 left-1/2 -translate-x-1/2">
                 </div>
@@ -41,24 +41,24 @@
       </div>
     </div>
 
-    <div v-if="selectedIndex !== null" class="mt-16 sm:mt-24 md:mt-32 relative text-center px-2 sm:px-4 md:px-16 animate-fade-in">
+    <div v-if="selectedIndex !== null" class="mt-16 sm:mt-24 md:mt-28 xl:mt-32 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 animate-fade-in">
       
         <div 
-          class="notch absolute -top-[18px] sm:-top-[24px] md:-top-[30px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[18px] sm:mt-[24px] md:mt-[30px]"
+          class="notch absolute -top-[18px] sm:-top-[24px] md:-top-[27px] xl:-top-[30px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[18px] sm:mt-[24px] md:mt-[27px] xl:mt-[30px]"
           :style="{ left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
         >
-          <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[30px] h-[30px] sm:h-[40px] md:h-[50px]">
+          <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[27px] xl:-mt-[30px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px]">
         </div>
 
-      <div class="w-full sm:w-[600px] md:w-[875px] mx-auto bg-[#ABD7D8]/25 p-4 sm:p-6 md:p-8 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[50px] md:rounded-t-[17px] border border-[#ABD7D8]/30 text-right -mt-[50px] sm:-mt-[75px] md:-mt-[100px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
+      <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] mx-auto bg-[#ABD7D8]/25 p-4 sm:p-6 md:p-7 xl:p-8 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] border border-[#ABD7D8]/30 text-right -mt-[50px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
         
         <h3
           class="
-            text-[12px] sm:text-[13px] md:text-[14px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium transition-all duration-300"
+            text-[12px] sm:text-[13px] md:text-[13px] xl:text-[14px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium transition-all duration-300"
         >
           {{ teamMembers[selectedIndex].name }}
         </h3>
-        <p class="text-slate-700 text-[12px] sm:text-[13px] md:text-base text-rught mx-auto font-roboto mt-2 sm:mt-[10px]">
+        <p class="text-slate-700 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base text-rught mx-auto font-roboto mt-2 sm:mt-[10px]">
           {{ teamMembers[selectedIndex].bio }}
         </p>
       </div>
@@ -87,6 +87,8 @@ const updateNotchWidth = () => {
     notchWidth.value = 45;
   } else if (w < 768) {
     notchWidth.value = 60;
+  } else if (w < 1280) {
+    notchWidth.value = 85;
   } else {
     notchWidth.value = 100;
   }
