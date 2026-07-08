@@ -1,82 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .container-custom {
+    /* در سایز 2xl (مانیتورهای بسیار بزرگ)، عرض   1600 یا 1700 پیکسل  */
+    @apply w-full mx-auto px-4 
+           sm:max-w-[700px] 
+           md:max-w-[900px] 
+           lg:max-w-[1200px] 
+           xl:max-w-[1500px] 
+           2xl:max-w-[1700px]; 
+  }
+}
+
+/* ۳. فونت‌ها و بقیه استایل‌ها */
 @font-face {
   font-family: 'Rokh';
-  src: url('/fonts/Rokh-Bold.otf') format('truetype');
-
+  src: url('/fonts/Rokh-Bold.otf') format('opentype');
 }
+.font-rokh { font-family: 'Rokh', sans-serif; }
 
-/* Rokh-Bold.otf */
+@font-face {
+  font-family: 'Rokh-Medium';
+  src: url('/fonts/Rokh-Medium.otf') format('opentype');
+}
+.rokh-medium { font-family: 'Rokh-Medium', sans-serif; }
 
-/* اعمال فونت به کلِ بدنه سایت */
+@font-face {
+  font-family: 'Rokh-ExtraBold';
+  src: url('/fonts/Rokh-ExtraBold.otf') format('opentype');
+}
+.rokh-extra-bold { font-family: 'Rokh-ExtraBold', sans-serif; }
+
+@font-face {
+  font-family: 'Rokh-FaNum-ExtraBold';
+  src: url('/fonts/RokhFaNum-ExtraBold.woff') format('woff');
+}
+.rokh-bold-num { font-family: 'Rokh-FaNum-ExtraBold', sans-serif; }
+
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/fonts/NotoSansArabic-Medium.ttf') format('truetype');
+}
+.font-roboto { font-family: 'NotoSans', sans-serif; }
+
+@font-face {
+  font-family: 'Noto-Light';
+  src: url('/fonts/NotoSansArabic-Light.ttf') format('truetype');
+}
+.font-noto-light { font-family: 'Noto-Light', sans-serif; }
+
+@font-face {
+  font-family: 'Noto-Regular';
+  src: url('/fonts/NotoSansArabic-Regular.ttf') format('truetype');
+}
+.font-noto-regular { font-family: 'Noto-Regular', sans-serif; }
+
 body {
   font-family: 'Rokh', sans-serif;
-}
-@font-face {
-  font-family: 'Roboto';
-  src: url('/fonts/NotoSansArabic-Medium.ttf') format('truetype');
-
-}
-
-/*  یک کلاس کاربردی برای استفاده در هرجا که خواستید */
-.font-roboto {
-  font-family: 'Roboto', sans-serif;
-}
-
-
-@font-face {
-  font-family: 'rokh-light';
-  src: url('/fonts/Rokh-Medium.otf') format('truetype');
-
-}
-.rokh-light {
-  font-family: 'rokh-light', sans-serif;
-}
-
-
-
-@font-face {
-  font-family: 'rokh-bold';
-  src: url('/fonts/Rokh-ExtraBold.otf') format('truetype');
-
-}
-.rokh-bold{
-    font-family: 'rokh-bold', sans-serif;
-
-}
-
-/* RokhFaNum-Bold.woff */
-
-
-@font-face {
-  font-family: 'rokh-bold';
-  src: url('/fonts/RokhFaNum-ExtraBold.woff') format('truetype');
-
-}
-.rokh-bold-num{
-    font-family: 'rokh-bold', sans-serif;
-
-}
-
-
-@font-face {
-  font-family: 'noto-light';
-  src: url('/fonts/NotoSansArabic-Light.ttf') format('truetype');
-
-}
-
-.font-noto-light{
-    font-family: 'noto-light', sans-serif;
-
-}
-
-/* font-noto-regular */
-
-@font-face {
-  font-family: 'noto-regular';
-  src: url('/fonts/NotoSansArabic-Regular.ttf') format('truetype');
-
-}
-
-.font-noto-regular{
-    font-family: 'noto-regular', sans-serif;
-
 }

@@ -18,7 +18,7 @@
           dir="rtl"
         >
         <!-- بخش پروفایل -->
-        <div class="bg-[#EDEDED] px-5 lg:px-8 pt-6 lg:pt-8 pb-4 lg:pb-6 border-b border-slate-200 shadow-xl -mt-[20px]">
+        <div class="bg-[#EDEDED] px-5 lg:px-8 pt-6 lg:pt-8 pb-4 lg:pb-6 shadow-xl -mt-[20px]">
           <img
             :src="customer.image"
             :alt="customer.name"
@@ -35,7 +35,7 @@
         </div>
 
         <!-- بخش نظر -->
-        <div class="bg-white p-5 lg:p-8 h-[100px] lg:h-[115px]">
+        <div class="bg-[#EDEDED] p-5 lg:p-8 h-[100px] lg:h-[115px]">
           <p class="text-[#747893] text-[13px] lg:text-[15px] leading-relaxed font-roboto text-right -mt-[20px]">
             {{ customer.comment }}
           </p>

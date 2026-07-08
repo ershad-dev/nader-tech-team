@@ -53,8 +53,12 @@
       <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] mx-auto bg-[#ABD7D8]/25 p-4 sm:p-6 md:p-7 xl:p-8 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] border border-[#ABD7D8]/30 text-right -mt-[50px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
         
         <h3
-          class="
-            text-[12px] sm:text-[13px] md:text-[13px] xl:text-[14px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium transition-all duration-300"
+          :class="[
+            'text-[1px] sm:text-[13px] md:text-[15px] xl:text-[16px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
+            selectedIndex === 1
+              ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px]'
+              : 'mr-[80px] sm:mr-[130px] md:mr-[190px] xl:mr-[175px]'
+          ]"
         >
           {{ teamMembers[selectedIndex].name }}
         </h3>
