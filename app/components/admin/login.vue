@@ -1,22 +1,18 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
 
-const MOCK_USER = {
-  identifier: 'admin@test.com',
-  password: '123456'
-}
+const { setAuth } = useAdminAuth()
 
-const identifier = ref('')
+const identifier = ref('') // مقدار به فیلد "login" در API نگاشت می‌شود (username یا email)
 const password = ref('')
+const loading = ref(false)
+
 const errors = ref({
   identifier: '',
   password: '',
   general: ''
 })
-
-const validateEmail = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
 
 // پاک کردن خطاها هنگام تایپ مجدد
 watch([identifier, password], () => {
@@ -27,24 +23,53 @@ watch([identifier, password], () => {
 const handleLogin = async () => {
   errors.value = { identifier: '', password: '', general: '' }
 
-  const userIdentifier = identifier.value.trim()
-  const userPassword = password.value.trim()
+  const loginValue = identifier.value.trim()
+  const passwordValue = password.value.trim()
 
-  // اعتبارسنجی
-  if (!userIdentifier) errors.value.identifier = 'شماره تلفن یا ایمیل الزامی است'
-  else if (userIdentifier.includes('@') && !validateEmail(userIdentifier)) errors.value.identifier = 'فرمت ایمیل صحیح نیست'
-  
-  if (!userPassword) errors.value.password = 'رمز عبور الزامی است'
-  else if (userPassword.length < 3) errors.value.password = 'رمز عبور حداقل ۳ کاراکتر باشد'
+  // اعتبارسنجی سبک سمت کلاینت (اعتبارسنجی اصلی سمت سرور انجام می‌شود چون
+  // فیلد "login" هم می‌تواند username باشد هم email)
+  if (!loginValue) errors.value.identifier = 'نام کاربری یا ایمیل الزامی است'
+  if (!passwordValue) errors.value.password = 'رمز عبور الزامی است'
 
   if (errors.value.identifier || errors.value.password) return
 
-  // احراز هویت
-  if (userIdentifier === MOCK_USER.identifier && userPassword === MOCK_USER.password) {
-    localStorage.setItem('isAdminLoggedIn', 'true')
+  loading.value = true
+
+  try {
+    const response = await $fetch('https://nadertechnologyteam.ir/api/admin/auth/login', {
+      method: 'POST',
+      body: {
+        login: loginValue,
+        password: passwordValue,
+      },
+    })
+
+    // ساختار پاسخ موفق: { message, data: { access_token, token_type, admin } }
+    const { access_token, admin } = response.data
+    setAuth(access_token, admin)
+
     await navigateTo('/admin')
-  } else {
-    errors.value.general = 'ایمیل یا رمز عبور اشتباه است'
+  } catch (err) {
+    const status = err.response?.status || err.statusCode
+    const body = err.response?._data || err.data
+
+    if (status === 401) {
+      errors.value.general = body?.message || 'اطلاعات ورود نادرست است.'
+    } else if (status === 422) {
+      // نمایش اولین خطای validation برای هر فیلد در صورت وجود
+      const fieldErrors = body?.errors || {}
+      errors.value.identifier = fieldErrors.login?.[0] || ''
+      errors.value.password = fieldErrors.password?.[0] || ''
+      if (!errors.value.identifier && !errors.value.password) {
+        errors.value.general = body?.message || 'اطلاعات ارسالی نامعتبر است.'
+      }
+    } else if (status === 429) {
+      errors.value.general = 'تعداد تلاش‌های ورود بیش از حد مجاز است. کمی بعد دوباره تلاش کنید.'
+    } else {
+      errors.value.general = 'خطا در برقراری ارتباط با سرور. لطفاً دوباره تلاش کنید.'
+    }
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -61,8 +86,9 @@ const handleLogin = async () => {
           <div>
             <AuthInput
               v-model="identifier"
-              label="  نام کاربری "
+              label="نام کاربری"
               type="text"
+              :disabled="loading"
               class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
             />
             <p v-if="errors.identifier" class="mt-1 text-xs text-red-500">
@@ -75,6 +101,7 @@ const handleLogin = async () => {
               v-model="password"
               label="رمز عبور"
               type="password"
+              :disabled="loading"
               class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
             />
             <p v-if="errors.password" class="mt-1 text-xs text-red-500">
@@ -86,8 +113,8 @@ const handleLogin = async () => {
             {{ errors.general }}
           </p>
 
-          <AuthButton type="submit" class="w-full mt-8 !bg-[#2d6a66]">
-            ورود
+          <AuthButton type="submit" :disabled="loading" class="w-full mt-8 !bg-[#2d6a66]">
+            {{ loading ? 'در حال ورود...' : 'ورود' }}
           </AuthButton>
         </div>
       </div>

@@ -24,7 +24,7 @@
               class="font-bold text-[14px] whitespace-nowrap"
               :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
             >
-              ثمین زارعی
+              {{ admin?.full_name || 'مدیر سیستم' }}
             </h2>
           </div>
         </div>
@@ -93,13 +93,13 @@
               : 'opacity-0 max-w-0 -translate-x-2 delay-0'"
           >
             <h2 class="font-bold text-[#0F184B] text-[14px] whitespace-nowrap">
-              ثمین زارعی
+              {{ admin?.full_name || 'مدیر سیستم' }}
             </h2>
             <p class="text-gray-500 text-[12px] mt-1 whitespace-nowrap font-roboto">
-              09121234567
+              {{ admin?.mobile || '' }}
             </p>
             <p class="w-[139px] text-gray-500 text-[9px] mt-1 whitespace-nowrap font-roboto">
-              samin@example.com
+              {{ admin?.email || '' }}
             </p>
           </div>
         </div>
@@ -186,7 +186,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef, defineAsyncComponent, provide } from 'vue'
+import { ref, shallowRef, defineAsyncComponent, provide, onMounted } from 'vue'
 import HomeIcon from '~/components/admin/icons/home.vue'
 import UserAvatarIcon from '~/components/admin/icons/userAvatar.vue'
 import BannerEditIcon from '~/components/admin/icons/bannerEdit.vue'
@@ -220,6 +220,13 @@ const LotteryDraw = defineAsyncComponent(() =>
 const Articles = defineAsyncComponent(() =>
   import('~/components/admin/Articles.vue')
 )
+
+// اطلاعات ادمین لاگین‌شده (همان دیتایی که هنگام لاگین از API گرفته و در composable ذخیره شد)
+const { admin, initFromStorage, clearAuth } = useAdminAuth()
+
+onMounted(() => {
+  initFromStorage()
+})
 
 const isSidebarOpen = ref(false)
 const isMobileMenuOpen = ref(false)
@@ -265,8 +272,9 @@ const getNavItemClasses = (item) => {
 
   return isSidebarOpen.value ? openClasses : `${openClasses} ${closedClassesDesktop}`
 }
+
 const logout = () => {
-  localStorage.removeItem('isAdminLoggedIn')
+  clearAuth() // پاک کردن توکن و اطلاعات ادمین از state و localStorage
   navigateTo('/admin/ntt20119')
 }
 </script>

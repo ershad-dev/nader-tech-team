@@ -2,9 +2,6 @@
 import { ref, onMounted } from 'vue'
 import {
   LockClosedIcon,
-  UserIcon,
-  EnvelopeIcon,
-  PhoneIcon,
   ShieldCheckIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon
@@ -18,16 +15,18 @@ const config = useRuntimeConfig()
 
 const activeTab = ref('profile')
 const loading = ref(false)
+const loadingAvatar = ref(false) // رفع باگ: قبلاً تعریف نشده بود و در deleteAvatar استفاده می‌شد
 
 const userData = ref({
   full_name: '',
   username: '',
   mobile: '',
   email: '',
-  birth_date: '', // جدید
-  national_code: '', // جدید
-  province: '', // جدید
-  address: '', // جدید
+  birth_date: '',
+  national_code: '',
+  postal_code: '', // رفع باگ: طبق Swagger این فیلد در پاسخ API وجود دارد ولی در state اولیه جا افتاده بود
+  province: '',
+  address: '',
   avatar: ''
 })
 
@@ -77,7 +76,9 @@ const getProfile = async () => {
       }
     })
 
-    userData.value = response.data.user
+    // نکته: ساختار واقعی پاسخ سرور برخلاف Swagger، یک لایه‌ی "user" کمتر دارد
+    // پاسخ سرور: { data: { id, full_name, ... } } نه { data: { user: {...} } }
+    userData.value = { ...userData.value, ...response.data }
   } catch (error) {
     console.error(error)
 
@@ -88,6 +89,11 @@ const getProfile = async () => {
   }
 }
 
+// نکته مهم: طبق Swagger، endpoint به‌روزرسانی پروفایل (PUT /api/profile)
+// فقط این ۴ فیلد را می‌پذیرد: full_name, username, email, mobile
+// فیلدهای birth_date, national_code, postal_code, province, address
+// در حال حاضر توسط این API ذخیره نمی‌شوند. اگر بک‌اند این فیلدها را
+// پشتیبانی کند باید به body زیر اضافه شوند.
 const updateProfile = async () => {
   loading.value = true
 
@@ -107,7 +113,8 @@ const updateProfile = async () => {
       }
     })
 
-    userData.value = response.data.user
+    // همان ساختار واقعی سرور: response.data مستقیم آبجکت کاربر است
+    userData.value = { ...userData.value, ...response.data }
 
     showToast(
       response.message ||
@@ -176,7 +183,16 @@ const changePassword = async () => {
   } catch (error) {
     console.error(error)
 
+    // طبق Swagger ممکن است پیام خطا در errors.new_password یا
+    // errors.new_password_confirmation یا errors.current_password باشد
+    const errors = error?.response?._data?.errors
+    const fieldError =
+      errors?.current_password?.[0] ||
+      errors?.new_password?.[0] ||
+      errors?.new_password_confirmation?.[0]
+
     showToast(
+      fieldError ||
       error?.response?._data?.message ||
       'خطا در تغییر رمز عبور'
     )
@@ -190,11 +206,12 @@ const uploadAvatar = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
 
-  const token = localStorage.getItem('access_token')
-  if (!token) return navigateTo('/auth/login')
+  if (!token()) return navigateTo('/auth/login')
 
   const formData = new FormData()
   formData.append('avatar', file)
+
+  loadingAvatar.value = true
 
   try {
     const res = await $fetch('/profile/avatar', {
@@ -202,44 +219,50 @@ const uploadAvatar = async (event) => {
       method: 'POST',
       body: formData,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token()}`,
         Accept: 'application/json'
       }
     })
 
     userData.value.avatar = res.data.avatar_url
 
-    showToast('آپلود موفق', 'success')
+    showToast(res.message || 'آپلود موفق', 'success')
 
   } catch (err) {
-    console.log('UPLOAD ERROR:', err)
+    console.error('UPLOAD ERROR:', err)
+
+    // رفع بهبود: طبق Swagger پیام دقیق‌تر خطا در errors.avatar وجود دارد
+    const avatarError = err?.response?._data?.errors?.avatar?.[0]
 
     showToast(
+      avatarError ||
       err?.response?._data?.message ||
       err?.data?.message ||
       'خطا در آپلود عکس'
     )
+  } finally {
+    loadingAvatar.value = false
   }
 }
 
 const deleteAvatar = async () => {
-  const token = localStorage.getItem('access_token')
-  if (!token) return navigateTo('/auth/login')
+  if (!token()) return navigateTo('/auth/login')
 
   loadingAvatar.value = true
 
   try {
-    await $fetch('/profile/avatar', {
+    const res = await $fetch('/profile/avatar', {
       baseURL: config.public.apiBase,
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token()}`,
+        Accept: 'application/json'
       }
     })
 
     userData.value.avatar = ''
 
-    showToast('عکس پروفایل حذف شد', 'success')
+    showToast(res.message || 'عکس پروفایل حذف شد', 'success')
 
   } catch (err) {
     console.error(err)
@@ -259,7 +282,7 @@ const logout = () => {
 
 <template>
   <div class="max-w-[1110px] mx-auto p-4 md:p-8">
-    
+
     <div
       v-if="toast.message"
       :class="[
@@ -273,7 +296,7 @@ const logout = () => {
     </div>
 
     <div class="bg-[#2C73792B] p-4 sm:p-6 md:p-10 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] shadow-sm">
-      
+
       <div class="flex justify-center w-full">
         <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] mb-6 sm:mb-8 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 w-full max-w-[652px] h-auto sm:h-[187px] shadow-xl" dir="rtl">
 
@@ -298,7 +321,7 @@ const logout = () => {
             <button
               class="bg-[#2C7379] w-[120px] sm:w-[143px] h-[32px] sm:h-[39px] text-white text-[11px] sm:text-[15px] font-normal py-2 px-3 sm:px-6 rounded-[12px] sm:rounded-[17px] hover:bg-[#235652] transition font-roboto whitespace-nowrap flex items-center justify-center mt-[6px] sm:mt-[10px]"
               @click="fileInput?.click()"
-              :disabled="loading"
+              :disabled="loadingAvatar"
             >
               انتخاب تصویر جدید
             </button>
@@ -306,7 +329,7 @@ const logout = () => {
             <button
               class="text-[#747893] text-[11px] sm:text-[15px] font-normal mt-[6px] sm:mt-[10px] font-roboto"
               @click="deleteAvatar"
-              :disabled="loading || !userData.avatar"
+              :disabled="loadingAvatar || !userData.avatar"
             >
               حذف عکس
             </button>
@@ -318,10 +341,10 @@ const logout = () => {
       <div class="bg-[#ffffff]/10 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border-[0.5px] border-[#D9D9D9] shadow-xl mt-6 sm:mt-8">
 
         <!-- Profile Tab -->
-        <div v-if="activeTab === 'profile'" 
-             class="grid grid-cols-2 md:grid-cols-2 gap-x-2 sm:gap-x-3 md:gap-x-1 gap-y-3 sm:gap-y-4 font-roboto justify-items-center" 
+        <div v-if="activeTab === 'profile'"
+             class="grid grid-cols-2 md:grid-cols-2 gap-x-2 sm:gap-x-3 md:gap-x-1 gap-y-3 sm:gap-y-4 font-roboto justify-items-center"
              dir="rtl">
-          
+
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام کاربری</label>
             <input v-model="userData.username" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
@@ -342,32 +365,35 @@ const logout = () => {
             <input v-model="userData.email" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
           </div>
 
+          <!-- توجه: فیلدهای زیر (تاریخ تولد، کد ملی، استان، کد پستی، آدرس)
+               طبق Swagger توسط PUT /api/profile ذخیره نمی‌شوند.
+               فعلاً readonly شده‌اند تا کاربر گمراه نشود؛
+               در صورت پشتیبانی بک‌اند، readonly را بردارید و فیلدها را
+               به body متد updateProfile اضافه کنید. -->
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">تاریخ تولد</label>
-            <input v-model="userData.birth_date" placeholder="1370/01/01" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input v-model="userData.birth_date" placeholder="1370/01/01" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد ملی</label>
-            <input v-model="userData.national_code" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input v-model="userData.national_code" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">استان</label>
-            <input v-model="userData.province" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input v-model="userData.province" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد پستی</label>
-            <input v-model="userData.postal_code" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input v-model="userData.postal_code" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
           </div>
 
-          <!-- فیلد آدرس: همیشه تمام عرض و یک ستونه (حتی در موبایل) -->
- <!-- فیلد آدرس: همیشه تمام عرض و یک ستونه (حتی در موبایل)، دقیقاً هم‌عرض با دو اینپوت کنار هم در دسکتاپ -->
-<div class="flex flex-col gap-2 w-full col-span-2 md:col-span-2 md:w-[604px]">
-  <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
-  <textarea v-model="userData.address" class="w-full md:w-[604px] h-20 sm:h-24 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 py-3 sm:py-4 text-[13px] sm:text-[15px]"></textarea>
-</div>
+          <div class="flex flex-col gap-2 w-full col-span-2 md:col-span-2 md:w-[604px]">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
+            <textarea v-model="userData.address" readonly class="w-full md:w-[604px] h-20 sm:h-24 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 py-3 sm:py-4 text-[13px] sm:text-[15px] cursor-not-allowed"></textarea>
+          </div>
 
         </div>
 

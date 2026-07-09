@@ -39,6 +39,7 @@ const schema = yup.object({
     .length(10, 'کد ملی باید دقیقاً ۱۰ رقم باشد')
     .required('کد ملی الزامی است'),
 
+  // مقدار ورودی همچنان شمسی است (نمایش به کاربر)، اما هنگام ارسال به میلادی تبدیل می‌شود
   birth_date: yup
     .string()
     .matches(
@@ -57,7 +58,8 @@ const schema = yup.object({
     .length(10, 'کد پستی باید دقیقاً ۱۰ رقم باشد')
     .required('کد پستی الزامی است'),
 
-  adress: yup
+  // FIX: نام فیلد از "adress" به "address" اصلاح شد تا با API مطابقت داشته باشد
+  address: yup
     .string()
     .required('آدرس الزامی است'),
 
@@ -87,7 +89,8 @@ const { value: national_code, errorMessage: nationalCodeError } = useField('nati
 const { value: birth_date, errorMessage: birthDateError } = useField('birth_date')
 const { value: province, errorMessage: provinceError } = useField('province')
 const { value: postal_code, errorMessage: postalCodeError } = useField('postal_code')
-const { value: adress, errorMessage: adressError } = useField('adress')
+// FIX: adress -> address
+const { value: address, errorMessage: addressError } = useField('address')
 const { value: password, errorMessage: passwordError } = useField('password')
 const { value: password_confirmation, errorMessage: passwordConfirmError } = useField('password_confirmation')
 
@@ -165,30 +168,119 @@ const handlePasswordConfirmKeydown = (e) => {
   if (e.key?.length === 1 && PERSIAN_REGEX.test(e.key)) e.preventDefault()
 }
 
+// ==================== FIX: تبدیل تاریخ شمسی به میلادی ====================
+// API فیلد birth_date را به فرمت میلادی YYYY-MM-DD می‌خواهد (طبق نمونه سواگر: "2000-05-15")
+// در حالی که کاربر تاریخ را به صورت شمسی وارد می‌کند (مثلاً 1370/01/01)
+// الگوریتم استاندارد تبدیل جلالی به میلادی (بدون نیاز به کتابخانه خارجی)
+function jalaliToGregorian(jy, jm, jd) {
+  let gy
+  if (jy > 979) {
+    gy = 1600
+    jy -= 979
+  } else {
+    gy = 621
+  }
+  let days =
+    365 * jy +
+    Math.floor(jy / 33) * 8 +
+    Math.floor(((jy % 33) + 3) / 4) +
+    78 +
+    jd +
+    (jm < 7 ? (jm - 1) * 31 : (jm - 7) * 30 + 186)
+
+  gy += 400 * Math.floor(days / 146097)
+  days %= 146097
+
+  if (days > 36524) {
+    gy += 100 * Math.floor(--days / 36524)
+    days %= 36524
+    if (days >= 365) days++
+  }
+
+  gy += 4 * Math.floor(days / 1461)
+  days %= 1461
+
+  if (days > 365) {
+    gy += Math.floor((days - 1) / 365)
+    days = (days - 1) % 365
+  }
+
+  let gd = days + 1
+  const isLeap = (gy % 4 === 0 && gy % 100 !== 0) || gy % 400 === 0
+  const gDaysInMonth = [0, 31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+  let gm = 0
+  for (gm = 1; gm <= 12; gm++) {
+    if (gd <= gDaysInMonth[gm]) break
+    gd -= gDaysInMonth[gm]
+  }
+
+  return { gy, gm, gd }
+}
+
+function convertJalaliStringToGregorianISO(jalaliStr) {
+  // jalaliStr به فرمت "1370/01/01"
+  const [jy, jm, jd] = jalaliStr.split('/').map(Number)
+  const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd)
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${gy}-${pad(gm)}-${pad(gd)}`
+}
+
 // ==================== ثبت‌نام ====================
 const registerUser = handleSubmit(async (values) => {
   loading.value = true
   try {
+    // FIX: ساخت payload مطابق ساختار دقیق API (تبدیل تاریخ + نام فیلد address)
+    const payload = {
+      full_name: values.full_name,
+      username: values.username,
+      email: values.email,
+      mobile: values.mobile,
+      birth_date: convertJalaliStringToGregorianISO(values.birth_date),
+      national_code: values.national_code,
+      postal_code: values.postal_code,
+      province: values.province,
+      address: values.address,
+      password: values.password,
+      password_confirmation: values.password_confirmation,
+    }
+
     const response = await $fetch('https://nadertechnologyteam.ir/api/auth/register', {
       method: 'POST',
-      body: values,
-      headers: { 'Accept': 'application/json' }
+      body: payload,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
     })
 
-    if (response?.token) {
-      localStorage.setItem('token', response.token)
-      navigateTo('/profile')
-    } else {
+    // FIX: ریسپانس موفق طبق سواگر داخل response.data.login_token است، نه response.token
+    const loginToken = response?.data?.login_token
+    const expiresIn = response?.data?.expires_in
+
+    if (loginToken) {
+      // ذخیره login_token و expires_in برای مرحله تایید OTP
+      localStorage.setItem('login_token', loginToken)
+      if (expiresIn) localStorage.setItem('otp_expires_in', String(expiresIn))
+
+      showToast(response?.message || 'ثبت‌نام با موفقیت انجام شد', 'success')
       navigateTo('/auth/verify')
+    } else {
+      showToast('پاسخ نامعتبر از سرور دریافت شد', 'error')
     }
   } catch (err) {
-    loading.value = false
-    if (err.response?.status === 422) {
-      setErrors(err.response._data.errors)
+    // FIX: پوشش هر دو ساختار ممکن خطای ofetch/$fetch
+    const status = err.response?.status ?? err.status
+    const errors = err.response?._data?.errors ?? err.data?.errors
+
+    if (status === 422 && errors) {
+      setErrors(errors)
       showToast('لطفاً اطلاعات را اصلاح کنید', 'error')
     } else {
       showToast('خطایی رخ داده است. لطفاً بعداً تلاش کنید.', 'error')
     }
+  } finally {
+    loading.value = false
   }
 })
 </script>
@@ -305,7 +397,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- تاریخ تولد شمسی -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">تاریخ تولد</label>
+          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">تاریخ تولد (شمسی)</label>
           <input
             v-model="birth_date"
             type="text"
@@ -363,16 +455,16 @@ const registerUser = handleSubmit(async (values) => {
       <div class="flex flex-col mt-5 text-right">
         <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">آدرس و نشانی</label>
         <textarea
-          v-model="adress"
+          v-model="address"
           dir="rtl"
           rows="4"
           placeholder="آدرس کامل خود را وارد کنید..."
           class="px-3 py-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors resize-none leading-7"
-          :class="adressError
+          :class="addressError
             ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
             : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
         />
-        <p v-if="adressError" class="text-red-500 text-[11px] mt-1 text-right">{{ adressError }}</p>
+        <p v-if="addressError" class="text-red-500 text-[11px] mt-1 text-right">{{ addressError }}</p>
       </div>
 
       <!-- رمز عبور -->

@@ -2,7 +2,7 @@
   <div class="max-w-6xl mx-auto mt-12 text-center px-4" dir="rtl">
     
     <h1 class="text-[20px] md:text-[32px] font-bold text-[#0F184B] mb-8 leading-relaxed">
-      با قدرت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55]">فتح </span> میکنیم
+      با دقت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55]">فتح </span> میکنیم
     </h1>
 
     <div class="relative w-full max-w-[976px] h-[200px] md:h-[406px] rounded-[17px] overflow-hidden mx-auto shadow-lg">

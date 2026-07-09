@@ -1,10 +1,10 @@
 <template>
   <!-- کانتینر اصلی بخش رضایت‌مندی -->
-  <section class="max-w-6xl mx-auto py-8 sm:py-10 md:py-12 px-4">
+  <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-8 sm:py-10 md:py-12 min-[1920px]:py-16 px-4 min-[1920px]:px-8">
 
     <!-- عنوان بخش -->
-    <div class="mb-8 sm:mb-10 md:mb-12 flex flex-col items-center">
-      <h2 class="bg-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] font-bold text-[#0F184B] border w-[220px] sm:w-[250px] md:w-[266px] h-[64px] sm:h-[72px] md:h-[78px] text-[15px] sm:text-[18px] md:text-[20px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
+    <div class="mb-8 sm:mb-10 md:mb-12 min-[1920px]:mb-14 flex flex-col items-center">
+      <h2 class="bg-white px-4 sm:px-6 md:px-8 min-[1920px]:px-10 py-3 sm:py-4 min-[1920px]:py-5 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] font-bold text-[#0F184B] border w-[220px] sm:w-[250px] md:w-[266px] min-[1920px]:w-[300px] h-[64px] sm:h-[72px] md:h-[78px] min-[1920px]:h-[90px] text-[15px] sm:text-[18px] md:text-[20px] min-[1920px]:text-[22px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
         رضایت از ایونت‌های برگزار شده
       </h2>
     </div>
@@ -38,8 +38,8 @@
 </div>
 
     <!-- تبلت و دسکتاپ: لیست کارت‌های تصاویر (طرح اصلی، لوپ) -->
-    <div class="relative w-full hidden md:flex flex-col items-center gap-6 mb-6">
-      <div class="flex gap-3 sm:gap-4 md:gap-6 overflow-hidden w-full justify-center">
+    <div class="relative w-full hidden md:flex flex-col items-center gap-6 min-[1920px]:gap-10 mb-6">
+      <div class="flex gap-3 sm:gap-4 md:gap-6 min-[1920px]:gap-10 overflow-hidden w-full justify-center">
         <div
           v-for="(item, index) in visibleTestimonials"
           :key="item.realIndex"
@@ -51,7 +51,7 @@
             :src="item.data.image"
             :alt="'testimonial-' + item.realIndex"
             :class="[
-              'cursor-pointer w-[230px] h-[271px] sm:w-[220px] sm:h-[259px] md:w-[266px] md:h-[313px] object-cover rounded-[32px] sm:rounded-[38px] md:rounded-[49px] transition-all duration-300',
+              'cursor-pointer w-[230px] h-[271px] sm:w-[220px] sm:h-[259px] md:w-[266px] md:h-[313px] min-[1920px]:w-[320px] min-[1920px]:h-[376px] object-cover rounded-[32px] sm:rounded-[38px] md:rounded-[49px] min-[1920px]:rounded-[56px] transition-all duration-300',
               selectedIndex === item.realIndex
                 ? 'opacity-100 ring-3 sm:ring-4 ring-[#A36C53] ring-inset'
                 : 'opacity-95 hover:opacity-100'
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <div class="flex justify-center items-center gap-2 mt-6 sm:mt-8">
+    <div class="flex justify-center items-center gap-2 mt-6 sm:mt-8 min-[1920px]:mt-10">
       <SliderButton
         direction="left"
         @click="prevSlide"
@@ -76,24 +76,24 @@
     <!-- بخش نمایش متن انتخاب شده (در صورت انتخاب یک کارت) -->
     <div
       v-if="selectedIndex !== null"
-      class="testimonial-box relative bg-[#ABD7D840] w-full sm:w-[85%] md:w-[919px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] p-4 sm:p-6 md:p-8 mt-8 sm:mt-10 md:mt-12 mx-auto transition-all duration-500"
+      class="testimonial-box relative bg-[#ABD7D840] w-full sm:w-[85%] md:w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
     >
 
       <!-- نشانگر زبانه (Indicator) - در موبایل ثابت و وسط، در تبلت/دسکتاپ داینامیک -->
       <div 
-        class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] w-[90px] sm:w-[110px] md:w-[120px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px]"
+        class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] min-[1920px]:-top-[34px] w-[90px] sm:w-[110px] md:w-[120px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px] min-[1920px]:mt-[34px]"
         :style="isMobile 
           ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%)' } 
           : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
       >
-        <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[22px] sm:-mt-[28px] md:-mt-[35px] h-[44px] sm:h-[56px] md:h-[69px]">
+        <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[22px] sm:-mt-[28px] md:-mt-[35px] min-[1920px]:-mt-[40px] h-[44px] sm:h-[56px] md:h-[69px] min-[1920px]:h-[78px]">
       </div>
 
       <!-- متن نظرات -->
-      <h1 class="font-bold text-[#0F184B] text-[18px] sm:text-[22px] md:text-[26px] mt-[30px] sm:mt-[40px] md:mt-[50px] text-center">
+      <h1 class="font-bold text-[#0F184B] text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[50px] min-[1920px]:mt-[56px] text-center">
         تجربه همکاری از زبان مشتری 
       </h1>
-      <p class="text-[#616474] text-right text-[12px] sm:text-[13px] md:text-[14px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] pt-4 text-center font-roboto">
+      <p class="text-[#616474] text-right text-[12px] sm:text-[13px] md:text-[14px] min-[1920px]:text-[16px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] min-[1920px]:leading-[56px] pt-4 text-center font-roboto">
         {{ testimonials[selectedIndex].text }}
       </p>
     </div>
@@ -185,9 +185,13 @@ const updateResponsiveValues = () => {
     visibleCount.value = 2;
     notchWidth.value = 110;
     isMobile.value = false;
-  } else {
+  } else if (w < 1920) {
     visibleCount.value = 3;
     notchWidth.value = 140;
+    isMobile.value = false;
+  } else {
+    visibleCount.value = 3;
+    notchWidth.value = 160;
     isMobile.value = false;
   }
 };
@@ -289,6 +293,24 @@ const prevSlide = async () => {
     right: -14px;
     box-shadow: -7px -7px 0 #F7F3EB;
     border-top-left-radius: 14px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .notch::before,
+  .notch::after {
+    width: 24px;
+    height: 24px;
+  }
+  .notch::before {
+    left: -24px;
+    box-shadow: 12px -12px 0 #F7F3EB;
+    border-top-right-radius: 24px;
+  }
+  .notch::after {
+    right: -24px;
+    box-shadow: -12px -12px 0 #F7F3EB;
+    border-top-left-radius: 24px;
   }
 }
 

@@ -56,46 +56,80 @@
         <NuxtLink to="/articles" exact-active-class="!text-[#0F184B] !font-bold" class="hover:text-teal-700 transition" @click="isOpen = false">مقالات</NuxtLink>
         <NuxtLink to="/about" exact-active-class="!text-[#0F184B] !font-bold" class="hover:text-teal-700 transition" @click="isOpen = false">درباره ما</NuxtLink>
         <NuxtLink to="/faq" exact-active-class="!text-[#0F184B] !font-bold" class="hover:text-teal-700 transition" @click="isOpen = false">سوالات متداول</NuxtLink>
-        
-        <!-- دکمه‌های موبایل/تبلت (زیر xl دیده می‌شوند) -->
-        <div v-if="!isLoggedIn" class="flex flex-col gap-2 w-full xl:hidden mt-2">
-          <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] font-bold border border-[#2D7A6F] rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ورود</NuxtLink>
-          <NuxtLink to="/auth/register" class="w-full text-center py-2 sm:py-2.5 bg-[#2D7A6F] text-white font-bold rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ثبت‌نام</NuxtLink>
-        </div>
 
-        <div v-else class="w-full xl:hidden mt-2">
-          <NuxtLink
-            to="/profile"
-            class="w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 bg-[#2D7A6F] text-white font-bold rounded-full text-[14px] sm:text-[16px] hover:bg-teal-800 transition shadow-sm"
-            @click="isOpen = false"
-          >
-            <span>پروفایل</span>
-            <Icon name="heroicons:user-solid" class="w-5 h-5 sm:w-6 sm:h-6" />
-          </NuxtLink>
-        </div>
+        <!--
+          رفع Hydration Mismatch:
+          چون isLoggedIn به localStorage/token وابسته است و در سرور (SSR)
+          همیشه false است ولی در کلاینت ممکن است بلافاصله true شود،
+          این بخش را داخل <ClientOnly> می‌گذاریم تا Vue اصلاً سعی نکند
+          آن را با خروجی سرور hydrate کند؛ به‌جایش بعد از mount شدن
+          در کلاینت، مقدار واقعی رندر می‌شود.
+          fallback دقیقاً همان چیزی است که سرور رندر می‌کرد (حالت خارج‌شده)
+          تا در همان یک لحظه‌ی اول هم چیزی نامنطبق دیده نشود.
+        -->
+        <ClientOnly>
+          <div v-if="!isLoggedIn" class="flex flex-col gap-2 w-full xl:hidden mt-2">
+            <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] font-bold border border-[#2D7A6F] rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ورود</NuxtLink>
+            <NuxtLink to="/auth/register" class="w-full text-center py-2 sm:py-2.5 bg-[#2D7A6F] text-white font-bold rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ثبت‌نام</NuxtLink>
+          </div>
+
+          <div v-else class="w-full xl:hidden mt-2">
+            <NuxtLink
+              to="/profile"
+              class="w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 bg-[#2D7A6F] text-white font-bold rounded-full text-[14px] sm:text-[16px] hover:bg-teal-800 transition shadow-sm"
+              @click="isOpen = false"
+            >
+              <span>پروفایل</span>
+              <Icon name="heroicons:user-solid" class="w-5 h-5 sm:w-6 sm:h-6" />
+            </NuxtLink>
+          </div>
+
+          <template #fallback>
+            <div class="flex flex-col gap-2 w-full xl:hidden mt-2">
+              <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] font-bold border border-[#2D7A6F] rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ورود</NuxtLink>
+              <NuxtLink to="/auth/register" class="w-full text-center py-2 sm:py-2.5 bg-[#2D7A6F] text-white font-bold rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ثبت‌نام</NuxtLink>
+            </div>
+          </template>
+        </ClientOnly>
       </div>
       
       <!-- ۳. دکمه ورود و ثبت‌نام (سمت راست - کاملاً جدا شده) -->
       <div class="hidden xl:flex justify-end w-[184px]" dir="ltr">
-        <NuxtLink 
-          v-if="!isLoggedIn"
-          to="/auth/login"
-          class="bg-[#2D7A6F] w-[184px] h-[44px] text-white px-6 py-2.5 font-roboto rounded-full text-[16px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
-        >
-          <div class="flex items-center justify-center gap-4 ">
-            <span>ورود / ثبت‌نام</span>
-            <img src="/images/Vector-profile.svg" alt="">
-          </div>
-        </NuxtLink>
+        <ClientOnly>
+          <NuxtLink 
+            v-if="!isLoggedIn"
+            to="/auth/login"
+            class="bg-[#2D7A6F] w-[184px] h-[44px] text-white px-6 py-2.5 font-roboto rounded-full text-[16px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
+          >
+            <div class="flex items-center justify-center gap-4 ">
+              <span>ورود / ثبت‌نام</span>
+              <img src="/images/Vector-profile.svg" alt="">
+            </div>
+          </NuxtLink>
 
-        <NuxtLink 
-          v-else
-          to="/profile"
-          class="bg-[#2D7A6F] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-800 transition shadow-sm"
-        >
-          <span>پروفایل</span>
-          <Icon name="heroicons:user-solid" class="w-6 h-6" />
-        </NuxtLink>
+          <NuxtLink 
+            v-else
+            to="/profile"
+            class="bg-[#2D7A6F] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-800 transition shadow-sm"
+          >
+              <div class="flex items-center justify-center gap-4 ">
+            <span>پروفایل</span>
+            <Icon name="heroicons:user-solid" class="w-6 h-6" />
+            </div>
+          </NuxtLink>
+
+          <template #fallback>
+            <NuxtLink
+              to="/auth/login"
+              class="bg-[#2D7A6F] w-[184px] h-[44px] text-white px-6 py-2.5 font-roboto rounded-full text-[16px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
+            >
+              <div class="flex items-center justify-center gap-4 ">
+                <span>ورود / ثبت‌نام</span>
+                <img src="/images/Vector-profile.svg" alt="">
+              </div>
+            </NuxtLink>
+          </template>
+        </ClientOnly>
       </div>
     </div>
   </nav>
