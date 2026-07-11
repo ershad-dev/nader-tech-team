@@ -28,13 +28,13 @@
 
     <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-      <div class="shape">
-        <NuxtLink to="/order/requestProject">
-          <button class="bg-[#ECD0A0] text-[#0F184B] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 hover:scale-105 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block scale-y-[-1] mr-[55px] mt-[10px]">
-            درخواست همکاری
-          </button>
-        </NuxtLink>
-      </div>
+<div class="shape">
+  <NuxtLink to="/order/requestProject">
+    <button class="btn-cooperate bg-[#ECD0A0] text-[#0F184B] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block mr-[55px] mt-[10px] ">
+      درخواست همکاری
+    </button>
+  </NuxtLink>
+</div>
 
     </div>
 
@@ -181,5 +181,11 @@ defineProps({
   background: #2C7379;
   color: #fff;
   transform: scaleY(-1);
+}
+.btn-cooperate {
+  transform: scaleY(-1);
+}
+.btn-cooperate:hover {
+  transform: scaleY(-1) scale(1.05);
 }
 </style>

@@ -44,7 +44,13 @@ const steps = [
 </script>
 
 <template>
-<div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] xxl:h-[1024px] bg-[url('/images/order-bg.png')] bg-cover bg-center py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px]">
+<div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] xxl:h-[1024px] 
+            bg-[url('/images/order-bg.png')] 
+            bg-no-repeat 
+            bg-cover 
+            md:bg-center 
+            xl:bg-[length:1920px_100%] 
+            py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px] xxl:-mt-[90px]">
     <div class="max-w-[1054px] xxl:max-w-[1440px] mx-auto px-4 xl:px-0">
 <h1
   class="ml-auto bg-[#fcfaf4] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] xxl:w-[200px] xxl:h-[48px] xxl:text-[20px] text-[#2d6a66] flex items-center justify-center rounded-[19px] shadow-sm mt-[80px] md:mt-[70px] xl:mt-[100px] xxl:mt-[120px]"
@@ -82,7 +88,7 @@ const steps = [
   <div
     v-for="(card, index) in visibleProjects"
     :key="card.id"
-    class="w-full max-w-[312px] aspect-[312/358] md:w-[220px] md:h-[260px] md:aspect-auto xl:w-[312px] xl:h-[358px] xxl:w-[360px] xxl:h-[414px] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all hover:scale-105"
+    class="w-full max-w-[312px] aspect-[312/358] md:w-[220px] md:h-[260px] md:aspect-auto xl:w-[312px] xl:h-[358px] xxl:w-[360px] xxl:h-[414px] bg-white rounded-[30px] xl:rounded-[40px] xxl:rounded-[45px] shadow-lg cursor-pointer transition-all hover:scale-105"
     :class="[
       index >= 2 ? 'md:hidden xl:block' : '',
       index % 2 !== 0 ? 'xl:mt-12 xxl:mt-14' : '',
@@ -91,7 +97,7 @@ const steps = [
     <NuxtLink :to="`/order/${card.id}`">
       <img
         :src="card.images[0]"
-        class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
+        class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px] xxl:rounded-[45px]"
         :alt="card.title"
       />
     </NuxtLink>
@@ -113,16 +119,16 @@ const steps = [
   </div>
 
 <div
-  class="relative z-20 mt-4 md:mt-6 xl:-mt-[150px] py-14 md:py-16 xl:py-20 px-4 w-full max-w-[1200px] min-h-[420px] 
+  class="relative z-20 mt-4 md:mt-6 xl:-mt-[150px] xxl:-mt-[190px] py-14 md:py-16 xl:py-20 xxl:py-24 px-4 w-full max-w-[1200px] xxl:max-w-[1600px] min-h-[420px] xxl:min-h-[480px]
          bg-[#67A9A8] 
          xl:bg-transparent xl:bg-[url('/images/bg-flow-2.png')] 
          xl:bg-[length:100%_100%] xl:bg-center xl:bg-no-repeat
-         rounded-[50px] overflow-visible text-center mx-auto flex flex-col items-center"
+         rounded-[50px] xxl:rounded-[60px] overflow-visible text-center mx-auto flex flex-col items-center"
   dir="rtl"
 >
 <div class="max-w-6xl xxl:max-w-[1300px] mx-auto">
   <div class="flex flex-col items-center text-center mb-8 md:mb-10 xxl:mb-14">
-    <h3 class="text-[#2d6a66] md:text-white text-[18px] md:text-[22px] xl:text-[26px] xxl:text-[30px] font-medium mb-2">فرایند همکاری</h3>
+    <h3 class="text-[#2d6a66] md:text-white text-[18px] md:text-[22px] xl:text-[26px] xxl:text-[30px] xxl:mt-[50px] font-medium mb-2">فرایند همکاری</h3>
     <h1 class="text-[#0F184B] text-[22px] md:text-[29px] xl:text-[32px] xxl:text-[38px] font-bold">از ایده تا نتیجه، در کنار شما هستیم</h1>
   </div>
 
@@ -135,11 +141,11 @@ const steps = [
       index % 2 !== 0 ? 'xl:translate-y-12 xxl:translate-y-14' : '',
     ]"
   >
-      <div class="absolute -right-1 top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[30px] bg-[#EAAA3C] rounded-full -mt-[6px] md:-mt-[6px]"></div>
+      <div class="absolute -right-1 top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[30px] xxl:h-[36px] bg-[#EAAA3C] rounded-full -mt-[6px] md:-mt-[6px] xxl:-mt-[8px]"></div>
 
-      <div class="bg-white p-2 sm:p-3 md:p-2.5 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
+      <div class="bg-white p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
         <div class="flex items-center h-full gap-1">
-          <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[10px] text-[#EAAA3C] rokh-bold-num mt-2">
+          <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[10px] xxl:ml-[14px] text-[#EAAA3C] rokh-bold-num mt-2">
             {{ (index + 1).toLocaleString('fa-IR') }}
           </span>
           <h3 class="text-[#EAAA3C] font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] truncate rokh-bold-num">{{ step.title }}</h3>

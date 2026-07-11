@@ -5,13 +5,13 @@
   ></div>
 
   <div
-    class="lottery-scroll relative min-h-[100dvh] lg:min-h-screen lg:bg-[url('/images/bg-lottery.png')] lg:bg-cover lg:bg-center lg:bg-no-repeat lg:bg-fixed text-white flex flex-col p-4 sm:p-6 lg:p-8 transition-colors duration-700"
+    class="lottery-scroll relative min-h-[100dvh] lg:min-h-screen lg:bg-[url('/images/bg-lottery.png')] lg:bg-cover lg:bg-center lg:bg-no-repeat lg:bg-fixed text-white flex flex-col p-4 sm:p-6 lg:p-8 min-[1920px]:p-12 transition-colors duration-700"
     dir="rtl"
   >
     
     <div
       v-if="!showResults"
-      class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-[repeat(6,max-content)] justify-items-center lg:justify-center gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8 lg:mb-10 w-full lg:w-auto mx-auto"
+      class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-[repeat(6,max-content)] justify-items-center lg:justify-center gap-2 sm:gap-3 lg:gap-4 min-[1920px]:gap-6 mb-6 sm:mb-8 lg:mb-10 min-[1920px]:mb-8 w-full lg:w-auto mx-auto"
       dir="ltr"
     >
       <div
@@ -29,7 +29,7 @@
 
     <LotteryResults v-else />
 
-    <div v-if="!showResults" class="flex flex-col items-center gap-3 sm:gap-4 px-2 sm:px-0">
+    <div v-if="!showResults" class="flex flex-col items-center gap-3 sm:gap-4 min-[1920px]:gap-6 px-2 sm:px-0">
       <button class="w-full max-w-[478px] sm:w-[478px] bg-white text-[#3949ab] px-6 sm:px-10 py-3 rounded-full font-bold shadow-xl flex items-center justify-center gap-2 h-[44px] text-sm sm:text-base">
         <span>شروع قرعه‌کشی</span>
 

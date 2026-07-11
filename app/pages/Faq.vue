@@ -8,8 +8,24 @@
       <h2 class="text-3xl 2xl:text-[42px] font-bold text-[#0F184B]">پرسش‌های متداول</h2>
     </div>
 
-    <div class="flex flex-col gap-4 2xl:gap-5">
-      <div v-for="(item, index) in faqs" :key="index" 
+    <!-- حالت لودینگ -->
+    <div v-if="pending" class="text-center text-[#616474] py-10">
+      در حال بارگذاری...
+    </div>
+
+    <!-- حالت خطا -->
+    <div v-else-if="error" class="text-center text-red-500 py-10">
+      خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید.
+    </div>
+
+    <!-- حالت خالی بودن لیست -->
+    <div v-else-if="!faqs || faqs.length === 0" class="text-center text-[#616474] py-10">
+      در حال حاضر سوالی ثبت نشده است.
+    </div>
+
+    <!-- لیست FAQ ها -->
+    <div v-else class="flex flex-col gap-4 2xl:gap-5">
+      <div v-for="(item, index) in faqs" :key="item.id" 
            class="bg-[#2C7379]/10 rounded-2xl 2xl:rounded-[24px] overflow-hidden border border-[#BFD1D53B] transition-all">
         
         <button 
@@ -43,22 +59,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-const isOpen = ref(null); 
+const isOpen = ref(null);
 const toggle = (index) => { isOpen.value = isOpen.value === index ? null : index; };
 
-const faqs = [
-  { question: 'فرآیند کار از ابتدا تا انتها به چه صورت است؟', answer: 'فرآیند کار ما از ابتدا تا انتها در ۶ مرحله‌ی شفاف و منظم انجام می‌شود تا شما در هر لحظه از پیشرفت پروژه خود مطلع باشید.' },
-  { question: 'تولید محتوا فقط متنی است یا تصویر و ویدیو هم شامل می‌شود؟', answer: 'خیر، خدمات ما شامل تولید محتوای متنی، تصویری، ویدئویی و گرافیک‌های اختصاصی می‌باشد.' },
-  { question: 'سایت من با چه سیستمی طراحی می‌شود؟', answer: 'بسته به نیاز و اهداف شما، ما از بهترین تکنولوژی‌ها استفاده می‌کنیم.' },
-  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' },
-  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' },
-  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' },
-  { question: 'طراحی سایت و تولید محتوا را با هم انجام می‌دهید یا جداگانه؟', answer: 'هر دو سرویس هم به صورت پکیج جامع و هم به صورت جداگانه قابل ارائه هستند.' }
+// آدرس پایه API - در صورت نیاز می‌توانید آن را در runtimeConfig یا .env قرار دهید
+const API_BASE = 'https://nadertechnologyteam.ir';
 
+// دریافت لیست FAQ های فعال از API
+const { data, pending, error } = await useFetch(`${API_BASE}/api/faqs`, {
+  key: 'faqs-list',
+});
 
-];
+// استخراج و مرتب‌سازی بر اساس sort_order (طبق توضیح مستندات: ordered by sort order)
+const faqs = computed(() => {
+  const list = data.value?.data?.faqs ?? [];
+  return [...list].sort((a, b) => a.sort_order - b.sort_order);
+});
 
 const footerConfig = useState('footerConfig');
 footerConfig.value = {

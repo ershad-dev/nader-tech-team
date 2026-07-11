@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] xl:w-[1110px] h-auto xl:h-[70px] mx-auto bg-white rounded-[1.75rem] sm:rounded-[2rem] xl:rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex flex-col xl:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100 transition-all duration-300" dir="rtl">
+  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto xl:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white rounded-[1.75rem] sm:rounded-[2rem] xl:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col xl:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100 transition-all duration-300" dir="rtl">
     
     <!-- Header (لوگو و همبرگر) -->
     <div class="relative flex w-full xl:w-auto justify-between items-center px-1 xl:px-0">
@@ -46,10 +46,10 @@
     >
       
       <!-- ۱. فضای خالی در سمت چپ (برای حفظ توازنِ مرکز بودنِ لینک‌ها) -->
-      <div class="hidden xl:block w-[90px]"></div>
+      <div class="hidden xl:block w-[90px] min-[1920px]:w-[110px]"></div>
 
       <!-- ۲. لینک‌های وسط (کاملاً مستقل) -->
-      <div class="flex flex-col xl:flex-row items-center justify-center gap-3 sm:gap-5 xl:gap-8 text-[#0F184B] font-roboto font-normal text-[14px] sm:text-[15px] xl:text-[16px] w-full xl:flex-1 xl:whitespace-nowrap">
+      <div class="flex flex-col xl:flex-row items-center justify-center gap-3 sm:gap-5 xl:gap-8 min-[1920px]:gap-10 text-[#0F184B] font-roboto font-normal text-[14px] sm:text-[15px] xl:text-[16px] min-[1920px]:text-[24px] w-full xl:flex-1 xl:whitespace-nowrap">
         <NuxtLink to="/" exact-active-class="!text-[#0F184B] !font-bold" class="hover:text-teal-700 transition" @click="isOpen = false">خانه</NuxtLink>
         <NuxtLink to="/order" exact-active-class="!text-[#0F184B] !font-bold" class="hover:text-teal-700 transition" @click="isOpen = false">سفارش‌ پروژه</NuxtLink>
         <NuxtLink to="/events" exact-active-class="!text-[#0F184B] !font-bold" class="hover:text-teal-700 transition" @click="isOpen = false">برگزاری ایونت</NuxtLink>
@@ -86,7 +86,7 @@
 
           <template #fallback>
             <div class="flex flex-col gap-2 w-full xl:hidden mt-2">
-              <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] font-bold border border-[#2D7A6F] rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ورود</NuxtLink>
+              <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] font-bold border border-[#2D7A6F] rounded-full text-[14px] sm:text-[16px] " @click="isOpen = false">ورود</NuxtLink>
               <NuxtLink to="/auth/register" class="w-full text-center py-2 sm:py-2.5 bg-[#2D7A6F] text-white font-bold rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ثبت‌نام</NuxtLink>
             </div>
           </template>
@@ -94,12 +94,12 @@
       </div>
       
       <!-- ۳. دکمه ورود و ثبت‌نام (سمت راست - کاملاً جدا شده) -->
-      <div class="hidden xl:flex justify-end w-[184px]" dir="ltr">
+      <div class="hidden xl:flex justify-end w-[184px] min-[1920px]:w-[220px]" dir="ltr">
         <ClientOnly>
           <NuxtLink 
             v-if="!isLoggedIn"
             to="/auth/login"
-            class="bg-[#2D7A6F] w-[184px] h-[44px] text-white px-6 py-2.5 font-roboto rounded-full text-[16px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
+            class="bg-[#2D7A6F] w-[184px] min-[1920px]:w-[220px] h-[44px] min-[1920px]:h-[54px] text-white px-6 min-[1920px]:px-8 py-2.5 font-roboto rounded-full text-[16px] min-[1920px]:text-[19px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
           >
             <div class="flex items-center justify-center gap-4 ">
               <span>ورود / ثبت‌نام</span>
@@ -110,18 +110,18 @@
           <NuxtLink 
             v-else
             to="/profile"
-            class="bg-[#2D7A6F] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-800 transition shadow-sm"
+            class="bg-[#2D7A6F] text-white px-6 min-[1920px]:px-8 py-2.5 min-[1920px]:py-3 rounded-full text-sm min-[1920px]:text-[19px] font-bold hover:bg-teal-800 transition shadow-sm"
           >
               <div class="flex items-center justify-center gap-4 ">
             <span>پروفایل</span>
-            <Icon name="heroicons:user-solid" class="w-6 h-6" />
+            <Icon name="heroicons:user-solid" class="w-6 h-6 min-[1920px]:w-7 min-[1920px]:h-7" />
             </div>
           </NuxtLink>
 
           <template #fallback>
             <NuxtLink
               to="/auth/login"
-              class="bg-[#2D7A6F] w-[184px] h-[44px] text-white px-6 py-2.5 font-roboto rounded-full text-[16px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
+              class="bg-[#2D7A6F] w-[184px] min-[1920px]:w-[220px] h-[44px] min-[1920px]:h-[54px] text-white px-6 min-[1920px]:px-8 py-2.5 font-roboto rounded-full text-[16px] min-[1920px]:text-[19px] font-bold hover:bg-teal-800 transition shadow-sm flex items-center justify-center"
             >
               <div class="flex items-center justify-center gap-4 ">
                 <span>ورود / ثبت‌نام</span>

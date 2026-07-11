@@ -7,9 +7,9 @@ const showLotteryPage = ref(false);
 </script>
 
 <template>
-  <div v-if="!showLotteryPage" class="max-w-full lg:max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
+  <div v-if="!showLotteryPage" class="max-w-full lg:max-w-[1000px] min-[1920px]:max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 min-[1920px]:p-12" dir="rtl">
     
-    <div class="bg-white text-center py-3 lg:py-4 rounded-2xl mb-6 lg:mb-8 font-bold text-[#1a2333] shadow-sm text-sm sm:text-base">
+    <div class="bg-white text-center py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] shadow-sm text-sm sm:text-base min-[1920px]:text-lg">
       اطلاعات قرعه‌کشی
     </div>
 
@@ -17,22 +17,22 @@ const showLotteryPage = ref(false);
     <div class="hidden lg:block bg-[#F5F3ED] rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
       <table class="w-full text-center">
         <thead class="bg-[#BFCFD3]">
-          <tr class="text-[#1a2333] font-bold">
-            <th class="py-5">کد کاربری</th>
-            <th class="py-5">کد قرعه‌کشی</th>
-            <th class="py-5">نام و نام خانوادگی</th>
-            <th class="py-5">شماره موبایل</th>
-            <th class="py-5">وضعیت حضور</th>
+          <tr class="text-[#1a2333] font-bold min-[1920px]:text-lg">
+            <th class="py-5 min-[1920px]:py-7">کد کاربری</th>
+            <th class="py-5 min-[1920px]:py-7">کد قرعه‌کشی</th>
+            <th class="py-5 min-[1920px]:py-7">نام و نام خانوادگی</th>
+            <th class="py-5 min-[1920px]:py-7">شماره موبایل</th>
+            <th class="py-5 min-[1920px]:py-7">وضعیت حضور</th>
           </tr>
         </thead>
-        <tbody class="text-gray-600">
+        <tbody class="text-gray-600 min-[1920px]:text-lg">
           <tr v-for="i in 8" :key="i" class="border-b border-gray-200 last:border-none">
-            <td class="py-6">{{ i }}</td>
-            <td class="py-6">X7M9K2P4R8T1Q6</td>
-            <td class="py-6">ثمین زارعی</td>
-            <td class="py-6">0945123987445</td>
-            <td class="py-6 flex justify-center">
-              <span v-if="i !== 3 && i !== 5" class="text-green-500 text-2xl">✅</span>
+            <td class="py-6 min-[1920px]:py-8">{{ i }}</td>
+            <td class="py-6 min-[1920px]:py-8">X7M9K2P4R8T1Q6</td>
+            <td class="py-6 min-[1920px]:py-8">ثمین زارعی</td>
+            <td class="py-6 min-[1920px]:py-8">0945123987445</td>
+            <td class="py-6 min-[1920px]:py-8 flex justify-center">
+              <span v-if="i !== 3 && i !== 5" class="text-green-500 text-2xl min-[1920px]:text-3xl">✅</span>
             </td>
           </tr>
         </tbody>
@@ -70,10 +70,10 @@ const showLotteryPage = ref(false);
       </div>
     </div>
 
-    <div class="mt-6 lg:mt-8 flex justify-center">
+    <div class="mt-6 lg:mt-8 min-[1920px]:mt-12 flex justify-center">
       <button 
         @click="showLotteryPage = true" 
-        class="bg-[#286463] text-white px-8 sm:px-10 lg:px-12 py-2.5 sm:py-3 rounded-xl font-bold hover:bg-[#1e4a49] transition shadow-lg cursor-pointer text-sm sm:text-base w-full sm:w-auto"
+        class="bg-[#286463] text-white px-8 sm:px-10 lg:px-12 min-[1920px]:px-16 py-2.5 sm:py-3 min-[1920px]:py-4 rounded-xl font-bold hover:bg-[#1e4a49] transition shadow-lg cursor-pointer text-sm sm:text-base min-[1920px]:text-lg w-full sm:w-auto"
       >
         برگزاری قرعه‌کشی
       </button>
