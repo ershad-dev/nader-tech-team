@@ -1,46 +1,44 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-const { getProjectsByType } = useProjects();
-const webProjects = computed(() => getProjectsByType('web'));
-const currentIndex = ref(0);
+const { items: webProjects } = useResumes('web')
+const currentIndex = ref(0)
 
-// آیتم‌های دسکتاپ/تبلت (جاری به بعد - همون منطق قبلی)
 const visibleProjects = computed(() => {
-  const items = [];
+  const items = []
+  const len = webProjects.value.length
+  if (len === 0) return []
   for (let i = 0; i < 3; i++) {
-    const index = (currentIndex.value + i) % webProjects.value.length;
-    items.push(webProjects.value[index]);
+    items.push(webProjects.value[(currentIndex.value + i) % len])
   }
-  return items;
-});
+  return items
+})
 
-// آیتم‌های موبایل (قبلی - جاری - بعدی) برای نمایش کارت وسط بزرگ و کناری‌ها نیمه‌پیدا
 const mobileVisibleProjects = computed(() => {
-  const items = [];
-  const len = webProjects.value.length;
+  const len = webProjects.value.length
+  if (len === 0) return []
+  const items = []
   for (let i = -1; i <= 1; i++) {
-    const index = (currentIndex.value + i + len) % len;
-    items.push(webProjects.value[index]);
+    items.push(webProjects.value[(currentIndex.value + i + len) % len])
   }
-  return items;
-});
+  return items
+})
 
 const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % webProjects.value.length;
-};
-
+  if (webProjects.value.length > 0) currentIndex.value = (currentIndex.value + 1) % webProjects.value.length
+}
 const prevSlide = () => {
-  currentIndex.value = (currentIndex.value - 1 + webProjects.value.length) % webProjects.value.length;
-};
+  if (webProjects.value.length > 0) currentIndex.value = (currentIndex.value - 1 + webProjects.value.length) % webProjects.value.length
+}
 
+// steps آرایه ثابت - بدون تغییر
 const steps = [
   { title: 'سفارش', desc: 'سفارش نیازهای خود را با ما در میان بگذارید و سفارش پروژه را ثبت کنید.' },
   { title: 'تحلیل', desc: 'تحلیل نیازها و اهداف شما به دقت بررسی و تحلیل می‌شود.' },
   { title: 'اجرا', desc: 'اجرا تیم ما بر اساس برنامه‌ریزی انجام شده پروژه را با کیفیت اجرا می‌کند.' },
   { title: 'تحویل', desc: 'تحویل پروژه در موعد مقرر با کیفیت نهایی به شما تحویل داده می‌شود.' },
-  { title: 'پشتیبانی', desc: 'پشتیبانی پس از تحویل، همراهی و پشتیبانی ما ادامه خواهد داشت.' }
-];
+  { title: 'پشتیبانی', desc: 'پشتیبانی پس از تحویل، همراهی و پشتیبانی ما ادامه خواهد داشت.' },
+]
 </script>
 
 <template>
@@ -72,9 +70,9 @@ const steps = [
                 : 'z-10 scale-75 opacity-40 translate-x-[105px]'
           ]"
         >
-          <NuxtLink :to="`/order/${card.id}`">
-            <img
-              :src="card.images[0]"
+ <NuxtLink :to="`/order/${card.slug}`">
+              <img
+              :src="resumeCover(card)"
               class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg"
               :alt="card.title"
             />
@@ -94,9 +92,9 @@ const steps = [
       index % 2 !== 0 ? 'xl:mt-12 xxl:mt-14' : '',
     ]"
   >
-    <NuxtLink :to="`/order/${card.id}`">
-      <img
-        :src="card.images[0]"
+<NuxtLink :to="`/order/${card.slug}`">
+        <img
+        :src="resumeCover(card)"
         class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px] xxl:rounded-[45px]"
         :alt="card.title"
       />

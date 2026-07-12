@@ -48,9 +48,8 @@
   <div v-for="project in visibleProjects" :key="project.id" 
        class="relative w-full lg:w-[250px] min-[1920px]:w-[300px] h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
 
-    <NuxtLink :to="`/order/${project.id}`">
-      <img :src="project.image" class="w-full h-[214px] sm:h-[274px] lg:w-[250px] lg:h-[344px] min-[1920px]:w-[300px] min-[1920px]:h-[414px] object-cover" />
-      
+<NuxtLink :to="`/order/${project.slug}`">
+   <img :src="resumeCover(project)"/>
       <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 text-center">
         <h3 class="text-[#0F184B] font-bold text-[14px] sm:text-[16px] lg:text-[20px] min-[1920px]:text-[22px]">{{ project.title }}</h3>
       </div>
@@ -107,100 +106,73 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 
-const activeCategory = ref('طراحی سایت');
-const currentIndex = ref(0);
-const categories = ['طراحی سایت', 'تولید محتوا', 'برگزاری ایونت'];
+const categoryMap = {
+  'طراحی سایت': 'web',
+  'تولید محتوا': 'content',
+}
+const categories = Object.keys(categoryMap)
 
-// --- تعداد آیتم در هر اسلاید بر اساس سایز صفحه ---
-const itemsPerPage = ref(4);
+const activeCategory = ref('طراحی سایت')
+const activeType = computed(() => categoryMap[activeCategory.value])
+const { items, pending } = useResumes(activeType)
+
+const currentIndex = ref(0)
+const itemsPerPage = ref(4)
 
 const updateItemsPerPage = () => {
-  itemsPerPage.value = window.innerWidth < 1024 ? 2 : 4;
-};
-
+  itemsPerPage.value = window.innerWidth < 1024 ? 2 : 4
+}
 onMounted(() => {
-  updateItemsPerPage();
-  window.addEventListener('resize', updateItemsPerPage);
-});
-
+  updateItemsPerPage()
+  window.addEventListener('resize', updateItemsPerPage)
+})
 onUnmounted(() => {
-  window.removeEventListener('resize', updateItemsPerPage);
-});
+  window.removeEventListener('resize', updateItemsPerPage)
+})
 
+// محتوای متنی شوکیس - استاتیک، بخشی از UI نه دیتای رزومه
 const contentMap = {
-  'طراحی سایت': { 
-    title: 'طراحی سایت', 
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.', 
+  'طراحی سایت': {
+    title: 'طراحی سایت',
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم.',
     image: '/images/img-services.png',
     buttonText: 'درخواست طراحی سایت',
-    buttonLink: '/order/requestProject'
+    buttonLink: '/order/requestProject',
   },
-  'تولید محتوا': { 
-    title: 'تولید محتوا', 
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.', 
+  'تولید محتوا': {
+    title: 'تولید محتوا',
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم.',
     image: '/images/img-services.png',
     buttonText: 'درخواست تولید محتوا',
-    buttonLink: '/order/requestProject'
+    buttonLink: '/order/requestProject',
   },
-  'برگزاری ایونت': { 
-    title: 'برگزاری ایونت', 
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.', 
-    image: '/images/img-services.png',
-    buttonText: 'درخواست برگزاری ایونت',
-    buttonLink: '/order/requestProject'
-  }
-};
+}
 
-const projects = [
-  { id: 1, title: 'نام پروژه ۱', category: 'طراحی سایت', image: '/images/preview3.jpg' },
-  { id: 2, title: 'نام پروژه ۲', category: 'طراحی سایت', image: '/images/preview2.jpg' },
-  { id: 3, title: 'نام پروژه ۳', category: 'طراحی سایت', image: '/images/preview.jpg' },
-  { id: 4, title: 'نام پروژه ۴', category: 'طراحی سایت', image: '/images/content1.jpg' },
-  { id: 5, title: 'نام پروژه ۵', category: 'طراحی سایت', image: '/images/content2.jpg' },
-  { id: 6, title: 'نام پروژه ۶', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
-  { id: 7, title: 'نام پروژه ۷', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
-  { id: 8, title: 'نام پروژه ۸', category: 'تولید محتوا', image: '/images/hero-imgae.png' },
-  { id: 9, title: 'نام پروژه ۹', category: 'تولید محتوا', image: '/images/content2.jpg' },
-  { id: 10, title: 'نام پروژه ۱۰', category: 'تولید محتوا', image: '/images/content2.jpg' },
-  { id: 11, title: 'نام پروژه ۱۱', category: 'برگزاری ایونت', image: '/images/hero-imgae.png' },
-];
+const currentContent = computed(() => contentMap[activeCategory.value])
 
-const currentContent = computed(() => contentMap[activeCategory.value]);
-const filteredProjects = computed(() => projects.filter(p => p.category === activeCategory.value));
+const totalSlides = computed(() => Math.ceil(items.value.length / itemsPerPage.value))
 
-// محاسبه تعداد صفحات بر اساس itemsPerPage پویا
-const totalSlides = computed(() => Math.ceil(filteredProjects.value.length / itemsPerPage.value));
-
-// منطق چرخشی (Loop) برای نمایش پروژه‌ها در صفحه جاری
 const visibleProjects = computed(() => {
-  const all = filteredProjects.value;
-  if (all.length === 0) return [];
-  
-  const start = currentIndex.value * itemsPerPage.value;
-  const result = [];
-  
+  const all = items.value
+  if (all.length === 0) return []
+  const start = currentIndex.value * itemsPerPage.value
+  const result = []
   for (let i = 0; i < itemsPerPage.value; i++) {
-    const index = (start + i) % all.length;
-    result.push(all[index]);
+    result.push(all[(start + i) % all.length])
   }
-  return result;
-});
+  return result
+})
 
 const nextSlide = () => {
-  if (totalSlides.value > 0) {
-    currentIndex.value = (currentIndex.value + 1) % totalSlides.value;
-  }
-};
-
+  if (totalSlides.value > 0) currentIndex.value = (currentIndex.value + 1) % totalSlides.value
+}
 const prevSlide = () => {
-  if (totalSlides.value > 0) {
-    currentIndex.value = (currentIndex.value - 1 + totalSlides.value) % totalSlides.value;
-  }
-};
+  if (totalSlides.value > 0) currentIndex.value = (currentIndex.value - 1 + totalSlides.value) % totalSlides.value
+}
 
 watch(activeCategory, () => {
-  currentIndex.value = 0;
-});
+  currentIndex.value = 0
+})
 </script>

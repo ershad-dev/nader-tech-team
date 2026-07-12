@@ -206,7 +206,7 @@ const saveChanges = async () => {
       })
     } else {
       // ایجاد جدید
-      await $fetch(`${API_BASE}/api/admin/resume`, {
+      await $fetch(`${API_BASE}/api/admin/resumes`, {
         method: 'POST',
         headers: { ...authHeader() },
         body: fd,
