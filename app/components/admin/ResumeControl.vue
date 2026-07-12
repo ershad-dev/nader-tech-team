@@ -28,9 +28,10 @@ const fetchResumes = async (page = 1) => {
   isLoadingList.value = true
   errorMessage.value = ''
   try {
-    const res = await $fetch(`https://nadertechnologyteam.ir/api/admin/resume`, {
+    // نکته: در $fetch از کلید "query" استفاده می‌کنیم نه "params"
+    const res = await $fetch(`${API_BASE}/api/admin/resumes`, {
       method: 'GET',
-      params: { page, per_page: perPage.value },
+      query: { page, per_page: perPage.value },
       headers: { ...authHeader() },
     })
 
@@ -65,6 +66,7 @@ const emptyForm = () => ({
   description: '',
   is_published: true,
   category_id: null,
+  category_name: '', // فقط برای نمایش (سرور در حالت ویرایش category_id برنمی‌گردونه، فقط نام category)
   customer_name: '',
   customer_position: '',
   customer_avatar: null,        // فایل جدید (اختیاری)
@@ -88,7 +90,7 @@ const openForm = async (item = null) => {
     isLoadingForm.value = true
     errorMessage.value = ''
     try {
-      const res = await $fetch(`https://nadertechnologyteam.ir/api/admin/resume/${item.id}`, {
+      const res = await $fetch(`${API_BASE}/api/admin/resumes/${item.id}`, {
         method: 'GET',
         headers: { ...authHeader() },
       })
@@ -98,7 +100,15 @@ const openForm = async (item = null) => {
       form.slug = d.slug || ''
       form.description = d.description || ''
       form.is_published = !!d.is_published
-      form.category_id = d.category_id ?? null
+
+      // ⚠️ طبق مستندات سواگر، پاسخ GET تکی فقط "category" (نام دسته‌بندی به‌صورت رشته)
+      // برمی‌گردونه، نه category_id. پس اینجا نمی‌تونیم id رو دوباره پر کنیم.
+      // فقط نام رو برای نمایش نگه می‌داریم؛ اگه می‌خوای کاربر بتونه دسته رو در فرم ویرایش
+      // عوض کنه، باید یک endpoint جدا برای لیست دسته‌بندی‌ها (id + name) بگیری و اینجا
+      // با تطبیق نام، id مربوطه رو پیدا کنی یا از یک select پر شده از آن لیست استفاده کنی.
+      form.category_id = null
+      form.category_name = d.category || ''
+
       form.customer_name = d.review?.name || ''
       form.customer_position = d.review?.position || ''
       form.customer_avatar_preview = d.review?.avatar || null
@@ -188,7 +198,7 @@ const saveChanges = async () => {
 
     if (form.id) {
       // آپدیت - از _method=PUT روی POST طبق مستندات استفاده می‌شه
-      await $fetch(`https://nadertechnologyteam.ir/api/admin/resume/${form.id}`, {
+      await $fetch(`${API_BASE}/api/admin/resumes/${form.id}`, {
         method: 'POST',
         query: { _method: 'PUT' },
         headers: { ...authHeader() },
@@ -196,7 +206,7 @@ const saveChanges = async () => {
       })
     } else {
       // ایجاد جدید
-      await $fetch(`https://nadertechnologyteam.ir/api/admin/resume`, {
+      await $fetch(`${API_BASE}/api/admin/resume`, {
         method: 'POST',
         headers: { ...authHeader() },
         body: fd,
@@ -219,7 +229,7 @@ const deleteItem = async (id) => {
   isDeleting.value = true
   errorMessage.value = ''
   try {
-    await $fetch(`${API_BASE}/api/admin/resume/${id}`, {
+    await $fetch(`${API_BASE}/api/admin/resumes/${id}`, {
       method: 'DELETE',
       headers: { ...authHeader() },
     })
@@ -354,13 +364,21 @@ const deleteItem = async (id) => {
               </div>
 
               <div>
-                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700">دسته‌بندی (شناسه)</label>
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700">
+                  دسته‌بندی (شناسه)
+                  <span v-if="form.category_name" class="text-gray-400 font-normal">
+                    — دسته فعلی: {{ form.category_name }}
+                  </span>
+                </label>
                 <input
                   v-model.number="form.category_id"
                   type="number"
                   placeholder="مثلاً 1"
                   class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
                 />
+                <p class="text-[11px] text-gray-400 mt-1">
+                  API فعلی هنگام دریافت رزومه، فقط نام دسته را برمی‌گرداند نه شناسه؛ برای تغییر دسته، شناسه‌ی جدید را وارد کنید.
+                </p>
               </div>
 
               <div>
