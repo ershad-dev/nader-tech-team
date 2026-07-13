@@ -8,30 +8,50 @@
     class="lottery-scroll relative min-h-[100dvh] lg:min-h-screen lg:bg-[url('/images/bg-lottery.png')] lg:bg-cover lg:bg-center lg:bg-no-repeat lg:bg-fixed text-white flex flex-col p-4 sm:p-6 lg:p-8 min-[1920px]:p-12 transition-colors duration-700"
     dir="rtl"
   >
-    
-    <div
-      v-if="!showResults"
-      class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-[repeat(6,max-content)] justify-items-center lg:justify-center gap-2 sm:gap-3 lg:gap-4 min-[1920px]:gap-6 mb-6 sm:mb-8 lg:mb-10 min-[1920px]:mb-8 w-full lg:w-auto mx-auto"
-      dir="ltr"
-    >
-      <div
-        v-for="i in 36"
-        :key="i"
-        class="circle-cut w-full aspect-[126/106] sm:aspect-[90/76] lg:w-[126px] lg:h-[106px] lg:aspect-auto rounded-[12px] sm:rounded-[16px] lg:rounded-[20px] bg-gradient-to-br from-white/35 via-[#6EA8FF]/25 to-[#1E40AF]/70 backdrop-blur-xl border border-white/30 shadow-[0_8px_32px_rgba(30,64,175,0.35)] relative"
-      >
-        <span
-          class="absolute inset-0 flex items-center justify-center text-white font-bold text-[16px] sm:text-[22px] lg:text-[36px] leading-none"
-        >
-          {{ i }}
-        </span>
-      </div>
+
+    <div v-if="loadingData" class="flex-1 flex items-center justify-center text-white/80">
+      در حال بارگذاری اطلاعات قرعه‌کشی...
     </div>
 
-    <LotteryResults v-else />
+    <div v-else-if="errorMsg" class="flex-1 flex items-center justify-center text-red-300 font-medium text-center px-4">
+      {{ errorMsg }}
+    </div>
 
-    <div v-if="!showResults" class="flex flex-col items-center gap-3 sm:gap-4 min-[1920px]:gap-6 px-2 sm:px-0">
-      <button class="w-full max-w-[478px] sm:w-[478px] bg-white text-[#3949ab] px-6 sm:px-10 py-3 rounded-full font-bold shadow-xl flex items-center justify-center gap-2 h-[44px] text-sm sm:text-base">
-        <span>شروع قرعه‌کشی</span>
+    <template v-else>
+      <div
+        v-if="!showResults"
+        class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-[repeat(6,max-content)] justify-items-center lg:justify-center gap-2 sm:gap-3 lg:gap-4 min-[1920px]:gap-6 mb-6 sm:mb-8 lg:mb-10 min-[1920px]:mb-8 w-full lg:w-auto mx-auto"
+        dir="ltr"
+      >
+        <div
+          v-for="i in totalCircles"
+          :key="i"
+          class="circle-cut w-full aspect-[126/106] sm:aspect-[90/76] lg:w-[126px] lg:h-[106px] lg:aspect-auto rounded-[12px] sm:rounded-[16px] lg:rounded-[20px] backdrop-blur-xl border shadow-[0_8px_32px_rgba(30,64,175,0.35)] relative transition-all duration-150"
+          :class="winnerIndexes.includes(i - 1)
+            ? 'bg-gradient-to-br from-yellow-300/80 via-yellow-400/70 to-amber-600/80 border-yellow-100 scale-105'
+            : (highlightedIndex === i - 1
+                ? 'bg-gradient-to-br from-white/60 via-[#6EA8FF]/40 to-[#1E40AF]/80 border-white/70 scale-105'
+                : 'bg-gradient-to-br from-white/35 via-[#6EA8FF]/25 to-[#1E40AF]/70 border-white/30')"
+        >
+          <span
+            class="absolute inset-0 flex items-center justify-center text-white font-bold text-[16px] sm:text-[22px] lg:text-[36px] leading-none"
+          >
+            {{ i }}
+          </span>
+        </div>
+      </div>
+
+      <LotteryResults v-else :lottery-id="resolvedLotteryId" :winners="finalWinners" />
+
+      <div v-if="!showResults" class="flex flex-col items-center gap-3 sm:gap-4 min-[1920px]:gap-6 px-2 sm:px-0">
+        <p v-if="drawError" class="text-red-300 text-sm font-medium text-center">{{ drawError }}</p>
+
+        <button
+          @click="startDraw"
+          :disabled="isDrawing || !entries.length"
+          class="w-full max-w-[478px] sm:w-[478px] bg-white text-[#3949ab] px-6 sm:px-10 py-3 rounded-full font-bold shadow-xl flex items-center justify-center gap-2 h-[44px] text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <span>{{ isDrawing ? 'در حال قرعه‌کشی...' : 'شروع قرعه‌کشی' }}</span>
 
 <svg width="28" height="28" class="sm:w-8 sm:h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_773_1093)">
@@ -43,13 +63,14 @@
 </clipPath>
 </defs>
 </svg>
-      </button>
+        </button>
 
-      <button 
-        @click="showResults = true"
-        class="w-full max-w-[283px] sm:w-[283px] h-[44px] bg-[#7e57c2] text-white px-6 sm:px-10 py-3 rounded-full font-bold shadow-xl flex items-center justify-center gap-2 text-sm sm:text-base"
-      >
-        <span>نتایج قرعه‌کشی</span>
+        <button 
+          @click="showResults = true"
+          :disabled="!finalWinners.length"
+          class="w-full max-w-[283px] sm:w-[283px] h-[44px] bg-[#7e57c2] text-white px-6 sm:px-10 py-3 rounded-full font-bold shadow-xl flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <span>نتایج قرعه‌کشی</span>
 
 <svg width="28" height="28" class="sm:w-8 sm:h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_773_1087)">
@@ -61,8 +82,9 @@
 </clipPath>
 </defs>
 </svg>
-      </button>
-    </div>
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -70,18 +92,121 @@
 
 
 <script setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { ref, computed, onMounted, onUnmounted, inject, defineAsyncComponent } from 'vue';
 // وارد کردن کامپوننت نتایج که قبلاً ساختیم
 const LotteryResults = defineAsyncComponent(() => import('./LotteryResults.vue'));
 
+const props = defineProps({
+  lotteryId: { type: [String, Number], default: null },
+})
+
+// اگر lotteryId به‌عنوان prop پاس داده نشده باشد، از query param آدرس خونده می‌شود
+const route = useRoute()
+const resolvedLotteryId = computed(() => props.lotteryId ?? route.query.lottery)
+
+const { getEntries, getLottery, drawLottery } = useLotteryApi()
+
 const showResults = ref(false);
 
-import { inject, onMounted, onUnmounted } from 'vue'
+const entries = ref([])
+const lottery = ref(null)
+const loadingData = ref(true)
+const errorMsg = ref('')
+
+const isDrawing = ref(false)
+const drawError = ref('')
+const highlightedIndex = ref(null) // ایندکس (0-based) شماره‌ای که الان در حال چرخش، هایلایت شده
+const winnerIndexes = ref([])       // ایندکس‌های (0-based) شماره‌هایی که به‌عنوان برنده قفل شده‌اند
+const finalWinners = ref([])        // [{ user, position }]
+
+// تعداد دایره‌ها = تعداد شرکت‌کنندگان واقعی (تا زمانی که دیتا لود نشده، ۳۶ تای پیش‌فرض نمایش داده می‌شود)
+const totalCircles = computed(() => entries.value.length || 36)
+
+const loadData = async () => {
+  if (!resolvedLotteryId.value) {
+    errorMsg.value = 'شناسه‌ی قرعه‌کشی در آدرس مشخص نشده است (؟lottery=ID)'
+    loadingData.value = false
+    return
+  }
+  loadingData.value = true
+  errorMsg.value = ''
+  try {
+    const [entriesRes, lotteryRes] = await Promise.all([
+      getEntries(resolvedLotteryId.value, 1, 100),
+      getLottery(resolvedLotteryId.value),
+    ])
+    entries.value = entriesRes.data || []
+    lottery.value = lotteryRes.data || null
+  } catch (err) {
+    errorMsg.value = 'خطا در دریافت اطلاعات قرعه‌کشی'
+  } finally {
+    loadingData.value = false
+  }
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+// یک دور اسپین: بین شماره‌های باقی‌مانده به‌صورت نامنظم/رندوم می‌چرخد
+// و در قدم‌های پایانی سرعتش کم می‌شود تا روی یک شماره بایستد
+const spinToWinner = async (availableIndexes) => {
+  const totalSteps = 18 + Math.floor(Math.random() * 6)
+  let delay = 45
+  for (let step = 0; step < totalSteps; step++) {
+    highlightedIndex.value = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
+    await sleep(delay)
+    // در ۶ قدم آخر، سرعت رو به کندی می‌رود (افکت ایستادن روی شماره)
+    delay += step > totalSteps - 6 ? 35 : 6
+  }
+  const finalPick = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
+  highlightedIndex.value = finalPick
+  await sleep(500)
+  return finalPick
+}
+
+const startDraw = async () => {
+  if (isDrawing.value || loadingData.value || !entries.value.length) return
+
+  drawError.value = ''
+  isDrawing.value = true
+  winnerIndexes.value = []
+  finalWinners.value = []
+
+  // تعداد جایزه‌ها از خود قرعه‌کشی خونده می‌شود، اگر نبود پیش‌فرض ۱
+  const winnerCount = Math.min(lottery.value?.winner_count || 1, entries.value.length)
+  let available = entries.value.map((_, idx) => idx)
+
+  // برای هر جایزه، یک اسپین جدا انجام می‌شود تا شماره‌ی برنده مشخص شود
+  for (let position = 1; position <= winnerCount; position++) {
+    const picked = await spinToWinner(available)
+    winnerIndexes.value.push(picked)
+    available = available.filter((idx) => idx !== picked)
+  }
+
+  highlightedIndex.value = null
+
+  finalWinners.value = winnerIndexes.value.map((idx, i) => ({
+    user: entries.value[idx].user,
+    position: i + 1,
+  }))
+
+  try {
+    await drawLottery(
+      resolvedLotteryId.value,
+      finalWinners.value.map((w) => ({ user_id: w.user.id, position: w.position }))
+    )
+    showResults.value = true
+  } catch (err) {
+    drawError.value = err?.data?.message || 'خطا در ثبت نتیجه‌ی قرعه‌کشی. لطفاً دوباره تلاش کنید.'
+  } finally {
+    isDrawing.value = false
+  }
+}
 
 const setGalaxyTheme = inject('setGalaxyTheme')
 
 onMounted(() => {
   setGalaxyTheme(true)
+  loadData()
 })
 
 onUnmounted(() => {
