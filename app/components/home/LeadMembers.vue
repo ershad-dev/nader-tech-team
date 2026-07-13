@@ -52,16 +52,16 @@
 
       <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 text-right -mt-[50px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
         
-        <h3
-          :class="[
-            'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
-            selectedIndex === 1
-              ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px] 2xl:mr-[70px]'
-              : 'mr-[80px] sm:mr-[130px] md:mr-[190px] xl:mr-[175px] 2xl:mr-[200px]'
-          ]"
-        >
-          {{ teamMembers[selectedIndex].name }}
-        </h3>
+<h3
+  :class="[
+    'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
+    selectedIndex >= 1
+      ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px] 2xl:mr-[70px]'
+      : 'mr-[80px] sm:mr-[130px] md:mr-[190px] xl:mr-[175px] 2xl:mr-[200px]'
+  ]"
+>
+  {{ teamMembers[selectedIndex].name }}
+</h3>
         <p class="text-slate-700 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px]">
           {{ teamMembers[selectedIndex].bio }}
         </p>

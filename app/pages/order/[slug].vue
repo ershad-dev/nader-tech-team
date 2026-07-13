@@ -80,12 +80,15 @@ const hasReview = computed(() => !!project.value?.review?.description);
           </div>
         </div>
 
-        <div class="mb-[100px] lg:mb-[300px] w-full min-h-[180px] lg:h-[229px] bg-white/50 p-5 lg:p-6 border border-white rounded-tl-[30px] lg:rounded-tl-[60px] rounded-br-[30px] lg:rounded-br-[60px] rounded-bl-[30px] lg:rounded-bl-[60px]">
-          <h4 class="text-[#0F184B] foont-robot font-bold mb-3 text-[14px] lg:text-[16px] font-700 mt-[10px] lg:mt-[20px]">تجربه همکاری از زبان مشتری</h4>
-          <p class="text-[#616474] leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular mb-[60px] lg:mb-[200px]">
-            "{{ project.review.description }}"
-          </p>
-        </div>
+<div class="mb-[100px] lg:mb-[300px] w-full bg-white/50 p-5 lg:p-6 border border-white rounded-tl-[30px] lg:rounded-tl-[60px] rounded-br-[30px] lg:rounded-br-[60px] rounded-bl-[30px] lg:rounded-bl-[60px]">
+  <h4 class="text-[#0F184B] font-robot font-bold mb-3 text-[14px] lg:text-[16px] mt-[10px] lg:mt-[20px]">
+    تجربه همکاری از زبان مشتری
+  </h4>
+
+  <p class="text-[#616474] leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular">
+    "{{ project.review.description }}"
+  </p>
+</div>
       </div>
     </div>
   </div>

@@ -130,7 +130,7 @@ const steps = [
     <h1 class="text-[#0F184B] text-[22px] md:text-[29px] xl:text-[32px] xxl:text-[38px] font-bold">از ایده تا نتیجه، در کنار شما هستیم</h1>
   </div>
 
-<div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-3 xl:gap-12 xxl:gap-16 items-start md:items-center xl:items-start">
+<div class="flex flex-wrap xxl:flex-nowrap justify-center gap-3 sm:gap-4 md:gap-3 xl:gap-12 xxl:gap-10 items-start md:items-center xl:items-start">
   <div
     v-for="(step, index) in steps"
     :key="index"
