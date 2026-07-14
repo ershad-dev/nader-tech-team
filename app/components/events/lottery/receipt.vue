@@ -16,6 +16,16 @@
         </div>
 
         <template v-else>
+          <!-- کد قرعه‌کشی واقعی همون شناسه‌ی رکورد ثبت‌نام (entry) هست، نه شناسه‌ی خودِ قرعه‌کشی
+               (تو پنل ادمین همینه: entry.id). چون سند Swagger این فیلد رو تو مثال JSON
+               نشون نداده، چند حالت رایج اسم‌گذاری رو امتحان می‌کنیم تا هرکدوم موجود بود نشون بده.
+               اگه هیچ‌کدوم نبود، یعنی باید از بک‌اند بخوایم این فیلد رو به پاسخ register/my-status اضافه کنه. -->
+          <div class="text-center mb-8">
+            <div class="bg-[#C5E0E3] text-[#2D7A6F] px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">کد قرعه‌کشی</div>
+            <p v-if="entryCode" class="text-2xl font-bold text-[#2C7379] font-roboto">{{ entryCode }}</p>
+            <p v-else class="text-sm text-red-400 font-roboto">این فیلد در پاسخ API موجود نیست</p>
+          </div>
+
           <div class="bg-[#BFD1D580]/50 border border-[#6F78B780] rounded-2xl p-4 md:p-6 mb-8 w-full">
             <div class="space-y-4 text-gray-600 text-sm md:text-base">
               <div class="flex justify-between border-b pb-3 font-roboto">
@@ -24,18 +34,28 @@
               </div>
 
               <div class="flex justify-between border-b pb-3 font-roboto">
+                <span>نام کاربری</span>
+                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.username }}</span>
+              </div>
+
+              <div class="flex justify-between border-b pb-3 font-roboto">
                 <span>شماره موبایل</span>
                 <span class="font-medium text-gray-800 font-roboto">{{ registration.user.mobile }}</span>
               </div>
 
               <div class="flex justify-between border-b pb-3 font-roboto">
-                <span>مبلغ پرداختی</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ formatPrice(registration.lottery.price) }} تومان</span>
+                <span>ایمیل</span>
+                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.email }}</span>
+              </div>
+
+              <div class="flex justify-between border-b pb-3 font-roboto">
+                <span>استان</span>
+                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.province }}</span>
               </div>
 
               <div class="flex justify-between font-roboto">
-                <span>وضعیت پرداخت</span>
-                <span class="text-green-600 font-bold font-roboto">موفق</span>
+                <span>مبلغ پرداختی</span>
+                <span class="font-medium text-gray-800 font-roboto">{{ formatPrice(registration.lottery.price) }} تومان</span>
               </div>
             </div>
           </div>
@@ -73,21 +93,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 
 const pdfTarget = ref(null)
 
-// این مقدار در register.vue بعد از موفقیت‌آمیز بودن POST /api/lotteries/{lottery}/register
-// داخل useState('lottery-registration', ...) ذخیره شده
+// این مقدار در pages/register.vue بعد از موفقیت‌آمیز بودن
+// POST /api/lotteris/{lottery}/register داخل useState('lottery-registration', ...) ذخیره شده
 const registration = useState('lottery-registration', () => null)
 
-// توجه: پاسخ API فیلدی به اسم "کد قرعه‌کشی/بلیط" (ticket code) برنمی‌گردونه.
-// اگر بک‌اند چنین کدی تولید می‌کنه، لازمه به پاسخ register/my-status اضافه بشه
-// تا اینجا نمایش داده بشه. فعلاً این بخش حذف شده تا داده ساختگی نشون داده نشه.
-
-onMounted(() => {
-  // اگر کاربر مستقیم وارد این صفحه شده و داده‌ای در حافظه نیست،
-  // می‌تونیم بعداً اینجا از my-status هم به عنوان fallback استفاده کنیم.
+// کد قرعه‌کشی واقعی = شناسه‌ی رکورد ثبت‌نام (entry.id تو پنل ادمین)
+// چند حالت رایج اسم‌گذاری رو امتحان می‌کنیم تا هرکدوم تو پاسخ واقعی API موجود بود استفاده بشه
+const entryCode = computed(() => {
+  const r = registration.value
+  if (!r) return null
+  return (
+    r.id ??
+    r.entry_id ??
+    r.entry?.id ??
+    r.ticket_id ??
+    r.ticket_number ??
+    null
+  )
 })
 
 function formatDate(value) {
@@ -101,7 +127,6 @@ function formatPrice(value) {
 }
 
 const downloadPDF = async () => {
-  // بارگذاری داینامیک برای سازگاری با Nuxt 3
   const html2pdf = (await import('html2pdf.js')).default
 
   const options = {

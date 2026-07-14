@@ -1,19 +1,26 @@
 // composables/useApi.js
 // هلپر مشترک برای صدا زدن API قرعه‌کشی
-// توکن احراز هویت رو از localStorage می‌خونه (کلید 'token')
-// چون فعلاً صفحه login.vue دست نخورده باقی می‌مونه، این فایل فرض می‌کنه
-// یک جای دیگه از پروژه (یا API لاگین که بعداً اضافه میشه) توکن رو داخل
-// localStorage با کلید 'token' ذخیره می‌کنه.
+// توکن احراز هویت رو از همون useState('token') میخونه که useAuth.js پروژه استفاده می‌کنه
+// (توکن واقعی تو localStorage با کلید 'access_token' ذخیره میشه، ولی چون useAuth
+// از useState('token', ...) استفاده کرده، اینجا هم با همون کلید میخونیم تا مقدار
+// reactive و مشترک بین کل اپ باشه - نیازی به دسترسی مستقیم به localStorage نیست)
 
 export const API_BASE = 'https://nadertechnologyteam.ir'
 
 // توجه مهم: مسیر واقعی روی بک‌اند به‌خاطر تایپو "lotteris" هست نه "lotteries"
 // (طبق تست curl تایید شده). سند Swagger اشتباه نوشته "lotteries".
 // اگه بک‌اند بعداً این تایپو رو درست کرد، فقط همین یک خط رو تغییر بده.
-export const LOTTERIES_PATH = '/api/lotteris'
+export const LOTTERIES_PATH = '/api/lotteries'
 
 export async function apiFetch(path, options = {}) {
-  const token = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null
+  // همون state مشترکی که useAuth().token هم به آن اشاره میکنه
+  const tokenState = useState('token', () => null)
+  let token = tokenState.value
+
+  // اگه هنوز initAuth() صدا زده نشده (مثلاً رفرش صفحه)، مستقیم از localStorage میخونیم
+  if (!token && typeof window !== 'undefined') {
+    token = window.localStorage.getItem('access_token')
+  }
 
   const headers = {
     'Content-Type': 'application/json',

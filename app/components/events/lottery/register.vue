@@ -105,7 +105,7 @@ async function handleRegister() {
     const registration = useState('lottery-registration', () => null)
     registration.value = res.data
 
-    await navigateTo('/receipt')
+    await navigateTo('/events/lottery/success')
   } catch (err) {
     // بر اساس کدهای پاسخ سند Swagger: 400 (ظرفیت تکمیل)، 401 (عدم احراز هویت)،
     // 409 (قبلاً ثبت‌نام کرده)، 422 (قرعه‌کشی فعال نیست)
