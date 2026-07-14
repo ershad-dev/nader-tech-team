@@ -48,8 +48,9 @@
   <div v-for="project in visibleProjects" :key="project.id" 
        class="relative w-full lg:w-[250px] min-[1920px]:w-[300px] h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
 
-<NuxtLink :to="`/order/${project.slug}`">
-   <img :src="resumeCover(project)"/>
+    <NuxtLink :to="`/order/${project.id}`">
+      <img :src="resumeCover(project)" class="w-full h-[214px] sm:h-[274px] lg:w-[250px] lg:h-[344px] min-[1920px]:w-[300px] min-[1920px]:h-[414px] object-cover" />
+      
       <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 text-center">
         <h3 class="text-[#0F184B] font-bold text-[14px] sm:text-[16px] lg:text-[20px] min-[1920px]:text-[22px]">{{ project.title }}</h3>
       </div>
@@ -91,7 +92,7 @@
       </div>
       
       <div class="flex-1 min-w-0 min-[1920px]:max-w-[620px] text-black xl:mr-[50px] text-center xl:text-right">
-        <h2 class="text-[20px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B]">{{ currentContent.title }}</h2>
+        <h2 class="text-[20px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] lg:mt-3">{{ currentContent.title }}</h2>
         <p class="leading-[26px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] font-roboto text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
         <NuxtLink :to="currentContent.buttonLink">
           <button class="bg-[#ECD0A0] border-[0.5px] border-gray-300 text-[#0F184B] w-full max-w-[268px] mx-auto xl:mx-0 xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-allshadow-lg text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 xl:mt-[50px] flex items-center justify-center">
@@ -111,6 +112,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 const categoryMap = {
   'طراحی سایت': 'web',
   'تولید محتوا': 'content',
+  'برگزاری ایونت': 'event', // <-- جدید
 }
 const categories = Object.keys(categoryMap)
 
@@ -136,16 +138,23 @@ onUnmounted(() => {
 const contentMap = {
   'طراحی سایت': {
     title: 'طراحی سایت',
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم.',
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.',
     image: '/images/img-services.png',
     buttonText: 'درخواست طراحی سایت',
     buttonLink: '/order/requestProject',
   },
   'تولید محتوا': {
     title: 'تولید محتوا',
-    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم.',
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.',
     image: '/images/img-services.png',
     buttonText: 'درخواست تولید محتوا',
+    buttonLink: '/order/requestProject',
+  },
+  'برگزاری ایونت': { 
+    title: 'برگزاری ایونت',
+    description: 'با برگزاری ایونت‌های حرفه‌ای و هدفمند، فضایی برای ایجاد ارتباطات ارزشمند، یادگیری، تعامل و تجربه‌ای متفاوت فراهم می‌کنیم. از ایده‌پردازی و برنامه‌ریزی اولیه گرفته تا هماهنگی جزئیات و اجرای نهایی، هدف ما خلق رویدادهایی منظم، جذاب و تأثیرگذار است که علاوه بر پاسخ‌گویی به اهداف برگزارکنندگان، تجربه‌ای به‌یادماندنی و لذت‌بخش برای شرکت‌کنندگان رقم بزنند و زمینه‌ساز شکل‌گیری ارتباطات و فرصت‌های جدید باشند.',
+    image: '/images/img-services.png',
+    buttonText: 'درخواست برگزاری ایونت',
     buttonLink: '/order/requestProject',
   },
 }

@@ -55,7 +55,7 @@
             @click="toggleUser(user.id)"
             class="cursor-pointer hover:bg-[#FDFBF7] transition-all
                    flex flex-col gap-2 py-4 px-4
-                   lg:grid lg:grid-cols-4 lg:text-[24px] lg:py-6 lg:px-6 lg:text-center lg:gap-0"
+                   lg:grid lg:grid-cols-4 lg:text-[18px] lg:font-bold lg:py-6 lg:px-6 lg:text-center lg:gap-0"
           >
             <div class="flex justify-between items-center lg:block">
               <span class="text-xs text-gray-500 font-normal lg:hidden">کد کاربری</span>

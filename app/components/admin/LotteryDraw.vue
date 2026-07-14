@@ -21,14 +21,16 @@ const setGalaxyTheme = inject('setGalaxyTheme')
 
 const fetchLotteryInfo = async () => {
   try {
-    const lotteryRes = await $fetch(`${API_BASE}/admin/lotteries/${props.lotteryId}`, {
-      headers: authHeader(),
-    })
-    winnerCount.value = lotteryRes.data?.winner_count || 1
+    // اطلاعات/جزئیات قرعه‌کشی از مسیر public (بدون مشکل پرمیشن)
+    const lotteryRes = await $fetch(`https://nadertechnologyteam.ir/api/lotteries/${props.lotteryId}`)
+    // پاسخ ممکنه داخل data باشه یا مستقیم خود آبجکت - هر دو حالت رو پوشش می‌دیم
+    const lotteryData = lotteryRes?.data ?? lotteryRes
+    winnerCount.value = lotteryData?.winner_count || 1
 
+    // entries همچنان از مسیر admin (نیاز به توکن و پرمیشن)
     const entriesRes = await $fetch(`${API_BASE}/admin/lotteries/${props.lotteryId}/entries`, {
       headers: authHeader(),
-      query: { per_page: 1000 }, // برای در اختیار داشتن استخر کامل شرکت‌کنندگان
+      query: { per_page: 1000 },
     })
     entriesPool.value = entriesRes.data || []
   } catch (err) {

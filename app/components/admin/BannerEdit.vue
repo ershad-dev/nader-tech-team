@@ -20,28 +20,33 @@
       class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 sm:gap-x-10 lg:gap-x-20 gap-y-6 sm:gap-y-8 lg:gap-y-10 justify-items-center"
       dir="ltr"
     >
+      <!--
+        همیشه دقیقا ۶ اسلات رندر می‌شه (slotIndex از 0 تا 5).
+        شماره‌ای که نمایش داده می‌شه slotIndex + 1 هست، نه banner.id واقعی.
+        این‌طوری شماره‌ها همیشه پشت سر هم و بین ۱ تا ۶ می‌مونن،
+        حتی اگه بک‌اند id های دیگه‌ای (مثلا 6, 9, 12) داده باشه.
+      -->
       <div
-        v-for="banner in banners"
-        :key="banner.id ?? banner.tempId"
+        v-for="(slot, slotIndex) in slots"
+        :key="slot?.id ?? 'empty-' + slotIndex"
         class="w-full max-w-[437px] lg:w-[437px]"
         dir="rtl"
       >
-
-        <template v-if="banner.image">
+        <template v-if="slot">
           <div
             class="relative rounded-[20px] lg:rounded-[27px] overflow-hidden shadow-lg w-full aspect-[437/283] lg:w-[437px] lg:h-[283px]"
           >
-            <img :src="banner.image" class="w-full h-full object-cover" />
+            <img :src="slot.image" class="w-full h-full object-cover" />
 
             <div
               class="w-[52px] h-[52px] sm:w-[62px] sm:h-[62px] lg:w-[72px] lg:h-[71px] absolute top-0 right-0 bg-[#08103580] backdrop-blur-md text-white rounded-bl-2xl rounded-tr-[20px] lg:rounded-tr-[27px] font-black text-[24px] sm:text-[30px] lg:text-[36px] shadow-lg flex items-center justify-center"
             >
-              {{ banner.id }}
+              {{ slotIndex + 1 }}
             </div>
 
             <!-- نشان‌گر وضعیت فعال بودن -->
             <div
-              v-if="banner.is_active"
+              v-if="slot.is_active"
               class="absolute bottom-2 left-2 bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full"
             >
               فعال روی سایت
@@ -49,7 +54,7 @@
 
             <!-- لودینگ روی عکس هنگام آپلود/بروزرسانی -->
             <div
-              v-if="banner.busy"
+              v-if="slot.busy"
               class="absolute inset-0 bg-black/40 flex items-center justify-center text-white font-bold text-sm"
             >
               در حال پردازش...
@@ -58,31 +63,32 @@
 
           <div class="flex justify-center gap-3 lg:gap-4 mt-4 w-full lg:w-[437px]">
             <button
-              @click="toggleActive(banner)"
-              :disabled="banner.busy"
+              @click="toggleActive(slot)"
+              :disabled="slot.busy"
               :class="[
                 'w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] rounded-[27px] font-bold flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50',
-                banner.is_active
+                slot.is_active
                   ? 'bg-[#7FCB86] hover:bg-[#66B36D] text-black'
                   : 'bg-[#ABD7D8] hover:bg-[#8FB0B2] text-black'
               ]"
             >
-              {{ banner.is_active ? 'فعال است' : 'تایید' }}
+              {{ slot.is_active ? 'فعال است' : 'تایید' }}
             </button>
             <button
-              @click="deleteBanner(banner)"
-              :disabled="banner.busy"
+              @click="deleteBanner(slot)"
+              :disabled="slot.busy"
               class="w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] rounded-[27px] font-bold text-black flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50"
             >
               حذف
             </button>
           </div>
 
-          <p v-if="banner.error" class="text-red-600 text-xs text-center mt-2">
-            {{ banner.error }}
+          <p v-if="slot.error" class="text-red-600 text-xs text-center mt-2">
+            {{ slot.error }}
           </p>
         </template>
 
+        <!-- اسلات خالی: هم برای جایگزینی و هم برای بنر کاملا جدید از همینجا آپلود می‌شه -->
         <div
           v-else
           class="relative w-full aspect-[437/325] lg:w-[437px] lg:h-[325px] border-4 border-dashed border-[#BFD1D5] rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-all"
@@ -91,11 +97,11 @@
             type="file"
             accept="image/*"
             class="hidden"
-            :id="'file-' + (banner.id ?? banner.tempId)"
-            @change="uploadBanner($event, banner)"
+            :id="'file-slot-' + slotIndex"
+            @change="uploadToSlot($event, slotIndex)"
           />
           <label
-            :for="'file-' + (banner.id ?? banner.tempId)"
+            :for="'file-slot-' + slotIndex"
             class="cursor-pointer text-5xl sm:text-6xl text-[#BFD1D5]"
           >
             +
@@ -103,58 +109,29 @@
           <span class="text-[#0F184B] font-bold mt-2 text-sm sm:text-base">افزودن بنر جدید</span>
 
           <div
-            v-if="banner.busy"
+            v-if="emptySlotBusy[slotIndex]"
             class="absolute inset-0 bg-black/30 rounded-[20px] lg:rounded-[27px] flex items-center justify-center text-white font-bold text-sm"
           >
             در حال آپلود...
           </div>
-          <p v-if="banner.error" class="text-red-600 text-xs text-center mt-2 px-2">
-            {{ banner.error }}
+          <p v-if="emptySlotError[slotIndex]" class="text-red-600 text-xs text-center mt-2 px-2">
+            {{ emptySlotError[slotIndex] }}
           </p>
         </div>
-
-      </div>
-
-      <!-- کارت خالی برای افزودن بنر کاملا جدید -->
-      <div class="w-full max-w-[437px] lg:w-[437px]" dir="rtl">
-        <div
-          class="relative w-full aspect-[437/325] lg:w-[437px] lg:h-[325px] border-4 border-dashed border-[#BFD1D5] rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-all"
-        >
-          <input
-            type="file"
-            accept="image/*"
-            class="hidden"
-            id="file-new-banner"
-            @change="uploadNewBanner"
-          />
-          <label for="file-new-banner" class="cursor-pointer text-5xl sm:text-6xl text-[#BFD1D5]">
-            +
-          </label>
-          <span class="text-[#0F184B] font-bold mt-2 text-sm sm:text-base">افزودن بنر جدید</span>
-
-          <div
-            v-if="newBannerBusy"
-            class="absolute inset-0 bg-black/30 rounded-[20px] lg:rounded-[27px] flex items-center justify-center text-white font-bold text-sm"
-          >
-            در حال آپلود...
-          </div>
-        </div>
-        <p v-if="newBannerError" class="text-red-600 text-xs text-center mt-2 px-2">
-          {{ newBannerError }}
-        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
 
 const { authHeader, initFromStorage, isLoggedIn, clearAuth } = useAdminAuth()
 
 // همون دامنه‌ای که در صفحه‌ی لاگین استفاده شده
 const BASE_URL = 'https://nadertechnologyteam.ir/api/admin/banners'
+const MAX_BANNERS = 6
 
 /**
  * لایه‌ی نازک روی $fetch نوکس:
@@ -189,11 +166,28 @@ async function apiFetch(url, options = {}) {
 }
 
 /** ====== state ====== */
+// banners: فقط بنرهایی که واقعا در بک‌اند وجود دارن (حداکثر ۶ تا)
+// ترتیب این آرایه دقیقا همون ترتیبیه که در ۶ اسلات نمایش داده می‌شه
 const banners = ref([])
 const loadingList = ref(false)
 const listError = ref('')
-const newBannerBusy = ref(false)
-const newBannerError = ref('')
+
+// وضعیت آپلود برای اسلات‌های خالی (بر اساس ایندکس اسلات 0..5)
+const emptySlotBusy = ref({})
+const emptySlotError = ref({})
+
+/**
+ * ۶ اسلات ثابت.
+ * slots[i] = banners[i] (اگه وجود داشته باشه) یا null (اسلات خالی)
+ * شماره‌ای که در UI نشون داده می‌شه i+1 هست، نه banner.id واقعی بک‌اند.
+ */
+const slots = computed(() => {
+  const arr = []
+  for (let i = 0; i < MAX_BANNERS; i++) {
+    arr.push(banners.value[i] ?? null)
+  }
+  return arr
+})
 
 /** ====== دریافت لیست بنرها ====== */
 const fetchBanners = async () => {
@@ -201,7 +195,9 @@ const fetchBanners = async () => {
   listError.value = ''
   try {
     const res = await apiFetch(`${BASE_URL}?page=1`, { method: 'GET' })
-    banners.value = (res.data || []).map((b) => ({
+    // مرتب‌سازی بر اساس id واقعی (یا created_at اگه بک‌اند داره) تا ترتیب پایدار بمونه
+    const list = (res.data || []).slice().sort((a, b) => a.id - b.id)
+    banners.value = list.slice(0, MAX_BANNERS).map((b) => ({
       ...b,
       busy: false,
       error: '',
@@ -249,6 +245,8 @@ const deleteBanner = async (banner) => {
   banner.error = ''
   try {
     await apiFetch(`${BASE_URL}/${banner.id}`, { method: 'DELETE' })
+    // با فیلتر کردن از آرایه، بقیه بنرها خودکار یکی یکی جلو میان
+    // و در نتیجه شماره اسلات (index+1) شون هم به‌روز می‌شه
     banners.value = banners.value.filter((b) => b.id !== banner.id)
   } catch (err) {
     banner.error = err.message
@@ -256,38 +254,23 @@ const deleteBanner = async (banner) => {
   }
 }
 
-/** ====== آپلود / جایگزینی تصویر یک بنر موجود ====== */
-const uploadBanner = async (event, banner) => {
+/**
+ * ====== آپلود در یک اسلات خالی خاص ======
+ * چون اسلات خالیه، همیشه یعنی باید یک بنر جدید در بک‌اند ساخته بشه (POST).
+ * نتیجه به انتهای آرایه banners اضافه می‌شه، یعنی همیشه اولین اسلات خالی رو پر می‌کنه.
+ */
+const uploadToSlot = async (event, slotIndex) => {
   const file = event.target.files[0]
   if (!file) return
 
-  banner.busy = true
-  banner.error = ''
-
-  const formData = new FormData()
-  formData.append('image', file)
-
-  try {
-    const res = await apiFetch(`${BASE_URL}/${banner.id}/image`, {
-      method: 'PUT',
-      body: formData,
-    })
-    Object.assign(banner, res.data)
-  } catch (err) {
-    banner.error = err.message
-  } finally {
-    banner.busy = false
+  if (banners.value.length >= MAX_BANNERS) {
+    emptySlotError.value = { ...emptySlotError.value, [slotIndex]: 'حداکثر ۶ بنر مجاز است.' }
     event.target.value = ''
+    return
   }
-}
 
-/** ====== ساخت یک بنر کاملا جدید ====== */
-const uploadNewBanner = async (event) => {
-  const file = event.target.files[0]
-  if (!file) return
-
-  newBannerBusy.value = true
-  newBannerError.value = ''
+  emptySlotBusy.value = { ...emptySlotBusy.value, [slotIndex]: true }
+  emptySlotError.value = { ...emptySlotError.value, [slotIndex]: '' }
 
   const formData = new FormData()
   formData.append('image', file)
@@ -299,9 +282,9 @@ const uploadNewBanner = async (event) => {
     })
     banners.value.push({ ...res.data, busy: false, error: '' })
   } catch (err) {
-    newBannerError.value = err.message
+    emptySlotError.value = { ...emptySlotError.value, [slotIndex]: err.message }
   } finally {
-    newBannerBusy.value = false
+    emptySlotBusy.value = { ...emptySlotBusy.value, [slotIndex]: false }
     event.target.value = ''
   }
 }

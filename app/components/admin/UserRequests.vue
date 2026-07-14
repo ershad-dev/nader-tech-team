@@ -134,19 +134,14 @@ const toggleAccordion = (id) => {
     </div>
 
     <template v-else>
-      <div class="space-y-4">
+<div class="space-y-4">
         <div v-for="user in filteredUsers" :key="user.id"
              class="bg-[#FFFFFF3B] p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 transition-all duration-300">
 
-          <div class="flex justify-between items-start">
+<div class="flex justify-between items-start">
             <div class="flex items-center gap-3 sm:gap-4">
-              <img
-                :src="user.avatar"
-                :alt="user.name"
-                class="w-[64px] h-[64px] sm:w-[80px] sm:h-[80px] lg:w-[114px] lg:h-[114px] rounded-full border border-gray-200 object-cover shrink-0"
-              />
               <div>
-                <h3 class="font-bold text-[15px] sm:text-[17px] lg:text-[20px] text-[#000000] font-roboto lg:-mt-[40px]">{{ user.name }}</h3>
+                <h3 class="font-bold text-[15px] sm:text-[17px] lg:text-[20px] text-[#000000] font-roboto">{{ user.name }}</h3>
                 <p class="text-black mt-1 lg:mt-2 font-roboto text-[13px] sm:text-[15px] lg:text-[20px]">{{ user.phone }}</p>
                 <p v-if="openUserId === user.id" class="text-[13px] sm:text-[15px] lg:text-[20px] text-black font-roboto break-all">{{ user.email }}</p>
               </div>
@@ -159,12 +154,12 @@ const toggleAccordion = (id) => {
             </div>
           </div>
 
-          <div :class="`font-roboto ${openUserId === user.id ? '' : 'lg:mr-[120px]'}`">
+          <div :class="`font-roboto ${openUserId === user.id ? '' : ''}`">
             <button
               @click="toggleAccordion(user.id)"
               :class="[
                 'text-gray-600 text-xs sm:text-sm flex items-center gap-1 hover:text-[#2d6a66] transition-colors mt-2 lg:mt-0',
-                openUserId === user.id ? 'lg:mt-0' : 'lg:-mt-[30px]'
+                openUserId === user.id ? 'lg:mt-0' : ''
               ]"
             >
               {{ openUserId === user.id ? 'بستن اطلاعات' : 'دیدن کامل اطلاعات' }}
