@@ -16,15 +16,17 @@
         </div>
 
         <template v-else>
-          <!-- کد قرعه‌کشی واقعی همون شناسه‌ی رکورد ثبت‌نام (entry) هست، نه شناسه‌ی خودِ قرعه‌کشی
-               (تو پنل ادمین همینه: entry.id). چون سند Swagger این فیلد رو تو مثال JSON
-               نشون نداده، چند حالت رایج اسم‌گذاری رو امتحان می‌کنیم تا هرکدوم موجود بود نشون بده.
-               اگه هیچ‌کدوم نبود، یعنی باید از بک‌اند بخوایم این فیلد رو به پاسخ register/my-status اضافه کنه. -->
+          <!-- کد قرعه‌کشی: طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره
+               که همون کد قرعه‌کشی/بلیط کاربره؛ دیگه نیازی به حدس زدن اسم فیلد نیست -->
           <div class="text-center mb-8">
             <div class="bg-[#C5E0E3] text-[#2D7A6F] px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">کد قرعه‌کشی</div>
-            <p v-if="entryCode" class="text-2xl font-bold text-[#2C7379] font-roboto">{{ entryCode }}</p>
+            <p v-if="registration.code" class="text-2xl font-bold text-[#2C7379] font-roboto">{{ registration.code }}</p>
             <p v-else class="text-sm text-red-400 font-roboto">این فیلد در پاسخ API موجود نیست</p>
           </div>
+
+          <p class="text-amber-600 text-xs text-center mb-4 leading-relaxed font-roboto">
+            این کد رو به همراه شماره موبایل‌تون یادداشت کنید؛ برای مشاهده‌ی نتیجه‌ی قرعه‌کشی (صفحه‌ی ورود) به این‌ها نیاز دارید.
+          </p>
 
           <div class="bg-[#BFD1D580]/50 border border-[#6F78B780] rounded-2xl p-4 md:p-6 mb-8 w-full">
             <div class="space-y-4 text-gray-600 text-sm md:text-base">
@@ -93,28 +95,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 const pdfTarget = ref(null)
 
 // این مقدار در pages/register.vue بعد از موفقیت‌آمیز بودن
 // POST /api/lotteris/{lottery}/register داخل useState('lottery-registration', ...) ذخیره شده
+// طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره که همون کد قرعه‌کشی/بلیط کاربره
 const registration = useState('lottery-registration', () => null)
-
-// کد قرعه‌کشی واقعی = شناسه‌ی رکورد ثبت‌نام (entry.id تو پنل ادمین)
-// چند حالت رایج اسم‌گذاری رو امتحان می‌کنیم تا هرکدوم تو پاسخ واقعی API موجود بود استفاده بشه
-const entryCode = computed(() => {
-  const r = registration.value
-  if (!r) return null
-  return (
-    r.id ??
-    r.entry_id ??
-    r.entry?.id ??
-    r.ticket_id ??
-    r.ticket_number ??
-    null
-  )
-})
 
 function formatDate(value) {
   if (!value) return '-'
