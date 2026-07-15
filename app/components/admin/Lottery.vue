@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import LotteryDraw from './LotteryDraw.vue'
+import LotteryInfoModal from './LotteryInfoModal.vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
@@ -12,6 +13,8 @@ const loading = ref(true)
 const errorMsg = ref('')
 const currentLottery = ref(null) // آبجکت کامل قرعه‌کشی جاری
 const lotteryId = ref(null)
+
+const showInfoModal = ref(false)
 
 // پیدا کردن قرعه‌کشی جاری: اول فعال‌ترین، اگر نبود آخرین مورد کلی
 const resolveCurrentLottery = async () => {
@@ -75,8 +78,10 @@ const fetchEntries = async () => {
   }
 }
 
-// وضعیت "حضور" فعلاً بر اساس تایید شماره موبایل (فرض موقت - در صورت وجود فیلد واقعی جایگزین شود)
-const isPresent = (entry) => !!entry.user?.mobile_verified_at
+// وقتی اطلاعات قرعه‌کشی از مودال ویرایش شد، هدر همین صفحه هم آپدیت بشه
+const onLotteryUpdated = (updatedLottery) => {
+  currentLottery.value = { ...currentLottery.value, ...updatedLottery }
+}
 
 onMounted(() => {
   initFromStorage()
@@ -87,11 +92,21 @@ onMounted(() => {
 <template>
   <div v-if="!showLotteryPage" class="max-w-full lg:max-w-[1000px] min-[1920px]:max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 min-[1920px]:p-12" dir="rtl">
 
-    <div class="bg-white text-center py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] shadow-sm text-sm sm:text-base min-[1920px]:text-lg">
-      اطلاعات قرعه‌کشی
-      <span v-if="currentLottery" class="block text-xs font-normal text-gray-500 mt-1">
-        {{ currentLottery.title }}
-      </span>
+    <div class="bg-white flex items-center justify-center gap-3 py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] shadow-sm text-sm sm:text-base min-[1920px]:text-lg relative">
+      <div class="text-center">
+        اطلاعات قرعه‌کشی
+        <span v-if="currentLottery" class="block text-xs font-normal text-gray-500 mt-1">
+          {{ currentLottery.title }}
+        </span>
+      </div>
+
+      <button
+        v-if="currentLottery"
+        @click="showInfoModal = true"
+        class="bg-[#67A9A880] text-black px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] transition-all whitespace-nowrap absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-xs sm:text-sm font-bold "
+      >
+        جزئیات بیشتر
+      </button>
     </div>
 
     <div v-if="loading" class="text-center py-10 text-gray-500">در حال بارگذاری...</div>
@@ -107,19 +122,14 @@ onMounted(() => {
               <th class="py-5 min-[1920px]:py-7">کد قرعه‌کشی</th>
               <th class="py-5 min-[1920px]:py-7">نام و نام خانوادگی</th>
               <th class="py-5 min-[1920px]:py-7">شماره موبایل</th>
-              <th class="py-5 min-[1920px]:py-7">وضعیت حضور</th>
             </tr>
           </thead>
           <tbody class="text-gray-600 min-[1920px]:text-lg">
             <tr v-for="entry in entries" :key="entry.id" class="border-b border-gray-200 last:border-none">
               <td class="py-6 min-[1920px]:py-8">{{ entry.user_id }}</td>
-              <td class="py-6 min-[1920px]:py-8">{{ entry.id }}</td>
+              <td class="py-6 min-[1920px]:py-8">{{ entry.code ?? '—' }}</td>
               <td class="py-6 min-[1920px]:py-8">{{ entry.user?.full_name }}</td>
               <td class="py-6 min-[1920px]:py-8" dir="ltr">{{ entry.user?.mobile }}</td>
-              <td class="py-6 min-[1920px]:py-8 flex justify-center">
-                <span v-if="isPresent(entry)" class="text-green-500 text-2xl min-[1920px]:text-3xl">✅</span>
-                <span v-else class="text-gray-300 text-2xl min-[1920px]:text-3xl">—</span>
-              </td>
             </tr>
           </tbody>
         </table>
@@ -138,20 +148,15 @@ onMounted(() => {
           </div>
           <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
             <span class="text-xs text-gray-500 font-bold">کد قرعه‌کشی</span>
-            <span class="text-sm text-gray-700 break-all">{{ entry.id }}</span>
+            <span class="text-sm text-gray-700 break-all">{{ entry.code ?? '—' }}</span>
           </div>
           <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
             <span class="text-xs text-gray-500 font-bold">نام و نام خانوادگی</span>
             <span class="text-sm text-gray-700">{{ entry.user?.full_name }}</span>
           </div>
-          <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
+          <div class="flex justify-between items-center py-1.5">
             <span class="text-xs text-gray-500 font-bold">شماره موبایل</span>
             <span class="text-sm text-gray-700" dir="ltr">{{ entry.user?.mobile }}</span>
-          </div>
-          <div class="flex justify-between items-center py-1.5">
-            <span class="text-xs text-gray-500 font-bold">وضعیت حضور</span>
-            <span v-if="isPresent(entry)" class="text-green-500 text-xl">✅</span>
-            <span v-else class="text-gray-300 text-xl">—</span>
           </div>
         </div>
       </div>
@@ -165,6 +170,14 @@ onMounted(() => {
         برگزاری قرعه‌کشی
       </button>
     </div>
+
+    <LotteryInfoModal
+      v-if="lotteryId"
+      :show="showInfoModal"
+      :lottery-id="lotteryId"
+      @close="showInfoModal = false"
+      @updated="onLotteryUpdated"
+    />
   </div>
 
   <LotteryDraw v-else :lottery-id="lotteryId" />

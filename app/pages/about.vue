@@ -4,14 +4,11 @@
     <!-- Hero Section -->
 <section class="flex flex-col md:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28">
   <div class="flex-1 w-full text-center md:text-right">
-    <!-- حذف <br> اضافی و استفاده از حداکثر عرض برای کنترل خطوط -->
-    <h1 class="text-[#0F184B] font-black text-[28px] md:text-[32px] 2xl:text-[42px] mb-6 leading-tight"> 
-      نادر تکنولوژی فقط یک نام نیست؛ یک <span class="text-[#2C7379]">نگاه</span> است.
+    <h1 class="text-[#0F184B] font-black text-[28px] md:text-[32px] 2xl:text-[42px] mb-6 leading-tight" v-html="pageData.title"> 
     </h1>
     
-    <!-- حذف <br> های سخت که باعث به هم ریختگی در موبایل می‌شدند -->
     <p class="text-[#0F184B] font-bold leading-relaxed text-[18px] md:text-[26px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl 2xl:max-w-3xl mx-auto md:mx-0">
-      نگاهی که از جسارت، دقت و ساختن مسیرهای تازه الهام گرفته شده است. در دنیایی که تکنولوژی هر روز در حال تغییر است، ما باور داریم موفقیت فقط در همراه شدن با این تغییرات نیست؛ بلکه در خلق مسیرهای جدید و ساختن راه‌حل‌هایی است که بتوانند رشد واقعی ایجاد کنند.
+      {{ pageData.intro_text }}
     </p>
 
     <!-- تصویر فلش: فقط در دسکتاپ نمایش داده می‌شود -->
@@ -33,16 +30,18 @@
 
     <!-- About Section -->
 <section class="mb-20 2xl:mb-28">
-  <!-- ارتفاع تصویر در موبایل کاهش یافته و در دسکتاپ به حالت قبل برمی‌گردد -->
+  <!-- بنر از API: banner_image -->
   <img 
-    src="/images/about-img.png" 
+    :src="pageData.banner_image" 
     class="w-full h-[250px] sm:h-[350px] md:h-[490px] 2xl:h-[600px] object-cover rounded-[1.5rem] md:rounded-[3rem]" 
   />
   
-  <!-- تنظیمات متن برای خوانایی بهتر در موبایل -->
+  <!-- بند توضیحات ۱ -->
   <p class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-8 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] px-2 md:px-0">
-    نادر تکنولوژی مجموعه‌ای تخصصی در حوزه تکنولوژی، توسعه وب، تولید محتوا و توسعه برند است که با ترکیب خلاقیت، استراتژی و فناوری، ایده‌ها را به پروژه‌هایی قابل رشد و ماندگار تبدیل می‌کند. ما معتقدیم هر پروژه فراتر از یک سفارش است؛ فرصتی برای ساختن تجربه‌ای ارزشمند که بتواند برای یک کسب‌وکار مسیر تازه‌ای ایجاد کند.
+    {{ pageData.description_top }}
   </p>  
+
+
 </section>
 
     <!-- Team Section -->
@@ -74,11 +73,12 @@
     </div>
   </div>
 </div>
-            <div>
-      <p class="font-roboto text-[14px] 2xl:text-[16px] font-normal text-[#0F184B] leading-[40px] 2xl:leading-[44px] mt-[20px]">
-        تیم ما با بیش از ۱۵ سال تجربه حرفه‌ای، پروژه‌ها را از مرحله ایده تا اجرا و توسعه همراهی می‌کند. از طراحی و توسعه وب‌سایت‌های اختصاصی، فروشگاه‌های اینترنتی و سیستم‌های تحت وب گرفته تا تولید محتوای حرفه‌ای، هویت بصری و راهکارهای رسانه‌ای؛ تمرکز ما تنها روی اجرا نیست، بلکه روی ساخت درست است؛ جایی که عملکرد، تجربه کاربری، امنیت و رشد بلندمدت در کنار یکدیگر معنا پیدا می‌کنند.
-      </p>
-    </div>
+          <div>
+            <!-- بند توضیحات ۲ (در صورت وجود در دیزاین جدا نمایش داده می‌شود) -->
+            <p v-if="pageData.description_bottom" class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] px-2 md:px-0">
+              {{ pageData.description_bottom }}
+            </p>
+          </div>
     </section>
 
     <!-- Services Section -->
@@ -119,7 +119,35 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-//بخش تتیم ما
+
+// =====================================================
+// اتصال به API صفحه about
+// =====================================================
+// کلیدهای ثابت طبق مستندات:
+// title, intro_text, description_top, description_bottom, banner_image
+const pageData = ref({
+  title: '',
+  intro_text: '',
+  description_top: '',
+  description_bottom: '',
+  banner_image: '/images/about-img.png' // مقدار پیش‌فرض تا لود شدن API
+})
+
+const { data: aboutRes, error: aboutError } = await useFetch(
+  'https://nadertechnologyteam.ir/api/page/about'
+)
+
+if (aboutRes.value && aboutRes.value.data) {
+  aboutRes.value.data.forEach((item) => {
+    pageData.value[item.key] = item.value
+  })
+} else if (aboutError.value) {
+  console.error('خطا در دریافت اطلاعات صفحه about:', aboutError.value)
+}
+
+// =====================================================
+// بخش تیم (فعلاً hardcode - بعداً از API میاد)
+// =====================================================
 const teamMembers = [
   {
     name: "علی رضایی",
@@ -147,9 +175,9 @@ const teamMembers = [
   }
 ];
 
-
-
-//بخش خدمات 
+// =====================================================
+// بخش خدمات (فعلاً hardcode - بعداً از API میاد)
+// =====================================================
 const categories = [
   {
     title: 'خدمات طراحی سایت',
@@ -170,8 +198,6 @@ const currentCategory = computed(() => categories[currentIndex.value]);
 
 const nextCategory = () => { currentIndex.value = (currentIndex.value + 1) % categories.length; };
 const prevCategory = () => { currentIndex.value = (currentIndex.value - 1 + categories.length) % categories.length; };
-
-//یک ایده، یک تیم، یک اثر  
 
 // با این کد، هر وقت وارد صفحه about می‌شوید، فوترِ لایوت خودش را آپدیت می‌کند
 const footerConfig = useState('footerConfig');
@@ -232,10 +258,6 @@ onMounted(() => {
     el.scrollLeft = touchScrollLeft - walk
   })
 })
-
-
-//loop slide
-
 
 </script>
 

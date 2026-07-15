@@ -122,19 +122,19 @@
             class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] text-[12px] text-[#0F184B] font-mono focus:outline-none focus:border-[#67A9A8] resize-y"
           />
 
-          <div v-else-if="item.type === 'image_path'" class="flex items-center gap-3">
+          <div v-else-if="item.type === 'image_path'" class="flex flex-col sm:flex-row sm:items-center gap-3">
             <img
               v-if="item.value"
               :src="item.value"
               alt=""
-              class="w-16 h-16 rounded-lg object-cover border border-[#BFD1D5]"
+              class="w-16 h-16 rounded-lg object-cover border border-[#BFD1D5] shrink-0"
               @error="$event.target.style.visibility='hidden'"
             />
             <input
               v-model="item.value"
               type="text"
               placeholder="لینک تصویر"
-              class="flex-1 px-3 py-2 rounded-lg border border-[#BFD1D5] text-[12px] font-roboto focus:outline-none focus:border-[#67A9A8]"
+              class="w-full sm:flex-1 min-w-0 px-3 py-2 rounded-lg border border-[#BFD1D5] text-[12px] font-roboto focus:outline-none focus:border-[#67A9A8]"
             />
           </div>
 
@@ -248,7 +248,6 @@ const { authHeader, initFromStorage } = useAdminAuth()
 const pages = ref([
   { slug: 'home', label: 'خانه' },
   { slug: 'about', label: 'درباره ما' },
-  { slug: 'contact', label: 'تماس با ما' },
   { slug: 'events', label: 'ایونت‌ها' },
 ])
 const customPageInput = ref('')

@@ -11,12 +11,12 @@
     <div class="mb-8 md:mb-9 xl:mb-10 relative z-10">
 
       <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#0F184B] text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
-        ما با ارائه خدمات تخصصی در برنامه‌ریزی، مدیریت و اجرای رویدادها، از ایده‌پردازی تا برگزاری نهایی در کنار شما هستیم.
+        {{ pageData.description_1 }}
 
         <br>
         <br>
       <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-roboto font-light text-[#0F184B] text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
-        برگزاری انواع همایش‌ها، سمینارها، کنفرانس‌ها، بوت‌کمپ‌ها و کارگاه‌های آموزشی در حوزه‌های فناوری، برنامه‌نویسی، هوش مصنوعی، تولید محتوا، رسانه‌های دیجیتال و کارآفرینی، همراه با خدمات اجرایی، آموزشی، رسانه‌ای، فنی، تبلیغاتی، شبکه‌سازی حرفه‌ای و جذب سرمایه‌گذار، بخشی از راهکارهای ما برای خلق رویدادهای اثرگذار و ماندگار است.
+        {{ pageData.description_2 }}
       </p>
 
       </p>
@@ -24,9 +24,9 @@
 
     <h2 class="relative z-10 text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] text-[#A36C53] font-bold mb-4 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px] text-center sm:text-right">خدمات ایونت</h2>
 
-    <!-- لیست کارت‌ها (فراخوانی کامپوننت) -->
+    <!-- لیست کارت‌ها (فراخوانی کامپوننت با ارسال services به عنوان prop) -->
     <div class="relative z-10 space-y-6 mb-10 md:mb-11 xl:mb-12 flex flex-col items-center text-center">
-      <ServiceCard />
+      <ServiceCard :services="services" />
     </div>
 
     <!-- بخش دکمه و فلش -->
@@ -55,25 +55,47 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 // وارد کردن کامپوننت کارت خدمات
 import ServiceCard from '@/components/events/landing/ServiceCard.vue'
 
-// لیست خدمات (قابل استفاده برای رندر کردن پویا در کارت‌ها)
-const services = [
-  { 
-    title: 'مدیریت و اجرای رویداد', 
-    description: 'از برنامه‌ریزی و طراحی سناریو تا هماهنگی تیم اجرایی، ثبت‌نام شرکت‌کنندگان و مدیریت کامل فرآیند برگزاری رویداد.',
-    image: '/images/about-img.jpg' 
-  },
-  { 
-    title: 'رویدادهای آموزشی و تخصصی', 
-    description: 'برگزاری بوت‌کمپ‌ها، سمینارها و رویدادهای تخصصی در حوزه فناوری، برنامه‌نویسی، هوش مصنوعی، تولید محتوا و کارآفرینی.',
-    image: '/images/man-about.jpg' 
-  },
-  { 
-    title: 'رسانه، شبکه‌سازی و توسعه کسب‌وکار', 
-    description: 'ارائه خدمات رسانه‌ای و فنی، جذب حامی مالی، برگزاری جلسات B2B، شبکه‌سازی حرفه‌ای و ایجاد فرصت‌های همکاری و رشد کسب‌وکار.',
-    image: '/images/about-img.jpg' 
-  }
-];
+// =====================================================
+// اتصال به API صفحه events
+// =====================================================
+const pageData = ref({
+  description_1: '',
+  description_2: ''
+})
+
+// تصاویر پیش‌فرض برای هر کارت (چون API فعلاً image برنمی‌گردونه،
+// فقط title/description) - این‌ها رو می‌تونی جای‌گذاری کنی
+const defaultImages = [
+  '/images/event-card-1.png',
+  '/images/event-card-2.jpg',
+  '/images/event-card-3.jpg'
+]
+
+// لیست خدمات - از API پر می‌شود
+const services = ref([])
+
+const { data: eventsRes, error: eventsError } = await useFetch(
+  'https://nadertechnologyteam.ir/api/page/events'
+)
+
+if (eventsRes.value && eventsRes.value.data) {
+  const items = eventsRes.value.data
+  const findValue = (key) => items.find((i) => i.key === key)?.value || ''
+
+  pageData.value.description_1 = findValue('description_1')
+  pageData.value.description_2 = findValue('description_2')
+
+  // ساخت آرایه‌ی services از کلیدهای service_1_title, service_1_description و ...
+  services.value = [1, 2, 3].map((n, index) => ({
+    title: findValue(`service_${n}_title`),
+    description: findValue(`service_${n}_description`),
+    image: defaultImages[index]
+  }))
+} else if (eventsError.value) {
+  console.error('خطا در دریافت اطلاعات صفحه events:', eventsError.value)
+}
 </script>
