@@ -11,34 +11,38 @@
     </div>
 
     <!-- Page tabs -->
-    <div class="px-5 lg:px-8 flex items-center gap-2 flex-wrap">
-      <button
-        v-for="p in pages"
-        :key="p.slug"
-        @click="selectPage(p.slug)"
-        class="px-4 py-2 rounded-tl-2xl rounded-br-2xl text-[13px] font-bold border transition-all duration-300"
-        :class="activePage === p.slug
-          ? 'bg-[#67A9A8] text-white border-[#67A9A8] shadow-md'
-          : 'bg-white text-[#454C6A] border-[#BFD1D5] hover:bg-[#ECEDF4]'"
-      >
-        {{ p.label }}
-      </button>
-
-      <!-- Add custom page -->
-      <div class="flex items-center gap-1">
-        <input
-          v-model="customPageInput"
-          @keyup.enter="addCustomPage"
-          type="text"
-          placeholder="نام صفحه دیگر (انگلیسی)"
-          class="w-[150px] px-3 py-2 rounded-lg border border-[#BFD1D5] text-[12px] focus:outline-none focus:border-[#67A9A8]"
-        />
+    <div class="px-5 lg:px-8">
+      <div class="flex flex-wrap justify-center items-center gap-2 mb-2 bg-[#F7F3EB] py-3 lg:py-0 lg:h-[64px] rounded-[27px] px-2">
         <button
-          @click="addCustomPage"
-          class="px-3 py-2 rounded-lg bg-[#0F184B] text-white text-[12px] font-bold hover:bg-[#0F184B]/90 transition"
+          v-for="p in pages"
+          :key="p.slug"
+          @click="selectPage(p.slug)"
+          :class="[
+            'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
+            activePage === p.slug
+              ? 'bg-[#67A9A8] text-[#0F184B] shadow-md font-bold'
+              : 'text-[#454C6A] hover:bg-gray-200'
+          ]"
         >
-          +
+          {{ p.label }}
         </button>
+
+        <!-- Add custom page -->
+        <div class="flex items-center gap-1">
+          <input
+            v-model="customPageInput"
+            @keyup.enter="addCustomPage"
+            type="text"
+            placeholder="نام صفحه دیگر (انگلیسی)"
+            class="w-[140px] sm:w-[150px] px-3 py-2 rounded-full bg-white border border-[#BFD1D5] text-[12px] focus:outline-none focus:border-[#67A9A8]"
+          />
+          <button
+            @click="addCustomPage"
+            class="w-[36px] h-[36px] sm:w-[38px] sm:h-[38px] shrink-0 rounded-full bg-[#0F184B] text-white text-[14px] font-bold hover:bg-[#0F184B]/90 transition"
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
 
@@ -72,11 +76,11 @@
         <div
           v-for="item in items"
           :key="item.key"
-          class="bg-white rounded-2xl border border-[#BFD1D5]/70 p-4 lg:p-5 shadow-sm"
+          class="bg-[#FFFFFF3B] p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 transition-all duration-300"
         >
           <div class="flex items-start justify-between gap-3 mb-3">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-bold text-[#0F184B] text-[14px] font-roboto">{{ item.key }}</span>
+              <span class="font-bold text-[#000000] text-[15px] sm:text-[17px] font-roboto">{{ item.key }}</span>
               <span
                 class="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide"
                 :class="typeBadgeClass(item.type)"
@@ -89,13 +93,13 @@
               <button
                 @click="saveItem(item)"
                 :disabled="item._saving"
-                class="px-3 py-1.5 rounded-lg bg-[#67A9A8] text-white text-[12px] font-bold hover:bg-[#2C7379] transition disabled:opacity-50"
+                class="px-3 py-1.5 rounded-full bg-[#67A9A8] text-[#0F184B] text-[12px] font-bold hover:bg-[#8FB0B2] transition disabled:opacity-50"
               >
                 {{ item._saving ? '...' : 'ذخیره' }}
               </button>
               <button
                 @click="deleteItem(item)"
-                class="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-[12px] font-bold hover:bg-red-100 transition"
+                class="px-3 py-1.5 rounded-full bg-red-50 text-red-500 text-[12px] font-bold hover:bg-red-100 transition"
               >
                 حذف
               </button>
@@ -166,41 +170,51 @@
       </div>
 
       <!-- Add new item -->
-      <div class="mt-6 bg-[#ECEDF4] rounded-2xl border border-dashed border-[#BFD1D5] p-4 lg:p-5">
+      <div class="mt-6 bg-[#F7F3EB] rounded-2xl border border-dashed border-[#BFD1D5] p-4 lg:p-5">
         <h3 class="font-bold text-[#0F184B] text-[14px] mb-3">افزودن آیتم جدید</h3>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <input
-            v-model="newItem.key"
-            type="text"
-            placeholder="key (انگلیسی، مثل title)"
-            class="px-3 py-2 rounded-lg border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
-          />
-          <select
-            v-model="newItem.type"
-            class="px-3 py-2 rounded-lg border border-[#BFD1D5] text-[13px] focus:outline-none focus:border-[#67A9A8] bg-white"
-          >
-            <option value="text">متن ساده (text)</option>
-            <option value="html">HTML</option>
-            <option value="image_path">تصویر (image_path)</option>
-            <option value="json">JSON</option>
-            <option value="number">عدد (number)</option>
-            <option value="boolean">بولین (boolean)</option>
-          </select>
-          <button
-            @click="addItem"
-            :disabled="isAdding"
-            class="px-4 py-2 rounded-lg bg-[#0F184B] text-white text-[13px] font-bold hover:bg-[#0F184B]/90 transition disabled:opacity-50"
-          >
-            {{ isAdding ? 'در حال افزودن...' : 'افزودن' }}
-          </button>
+          <div>
+            <label class="block text-[11px] text-[#454C6A]/70 mb-1 px-1">کلید (key) — انگلیسی</label>
+            <input
+              v-model="newItem.key"
+              type="text"
+              placeholder="مثلاً title"
+              class="w-full px-3 py-2 rounded-full bg-white border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
+            />
+          </div>
+          <div>
+            <label class="block text-[11px] text-[#454C6A]/70 mb-1 px-1">نوع محتوا</label>
+            <select
+              v-model="newItem.type"
+              class="w-full px-3 py-2 rounded-full border border-[#BFD1D5] text-[13px] focus:outline-none focus:border-[#67A9A8] bg-white"
+            >
+              <option value="text">متن ساده (text)</option>
+              <option value="html">HTML</option>
+              <option value="image_path">تصویر (image_path)</option>
+              <option value="json">JSON</option>
+              <option value="number">عدد (number)</option>
+              <option value="boolean">بولین (boolean)</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button
+              @click="addItem"
+              :disabled="isAdding"
+              class="w-full px-4 py-2 rounded-full bg-[#0F184B] text-white text-[13px] font-bold hover:bg-[#0F184B]/90 transition disabled:opacity-50"
+            >
+              {{ isAdding ? 'در حال افزودن...' : 'افزودن' }}
+            </button>
+          </div>
         </div>
-        <input
-          v-if="newItem.type !== 'boolean'"
-          v-model="newItem.value"
-          :type="newItem.type === 'number' ? 'number' : 'text'"
-          placeholder="مقدار اولیه (اختیاری)"
-          class="mt-3 w-full px-3 py-2 rounded-lg border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
-        />
+        <div v-if="newItem.type !== 'boolean'" class="mt-3">
+          <label class="block text-[11px] text-[#454C6A]/70 mb-1 px-1">مقدار (value) — الزامی</label>
+          <input
+            v-model="newItem.value"
+            :type="newItem.type === 'number' ? 'number' : 'text'"
+            placeholder="مثلاً نادر تکنولوژی فقط یک نام نیست"
+            class="w-full px-3 py-2 rounded-full bg-white border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -210,17 +224,21 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 
 // ─────────────────────────────────────────────────────────────
-// NOTE ON ENDPOINTS
-// The Swagger doc you shared only documents the READ endpoints:
-//   GET /api/page/{page}          -> list all items of a page
-//   GET /api/page/{page}/{key}    -> get a single item
-// It does not document create/update/delete endpoints, so this
-// component assumes a conventional REST layout for the write
-// operations (adjust API_BASE / the three functions below if your
-// backend uses different paths or methods):
-//   PUT    /api/page/{page}/{key}   body: { value, type }  -> update
-//   POST   /api/page/{page}         body: { key, value, type } -> create
-//   DELETE /api/page/{page}/{key}                          -> delete
+// NOTE ON ENDPOINTS (confirmed with backend — Ali)
+//   GET    /api/page/{page}      -> public, no token needed, list a page's
+//                                    items (response: { data: [...] })
+//   POST   /api/admin/page       -> body: { page, key, value, type }
+//                                    upserts by (page, key) — used for both
+//                                    "save/edit" and "add new item". Needs
+//                                    the admin bearer token.
+//                                    Returns { data: { id, ... } }
+//   DELETE /api/admin/page/{id}  -> deletes by numeric id (not by key). Needs
+//                                    the admin bearer token.
+// ⚠️ The DELETE path is assumed to follow the same "/admin/page" base as the
+// corrected POST path — this hasn't been explicitly confirmed by Ali yet, so
+// test it and get confirmation before relying on it.
+// (Earlier guesses that turned out wrong: POST /api/page, POST/DELETE
+// /api/admin/page-items — all 404'd.)
 // ─────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
@@ -231,6 +249,7 @@ const pages = ref([
   { slug: 'home', label: 'خانه' },
   { slug: 'about', label: 'درباره ما' },
   { slug: 'contact', label: 'تماس با ما' },
+  { slug: 'events', label: 'ایونت‌ها' },
 ])
 const customPageInput = ref('')
 const activePage = ref('about')
@@ -323,34 +342,51 @@ const buildOutgoingValue = (item) => {
   return item.value
 }
 
+// Real write endpoint from the backend (Ali, 24 Tir):
+// POST /api/page  body: { page, key, value, type }
+// Upserts by (page, key) — creates if new, updates if that combo exists.
+// Requires the admin bearer token. Response: { message, data: { id, key, value, type, page } }
+const upsertPageItem = async ({ page, key, value, type }) => {
+  const res = await $fetch(`${API_BASE}/admin/page`, {
+    method: 'POST',
+    headers: { ...authHeader() },
+    body: { page, key, value, type },
+  })
+  return res?.data ?? null
+}
+
 const saveItem = async (item) => {
   item._saving = true
   try {
     const value = buildOutgoingValue(item)
-    await $fetch(`${API_BASE}/page/${activePage.value}/${item.key}`, {
-      method: 'PUT',
-      headers: { ...authHeader() },
-      body: { value, type: item.type },
-    })
+    const saved = await upsertPageItem({ page: activePage.value, key: item.key, value, type: item.type })
+    if (saved?.id) item.id = saved.id // keep the id so deleteItem can use it later
     showToast(`«${item.key}» ذخیره شد`)
   } catch (err) {
-    showToast(err?.message || 'ذخیره ناموفق بود', 'error')
+    showToast(err?.data?.message || err?.message || 'ذخیره ناموفق بود', 'error')
   } finally {
     item._saving = false
   }
 }
 
+// Real delete endpoint: DELETE /api/page/{id} — needs the numeric id, not the key.
+// If an item doesn't have an id yet (e.g. the GET response for this page doesn't
+// include one), we can't delete it until the backend returns/records that id.
 const deleteItem = async (item) => {
+  if (!item.id) {
+    showToast('این آیتم شناسه (id) نداره — از بک‌اند بخواید id رو هم توی GET برگردونه، یا یک‌بار «ذخیره» بزنید تا id ثبت بشه', 'error')
+    return
+  }
   if (!confirm(`آیتم «${item.key}» حذف شود؟`)) return
   try {
-    await $fetch(`${API_BASE}/page/${activePage.value}/${item.key}`, {
+    await $fetch(`${API_BASE}/admin/page/${item.id}`, {
       method: 'DELETE',
       headers: { ...authHeader() },
     })
     items.value = items.value.filter(i => i.key !== item.key)
     showToast(`«${item.key}» حذف شد`)
   } catch (err) {
-    showToast('حذف ناموفق بود', 'error')
+    showToast(err?.data?.message || 'حذف ناموفق بود', 'error')
   }
 }
 
@@ -360,23 +396,23 @@ const addItem = async () => {
     showToast('وارد کردن key الزامی است', 'error')
     return
   }
+  if (newItem.type !== 'boolean' && !String(newItem.value ?? '').trim()) {
+    showToast('وارد کردن مقدار (value) الزامی است', 'error')
+    return
+  }
   isAdding.value = true
   try {
     let value = newItem.type === 'boolean' ? false : newItem.value
     if (newItem.type === 'json' && value) {
       try { value = JSON.parse(value) } catch { throw new Error('مقدار JSON نامعتبر است') }
     }
-    await $fetch(`${API_BASE}/page/${activePage.value}`, {
-      method: 'POST',
-      headers: { ...authHeader() },
-      body: { key, value, type: newItem.type, page: activePage.value },
-    })
+    await upsertPageItem({ page: activePage.value, key, value, type: newItem.type })
     showToast(`«${key}» اضافه شد`)
     newItem.key = ''
     newItem.value = ''
-    await fetchItems(activePage.value)
+    await fetchItems(activePage.value) // refetch so the new item (and its id, if the GET returns one) shows up
   } catch (err) {
-    showToast(err?.message || 'افزودن ناموفق بود', 'error')
+    showToast(err?.data?.message || err?.message || 'افزودن ناموفق بود', 'error')
   } finally {
     isAdding.value = false
   }
