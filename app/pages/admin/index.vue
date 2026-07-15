@@ -193,6 +193,7 @@ import ResumeIcon from '~/components/admin/icons/rezume.vue'
 import LotteryIcon from '~/components/admin/icons/lottery.vue'
 import ArticlesIcon from '~/components/admin/icons/articles.vue'
 import FaqIcon from '~/components/admin/icons/faq.vue'
+import PageContentIcon from '~/components/admin/icons/pageContent.vue'
 
 definePageMeta({
   layout: false
@@ -221,6 +222,9 @@ const Articles = defineAsyncComponent(() =>
 )
 const Faq = defineAsyncComponent(() =>
   import('~/components/admin/faq.vue')
+)
+const StaticContent = defineAsyncComponent(() =>
+  import('~/components/admin/StaticContent.vue')
 )
 
 // اطلاعات ادمین لاگین‌شده (همان دیتایی که هنگام لاگین از API گرفته و در composable ذخیره شد)
@@ -257,7 +261,8 @@ const navItems = [
   { name: 'کنترل رزومه', component: ResumeControl, icon: ResumeIcon },
   { name: 'قرعه کشی', component: Lottery, icon: LotteryIcon },
   { name: 'مقالات', component: Articles, icon: ArticlesIcon },
-  { name: 'سوالات متداول', component: Faq, icon: FaqIcon }
+  { name: 'سوالات متداول', component: Faq, icon: FaqIcon },
+  { name: 'مدیریت محتوای صفحات', component: StaticContent, icon: PageContentIcon }
 ]
 
 // کلاس‌های آیتم‌های منو: در موبایل همیشه حالت "باز" نمایش داده می‌شود
