@@ -41,7 +41,10 @@
     {{ pageData.description_top }}
   </p>  
 
-
+  <!-- بند توضیحات ۲ (در صورت وجود در دیزاین جدا نمایش داده می‌شود) -->
+  <p v-if="pageData.description_bottom" class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] px-2 md:px-0">
+    {{ pageData.description_bottom }}
+  </p>
 </section>
 
     <!-- Team Section -->
@@ -73,12 +76,11 @@
     </div>
   </div>
 </div>
-          <div>
-            <!-- بند توضیحات ۲ (در صورت وجود در دیزاین جدا نمایش داده می‌شود) -->
-            <p v-if="pageData.description_bottom" class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] px-2 md:px-0">
-              {{ pageData.description_bottom }}
-            </p>
-          </div>
+            <div>
+      <p class="font-roboto text-[14px] 2xl:text-[16px] font-normal text-[#0F184B] leading-[40px] 2xl:leading-[44px] mt-[20px]">
+        تیم ما با بیش از ۱۵ سال تجربه حرفه‌ای، پروژه‌ها را از مرحله ایده تا اجرا و توسعه همراهی می‌کند. از طراحی و توسعه وب‌سایت‌های اختصاصی، فروشگاه‌های اینترنتی و سیستم‌های تحت وب گرفته تا تولید محتوای حرفه‌ای، هویت بصری و راهکارهای رسانه‌ای؛ تمرکز ما تنها روی اجرا نیست، بلکه روی ساخت درست است؛ جایی که عملکرد، تجربه کاربری، امنیت و رشد بلندمدت در کنار یکدیگر معنا پیدا می‌کنند.
+      </p>
+    </div>
     </section>
 
     <!-- Services Section -->
@@ -176,28 +178,41 @@ const teamMembers = [
 ];
 
 // =====================================================
-// بخش خدمات (فعلاً hardcode - بعداً از API میاد)
+// بخش خدمات - اتصال به API project-services (ساختار درختی)
 // =====================================================
-const categories = [
-  {
-    title: 'خدمات طراحی سایت',
-    items: ['طراحی UI/UX مدرن و کاربرمحور', 'بهینه‌سازی عملکرد و سرعت پروژه‌ها', 'توسعه فرانت‌اند و بک‌اند', 'مشاوره فنی و تحلیل ایده‌های کسب‌وکار', ' طراحی پنل‌های مدیریتی و API', 'طراحی فروشگاه‌های اینترنتی و سیستم‌های تحت وب']
-  },
-  {
-    title: 'خدمات تولید محتوا',
-    items: [' تولید ودیو های حرفه ای شبکه های اجتماعی ', '  فیلم برداری و تدوین', ' ساخت ریلز های ویومحور', ' موشن گرافیک و هویت بصری', 'سناریو نویسی و ایده پردازی', ' طراحی کمپین های محتوایی برند']
-  },
-    {
-    title: 'خدمات برگزاری ایونت',
-    items: [' برگزاری ایونت ها و رویداد ها ', 'مشاوره دیجیتال مارکتینگ  ', ' شبکه سازی بین برند ها و کسب و کار', ' ایجاد ارتباط بین تیم ها و متخصصان ', 'مشاوره رشد برند و توسعه کسب و کار', '   توسعه اکوسیستم کسب و کار ها ']
-  }
-];
+// هر آیتم اصلی (parent) یک دسته می‌شود و children آن، آیتم‌های داخلش
+const categories = ref([])
+
+const { data: servicesRes, error: servicesError } = await useFetch(
+  'https://nadertechnologyteam.ir/api/services/tree'
+)
+
+if (servicesRes.value && servicesRes.value.data && servicesRes.value.data.services) {
+  categories.value = servicesRes.value.data.services
+    .filter((s) => s.is_active) // فقط سرویس‌های فعال
+    .map((parent) => ({
+      title: parent.title,
+      // اگر زیرسرویس (children) داشت، عنوان‌شان را نمایش می‌دهیم
+      // در غیر این صورت description خودِ سرویس اصلی را نشان می‌دهیم
+      items: parent.children && parent.children.length
+        ? parent.children.filter((c) => c.is_active).map((c) => c.title)
+        : [parent.description]
+    }))
+} else if (servicesError.value) {
+  console.error('خطا در دریافت خدمات پروژه:', servicesError.value)
+}
 
 const currentIndex = ref(0);
-const currentCategory = computed(() => categories[currentIndex.value]);
+const currentCategory = computed(() => categories.value[currentIndex.value] || { title: '', items: [] });
 
-const nextCategory = () => { currentIndex.value = (currentIndex.value + 1) % categories.length; };
-const prevCategory = () => { currentIndex.value = (currentIndex.value - 1 + categories.length) % categories.length; };
+const nextCategory = () => {
+  if (!categories.value.length) return
+  currentIndex.value = (currentIndex.value + 1) % categories.value.length;
+};
+const prevCategory = () => {
+  if (!categories.value.length) return
+  currentIndex.value = (currentIndex.value - 1 + categories.value.length) % categories.value.length;
+};
 
 // با این کد، هر وقت وارد صفحه about می‌شوید، فوترِ لایوت خودش را آپدیت می‌کند
 const footerConfig = useState('footerConfig');

@@ -148,14 +148,14 @@
                 ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3  ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
                 : `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'} lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5`"
             >
-<span
-  class="flex items-center justify-center flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-[22px] h-[22px] min-[1920px]:w-[26px] min-[1920px]:h-[26px] lg:w-[33px] lg:h-[33px] min-[1920px]:!w-[42px] min-[1920px]:!h-[42px]"
->
-  <admin-icons-logout
-    class="w-full h-full max-w-full max-h-full"
-    :class="isGalaxyTheme ? 'text-white' : 'text-red-500'"
-  />
-</span>
+            <span
+              class="flex items-center justify-center flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-[22px] h-[22px] min-[1920px]:w-[26px] min-[1920px]:h-[26px] lg:w-[33px] lg:h-[33px] min-[1920px]:!w-[42px] min-[1920px]:!h-[42px]"
+            >
+              <admin-icons-logout
+                class="w-full h-full max-w-full max-h-full"
+                :class="isGalaxyTheme ? 'text-white' : 'text-red-500'"
+              />
+            </span>
 
               <span
                 class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] min-[1920px]:text-[17px]"

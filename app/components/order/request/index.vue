@@ -82,7 +82,10 @@
           <div>
             <label class="block mb-2 text-[#0F184B] font-medium font-roboto text-[13px] sm:text-[14px] md:text-[16px]">نام و نام خانوادگی</label>
             <div class="relative group">
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 group-focus-within:opacity-0">
+              <div
+                v-show="!form.name"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 pointer-events-none"
+              >
                 <OrderRequestIconsPerson />
               </div>
 
@@ -101,7 +104,10 @@
             </label>
             <div class="relative group">
 
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 group-focus-within:opacity-0 pointer-events-none">
+              <div
+                v-show="!form.mobile"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 pointer-events-none"
+              >
                 <OrderRequestIconsCall />
               </div>
 
@@ -123,7 +129,10 @@
           </label>
           <div class="relative group">
 
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 group-focus-within:opacity-0 pointer-events-none">
+            <div
+              v-show="!form.email"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 pointer-events-none"
+            >
               <OrderRequestIconsEmail />
             </div>
 
