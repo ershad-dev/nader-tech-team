@@ -1,17 +1,63 @@
 <template>
   <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto px-4 mt-2 sm:mt-14 md:mt-10 xl:mt-2 2xl:mt-2 relative">
-    
+
     <div class="relative w-full">
-      <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem]" alt="Background" />
+      <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-full md:h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem]" alt="Background" />
 
-      <div class="flex justify-center w-full px-4 -mt-[81px] sm:-mt-[106px] md:-mt-[170px] xl:-mt-[230px] 2xl:-mt-[290px]">
+      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
+      <div
+        class="absolute inset-0 flex md:hidden items-center justify-center mt-[50px]"
+        @touchstart="handleTouchStart"
+        @touchend="handleTouchEnd"
+      >
+        <div
+          v-for="item in mobileVisibleTeamMembers"
+          :key="item.realIndex"
+          @click="selectMember(item.realIndex); currentSlide = item.realIndex"
+          class="absolute transition-all duration-500 ease-out cursor-pointer"
+          :class="[
+            item.pos === 0
+              ? 'z-20 scale-100 opacity-100 translate-x-0'
+              : item.pos === -1
+                ? 'z-10 scale-75 opacity-40 -translate-x-[80px]'
+                : 'z-10 scale-75 opacity-40 translate-x-[80px]'
+          ]"
+        >
+          <div
+            :class="[
+              'bg-white rounded-[20px] h-[110px] w-[100px] shadow-lg transition-all duration-300 flex flex-col overflow-hidden',
+              selectedIndex === item.realIndex && item.pos === 0
+                ? 'ring-3 ring-[#A36C53] ring-inset'
+                : ''
+            ]"
+          >
+            <div class="w-full h-[72px] overflow-hidden">
+              <img
+                :src="item.data.image"
+                :alt="item.data.name"
+                class="w-full h-full object-scale-down select-none pointer-events-none"
+                draggable="false"
+              />
+            </div>
 
-        
-        <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 2xl:gap-5 w-[300px] sm:w-[400px] md:w-[600px] xl:w-[853px] 2xl:w-[1300px]">
-          
-          <div 
-            v-for="(member, index) in teamMembers" 
-            :key="member.id" 
+            <div
+              class="mt-auto py-1 px-1 text-center"
+              style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+            >
+              <p class="text-[#747893] font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- تبلت و دسکتاپ: گرید کارت‌ها (طرح اصلی) -->
+      <div class="hidden md:flex justify-center w-full px-4 -mt-[170px] xl:-mt-[230px] 2xl:-mt-[290px]">
+
+        <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 2xl:gap-5 w-[600px] xl:w-[853px] 2xl:w-[1300px]">
+
+          <div
+            v-for="(member, index) in teamMembers"
+            :key="member.id"
             :ref="el => { cardRefs[index] = el }"
             @click="selectMember(index)"
             :class="[
@@ -19,45 +65,49 @@
             ]"
           >
             <div class="w-full h-[48px] sm:h-[62px] md:h-[105px] xl:h-[155px] 2xl:h-[235px] overflow-hidden">
-              <img 
-                :src="member.image" 
+              <img
+                :src="member.image"
                 :alt="member.name"
-                class="w-full h-full object-scale-down" 
+                class="w-full h-full object-scale-down"
               />
             </div>
 
-            <div 
+            <div
               class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative"
               style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
             >
                 <p class="text-[#747893] font-normal text-[8px] sm:text-[10px] md:text-[13px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
-              
+
                 <div v-if="selectedIndex === index" class="absolute -top-3 left-1/2 -translate-x-1/2">
                 </div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>
 
-    <div v-if="selectedIndex !== null" class="mt-16 sm:mt-24 md:mt-28 xl:mt-32 2xl:mt-36 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 2xl:px-20 animate-fade-in">
-      
-        <div 
+    <div v-if="selectedIndex !== null" class="mt-[40px] sm:mt-[60px] md:mt-24 md:mt-28 xl:mt-32 2xl:mt-36 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 2xl:px-20 animate-fade-in">
+
+        <div
           class="notch absolute -top-[18px] sm:-top-[24px] md:-top-[27px] xl:-top-[30px] 2xl:-top-[34px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[18px] sm:mt-[24px] md:mt-[27px] xl:mt-[30px] 2xl:mt-[34px]"
-          :style="{ left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
+          :style="isMobile
+            ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%)' }
+            : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
         >
           <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[27px] xl:-mt-[30px] 2xl:-mt-[34px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
         </div>
 
-      <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 text-right -mt-[50px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
-        
+      <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 text-right mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
+
 <h3
   :class="[
     'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
-    selectedIndex >= 1
+    !isMobile && selectedIndex >= 1
       ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px] 2xl:mr-[70px]'
-      : 'mr-[80px] sm:mr-[130px] md:mr-[190px] xl:mr-[175px] 2xl:mr-[200px]'
+      : !isMobile
+        ? 'mr-[80px] sm:mr-[130px] md:mr-[190px] xl:mr-[175px] 2xl:mr-[200px]'
+        : ''
   ]"
 >
   {{ teamMembers[selectedIndex].name }}
@@ -71,12 +121,13 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted, computed } from 'vue';
 
 const selectedIndex = ref(null);
 const cardRefs = ref([]);
 const indicatorLeft = ref(0);
 const notchWidth = ref(100);
+const isMobile = ref(false);
 
 const teamMembers = [
   { id: 1, name: 'مشخصات شخص', bio: 'تیم ما با تکیه بر تخصص، خلاقیت و کیفیت، بهترین راهکارها را در زمینه طراحی سایت، تولید محتوا و برگزاری رویدادها ارائه می‌دهد.', image: '/images/icon-team.jpg' },
@@ -85,37 +136,102 @@ const teamMembers = [
   { id: 4, name: 'مشخصات شخص', bio: 'تیم ما متشکل از متخصصان باتجربه در حوزه طراحی سایت، تولید محتوا و برگزاری رویدادها است. ما با تمرکز بر کیفیت، خلاقیت و ارائه راهکارهای مؤثر، تلاش می‌کنیم بهترین نتیجه را برای مشتریان خود رقم بزنیم. همکاری تیمی، نوآوری و توجه به جزئیات از مهم‌ترین ارزش‌های ما هستند.', image: '/images/icon-team.jpg' }
 ];
 
+const total = teamMembers.length;
+
+// آیتم‌های موبایل (قبلی - جاری - بعدی) با لوپ (چرخشی)
+const currentSlide = ref(0);
+
+const mobileVisibleTeamMembers = computed(() => {
+  const items = [];
+  for (let pos = -1; pos <= 1; pos++) {
+    const idx = (currentSlide.value + pos + total) % total;
+    items.push({ data: teamMembers[idx], realIndex: idx, pos });
+  }
+  return items;
+});
+
 const updateNotchWidth = () => {
   const w = window.innerWidth;
   if (w < 640) {
     notchWidth.value = 45;
+    isMobile.value = true;
   } else if (w < 768) {
     notchWidth.value = 60;
+    isMobile.value = true;
   } else if (w < 1280) {
     notchWidth.value = 85;
+    isMobile.value = false;
   } else if (w < 1536) {
     notchWidth.value = 100;
+    isMobile.value = false;
   } else {
     notchWidth.value = 120;
+    isMobile.value = false;
   }
 };
 
+let resizeHandler = null;
+
 onMounted(() => {
   updateNotchWidth();
-  window.addEventListener('resize', () => {
+  resizeHandler = () => {
     updateNotchWidth();
-    if (selectedIndex.value !== null) selectMember(selectedIndex.value);
-  });
+    if (selectedIndex.value !== null && !isMobile.value) selectMember(selectedIndex.value);
+  };
+  window.addEventListener('resize', resizeHandler);
   selectMember(0);
+});
+
+onUnmounted(() => {
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler);
+  }
 });
 
 const selectMember = async (index) => {
   selectedIndex.value = index;
+  currentSlide.value = index;
   await nextTick();
-  
+
+  // در موبایل نشانگر همیشه وسط و ثابت است، نیازی به محاسبه نیست
+  if (isMobile.value) return;
+
   if (cardRefs.value[index]) {
     const card = cardRefs.value[index];
     indicatorLeft.value = card.offsetLeft + (card.offsetWidth / 2);
+  }
+};
+
+// --- Swipe support (mobile) ---
+const touchStartX = ref(0);
+const touchEndX = ref(0);
+const SWIPE_THRESHOLD = 50; // حداقل جابجایی (px) برای تشخیص سواپ
+
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % total;
+  selectMember(currentSlide.value);
+};
+
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + total) % total;
+  selectMember(currentSlide.value);
+};
+
+const handleTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX;
+  const diff = touchStartX.value - touchEndX.value;
+
+  if (Math.abs(diff) < SWIPE_THRESHOLD) return;
+
+  // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
+  if (diff > 0) {
+    prevSlide();
+  } else {
+    nextSlide();
   }
 };
 </script>
@@ -147,7 +263,7 @@ const selectMember = async (index) => {
   height: 20px;
 
   border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 #F7F3EB; 
+  box-shadow: 10px -10px 0 #F7F3EB;
 }
 
 .notch::after {

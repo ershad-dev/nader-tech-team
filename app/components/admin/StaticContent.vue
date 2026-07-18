@@ -6,7 +6,7 @@
         مدیریت محتوای صفحات
       </h1>
       <p class="text-[#454C6A]/70 text-[12px] lg:text-[13px] mt-1">
-        ویرایش، افزودن و حذف محتوای کلید-مقدار صفحات سایت
+        ویرایش محتوای کلید-مقدار صفحات سایت
       </p>
     </div>
 
@@ -26,23 +26,6 @@
         >
           {{ p.label }}
         </button>
-
-        <!-- Add custom page -->
-        <div class="flex items-center gap-1">
-          <input
-            v-model="customPageInput"
-            @keyup.enter="addCustomPage"
-            type="text"
-            placeholder="نام صفحه دیگر (انگلیسی)"
-            class="w-[140px] sm:w-[150px] px-3 py-2 rounded-full bg-white border border-[#BFD1D5] text-[12px] focus:outline-none focus:border-[#67A9A8]"
-          />
-          <button
-            @click="addCustomPage"
-            class="w-[36px] h-[36px] sm:w-[38px] sm:h-[38px] shrink-0 rounded-full bg-[#0F184B] text-white text-[14px] font-bold hover:bg-[#0F184B]/90 transition"
-          >
-            +
-          </button>
-        </div>
       </div>
     </div>
 
@@ -96,12 +79,6 @@
                 class="px-3 py-1.5 rounded-full bg-[#67A9A8] text-[#0F184B] text-[12px] font-bold hover:bg-[#8FB0B2] transition disabled:opacity-50"
               >
                 {{ item._saving ? '...' : 'ذخیره' }}
-              </button>
-              <button
-                @click="deleteItem(item)"
-                class="px-3 py-1.5 rounded-full bg-red-50 text-red-500 text-[12px] font-bold hover:bg-red-100 transition"
-              >
-                حذف
               </button>
             </div>
           </div>
@@ -168,54 +145,6 @@
           />
         </div>
       </div>
-
-      <!-- Add new item -->
-      <div class="mt-6 bg-[#F7F3EB] rounded-2xl border border-dashed border-[#BFD1D5] p-4 lg:p-5">
-        <h3 class="font-bold text-[#0F184B] text-[14px] mb-3">افزودن آیتم جدید</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-[11px] text-[#454C6A]/70 mb-1 px-1">کلید (key) — انگلیسی</label>
-            <input
-              v-model="newItem.key"
-              type="text"
-              placeholder="مثلاً title"
-              class="w-full px-3 py-2 rounded-full bg-white border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
-            />
-          </div>
-          <div>
-            <label class="block text-[11px] text-[#454C6A]/70 mb-1 px-1">نوع محتوا</label>
-            <select
-              v-model="newItem.type"
-              class="w-full px-3 py-2 rounded-full border border-[#BFD1D5] text-[13px] focus:outline-none focus:border-[#67A9A8] bg-white"
-            >
-              <option value="text">متن ساده (text)</option>
-              <option value="html">HTML</option>
-              <option value="image_path">تصویر (image_path)</option>
-              <option value="json">JSON</option>
-              <option value="number">عدد (number)</option>
-              <option value="boolean">بولین (boolean)</option>
-            </select>
-          </div>
-          <div class="flex items-end">
-            <button
-              @click="addItem"
-              :disabled="isAdding"
-              class="w-full px-4 py-2 rounded-full bg-[#0F184B] text-white text-[13px] font-bold hover:bg-[#0F184B]/90 transition disabled:opacity-50"
-            >
-              {{ isAdding ? 'در حال افزودن...' : 'افزودن' }}
-            </button>
-          </div>
-        </div>
-        <div v-if="newItem.type !== 'boolean'" class="mt-3">
-          <label class="block text-[11px] text-[#454C6A]/70 mb-1 px-1">مقدار (value) — الزامی</label>
-          <input
-            v-model="newItem.value"
-            :type="newItem.type === 'number' ? 'number' : 'text'"
-            placeholder="مثلاً نادر تکنولوژی فقط یک نام نیست"
-            class="w-full px-3 py-2 rounded-full bg-white border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
-          />
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -228,17 +157,12 @@ import { ref, reactive, onMounted, watch } from 'vue'
 //   GET    /api/page/{page}      -> public, no token needed, list a page's
 //                                    items (response: { data: [...] })
 //   POST   /api/admin/page       -> body: { page, key, value, type }
-//                                    upserts by (page, key) — used for both
-//                                    "save/edit" and "add new item". Needs
+//                                    upserts by (page, key) — used for
+//                                    "save/edit" existing items. Needs
 //                                    the admin bearer token.
 //                                    Returns { data: { id, ... } }
-//   DELETE /api/admin/page/{id}  -> deletes by numeric id (not by key). Needs
-//                                    the admin bearer token.
-// ⚠️ The DELETE path is assumed to follow the same "/admin/page" base as the
-// corrected POST path — this hasn't been explicitly confirmed by Ali yet, so
-// test it and get confirmation before relying on it.
-// (Earlier guesses that turned out wrong: POST /api/page, POST/DELETE
-// /api/admin/page-items — all 404'd.)
+// این نسخه از کامپوننت فقط ویرایش دارد؛ بخش‌های افزودن آیتم جدید و
+// حذف آیتم عمداً حذف شده‌اند.
 // ─────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
@@ -250,14 +174,10 @@ const pages = ref([
   { slug: 'about', label: 'درباره ما' },
   { slug: 'events', label: 'ایونت‌ها' },
 ])
-const customPageInput = ref('')
 const activePage = ref('about')
 
 const items = ref([])
 const isLoading = ref(false)
-const isAdding = ref(false)
-
-const newItem = reactive({ key: '', type: 'text', value: '' })
 
 const toast = reactive({ message: '', type: 'success' })
 let toastTimer = null
@@ -320,16 +240,6 @@ const selectPage = (slug) => {
   activePage.value = slug
 }
 
-const addCustomPage = () => {
-  const slug = customPageInput.value.trim().toLowerCase().replace(/\s+/g, '_')
-  if (!slug) return
-  if (!pages.value.find(p => p.slug === slug)) {
-    pages.value.push({ slug, label: slug })
-  }
-  activePage.value = slug
-  customPageInput.value = ''
-}
-
 const buildOutgoingValue = (item) => {
   if (item.type === 'json') {
     try {
@@ -359,61 +269,12 @@ const saveItem = async (item) => {
   try {
     const value = buildOutgoingValue(item)
     const saved = await upsertPageItem({ page: activePage.value, key: item.key, value, type: item.type })
-    if (saved?.id) item.id = saved.id // keep the id so deleteItem can use it later
+    if (saved?.id) item.id = saved.id
     showToast(`«${item.key}» ذخیره شد`)
   } catch (err) {
     showToast(err?.data?.message || err?.message || 'ذخیره ناموفق بود', 'error')
   } finally {
     item._saving = false
-  }
-}
-
-// Real delete endpoint: DELETE /api/page/{id} — needs the numeric id, not the key.
-// If an item doesn't have an id yet (e.g. the GET response for this page doesn't
-// include one), we can't delete it until the backend returns/records that id.
-const deleteItem = async (item) => {
-  if (!item.id) {
-    showToast('این آیتم شناسه (id) نداره — از بک‌اند بخواید id رو هم توی GET برگردونه، یا یک‌بار «ذخیره» بزنید تا id ثبت بشه', 'error')
-    return
-  }
-  if (!confirm(`آیتم «${item.key}» حذف شود؟`)) return
-  try {
-    await $fetch(`${API_BASE}/admin/page/${item.id}`, {
-      method: 'DELETE',
-      headers: { ...authHeader() },
-    })
-    items.value = items.value.filter(i => i.key !== item.key)
-    showToast(`«${item.key}» حذف شد`)
-  } catch (err) {
-    showToast(err?.data?.message || 'حذف ناموفق بود', 'error')
-  }
-}
-
-const addItem = async () => {
-  const key = newItem.key.trim()
-  if (!key) {
-    showToast('وارد کردن key الزامی است', 'error')
-    return
-  }
-  if (newItem.type !== 'boolean' && !String(newItem.value ?? '').trim()) {
-    showToast('وارد کردن مقدار (value) الزامی است', 'error')
-    return
-  }
-  isAdding.value = true
-  try {
-    let value = newItem.type === 'boolean' ? false : newItem.value
-    if (newItem.type === 'json' && value) {
-      try { value = JSON.parse(value) } catch { throw new Error('مقدار JSON نامعتبر است') }
-    }
-    await upsertPageItem({ page: activePage.value, key, value, type: newItem.type })
-    showToast(`«${key}» اضافه شد`)
-    newItem.key = ''
-    newItem.value = ''
-    await fetchItems(activePage.value) // refetch so the new item (and its id, if the GET returns one) shows up
-  } catch (err) {
-    showToast(err?.data?.message || err?.message || 'افزودن ناموفق بود', 'error')
-  } finally {
-    isAdding.value = false
   }
 }
 

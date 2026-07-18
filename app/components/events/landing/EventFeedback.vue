@@ -9,8 +9,12 @@
       </h2>
     </div>
 
-<!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن) -->
-<div class="relative flex md:hidden items-center justify-center h-[300px] mb-6 overflow-hidden">
+<!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
+<div
+  class="relative flex md:hidden items-center justify-center h-[300px] mb-6 overflow-hidden touch-pan-y"
+  @touchstart="handleTouchStart"
+  @touchend="handleTouchEnd"
+>
   <div
     v-for="item in mobileVisibleTestimonials"
     :key="item.realIndex"
@@ -28,11 +32,12 @@
       :src="item.data.image"
       :alt="'testimonial-' + item.realIndex"
       :class="[
-        'w-[190px] h-[224px] object-cover rounded-[32px] transition-all duration-300',
+        'w-[190px] h-[224px] object-cover rounded-[32px] transition-all duration-300 select-none pointer-events-none',
         selectedIndex === item.realIndex && item.pos === 0
           ? 'ring-3 ring-[#A36C53] ring-inset'
           : ''
       ]"
+      draggable="false"
     />
   </div>
 </div>
@@ -61,7 +66,8 @@
       </div>
     </div>
 
-    <div class="flex justify-center items-center gap-2 mt-6 sm:mt-8 min-[1920px]:mt-10">
+    <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
+    <div class="hidden md:flex justify-center items-center gap-2 mt-6 sm:mt-8 min-[1920px]:mt-10">
       <SliderButton
         direction="left"
         @click="prevSlide"
@@ -239,6 +245,29 @@ const prevSlide = async () => {
 
   await nextTick()
   updateIndicator()
+}
+
+// --- Swipe support (mobile) ---
+const touchStartX = ref(0)
+const touchEndX = ref(0)
+const SWIPE_THRESHOLD = 50 // حداقل جابجایی (px) برای تشخیص سواپ
+
+const handleTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX
+}
+
+const handleTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX
+  const diff = touchStartX.value - touchEndX.value
+
+  if (Math.abs(diff) < SWIPE_THRESHOLD) return
+
+  // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
+  if (diff > 0) {
+    prevSlide()
+  } else {
+    nextSlide()
+  }
 }
 </script>
 

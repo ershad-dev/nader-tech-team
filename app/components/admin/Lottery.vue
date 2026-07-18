@@ -113,35 +113,37 @@ onMounted(() => {
     <div v-else-if="errorMsg" class="text-center py-10 text-red-500 font-bold">{{ errorMsg }}</div>
 
     <template v-else>
-      <!-- دسکتاپ -->
-      <div class="hidden lg:block bg-[#F5F3ED] rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
-        <table class="w-full text-center">
-          <thead class="bg-[#BFCFD3]">
-            <tr class="text-[#1a2333] font-bold min-[1920px]:text-lg">
-              <th class="py-5 min-[1920px]:py-7">کد کاربری</th>
-              <th class="py-5 min-[1920px]:py-7">کد قرعه‌کشی</th>
-              <th class="py-5 min-[1920px]:py-7">نام و نام خانوادگی</th>
-              <th class="py-5 min-[1920px]:py-7">شماره موبایل</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-600 min-[1920px]:text-lg">
-            <tr v-for="entry in entries" :key="entry.id" class="border-b border-gray-200 last:border-none">
-              <td class="py-6 min-[1920px]:py-8">{{ entry.user_id }}</td>
-              <td class="py-6 min-[1920px]:py-8">{{ entry.code ?? '—' }}</td>
-              <td class="py-6 min-[1920px]:py-8">{{ entry.user?.full_name }}</td>
-              <td class="py-6 min-[1920px]:py-8" dir="ltr">{{ entry.user?.mobile }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+<!-- دسکتاپ -->
+<div class="hidden lg:block bg-[#F5F3ED] rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
+  <div class="max-h-[360px] min-[1920px]:max-h-[440px] overflow-y-auto entries-scroll">
+    <table class="w-full text-center">
+      <thead class="bg-[#BFCFD3] sticky top-0 z-10">
+        <tr class="text-[#1a2333] font-bold min-[1920px]:text-lg">
+          <th class="py-5 min-[1920px]:py-7">کد کاربری</th>
+          <th class="py-5 min-[1920px]:py-7">کد قرعه‌کشی</th>
+          <th class="py-5 min-[1920px]:py-7">نام و نام خانوادگی</th>
+          <th class="py-5 min-[1920px]:py-7">شماره موبایل</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600 min-[1920px]:text-lg">
+        <tr v-for="entry in entries" :key="entry.id" class="border-b border-gray-200 last:border-none">
+          <td class="py-6 min-[1920px]:py-8">{{ entry.user_id }}</td>
+          <td class="py-6 min-[1920px]:py-8">{{ entry.code ?? '—' }}</td>
+          <td class="py-6 min-[1920px]:py-8">{{ entry.user?.full_name }}</td>
+          <td class="py-6 min-[1920px]:py-8" dir="ltr">{{ entry.user?.mobile }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
       <!-- موبایل و تبلت -->
-      <div class="lg:hidden flex flex-col gap-3 sm:gap-4">
-        <div
-          v-for="entry in entries"
-          :key="entry.id"
-          class="bg-[#F5F3ED] rounded-2xl border border-gray-200 shadow-sm p-4"
-        >
+<div class="lg:hidden max-h-[420px] overflow-y-auto entries-scroll flex flex-col gap-3 sm:gap-4 pr-1">
+  <div
+    v-for="entry in entries"
+    :key="entry.id"
+    class="bg-[#F5F3ED] rounded-2xl border border-gray-200 shadow-sm p-4"
+  >
           <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
             <span class="text-xs text-gray-500 font-bold">کد کاربری</span>
             <span class="text-sm text-gray-700">{{ entry.user_id }}</span>
@@ -180,5 +182,25 @@ onMounted(() => {
     />
   </div>
 
-  <LotteryDraw v-else :lottery-id="lotteryId" />
+<LotteryDraw v-else :lottery-id="lotteryId" @back="showLotteryPage = false" />
 </template>
+
+<style scoped>
+.entries-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.entries-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.entries-scroll::-webkit-scrollbar-thumb {
+  background: #67A9A8;
+  border-radius: 9999px;
+}
+.entries-scroll::-webkit-scrollbar-thumb:hover {
+  background: #4d9aa0;
+}
+.entries-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #67A9A8 transparent;
+}
+</style>

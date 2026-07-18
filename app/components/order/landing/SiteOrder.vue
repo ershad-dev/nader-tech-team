@@ -31,6 +31,34 @@ const prevSlide = () => {
   if (webProjects.value.length > 0) currentIndex.value = (currentIndex.value - 1 + webProjects.value.length) % webProjects.value.length
 }
 
+// --- سواپ با انگشت برای موبایل ---
+const touchStartX = ref(0)
+const touchEndX = ref(0)
+const SWIPE_THRESHOLD = 40 // حداقل فاصله برای شمرده‌شدن به‌عنوان سواپ (px)
+
+const onTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX
+}
+
+const onTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX
+  handleSwipeGesture()
+}
+
+const handleSwipeGesture = () => {
+  const diff = touchStartX.value - touchEndX.value
+  if (Math.abs(diff) < SWIPE_THRESHOLD) return
+
+  // چون dir راست‌به‌چپه، جهت سواپ رو معکوس در نظر می‌گیریم
+  if (diff > 0) {
+    // کشیدن به چپ -> اسلاید بعدی
+    prevSlide()
+  } else {
+    // کشیدن به راست -> اسلاید قبلی
+    nextSlide()
+  }
+}
+
 // steps آرایه ثابت - بدون تغییر
 const steps = [
   { title: 'سفارش', desc: 'سفارش نیازهای خود را با ما در میان بگذارید و سفارش پروژه را ثبت کنید.' },
@@ -56,8 +84,12 @@ const steps = [
   طراحی سایت
 </h1>
 
-      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا -->
-      <div class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden">
+      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + پشتیبانی از سواپ انگشت -->
+      <div
+        class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden touch-pan-y"
+        @touchstart="onTouchStart"
+        @touchend="onTouchEnd"
+      >
         <div
           v-for="(card, index) in mobileVisibleProjects"
           :key="card.id"
@@ -73,8 +105,9 @@ const steps = [
  <NuxtLink :to="`/order/${card.slug}`">
               <img
               :src="resumeCover(card)"
-              class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg"
+              class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg select-none pointer-events-none"
               :alt="card.title"
+              draggable="false"
             />
           </NuxtLink>
         </div>
@@ -102,7 +135,8 @@ const steps = [
   </div>
 </div>
 
-      <div class="flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[140px]">
+      <!-- دکمه‌های اسلایدر: فقط از md به بالا نمایش داده می‌شن -->
+      <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[140px]">
         <SliderButton
           direction="left"
           @click="prevSlide"

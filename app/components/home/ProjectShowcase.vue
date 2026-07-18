@@ -48,7 +48,7 @@
   <div v-for="project in visibleProjects" :key="project.id" 
        class="relative w-full lg:w-[250px] min-[1920px]:w-[300px] h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
 
-    <NuxtLink :to="`/order/${project.id}`">
+      <NuxtLink :to="`/order/${project.slug}`">
       <img :src="resumeCover(project)" class="w-full h-[214px] sm:h-[274px] lg:w-[250px] lg:h-[344px] min-[1920px]:w-[300px] min-[1920px]:h-[414px] object-cover" />
       
       <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 text-center">

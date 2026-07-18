@@ -4,7 +4,9 @@ import {
   LockClosedIcon,
   ShieldCheckIcon,
   UserCircleIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  DevicePhoneMobileIcon,
+  PhoneIcon
 } from '@heroicons/vue/24/solid'
 
 definePageMeta({
@@ -13,9 +15,11 @@ definePageMeta({
 
 const config = useRuntimeConfig()
 
-const activeTab = ref('profile')
+const activeTab = ref('profile') // 'profile' | 'security' | 'changeMobile'
 const loading = ref(false)
-const loadingAvatar = ref(false) // رفع باگ: قبلاً تعریف نشده بود و در deleteAvatar استفاده می‌شد
+const loadingAvatar = ref(false)
+
+const isEditing = ref(false)
 
 const userData = ref({
   full_name: '',
@@ -24,7 +28,7 @@ const userData = ref({
   email: '',
   birth_date: '',
   national_code: '',
-  postal_code: '', // رفع باگ: طبق Swagger این فیلد در پاسخ API وجود دارد ولی در state اولیه جا افتاده بود
+  postal_code: '',
   province: '',
   address: '',
   avatar: ''
@@ -35,6 +39,9 @@ const passwordData = ref({
   new_password: '',
   new_password_confirmation: ''
 })
+
+// فیلد شماره‌ی جدید برای فرم «تغییر شماره موبایل»
+const newMobile = ref('')
 
 const toast = ref({
   message: '',
@@ -57,6 +64,14 @@ const showToast = (message, type = 'error') => {
 
 const token = () => localStorage.getItem('access_token')
 
+const getAvatarUrl = (path) => {
+  if (!path) return '/images/avater-man.jpg'
+  if (/^https?:\/\//.test(path)) return path
+
+  const root = (config.public.apiBase || '').replace(/\/api\/?$/, '')
+  return root + path
+}
+
 onMounted(async () => {
   if (!token()) {
     navigateTo('/auth/login')
@@ -76,8 +91,6 @@ const getProfile = async () => {
       }
     })
 
-    // نکته: ساختار واقعی پاسخ سرور برخلاف Swagger، یک لایه‌ی "user" کمتر دارد
-    // پاسخ سرور: { data: { id, full_name, ... } } نه { data: { user: {...} } }
     userData.value = { ...userData.value, ...response.data }
   } catch (error) {
     console.error(error)
@@ -86,14 +99,11 @@ const getProfile = async () => {
       localStorage.removeItem('access_token')
       navigateTo('/auth/login')
     }
+  } finally {
+    isEditing.value = false
   }
 }
 
-// نکته مهم: طبق Swagger، endpoint به‌روزرسانی پروفایل (PUT /api/profile)
-// فقط این ۴ فیلد را می‌پذیرد: full_name, username, email, mobile
-// فیلدهای birth_date, national_code, postal_code, province, address
-// در حال حاضر توسط این API ذخیره نمی‌شوند. اگر بک‌اند این فیلدها را
-// پشتیبانی کند باید به body زیر اضافه شوند.
 const updateProfile = async () => {
   loading.value = true
 
@@ -109,11 +119,15 @@ const updateProfile = async () => {
         full_name: userData.value.full_name,
         username: userData.value.username,
         email: userData.value.email,
-        mobile: userData.value.mobile
+        mobile: userData.value.mobile,
+        birth_date: userData.value.birth_date,
+        national_code: userData.value.national_code,
+        postal_code: userData.value.postal_code,
+        province: userData.value.province,
+        address: userData.value.address
       }
     })
 
-    // همان ساختار واقعی سرور: response.data مستقیم آبجکت کاربر است
     userData.value = { ...userData.value, ...response.data }
 
     showToast(
@@ -121,6 +135,8 @@ const updateProfile = async () => {
       'اطلاعات با موفقیت ذخیره شد',
       'success'
     )
+
+    isEditing.value = false
   } catch (error) {
     console.error(error)
 
@@ -131,6 +147,69 @@ const updateProfile = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const cancelEdit = async () => {
+  await getProfile()
+}
+
+// تغییر شماره موبایل (بدون OTP)
+// طبق Swagger، PUT /api/profile هر ۴ فیلد رسمی (full_name, username,
+// email, mobile) را با هم می‌خواهد، برای همین بقیه‌ی فیلدها از مقادیر
+// فعلی userData پر می‌شوند و فقط mobile عوض می‌شود.
+const changeMobile = async () => {
+  if (!newMobile.value.trim()) {
+    showToast('شماره موبایل جدید را وارد کنید')
+    return
+  }
+
+  loading.value = true
+
+  try {
+    const response = await $fetch('/profile', {
+      baseURL: config.public.apiBase,
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token()}`,
+        Accept: 'application/json'
+      },
+      body: {
+        full_name: userData.value.full_name,
+        username: userData.value.username,
+        email: userData.value.email,
+        mobile: newMobile.value.trim()
+      }
+    })
+
+    userData.value = { ...userData.value, ...response.data }
+
+    showToast(
+      response.message ||
+      'شماره موبایل با موفقیت تغییر کرد',
+      'success'
+    )
+
+    newMobile.value = ''
+    activeTab.value = 'profile'
+  } catch (error) {
+    console.error(error)
+
+    const errors = error?.response?._data?.errors
+    const mobileError = errors?.mobile?.[0]
+
+    showToast(
+      mobileError ||
+      error?.response?._data?.message ||
+      'خطا در تغییر شماره موبایل'
+    )
+  } finally {
+    loading.value = false
+  }
+}
+
+const cancelChangeMobile = () => {
+  newMobile.value = ''
+  activeTab.value = 'profile'
 }
 
 const changePassword = async () => {
@@ -183,8 +262,6 @@ const changePassword = async () => {
   } catch (error) {
     console.error(error)
 
-    // طبق Swagger ممکن است پیام خطا در errors.new_password یا
-    // errors.new_password_confirmation یا errors.current_password باشد
     const errors = error?.response?._data?.errors
     const fieldError =
       errors?.current_password?.[0] ||
@@ -231,7 +308,6 @@ const uploadAvatar = async (event) => {
   } catch (err) {
     console.error('UPLOAD ERROR:', err)
 
-    // رفع بهبود: طبق Swagger پیام دقیق‌تر خطا در errors.avatar وجود دارد
     const avatarError = err?.response?._data?.errors?.avatar?.[0]
 
     showToast(
@@ -301,7 +377,7 @@ const logout = () => {
         <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] mb-6 sm:mb-8 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 w-full max-w-[652px] h-auto sm:h-[187px] shadow-xl" dir="rtl">
 
           <img
-            :src="userData.avatar || '/images/avater-man.jpg'"
+            :src="getAvatarUrl(userData.avatar)"
             class="w-[70px] h-[70px] sm:w-[120px] sm:h-[120px] md:w-[143px] md:h-[143px] rounded-full border-4 border-white shadow-sm object-cover flex-shrink-0"
           />
 
@@ -347,90 +423,137 @@ const logout = () => {
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام کاربری</label>
-            <input v-model="userData.username" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input
+              v-model="userData.username"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام و نام خانوادگی</label>
-            <input v-model="userData.full_name" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input
+              v-model="userData.full_name"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
+          <!-- شماره موبایل همیشه readonly است؛ تغییرش فقط از تب
+               «تغییر شماره موبایل» ممکن است -->
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">شماره موبایل</label>
-            <input v-model="userData.mobile" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input
+              v-model="userData.mobile"
+              readonly
+              class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed"
+            />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">ایمیل</label>
-            <input v-model="userData.email" class="w-full sm:w-[300px] h-11 sm:h-14 bg-white rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]" />
+            <input
+              v-model="userData.email"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
-          <!-- توجه: فیلدهای زیر (تاریخ تولد، کد ملی، استان، کد پستی، آدرس)
-               طبق Swagger توسط PUT /api/profile ذخیره نمی‌شوند.
-               فعلاً readonly شده‌اند تا کاربر گمراه نشود؛
-               در صورت پشتیبانی بک‌اند، readonly را بردارید و فیلدها را
-               به body متد updateProfile اضافه کنید. -->
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">تاریخ تولد</label>
-            <input v-model="userData.birth_date" placeholder="1370/01/01" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
+            <input
+              v-model="userData.birth_date"
+              placeholder="1370/01/01"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد ملی</label>
-            <input v-model="userData.national_code" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
+            <input
+              v-model="userData.national_code"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">استان</label>
-            <input v-model="userData.province" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
+            <input
+              v-model="userData.province"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
           <div class="flex flex-col gap-2 w-full sm:w-fit">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد پستی</label>
-            <input v-model="userData.postal_code" readonly class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed" />
+            <input
+              v-model="userData.postal_code"
+              :readonly="!isEditing"
+              :class="[
+                'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            />
           </div>
 
           <div class="flex flex-col gap-2 w-full col-span-2 md:col-span-2 md:w-[604px]">
             <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
-            <textarea v-model="userData.address" readonly class="w-full md:w-[604px] h-20 sm:h-24 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 py-3 sm:py-4 text-[13px] sm:text-[15px] cursor-not-allowed"></textarea>
+            <textarea
+              v-model="userData.address"
+              :readonly="!isEditing"
+              :class="[
+                'w-full md:w-[604px] h-20 sm:h-24 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 py-3 sm:py-4 text-[13px] sm:text-[15px]',
+                isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
+              ]"
+            ></textarea>
           </div>
 
         </div>
 
         <!-- Security Tab -->
-        <div v-else class="space-y-5 sm:space-y-6">
+<!-- Security Tab -->
+        <div v-else-if="activeTab === 'security'" class="space-y-5 sm:space-y-6">
           <AuthInput
             label="رمز عبور فعلی"
             type="password"
             v-model="passwordData.current_password"
             class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-          >
-            <template #icon>
-              <LockClosedIcon class="w-5 h-5" />
-            </template>
-          </AuthInput>
+          />
 
           <AuthInput
             label="رمز عبور جدید"
             type="password"
             v-model="passwordData.new_password"
             class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-          >
-            <template #icon>
-              <LockClosedIcon class="w-5 h-5" />
-            </template>
-          </AuthInput>
+          />
 
           <AuthInput
             label="تکرار رمز عبور جدید"
             type="password"
             v-model="passwordData.new_password_confirmation"
             class="[&>div>input]:h-[44px] [&>div>input]:py-4"
-          >
-            <template #icon>
-              <LockClosedIcon class="w-5 h-5" />
-            </template>
-          </AuthInput>
+          />
 
           <AuthButton
             class="h-12 !rounded-[15px]"
@@ -445,32 +568,50 @@ const logout = () => {
           </AuthButton>
         </div>
 
-        <!-- Profile Actions -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-8 sm:mt-10"
-          v-if="activeTab === 'profile'"
-        >
-          <button
-            class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] font-bold h-12 text-[14px] sm:text-[16px]"
-            @click="getProfile"
-          >
-            بازنشانی اطلاعات
-          </button>
+        
+<!-- Change Mobile Tab -->
+        <div v-else-if="activeTab === 'changeMobile'" class="space-y-8 sm:space-y-10 mb-[100px] mt-[100px]" dir="rtl">
+          <div class="flex items-center justify-center gap-4 w-full">
+            <label class="text-[12px] sm:text-[15px] font-normal text-black whitespace-nowrap font-roboto ">
+              شماره تلفن همراه
+            </label>
+
+            <div class="relative w-full sm:w-[570px]">
+              <input
+                v-model="newMobile"
+                placeholder="09xxxxxxxxx"
+                class="w-full h-11 sm:h-14 bg-white rounded-[17px] px-4 pr-11 text-[13px] sm:text-[15px] shadow-sm"
+              />
+              <PhoneIcon class="w-5 h-5 text-[#1a2333] absolute right-4 top-1/2 -translate-y-1/2" />
+            </div>
+
+            <!-- اسپیسر نامرئی هم‌عرض با لیبل، تا اینپوت دقیقاً وسط‌چین بماند -->
+            <span class="text-[12px] sm:text-[15px] invisible whitespace-nowrap" aria-hidden="true">
+              شماره تلفن همراه
+            </span>
+          </div>
 
           <AuthButton
-            class="h-12 !rounded-[15px]"
-            @click="updateProfile"
+            class="h-12 !rounded-full w-full sm:w-[420px] mx-auto block"
+            @click="changeMobile"
             :disabled="loading"
           >
             {{
               loading
                 ? 'در حال ذخیره...'
-                : 'ذخیره اطلاعات'
+                : 'تغییر شماره موبایل'
             }}
           </AuthButton>
         </div>
+        <!-- Profile Actions -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-8 sm:mt-10"
+          v-if="activeTab === 'profile'"
+        >
+          
+        </div>
 
-        <!-- Bottom Menu -->
+<!-- Bottom Menu -->
         <div
           class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 md:gap-12 mt-8 text-[#1a2333] font-bold text-[14px] sm:text-[16px]"
         >
@@ -496,6 +637,15 @@ const logout = () => {
           </button>
 
           <button
+            @click="activeTab = 'changeMobile'; newMobile = ''"
+            class="flex items-center gap-2 hover:text-[#2d6a66] transition"
+          >
+            تغییر شماره موبایل
+
+            <DevicePhoneMobileIcon class="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+
+          <button
             @click="logout"
             class="flex items-center gap-2 hover:text-[#2d6a66] transition"
           >
@@ -503,6 +653,43 @@ const logout = () => {
 
             <ArrowRightOnRectangleIcon class="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
+        </div>
+
+        <!-- Profile Actions -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-8 sm:mt-10"
+          v-if="activeTab === 'profile'"
+        >
+          <template v-if="!isEditing">
+            <button
+              class="bg-[#2C7379] text-white py-2 rounded-[15px] font-bold h-12 text-[14px] sm:text-[16px] col-span-1 md:col-span-2 hover:bg-[#235652] transition"
+              @click="isEditing = true"
+            >
+              ویرایش اطلاعات
+            </button>
+          </template>
+
+          <template v-else>
+            <button
+              class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] font-bold h-12 text-[14px] sm:text-[16px]"
+              @click="cancelEdit"
+              :disabled="loading"
+            >
+              انصراف
+            </button>
+
+            <AuthButton
+              class="h-12 !rounded-[15px]"
+              @click="updateProfile"
+              :disabled="loading"
+            >
+              {{
+                loading
+                  ? 'در حال ذخیره...'
+                  : 'ذخیره اطلاعات'
+              }}
+            </AuthButton>
+          </template>
         </div>
 
       </div>

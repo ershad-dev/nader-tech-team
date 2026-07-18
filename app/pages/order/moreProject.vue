@@ -78,7 +78,7 @@ import { ref, computed, watch } from 'vue'
 
 // این لیست فقط برای نمایش تب‌ها استفاده می‌شه؛ دیگه به هیچ query یا
 // فیلتری روی API متصل نیست (چون API از category پشتیبانی نمی‌کنه).
-const categories = ['طراحی سایت', 'تولید محتوا']
+const categories = ['طراحی سایت', 'تولید محتوا' ,'برگذاری ایونت']
 
 const activeCategory = ref('مشاهده همه')
 

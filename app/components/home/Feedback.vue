@@ -1,5 +1,5 @@
 <template>
-  <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-12 lg:py-20 min-[1920px]:py-24 px-4 -mt-[110px]" dir="rtl">
+ <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-12 lg:py-20 min-[1920px]:py-24 px-4 -mt-[110px]" dir="rtl">
     
     <div class="mb-8 lg:mb-12">
       <h2 class="text-xl sm:text-2xl lg:text-3xl min-[1920px]:text-4xl font-bold text-[#0F184B] mb-4">تجربه همکاری از زبان مشتری </h2>
@@ -14,38 +14,38 @@
     <div 
       v-else
       ref="scrollContainer" 
-      class="flex gap-4 lg:gap-6 min-[1920px]:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-8"
+      class="flex gap-3 lg:gap-6 min-[1920px]:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-8"
       style="scrollbar-width: none; -ms-overflow-style: none;" 
     >
         <div 
           v-for="customer in customers"
           :key="customer.id"
           ref="cardRefs"
-          class="min-w-[260px] sm:min-w-[320px] lg:min-w-[390px] min-[1920px]:min-w-[460px] h-[320px] sm:h-[370px] lg:h-[410px] min-[1920px]:h-[470px] border border-slate-300 rounded-[17px] overflow-hidden shadow-xl transition-all hover:shadow-xl snap-center flex flex-col"
+          class="min-w-[200px] sm:min-w-[320px] lg:min-w-[390px] min-[1920px]:min-w-[460px] h-[260px] sm:h-[370px] lg:h-[410px] min-[1920px]:h-[470px] border border-slate-300 rounded-[17px] overflow-hidden shadow-xl transition-all hover:shadow-xl snap-center flex flex-col"
           dir="rtl"
         >
         <!-- بخش پروفایل -->
-        <div class="bg-[#EDEDED] px-5 lg:px-8 min-[1920px]:px-10 pt-6 lg:pt-8 min-[1920px]:pt-10 pb-4 lg:pb-6 min-[1920px]:pb-8 shadow-xl -mt-[20px] shrink-0">
+        <div class="bg-[#EDEDED] px-4 lg:px-8 min-[1920px]:px-10 pt-4 lg:pt-8 min-[1920px]:pt-10 pb-3 lg:pb-6 min-[1920px]:pb-8 shadow-xl -mt-[20px] shrink-0">
           <img
             :src="customer.image"
             :alt="customer.name"
-            class="w-[170px] h-[150px] sm:w-[210px] sm:h-[180px] lg:w-[246px] lg:h-[210px] min-[1920px]:w-[290px] min-[1920px]:h-[250px] rounded-[20px] mx-auto mb-4 lg:mb-6 min-[1920px]:mb-8 object-cover object-top"
+            class="w-[120px] h-[100px] sm:w-[210px] sm:h-[180px] lg:w-[246px] lg:h-[210px] min-[1920px]:w-[290px] min-[1920px]:h-[250px] rounded-[14px] mx-auto mb-2 lg:mb-6 min-[1920px]:mb-8 object-cover object-top"
           />
 
-          <h3 class="text-[13px] lg:text-[14px] min-[1920px]:text-[16px] font-extrabold text-[#0F184B] mb-1 rokh-bold text-center">
+          <h3 class="text-[12px] lg:text-[14px] min-[1920px]:text-[16px] font-extrabold text-[#0F184B] mb-1 rokh-bold text-center">
             {{ customer.name }}
           </h3>
 
-          <p class="text-[#0F184B] font-roboto font-medium text-[12px] lg:text-[14px] min-[1920px]:text-[15px] text-center">
+          <p class="text-[#0F184B] font-roboto font-medium text-[11px] lg:text-[14px] min-[1920px]:text-[15px] text-center">
             {{ customer.role }}
           </p>
         </div>
 
         <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
-        <div class="bg-[#EDEDED] p-5 lg:p-8 min-[1920px]:p-10 relative flex-1 min-h-0">
+        <div class="bg-[#EDEDED] p-4 lg:p-8 min-[1920px]:p-10 relative flex-1 min-h-0">
           <p
             :ref="(el) => setCommentRef(el, customer.id)"
-            class="comment-clamp text-[#747893] text-[13px] lg:text-[15px] min-[1920px]:text-[16px] leading-relaxed font-roboto text-right -mt-[20px]"
+            class="comment-clamp text-[#747893] text-[12px] lg:text-[15px] min-[1920px]:text-[16px] leading-relaxed font-roboto text-right -mt-[20px]"
           >
             {{ customer.comment }}
           </p>
@@ -53,7 +53,7 @@
             v-if="overflowMap[customer.id]"
             type="button"
             @click="openModal(customer)"
-            class="absolute bottom-2 left-5 lg:left-8 min-[1920px]:left-10 text-[11px] lg:text-[12px] min-[1920px]:text-[13px] font-bold text-[#2D7A6F] hover:underline bg-[#EDEDED] pr-1"
+            class="absolute bottom-2 left-4 lg:left-8 min-[1920px]:left-10 text-[10px] lg:text-[12px] min-[1920px]:text-[13px] font-bold text-[#2D7A6F] hover:underline bg-[#EDEDED] pr-1"
           >
             ادامه مطلب
           </button>
@@ -63,7 +63,7 @@
 
     <div class="flex items-center justify-between mt-4 gap-5">
 
-      <div class="flex gap-2">
+<div class="hidden sm:flex gap-2">
         <HomeIconsSliderButtonFb 
           direction="left" 
           @click="scroll('right')" 
@@ -87,7 +87,6 @@
       </div>
     </div>
   </section>
-
   <!-- مودال نمایش کامل نظر مشتری -->
   <Teleport to="body">
     <div

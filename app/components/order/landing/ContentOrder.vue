@@ -26,6 +26,29 @@ const nextSlide = () => {
 const prevSlide = () => {
   if (projects.value.length > 0) currentIndex.value = (currentIndex.value - 1 + projects.value.length) % projects.value.length
 }
+
+// --- Swipe support (mobile) ---
+const touchStartX = ref(0)
+const touchEndX = ref(0)
+const SWIPE_THRESHOLD = 50 // حداقل جابجایی (px) برای تشخیص سواپ
+
+const handleTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX
+}
+
+const handleTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX
+  const diff = touchStartX.value - touchEndX.value
+
+  if (Math.abs(diff) < SWIPE_THRESHOLD) return
+
+  // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
+  if (diff > 0) {
+    prevSlide()
+  } else {
+    nextSlide()
+  }
+}
 </script>
 
 <template>
@@ -43,8 +66,12 @@ const prevSlide = () => {
       <div v-else-if="projects.length === 0" class="text-center text-[#747893] mt-10">پروژه‌ای یافت نشد</div>
 
       <template v-else>
-      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا -->
-      <div class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden">
+      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + سواپ با انگشت -->
+      <div
+        class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden touch-pan-y"
+        @touchstart="handleTouchStart"
+        @touchend="handleTouchEnd"
+      >
         <div
           v-for="(card, index) in mobileVisibleProjects"
           :key="card.slug"
@@ -60,8 +87,9 @@ const prevSlide = () => {
           <NuxtLink :to="`/order/${card.slug}`">
             <img
               :src="resumeCover(card)"
-              class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg"
+              class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg select-none pointer-events-none"
               :alt="card.title"
+              draggable="false"
             />
           </NuxtLink>
         </div>
@@ -98,8 +126,8 @@ const prevSlide = () => {
       </div>
       </template>
 
-      <!-- دکمه‌های اسلایدر -->
-      <div class="flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6">
+      <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
+      <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6">
         <SliderButton direction="left" @click="prevSlide" />
         <SliderButton direction="right" @click="nextSlide" />
       </div>

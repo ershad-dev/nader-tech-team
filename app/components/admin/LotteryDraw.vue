@@ -9,6 +9,17 @@
     dir="rtl"
   >
 
+
+      <button
+  @click="goBack"
+  class="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-lg hover:bg-white/25 transition-colors"
+  aria-label="بازگشت"
+>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
     <div v-if="loadingData" class="flex-1 flex items-center justify-center text-white/80">
       در حال بارگذاری اطلاعات قرعه‌کشی...
     </div>
@@ -33,11 +44,11 @@
                 ? 'bg-gradient-to-br from-white/60 via-[#6EA8FF]/40 to-[#1E40AF]/80 border-white/70 scale-105'
                 : 'bg-gradient-to-br from-white/35 via-[#6EA8FF]/25 to-[#1E40AF]/70 border-white/30')"
         >
-          <span
-            class="absolute inset-0 flex items-center justify-center text-white font-bold text-[16px] sm:text-[22px] lg:text-[36px] leading-none"
-          >
-            {{ i }}
-          </span>
+<span
+  class="absolute inset-0 flex items-center justify-center text-white font-bold text-[16px] sm:text-[22px] lg:text-[36px] leading-none"
+>
+  {{ entries[i - 1]?.user_id ?? i }}
+</span>
         </div>
       </div>
 
@@ -102,6 +113,8 @@ const LotteryResults = defineAsyncComponent(() => import('./LotteryResults.vue')
 const props = defineProps({
   lotteryId: { type: [String, Number], default: null },
 })
+
+const emit = defineEmits(['back'])
 
 // اگر lotteryId به‌عنوان prop پاس داده نشده باشد، از query param آدرس خونده می‌شود
 const route = useRoute()
@@ -243,6 +256,12 @@ onMounted(() => {
 onUnmounted(() => {
   setGalaxyTheme(false)
 })
+
+
+const router = useRouter()
+const goBack = () => {
+  emit('back')
+}
 </script>
 
 
