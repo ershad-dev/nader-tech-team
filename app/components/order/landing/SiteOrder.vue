@@ -136,7 +136,7 @@ const steps = [
 </div>
 
       <!-- دکمه‌های اسلایدر: فقط از md به بالا نمایش داده می‌شن -->
-      <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[140px]">
+      <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[100px]">
         <SliderButton
           direction="left"
           @click="prevSlide"

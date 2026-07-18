@@ -4,37 +4,32 @@
     <div class="relative w-full">
       <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-full md:h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem]" alt="Background" />
 
-      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
+      <!-- موبایل: ۲ کارت فعال همیشه وسط (بزرگ+پررنگ) + ۲ کارت کناری کوچیک‌وکمرنگ دو طرف + لوپ + autoplay + سواپ -->
       <div
-        class="absolute inset-0 flex md:hidden items-center justify-center mt-[50px]"
+        class="absolute inset-0 flex md:hidden items-end justify-center gap-2 mt-[140px]"
         @touchstart="handleTouchStart"
         @touchend="handleTouchEnd"
       >
         <div
-          v-for="item in mobileVisibleTeamMembers"
-          :key="item.realIndex"
-          @click="selectMember(item.realIndex); currentSlide = item.realIndex"
-          class="absolute transition-all duration-500 ease-out cursor-pointer"
-          :class="[
-            item.pos === 0
-              ? 'z-20 scale-100 opacity-100 translate-x-0'
-              : item.pos === -1
-                ? 'z-10 scale-75 opacity-40 -translate-x-[80px]'
-                : 'z-10 scale-75 opacity-40 translate-x-[80px]'
-          ]"
+          v-for="(member, index) in teamMembers"
+          :key="member.id"
+          :ref="el => { mobileCardRefs[index] = el }"
+          @click="selectMember(index)"
+          class="cursor-pointer transition-all duration-500 ease-out"
+          :style="{ order: getCardOrder(index) }"
+          :class="isCardActive(index) ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-75 z-10'"
         >
           <div
             :class="[
-              'bg-white rounded-[20px] h-[110px] w-[100px] shadow-lg transition-all duration-300 flex flex-col overflow-hidden',
-              selectedIndex === item.realIndex && item.pos === 0
-                ? 'ring-3 ring-[#A36C53] ring-inset'
-                : ''
+              'bg-white rounded-[20px] shadow-lg transition-all duration-500 flex flex-col overflow-hidden',
+              isCardActive(index) ? 'h-[110px] w-[100px]' : 'h-[80px] w-[70px]',
+              selectedIndex === index ? 'ring-3 ring-[#A36C53] ring-inset' : ''
             ]"
           >
-            <div class="w-full h-[72px] overflow-hidden">
+            <div :class="['w-full overflow-hidden', isCardActive(index) ? 'h-[72px]' : 'h-[50px]']">
               <img
-                :src="item.data.image"
-                :alt="item.data.name"
+                :src="member.image"
+                :alt="member.name"
                 class="w-full h-full object-scale-down select-none pointer-events-none"
                 draggable="false"
               />
@@ -44,7 +39,7 @@
               class="mt-auto py-1 px-1 text-center"
               style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
             >
-              <p class="text-[#747893] font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
+              <p class="text-[#747893] font-normal text-[7px] font-roboto truncate">{{ member.name }}</p>
             </div>
           </div>
         </div>
@@ -87,13 +82,11 @@
       </div>
     </div>
 
-    <div v-if="selectedIndex !== null" class="mt-[40px] sm:mt-[60px] md:mt-24 md:mt-28 xl:mt-32 2xl:mt-36 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 2xl:px-20 animate-fade-in">
+    <div v-if="selectedIndex !== null" ref="contentWrapperRef" class="mt-[40px] sm:mt-[60px] md:mt-24 md:mt-28 xl:mt-32 2xl:mt-36 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 2xl:px-20 animate-fade-in">
 
         <div
           class="notch absolute -top-[18px] sm:-top-[24px] md:-top-[27px] xl:-top-[30px] 2xl:-top-[34px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[18px] sm:mt-[24px] md:mt-[27px] xl:mt-[30px] 2xl:mt-[34px]"
-          :style="isMobile
-            ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%)' }
-            : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
+          :style="{ left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
         >
           <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[27px] xl:-mt-[30px] 2xl:-mt-[34px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
         </div>
@@ -102,7 +95,7 @@
 
 <h3
   :class="[
-    'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
+    'text-[10px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
     !isMobile && selectedIndex >= 1
       ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px] 2xl:mr-[70px]'
       : !isMobile
@@ -121,10 +114,12 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, onUnmounted, computed } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 
 const selectedIndex = ref(null);
 const cardRefs = ref([]);
+const mobileCardRefs = ref([]);
+const contentWrapperRef = ref(null);
 const indicatorLeft = ref(0);
 const notchWidth = ref(100);
 const isMobile = ref(false);
@@ -138,17 +133,29 @@ const teamMembers = [
 
 const total = teamMembers.length;
 
-// آیتم‌های موبایل (قبلی - جاری - بعدی) با لوپ (چرخشی)
-const currentSlide = ref(0);
+// --- گروه‌بندی موبایل: هر گروه ۲ کارت فعال ---
+const GROUP_SIZE = 2;
+const numGroups = Math.ceil(total / GROUP_SIZE);
+const currentGroupIndex = ref(0);
 
-const mobileVisibleTeamMembers = computed(() => {
-  const items = [];
-  for (let pos = -1; pos <= 1; pos++) {
-    const idx = (currentSlide.value + pos + total) % total;
-    items.push({ data: teamMembers[idx], realIndex: idx, pos });
+const isCardActive = (index) => {
+  const groupStart = currentGroupIndex.value * GROUP_SIZE;
+  return index >= groupStart && index < groupStart + GROUP_SIZE;
+};
+
+// چیدمان: گروه فعال همیشه وسط (order 2 و 3)، گروه غیرفعال دو طرف (order 1 و 4)
+const getCardOrder = (index) => {
+  const groupOfIndex = Math.floor(index / GROUP_SIZE);
+  const positionInGroup = index % GROUP_SIZE; // 0 یا 1
+
+  if (groupOfIndex === currentGroupIndex.value) {
+    // گروه فعال -> وسط (order 2, 3)
+    return positionInGroup === 0 ? 2 : 3;
+  } else {
+    // گروه غیرفعال -> یکی سمت راست (order 1) یکی سمت چپ (order 4)
+    return positionInGroup === 0 ? 1 : 4;
   }
-  return items;
-});
+};
 
 const updateNotchWidth = () => {
   const w = window.innerWidth;
@@ -172,52 +179,84 @@ const updateNotchWidth = () => {
 
 let resizeHandler = null;
 
+// ---- Autoplay ----
+const AUTOPLAY_DELAY = 7000; // هر ۷ ثانیه
+let autoplayTimer = null;
+
+const startAutoplay = () => {
+  stopAutoplay();
+  autoplayTimer = setInterval(() => {
+    nextGroup();
+  }, AUTOPLAY_DELAY);
+};
+
+const stopAutoplay = () => {
+  if (autoplayTimer) {
+    clearInterval(autoplayTimer);
+    autoplayTimer = null;
+  }
+};
+
 onMounted(() => {
   updateNotchWidth();
   resizeHandler = () => {
     updateNotchWidth();
-    if (selectedIndex.value !== null && !isMobile.value) selectMember(selectedIndex.value);
+    if (selectedIndex.value !== null) selectMember(selectedIndex.value, false);
   };
   window.addEventListener('resize', resizeHandler);
   selectMember(0);
+  startAutoplay();
 });
 
 onUnmounted(() => {
   if (resizeHandler) {
     window.removeEventListener('resize', resizeHandler);
   }
+  stopAutoplay();
 });
 
-const selectMember = async (index) => {
-  selectedIndex.value = index;
-  currentSlide.value = index;
-  await nextTick();
+// محاسبه موقعیت notch نسبت به کارت انتخاب‌شده (چه موبایل چه دسکتاپ)
+const updateIndicatorPosition = () => {
+  const activeRef = isMobile.value ? mobileCardRefs.value[selectedIndex.value] : cardRefs.value[selectedIndex.value];
+  if (!activeRef || !contentWrapperRef.value) return;
 
-  // در موبایل نشانگر همیشه وسط و ثابت است، نیازی به محاسبه نیست
-  if (isMobile.value) return;
+  const cardRect = activeRef.getBoundingClientRect();
+  const wrapperRect = contentWrapperRef.value.getBoundingClientRect();
 
-  if (cardRefs.value[index]) {
-    const card = cardRefs.value[index];
-    indicatorLeft.value = card.offsetLeft + (card.offsetWidth / 2);
-  }
+  indicatorLeft.value = (cardRect.left + cardRect.width / 2) - wrapperRect.left;
 };
 
-// --- Swipe support (mobile) ---
+// changeGroup: اگه false باشه یعنی فقط ری‌الاین (بدون تغییر گروه) - برای resize
+const selectMember = async (index, changeGroup = true) => {
+  selectedIndex.value = index;
+  if (changeGroup) {
+    currentGroupIndex.value = Math.floor(index / GROUP_SIZE);
+  }
+  // صبر برای اتمام ترنزیشن سایز/چیدمان کارت‌ها قبل از محاسبه موقعیت notch
+  await nextTick();
+  updateIndicatorPosition();
+  setTimeout(updateIndicatorPosition, isMobile.value ? 520 : 0);
+};
+
+// --- Swipe + Autoplay group navigation ---
 const touchStartX = ref(0);
 const touchEndX = ref(0);
-const SWIPE_THRESHOLD = 50; // حداقل جابجایی (px) برای تشخیص سواپ
+const SWIPE_THRESHOLD = 50;
 
-const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % total;
-  selectMember(currentSlide.value);
+const nextGroup = () => {
+  currentGroupIndex.value = (currentGroupIndex.value + 1) % numGroups;
+  const firstIndexOfGroup = currentGroupIndex.value * GROUP_SIZE;
+  selectMember(firstIndexOfGroup);
 };
 
-const prevSlide = () => {
-  currentSlide.value = (currentSlide.value - 1 + total) % total;
-  selectMember(currentSlide.value);
+const prevGroup = () => {
+  currentGroupIndex.value = (currentGroupIndex.value - 1 + numGroups) % numGroups;
+  const firstIndexOfGroup = currentGroupIndex.value * GROUP_SIZE;
+  selectMember(firstIndexOfGroup);
 };
 
 const handleTouchStart = (e) => {
+  stopAutoplay();
   touchStartX.value = e.changedTouches[0].screenX;
 };
 
@@ -225,14 +264,16 @@ const handleTouchEnd = (e) => {
   touchEndX.value = e.changedTouches[0].screenX;
   const diff = touchStartX.value - touchEndX.value;
 
-  if (Math.abs(diff) < SWIPE_THRESHOLD) return;
-
-  // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
-  if (diff > 0) {
-    prevSlide();
-  } else {
-    nextSlide();
+  if (Math.abs(diff) >= SWIPE_THRESHOLD) {
+    // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
+    if (diff > 0) {
+      prevGroup();
+    } else {
+      nextGroup();
+    }
   }
+
+  startAutoplay();
 };
 </script>
 
