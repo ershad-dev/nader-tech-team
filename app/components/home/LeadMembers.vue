@@ -5,41 +5,43 @@
       <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-full md:h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem]" alt="Background" />
 
       <!-- موبایل: ۲ کارت فعال همیشه وسط (بزرگ+پررنگ) + ۲ کارت کناری کوچیک‌وکمرنگ دو طرف + لوپ + autoplay + سواپ -->
+      <!-- چیدمان با transform انجام میشه (نه order) تا جابجایی کاملاً نرم و قابل انیمیت باشه -->
       <div
-        class="absolute inset-0 flex md:hidden items-end justify-center gap-2 mt-[140px]"
+        class="absolute inset-0 flex md:hidden justify-center mt-[30px]"
         @touchstart="handleTouchStart"
         @touchend="handleTouchEnd"
       >
-        <div
-          v-for="(member, index) in teamMembers"
-          :key="member.id"
-          :ref="el => { mobileCardRefs[index] = el }"
-          @click="selectMember(index)"
-          class="cursor-pointer transition-all duration-500 ease-out"
-          :style="{ order: getCardOrder(index) }"
-          :class="isCardActive(index) ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-75 z-10'"
-        >
+        <div class="relative w-full h-[110px]">
           <div
-            :class="[
-              'bg-white rounded-[20px] shadow-lg transition-all duration-500 flex flex-col overflow-hidden',
-              isCardActive(index) ? 'h-[110px] w-[100px]' : 'h-[80px] w-[70px]',
-              selectedIndex === index ? 'ring-3 ring-[#A36C53] ring-inset' : ''
-            ]"
+            v-for="(member, index) in teamMembers"
+            :key="member.id"
+            :ref="el => { mobileCardRefs[index] = el }"
+            @click="selectMember(index)"
+            class="absolute bottom-0 cursor-pointer transition-all duration-[650ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+            :style="mobileCardStyle(index)"
           >
-            <div :class="['w-full overflow-hidden', isCardActive(index) ? 'h-[72px]' : 'h-[50px]']">
-              <img
-                :src="member.image"
-                :alt="member.name"
-                class="w-full h-full object-scale-down select-none pointer-events-none"
-                draggable="false"
-              />
-            </div>
-
             <div
-              class="mt-auto py-1 px-1 text-center"
-              style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+              :class="[
+                'bg-white rounded-[20px] shadow-lg transition-all duration-[650ms] ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col overflow-hidden',
+                isCardActive(index) ? 'h-[110px] w-[100px]' : 'h-[80px] w-[70px]',
+                selectedIndex === index ? 'ring-3 ring-[#A36C53] ring-inset' : ''
+              ]"
             >
-              <p class="text-[#747893] font-normal text-[7px] font-roboto truncate">{{ member.name }}</p>
+              <div :class="['w-full overflow-hidden transition-all duration-[650ms] ease-[cubic-bezier(0.22,1,0.36,1)]', isCardActive(index) ? 'h-[72px]' : 'h-[50px]']">
+                <img
+                  :src="member.image"
+                  :alt="member.name"
+                  class="w-full h-full object-scale-down select-none pointer-events-none"
+                  draggable="false"
+                />
+              </div>
+
+              <div
+                class="mt-auto py-1 px-1 text-center"
+                style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+              >
+                <p class="text-[#747893] font-normal text-[7px] font-roboto truncate">{{ member.name }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -143,18 +145,32 @@ const isCardActive = (index) => {
   return index >= groupStart && index < groupStart + GROUP_SIZE;
 };
 
-// چیدمان: گروه فعال همیشه وسط (order 2 و 3)، گروه غیرفعال دو طرف (order 1 و 4)
+// چیدمان: گروه فعال همیشه وسط (اسلات ۲ و ۳)، گروه غیرفعال دو طرف (اسلات ۱ و ۴)
 const getCardOrder = (index) => {
   const groupOfIndex = Math.floor(index / GROUP_SIZE);
   const positionInGroup = index % GROUP_SIZE; // 0 یا 1
 
   if (groupOfIndex === currentGroupIndex.value) {
-    // گروه فعال -> وسط (order 2, 3)
+    // گروه فعال -> وسط (اسلات 2, 3)
     return positionInGroup === 0 ? 2 : 3;
   } else {
-    // گروه غیرفعال -> یکی سمت راست (order 1) یکی سمت چپ (order 4)
+    // گروه غیرفعال -> یکی سمت راست (اسلات 1) یکی سمت چپ (اسلات 4)
     return positionInGroup === 0 ? 1 : 4;
   }
+};
+
+// موقعیت افقی هر اسلات نسبت به مرکز (px) - جایگزین "order" فلکس‌باکس که قابل انیمیت نبود
+const SLOT_OFFSETS = { 1: -145, 2: -55, 3: 55, 4: 145 };
+
+const mobileCardStyle = (index) => {
+  const order = getCardOrder(index);
+  const active = isCardActive(index);
+  return {
+    left: '50%',
+    transform: `translateX(calc(-50% + ${SLOT_OFFSETS[order]}px))`,
+    opacity: active ? 1 : 0.4,
+    zIndex: active ? 20 : 10,
+  };
 };
 
 const updateNotchWidth = () => {
@@ -235,7 +251,7 @@ const selectMember = async (index, changeGroup = true) => {
   // صبر برای اتمام ترنزیشن سایز/چیدمان کارت‌ها قبل از محاسبه موقعیت notch
   await nextTick();
   updateIndicatorPosition();
-  setTimeout(updateIndicatorPosition, isMobile.value ? 520 : 0);
+  setTimeout(updateIndicatorPosition, isMobile.value ? 660 : 0);
 };
 
 // --- Swipe + Autoplay group navigation ---

@@ -48,18 +48,18 @@
       ></div>
 
       <!-- Sidebar -->
-  <aside
-  @mouseenter="isSidebarOpen = true"
-  @mouseleave="isSidebarOpen = false"
-  :class="[
-    'flex flex-col py-8 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] overflow-x-hidden overflow-y-auto hide-scrollbar',
-    'fixed top-0 right-0 h-full w-[270px] max-w-[80vw] z-40 transform transition-transform duration-500',
-    isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full',
-    'lg:static lg:top-auto lg:right-auto lg:h-auto lg:max-w-none lg:translate-x-0 lg:z-10',
-    isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]',
-    isSidebarOpen ? 'lg:w-[253px] min-[1920px]:w-[300px]' : 'lg:w-[90px] min-[1920px]:w-[112px]'
-  ]"
->
+      <aside
+        @mouseenter="isSidebarOpen = true"
+        @mouseleave="isSidebarOpen = false"
+        :class="[
+          'flex flex-col py-8 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] overflow-x-hidden overflow-y-auto hide-scrollbar',
+          'fixed top-0 right-0 h-full w-[270px] max-w-[80vw] z-40 transform transition-transform duration-500',
+          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full',
+          'lg:static lg:top-auto lg:right-auto lg:h-auto lg:max-w-none lg:translate-x-0 lg:z-10',
+          isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]',
+          isSidebarOpen ? 'lg:w-[253px] min-[1920px]:w-[300px]' : 'lg:w-[90px] min-[1920px]:w-[112px]'
+        ]"
+      >
         <!-- Close button (only mobile/tablet) -->
         <button
           @click="isMobileMenuOpen = false"
@@ -120,8 +120,9 @@
             class="px-4 py-1.5 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[48px] lg:min-h-[44px] min-[1920px]:min-h-[58px]"
             :class="getNavItemClasses(item)"
           >
+            <!-- راست چین: آیکون -->
             <span
-              class="flex items-center justify-center flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-[22px] h-[22px] min-[1920px]:w-[26px] min-[1920px]:h-[26px] lg:w-[33px] lg:h-[33px] min-[1920px]:!w-[42px] min-[1920px]:!h-[42px]"
+              class="flex items-center justify-end flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-[22px] h-[22px] min-[1920px]:w-[26px] min-[1920px]:h-[26px] lg:w-[33px] lg:h-[33px] min-[1920px]:!w-[42px] min-[1920px]:!h-[42px]"
             >
               <component
                 :is="item.icon"
@@ -132,8 +133,9 @@
               />
             </span>
 
+            <!-- وسط چین: متن -->
             <span
-              class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] lg:text-[15px] min-[1920px]:text-[17px]"
+              class="flex-1 flex items-center justify-center overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] lg:text-[15px] min-[1920px]:text-[17px]"
               :class="isSidebarOpen
                 ? 'opacity-100 max-w-[150px] min-[1920px]:max-w-[180px] mr-4'
                 : 'opacity-100 max-w-[150px] ml-0 lg:opacity-0 lg:max-w-0 min-[1920px]:opacity-0 min-[1920px]:max-w-0'"
@@ -141,13 +143,14 @@
               {{ item.name }}
             </span>
           </button>
+
           <button
-              @click="logout"
-              class="px-4 py-1.5 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[40px] lg:min-h-[40px] min-[1920px]:min-h-[54px]"
-              :class="isSidebarOpen
-                ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3  ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
-                : `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'} lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5`"
-            >
+            @click="logout"
+            class="px-4 py-1.5 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[40px] lg:min-h-[40px] min-[1920px]:min-h-[54px]"
+            :class="isSidebarOpen
+              ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3  ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
+              : `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'} lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5`"
+          >
             <span
               class="flex items-center justify-center flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-[22px] h-[22px] min-[1920px]:w-[26px] min-[1920px]:h-[26px] lg:w-[33px] lg:h-[33px] min-[1920px]:!w-[42px] min-[1920px]:!h-[42px]"
             >
@@ -157,15 +160,15 @@
               />
             </span>
 
-              <span
-                class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] min-[1920px]:text-[17px]"
-                :class="isSidebarOpen
-                  ? 'opacity-100 max-w-[150px] min-[1920px]:max-w-[180px]'
-                  : 'opacity-100 max-w-[150px] lg:opacity-0 lg:max-w-0 min-[1920px]:opacity-0 min-[1920px]:max-w-0'"
-              >
-                خروج از پنل
-              </span>
-            </button>
+            <span
+              class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] min-[1920px]:text-[17px]"
+              :class="isSidebarOpen
+                ? 'opacity-100 max-w-[150px] min-[1920px]:max-w-[180px]'
+                : 'opacity-100 max-w-[150px] lg:opacity-0 lg:max-w-0 min-[1920px]:opacity-0 min-[1920px]:max-w-0'"
+            >
+              خروج از پنل
+            </span>
+          </button>
         </nav>
       </aside>
 

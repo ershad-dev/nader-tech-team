@@ -41,26 +41,29 @@
   </div>
 
   <!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
-  <div class="lg:hidden w-full">
+  <div class="lg:hidden relative w-full">
 
-<div class="lg:hidden w-full">
+    <div class="bg-[#2C7379] w-full pt-4 pb-8 sm:pt-6 sm:pb-10 px-4 flex flex-col items-center gap-1.5 sm:gap-2">
 
-  <div class="bg-[#2C7379] w-full pt-3 pb-4 sm:pt-6 sm:pb-7 px-4 flex flex-col items-center gap-1.5 sm:gap-2">
+      <h2 class="text-white text-[16px] sm:text-[22px] font-bold text-center leading-snug">
+        {{ title }}
+      </h2>
 
-    <h2 class="text-white text-[16px] sm:text-[22px] font-bold text-center leading-snug">
-      {{ title }}
-    </h2>
+      <div v-html="title1" class="text-white text-[12px] sm:text-[15px] font-bold text-center leading-snug"></div>
 
-    <div v-html="title1" class="text-white text-[12px] sm:text-[15px] font-bold text-center leading-snug"></div>
+    </div>
 
-<NuxtLink to="/order/requestProject" class="mt-2 sm:mt-3 w-full flex justify-center">
-  <button class="bg-[#ECD0A0] text-[#0F184B] text-[11px] sm:text-[14px] font-bold px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-[12px] sm:rounded-[14px] shadow-lg hover:scale-105 transition-all w-full max-w-[150px] sm:max-w-[230px] h-[32px] sm:h-[42px] flex items-center justify-center">
-    درخواست همکاری
-  </button>
-</NuxtLink>
-  </div>
+    <div class="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-</div>
+      <div class="shape shape-mobile">
+        <NuxtLink to="/order/requestProject">
+          <button class="btn-cooperate btn-cooperate-mobile bg-[#ECD0A0] text-[#0F184B] text-[11px] sm:text-[14px] font-bold relative z-30 h-[32px] sm:h-[42px] w-[150px] sm:w-[230px] flex items-center justify-center">
+            درخواست همکاری
+          </button>
+        </NuxtLink>
+      </div>
+
+    </div>
 
   </div>
 
@@ -182,6 +185,23 @@ defineProps({
   color: #fff;
   transform: scaleY(-1);
 }
+
+.shape-mobile {
+  --r: 14px;
+  margin-bottom: -15px;
+  width: 150px;
+  height: 32px;
+}
+
+@media (min-width: 640px) {
+  .shape-mobile {
+    --r: 18px;
+    width: 230px;
+    height: 42px;
+    margin-bottom: -19px;
+  }
+}
+
 .btn-cooperate {
   transform: scaleY(-1);
 }
