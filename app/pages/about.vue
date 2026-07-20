@@ -56,13 +56,13 @@
 <!-- کانتینر اسلایدر: اضافه شدن snap-x snap-mandatory فقط برای موبایل -->
 <div 
   ref="slider" 
-  class="flex overflow-x-auto gap-6 2xl:gap-8 pb-4 px-4 scrollbar-hide cursor-grab active:cursor-grabbing max-md:snap-x max-md:snap-mandatory max-md:scroll-pl-4"
+  class="flex overflow-x-auto gap-6 2xl:gap-8 pb-4 px-4 scrollbar-hide cursor-grab active:cursor-grabbing max-md:snap-x max-md:snap-mandatory max-md:scroll-pl-4 md:snap-x md:snap-mandatory scroll-smooth"
 >    
   <!-- کارت‌های تیم -->
   <div 
     v-for="(member, index) in teamMembers" 
     :key="index" 
-    class="min-w-[85vw] max-w-[340px] md:min-w-[65vw] md:max-w-[480px] lg:min-w-[500px] lg:max-w-none 2xl:min-w-[560px] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] rounded-[40px] flex items-center overflow-hidden shadow-sm max-md:snap-start shrink-0"
+    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0"
   >
     <div class="w-[120px] md:w-[205px] 2xl:w-[230px] h-full shrink-0">
       <img :src="member.image" :alt="member.name" class="w-full h-full object-cover object-top rounded-[40px]" />
@@ -120,7 +120,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 // =====================================================
 // اتصال به API صفحه about
@@ -220,8 +220,39 @@ footerConfig.value = {
   title1: '    در <span class="text-[#ECD0A0]">نادر تکنولوژی</span>، کیفیت یک انتخاب نیست؛ یک اصل است.'
 };
 
-//اسلایدر با کشید موس در حالت دسکتاپ
+//اسلایدر با کشید موس در حالت دسکتاپ + autoplay
 const slider = ref(null)
+let teamAutoplayTimer = null
+let teamAutoplayIndex = 0
+
+const clearTeamAutoplay = () => {
+  if (teamAutoplayTimer) {
+    clearInterval(teamAutoplayTimer)
+    teamAutoplayTimer = null
+  }
+}
+
+const startTeamAutoplay = () => {
+  clearTeamAutoplay()
+  if (!teamMembers.length) return
+
+  teamAutoplayTimer = setInterval(() => {
+    const el = slider.value
+    if (!el || !el.children.length) return
+
+    teamAutoplayIndex = (teamAutoplayIndex + 1) % el.children.length
+    const target = el.children[teamAutoplayIndex]
+
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'start',
+        block: 'nearest'
+      })
+    }
+  }, 5000) // ۷ ثانیه
+}
+
 onMounted(() => {
   const el = slider.value
 
@@ -235,14 +266,17 @@ onMounted(() => {
     isDown = true
     startX = e.pageX - el.offsetLeft
     scrollLeft = el.scrollLeft
+    clearTeamAutoplay()
   })
 
   el.addEventListener('mouseleave', () => {
     isDown = false
+    startTeamAutoplay()
   })
 
   el.addEventListener('mouseup', () => {
     isDown = false
+    startTeamAutoplay()
   })
 
   el.addEventListener('mousemove', (e) => {
@@ -256,6 +290,9 @@ onMounted(() => {
     el.scrollLeft = scrollLeft - walk
   })
 
+  // توقف autoplay وقتی موس روی اسلایدر است (دسکتاپ)
+  el.addEventListener('mouseenter', clearTeamAutoplay)
+
 
   //حالت موبایل با کشیدن انگشت
   let touchStartX = 0
@@ -264,6 +301,7 @@ onMounted(() => {
   el.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].pageX
     touchScrollLeft = el.scrollLeft
+    clearTeamAutoplay()
   })
 
   el.addEventListener('touchmove', (e) => {
@@ -272,6 +310,17 @@ onMounted(() => {
 
     el.scrollLeft = touchScrollLeft - walk
   })
+
+  el.addEventListener('touchend', () => {
+    startTeamAutoplay()
+  })
+
+  // شروع autoplay
+  startTeamAutoplay()
+})
+
+onBeforeUnmount(() => {
+  clearTeamAutoplay()
 })
 
 </script>

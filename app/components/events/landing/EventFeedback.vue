@@ -12,13 +12,13 @@
 <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
 <div
   class="relative flex md:hidden items-center justify-center h-[300px] mb-6 overflow-hidden touch-pan-y"
-  @touchstart="handleTouchStart"
-  @touchend="handleTouchEnd"
+  @touchstart="onTouchStart"
+  @touchend="onTouchEnd"
 >
   <div
     v-for="item in mobileVisibleTestimonials"
     :key="item.realIndex"
-    @click="selectCard(item.realIndex); currentSlide = item.realIndex"
+    @click="goToSlide(item.realIndex)"
     class="absolute transition-all duration-500 ease-out cursor-pointer"
     :class="[
       item.pos === 0
@@ -107,13 +107,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useMobileSlider } from '@/composables/useMobileSlider'
 
 const selectedIndex = ref(0); // کارت اول به صورت پیش‌فرض انتخاب شده است
 const cardRefs = ref([]);
 const indicatorLeft = ref(0);
 const notchWidth = ref(140);
 const isMobile = ref(false);
+const visibleCount = ref(3);
 
 const testimonials = [
   { image: '/images/img-services.png', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' },
@@ -122,28 +124,6 @@ const testimonials = [
   { image: '/images/eventheader.jpg', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' },
   { image: '/images/eventheader.jpg', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' }
 ];
-
-const total = testimonials.length;
-
-// آیتم‌های موبایل (قبلی - جاری - بعدی) با لوپ (چرخشی)
-const mobileVisibleTestimonials = computed(() => {
-  const items = [];
-  for (let pos = -1; pos <= 1; pos++) {
-    const idx = (currentSlide.value + pos + total) % total;
-    items.push({ data: testimonials[idx], realIndex: idx, pos });
-  }
-  return items;
-});
-
-// آیتم‌های تبلت/دسکتاپ با لوپ (چرخشی)
-const visibleTestimonials = computed(() => {
-  const items = [];
-  for (let i = 0; i < visibleCount.value; i++) {
-    const idx = (currentSlide.value + i) % total;
-    items.push({ data: testimonials[idx], realIndex: idx });
-  }
-  return items;
-});
 
 // تابع محاسبه موقعیت نشانگر (فقط برای تبلت/دسکتاپ استفاده می‌شود)
 const updateIndicator = async () => {
@@ -178,8 +158,6 @@ const updateIndicator = async () => {
 }
 
 // تشخیص سایز صفحه و تعیین تعداد کارت‌های قابل نمایش
-const visibleCount = ref(3);
-
 const updateResponsiveValues = () => {
   const w = window.innerWidth;
 
@@ -223,52 +201,31 @@ onUnmounted(() => {
   }
 });
 
+// انتخاب کارت در دسکتاپ/تبلت: فقط هایلایت می‌کنه، بدون جابه‌جایی پنجره‌ی اسلایدر
 const selectCard = (index) => { 
   selectedIndex.value = index; 
   updateIndicator();
 };
 
-//slide
-const currentSlide = ref(0)
+// --- اسلایدر موبایل + دکمه‌های next/prev + سواپ لمسی (composable مشترک) ---
+// هر بار اسلاید عوض بشه (سواپ، دکمه، یا کلیک روی کارت موبایل)، هم selectedIndex هم indicator آپدیت می‌شن
+const {
+  mobileVisibleItems: mobileVisibleTestimonials,
+  visibleItems,
+  goToSlide,
+  nextSlide,
+  prevSlide,
+  onTouchStart,
+  onTouchEnd,
+} = useMobileSlider(testimonials, {
+  swipeThreshold: 50,
+  onChange: (idx) => {
+    selectedIndex.value = idx
+    updateIndicator()
+  },
+})
 
-const nextSlide = async () => {
-  currentSlide.value = (currentSlide.value + 1) % total;
-  selectedIndex.value = currentSlide.value;
-
-  await nextTick()
-  updateIndicator()
-}
-
-const prevSlide = async () => {
-  currentSlide.value = (currentSlide.value - 1 + total) % total;
-  selectedIndex.value = currentSlide.value;
-
-  await nextTick()
-  updateIndicator()
-}
-
-// --- Swipe support (mobile) ---
-const touchStartX = ref(0)
-const touchEndX = ref(0)
-const SWIPE_THRESHOLD = 50 // حداقل جابجایی (px) برای تشخیص سواپ
-
-const handleTouchStart = (e) => {
-  touchStartX.value = e.changedTouches[0].screenX
-}
-
-const handleTouchEnd = (e) => {
-  touchEndX.value = e.changedTouches[0].screenX
-  const diff = touchStartX.value - touchEndX.value
-
-  if (Math.abs(diff) < SWIPE_THRESHOLD) return
-
-  // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
-  if (diff > 0) {
-    prevSlide()
-  } else {
-    nextSlide()
-  }
-}
+const visibleTestimonials = visibleItems(visibleCount)
 </script>
 
 <style scoped>

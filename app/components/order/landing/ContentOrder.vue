@@ -1,54 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { useMobileSlider } from '@/composables/useMobileSlider'
 
 const { items: projects, pending, error } = useResumes('content')
-const currentIndex = ref(0)
 
-const visibleProjects = computed(() => {
-  const total = projects.value.length
-  if (total === 0) return []
-  const items = []
-  for (let i = 0; i < 4; i++) items.push(projects.value[(currentIndex.value + i) % total])
-  return items
-})
+const {
+  mobileVisibleItems: mobileVisibleProjects,
+  visibleItems,
+  nextSlide,
+  prevSlide,
+  onTouchStart,
+  onTouchEnd,
+} = useMobileSlider(projects, { swipeThreshold: 40 })
 
-const mobileVisibleProjects = computed(() => {
-  const total = projects.value.length
-  if (total === 0) return []
-  const items = []
-  for (let i = -1; i <= 1; i++) items.push(projects.value[(currentIndex.value + i + total) % total])
-  return items
-})
-
-const nextSlide = () => {
-  if (projects.value.length > 0) currentIndex.value = (currentIndex.value + 1) % projects.value.length
-}
-const prevSlide = () => {
-  if (projects.value.length > 0) currentIndex.value = (currentIndex.value - 1 + projects.value.length) % projects.value.length
-}
-
-// --- Swipe support (mobile) ---
-const touchStartX = ref(0)
-const touchEndX = ref(0)
-const SWIPE_THRESHOLD = 50 // حداقل جابجایی (px) برای تشخیص سواپ
-
-const handleTouchStart = (e) => {
-  touchStartX.value = e.changedTouches[0].screenX
-}
-
-const handleTouchEnd = (e) => {
-  touchEndX.value = e.changedTouches[0].screenX
-  const diff = touchStartX.value - touchEndX.value
-
-  if (Math.abs(diff) < SWIPE_THRESHOLD) return
-
-  // چون در RTL هستیم، جهت سواپ رو معکوس در نظر می‌گیریم
-  if (diff > 0) {
-    prevSlide()
-  } else {
-    nextSlide()
-  }
-}
+const visibleProjects = visibleItems(4)
 </script>
 
 <template>
@@ -69,26 +33,26 @@ const handleTouchEnd = (e) => {
       <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + سواپ با انگشت -->
       <div
         class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden touch-pan-y"
-        @touchstart="handleTouchStart"
-        @touchend="handleTouchEnd"
+        @touchstart="onTouchStart"
+        @touchend="onTouchEnd"
       >
         <div
-          v-for="(card, index) in mobileVisibleProjects"
-          :key="card.slug"
+          v-for="item in mobileVisibleProjects"
+          :key="item.realIndex"
           class="absolute transition-all duration-500 ease-out"
           :class="[
-            index === 1
+            item.pos === 0
               ? 'z-20 scale-100 opacity-100 translate-x-0'
-              : index === 0
+              : item.pos === -1
                 ? 'z-10 scale-75 opacity-40 -translate-x-[105px]'
                 : 'z-10 scale-75 opacity-40 translate-x-[105px]'
           ]"
         >
-          <NuxtLink :to="`/order/${card.slug}`">
+          <NuxtLink :to="`/order/${item.data.slug}`">
             <img
-              :src="resumeCover(card)"
+              :src="resumeCover(item.data)"
               class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg select-none pointer-events-none"
-              :alt="card.title"
+              :alt="item.data.title"
               draggable="false"
             />
           </NuxtLink>
@@ -105,8 +69,8 @@ const handleTouchEnd = (e) => {
         class="hidden md:grid grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 xl:gap-8 2xl:gap-[60px] justify-items-center mt-8 md:mt-10 xl:mt-[50px] min-[1920px]:gap-[80px] min-[1920px]:mt-[70px]"
       >
 <div
-  v-for="(card, index) in visibleProjects"
-  :key="card.slug"
+  v-for="(item, index) in visibleProjects"
+  :key="item.realIndex"
   class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
   :class="[
     index >= 3 ? 'hidden xl:block' : '',
@@ -115,11 +79,11 @@ const handleTouchEnd = (e) => {
       : 'md:translate-y-4 xl:translate-y-6 min-[1920px]:translate-y-8'
   ]"
 >
-  <NuxtLink :to="`/order/${card.slug}`">
+  <NuxtLink :to="`/order/${item.data.slug}`">
     <img
-      :src="resumeCover(card)"
+      :src="resumeCover(item.data)"
       class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
-      :alt="card.title"
+      :alt="item.data.title"
     />
   </NuxtLink>
 </div>

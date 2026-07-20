@@ -14,10 +14,9 @@
         v-show="currentSlide === index"
         class="w-full h-full transition-opacity duration-500"
       >
-        <a v-if="slide.link" :href="slide.link" target="_blank" rel="noopener noreferrer">
+        <NuxtLink to="/auth/login" class="block w-full h-full">
           <img :src="slide.image" :alt="slide.alt || slide.title" class="w-full h-full object-cover" />
-        </a>
-        <img v-else :src="slide.image" :alt="slide.alt || slide.title" class="w-full h-full object-cover" />
+        </NuxtLink>
       </div>
     </div>
 

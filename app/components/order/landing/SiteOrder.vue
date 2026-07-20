@@ -1,63 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { useMobileSlider } from '@/composables/useMobileSlider'
 
 const { items: webProjects } = useResumes('web')
-const currentIndex = ref(0)
 
-const visibleProjects = computed(() => {
-  const items = []
-  const len = webProjects.value.length
-  if (len === 0) return []
-  for (let i = 0; i < 3; i++) {
-    items.push(webProjects.value[(currentIndex.value + i) % len])
-  }
-  return items
-})
+const {
+  mobileVisibleItems: mobileVisibleProjects,
+  visibleItems,
+  nextSlide,
+  prevSlide,
+  onTouchStart,
+  onTouchEnd,
+} = useMobileSlider(webProjects, { swipeThreshold: 40 })
 
-const mobileVisibleProjects = computed(() => {
-  const len = webProjects.value.length
-  if (len === 0) return []
-  const items = []
-  for (let i = -1; i <= 1; i++) {
-    items.push(webProjects.value[(currentIndex.value + i + len) % len])
-  }
-  return items
-})
-
-const nextSlide = () => {
-  if (webProjects.value.length > 0) currentIndex.value = (currentIndex.value + 1) % webProjects.value.length
-}
-const prevSlide = () => {
-  if (webProjects.value.length > 0) currentIndex.value = (currentIndex.value - 1 + webProjects.value.length) % webProjects.value.length
-}
-
-// --- سواپ با انگشت برای موبایل ---
-const touchStartX = ref(0)
-const touchEndX = ref(0)
-const SWIPE_THRESHOLD = 40 // حداقل فاصله برای شمرده‌شدن به‌عنوان سواپ (px)
-
-const onTouchStart = (e) => {
-  touchStartX.value = e.changedTouches[0].screenX
-}
-
-const onTouchEnd = (e) => {
-  touchEndX.value = e.changedTouches[0].screenX
-  handleSwipeGesture()
-}
-
-const handleSwipeGesture = () => {
-  const diff = touchStartX.value - touchEndX.value
-  if (Math.abs(diff) < SWIPE_THRESHOLD) return
-
-  // چون dir راست‌به‌چپه، جهت سواپ رو معکوس در نظر می‌گیریم
-  if (diff > 0) {
-    // کشیدن به چپ -> اسلاید بعدی
-    prevSlide()
-  } else {
-    // کشیدن به راست -> اسلاید قبلی
-    nextSlide()
-  }
-}
+const visibleProjects = visibleItems(3)
 
 // steps آرایه ثابت - بدون تغییر
 const steps = [
@@ -91,22 +46,22 @@ const steps = [
         @touchend="onTouchEnd"
       >
         <div
-          v-for="(card, index) in mobileVisibleProjects"
-          :key="card.id"
+          v-for="item in mobileVisibleProjects"
+          :key="item.realIndex"
           class="absolute transition-all duration-500 ease-out"
           :class="[
-            index === 1
+            item.pos === 0
               ? 'z-20 scale-100 opacity-100 translate-x-0'
-              : index === 0
+              : item.pos === -1
                 ? 'z-10 scale-75 opacity-40 -translate-x-[105px]'
                 : 'z-10 scale-75 opacity-40 translate-x-[105px]'
           ]"
         >
- <NuxtLink :to="`/order/${card.slug}`">
-              <img
-              :src="resumeCover(card)"
+          <NuxtLink :to="`/order/${item.data.slug}`">
+            <img
+              :src="resumeCover(item.data)"
               class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg select-none pointer-events-none"
-              :alt="card.title"
+              :alt="item.data.title"
               draggable="false"
             />
           </NuxtLink>
@@ -117,19 +72,19 @@ const steps = [
 <!-- اسلایدر ۳ کارته -->
 <div class="hidden md:flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-4 xl:gap-[70px] xxl:gap-[100px] xl:h-80 xxl:h-[420px] mt-8 md:mt-10 xl:mt-[50px] xxl:mt-[70px]">
   <div
-    v-for="(card, index) in visibleProjects"
-    :key="card.id"
+    v-for="(item, index) in visibleProjects"
+    :key="item.data.id"
     class="w-full max-w-[312px] aspect-[312/358] md:w-[220px] md:h-[260px] md:aspect-auto xl:w-[312px] xl:h-[358px] xxl:w-[360px] xxl:h-[414px] bg-white rounded-[30px] xl:rounded-[40px] xxl:rounded-[45px] shadow-lg cursor-pointer transition-all hover:scale-105"
     :class="[
       index >= 2 ? 'md:hidden xl:block' : '',
       index % 2 !== 0 ? 'xl:mt-12 xxl:mt-14' : '',
     ]"
   >
-<NuxtLink :to="`/order/${card.slug}`">
+<NuxtLink :to="`/order/${item.data.slug}`">
         <img
-        :src="resumeCover(card)"
+        :src="resumeCover(item.data)"
         class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px] xxl:rounded-[45px]"
-        :alt="card.title"
+        :alt="item.data.title"
       />
     </NuxtLink>
   </div>
