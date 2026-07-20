@@ -1,3 +1,31 @@
+<script setup>
+const { token, initAuth } = useAuth()
+
+const isLoggedIn = computed(() => !!token.value)
+
+onMounted(() => {
+  initAuth()
+})
+
+const router = useRouter()
+
+function goToRegister() {
+  if (isLoggedIn.value) {
+    router.push('/events/lottery/register')
+  } else {
+    router.push('/auth/login?redirect=/events/lottery/register')
+  }
+}
+
+function goToLoginPage() {
+  if (isLoggedIn.value) {
+    router.push('/events/lottery/login')
+  } else {
+    router.push('/auth/login?redirect=/events/lottery/login')
+  }
+}
+</script>
+
 <template>
   <section
     class="relative w-full md:w-[1110px] min-[1920px]:w-[1400px] max-w-full mx-auto
@@ -41,39 +69,37 @@
       </p>
     </div>
 
-<!-- بخش دکمه‌ها (پوزیشن مطلق، سمت راست) -->
-<div
-  class="absolute right-5 sm:right-8 md:right-12 min-[1920px]:right-16
-         bottom-5 sm:bottom-8 md:bottom-24 min-[1920px]:bottom-32
-         left-5 sm:left-auto
-         z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 min-[1920px]:gap-6
-         w-auto"
->
-  <NuxtLink to="/events/lottery/register" class="w-full sm:w-auto">
-    <button
-      class="bg-white/90 text-[#333B6A] px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
-             rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
-             text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
-             font-bold hover:bg-white transition whitespace-nowrap
-             w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
-             h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
+    <!-- بخش دکمه‌ها (پوزیشن مطلق، سمت راست) -->
+    <div
+      class="absolute right-5 sm:right-8 md:right-12 min-[1920px]:right-16
+             bottom-5 sm:bottom-8 md:bottom-24 min-[1920px]:bottom-32
+             left-5 sm:left-auto
+             z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 min-[1920px]:gap-6
+             w-auto"
     >
-      ثبت‌نام در قرعه‌کشی
-    </button>
-  </NuxtLink>
+      <button
+        @click="goToRegister"
+        class="bg-white/90 text-[#333B6A] px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
+               rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
+               text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
+               font-bold hover:bg-white transition whitespace-nowrap
+               w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
+               h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
+      >
+        ثبت‌نام در قرعه‌کشی
+      </button>
 
-  <NuxtLink to="/events/lottery/login" class="w-full sm:w-auto">
-    <button
-      class="bg-white/90 text-[#333B6A] px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
-             rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
-             text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
-             font-bold hover:bg-white transition whitespace-nowrap
-             w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
-             h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
-    >
-      ورود به قرعه‌کشی
-    </button>
-  </NuxtLink>
-</div>
+      <button
+        @click="goToLoginPage"
+        class="bg-white/90 text-[#333B6A] px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
+               rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
+               text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
+               font-bold hover:bg-white transition whitespace-nowrap
+               w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
+               h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
+      >
+        ورود به قرعه‌کشی
+      </button>
+    </div>
   </section>
 </template>

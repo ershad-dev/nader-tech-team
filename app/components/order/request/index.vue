@@ -209,8 +209,25 @@
 </template>
 
 <script setup>
+const { token, initAuth } = useAuth()
+const router = useRouter()
+const route = useRoute()
+
+const isLoggedIn = computed(() => !!token.value)
+
+onMounted(() => {
+  initAuth()
+
+  // چک کردن بعد از initAuth، توی nextTick تا مطمئن بشیم state آپدیت شده
+  nextTick(() => {
+    if (!isLoggedIn.value) {
+      router.push(`/auth/login?redirect=${route.fullPath}`)
+    }
+  })
+})
+
 // ---- state لیست خدمات (درخواست برای) ----
-const options = ref([])       // { id, title, slug, ... }
+const options = ref([])
 const isOpen = ref(false)
 const selected = ref(null)
 const servicesLoading = ref(false)
@@ -270,6 +287,9 @@ const submitForm = async () => {
   try {
     const res = await $fetch(`https://nadertechnologyteam.ir/api/requests`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token.value}`
+      },
       body: {
         service_id: form.service_id,
         name: form.name,
@@ -286,11 +306,11 @@ const submitForm = async () => {
     const data = e?.data || e?.response?._data
 
     if (status === 422 && data?.errors) {
-      // خطاهای اعتبارسنجی فیلد به فیلد
       errors.value = data.errors
       generalError.value = data.message || 'The given data was invalid.'
     } else if (status === 401) {
       generalError.value = data?.message || 'Unauthenticated.'
+      router.push(`/auth/login?redirect=${route.fullPath}`)
     } else {
       generalError.value = data?.message || 'خطایی رخ داد. لطفا دوباره تلاش کنید.'
     }

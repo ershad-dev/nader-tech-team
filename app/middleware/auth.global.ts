@@ -21,7 +21,20 @@ export default defineNuxtRouteMiddleware((to, from) => {
     }
   }
 
-  // ۳. برای پروفایل کاربر عادی
+  // ۳. برای صفحه درخواست پروژه (فرم order-request)
+if (to.path.startsWith('/order/requestProject')) {
+
+    if (import.meta.server) return
+
+    const { token, initAuth } = useAuth()
+    initAuth()
+
+    if (!token.value) {
+      return navigateTo(`/auth/login?redirect=${to.fullPath}`)
+    }
+  }
+
+  // ۴. برای پروفایل کاربر عادی
   if (to.path.startsWith('/profile') && import.meta.client) {
     // اینجا منطق چک کردن توکن کاربر عادی را بگذارید
   }
