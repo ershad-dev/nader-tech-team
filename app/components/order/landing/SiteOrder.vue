@@ -26,10 +26,11 @@ const steps = [
 
 <template>
 <div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] xxl:h-[1024px] 
-            bg-[url('/images/order-bg.png')] 
-            bg-no-repeat 
-            bg-cover 
-            md:bg-center 
+bg-[url('/images/order-bg.png')] 
+bg-no-repeat 
+bg-cover 
+bg-center 
+xl:bg-[length:1920px_100%]
             xl:bg-[length:1920px_100%] 
             py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px] xxl:-mt-[90px]">
     <div class="max-w-[1054px] xxl:max-w-[1440px] mx-auto px-4 xl:px-0">
@@ -105,11 +106,11 @@ const steps = [
     </div>
   </div>
 
-<div
-  class="relative z-20 mt-4 md:mt-6 xl:-mt-[150px] xxl:-mt-[190px] py-14 md:py-16 xl:py-20 xxl:py-24 px-4 w-full max-w-[1200px] xxl:max-w-[1600px] min-h-[420px] xxl:min-h-[480px]
-         bg-[#67A9A8] 
-         xl:bg-transparent xl:bg-[url('/images/bg-flow-2.png')] 
-         xl:bg-[length:100%_100%] xl:bg-center xl:bg-no-repeat
+  <div
+  class="relative z-20 -mt-20 md:-mt-20 xl:-mt-[150px] xxl:-mt-[190px] py-14 md:py-16 xl:py-20 xxl:py-24 px-4 w-full max-w-[1200px] xxl:max-w-[1600px] min-h-[420px] xxl:min-h-[480px]
+  bg-[url('/images/bg-flow-2.png')]
+bg-cover bg-top bg-no-repeat
+xl:bg-[length:100%_100%] xl:bg-center
          rounded-[50px] xxl:rounded-[60px] overflow-visible text-center mx-auto flex flex-col items-center"
   dir="rtl"
 >
