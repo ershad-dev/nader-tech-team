@@ -4,10 +4,10 @@
 
 <div v-if="showGreenSection" class="relative w-full">
 
-  <!-- ===================== نسخه دسکتاپ - دقیقاً کد اصلی، بدون هیچ تغییر ===================== -->
+ 
   <div class="hidden lg:block relative w-full">
 
-    <div class="bg-[#2C7379] h-[200px] w-full pt-10 pb-20 flex flex-col items-center">
+    <div class="bg-[#2C7379] dark:bg-dark-surface h-[200px] w-full pt-10 pb-20 flex flex-col items-center">
 
       <div class="flex justify-center items-center overflow-hidden">
 
@@ -22,15 +22,15 @@
 
       </div>
 
-      <div v-html="title1" class="text-white text-[32px] font-bold mt-4 text-center px-4"></div>
+      <div v-html="title1" class="text-white dark:text-dark-text text-[32px] font-bold mt-4 text-center px-4"></div>
 
     </div>
 
     <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-<div class="shape">
+<div class="shape ">
   <NuxtLink to="/order/requestProject">
-    <button class="btn-cooperate bg-[#ECD0A0] text-[#0F184B] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block mr-[55px] mt-[10px] ">
+    <button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block mr-[55px] mt-[10px] ">
       درخواست همکاری
     </button>
   </NuxtLink>
@@ -43,13 +43,13 @@
   <!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
   <div class="lg:hidden relative w-full">
 
-    <div class="bg-[#2C7379] w-full pt-4 pb-8 sm:pt-6 sm:pb-10 px-4 flex flex-col items-center gap-1.5 sm:gap-2">
+    <div class="bg-[#2C7379] dark:bg-dark-surface w-full pt-4 pb-8 sm:pt-6 sm:pb-10 px-4 flex flex-col items-center gap-1.5 sm:gap-2">
 
-      <h2 class="text-white text-[16px] sm:text-[22px] font-bold text-center leading-snug">
+      <h2 class="text-white dark:text-dark-text text-[16px] sm:text-[22px] font-bold text-center leading-snug">
         {{ title }}
       </h2>
 
-      <div v-html="title1" class="text-white text-[12px] sm:text-[15px] font-bold text-center leading-snug"></div>
+      <div v-html="title1" class="text-white dark:text-dark-text text-[12px] sm:text-[15px] font-bold text-center leading-snug"></div>
 
     </div>
 
@@ -57,7 +57,7 @@
 
       <div class="shape shape-mobile">
         <NuxtLink to="/order/requestProject">
-          <button class="btn-cooperate btn-cooperate-mobile bg-[#ECD0A0] text-[#0F184B] text-[11px] sm:text-[14px] font-bold relative z-30 h-[32px] sm:h-[42px] w-[150px] sm:w-[230px] flex items-center justify-center">
+          <button class="btn-cooperate btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold relative z-30 h-[32px] sm:h-[42px] w-[150px] sm:w-[230px] flex items-center justify-center">
             درخواست همکاری
           </button>
         </NuxtLink>
@@ -69,17 +69,17 @@
 
 </div>
 
-<div class="bg-[#BFD1D5] w-full pt-8 sm:pt-10 lg:pt-16">
+<div class="bg-[#BFD1D5] dark:bg-dark-bg w-full pt-8 sm:pt-10 lg:pt-16 transition-colors duration-300">
 
 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 sm:gap-8 lg:gap-12 text-center pb-8 sm:pb-10 lg:pb-12 px-4 lg:px-0">
 
 <div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[40px] font-roboto">
 
-<h3 class="text-[#2D4745] text-[16px] sm:text-[18px] lg:text-[20px] mb-4">لینک های مهم</h3>
+<h3 class="text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">لینک های مهم</h3>
 
 <ul class="space-y-2 sm:space-y-3">
-<li v-for="link in links" :key="link" class="flex items-center gap-2 text-[#2D4745] text-[14px] sm:text-[15px] lg:text-[16px]">
-<span class="w-2 h-2 bg-[#2D7A6F] rounded-full flex-shrink-0"></span>
+<li v-for="link in links" :key="link" class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
+<span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
 <span>{{ link }}</span>
 </li>
 </ul>
@@ -88,7 +88,7 @@
 
 <div class="flex flex-col items-center gap-4 sm:gap-5 lg:gap-6">
 
-<p class="text-[#0F184B] font-bold text-[13px] sm:text-[15px] lg:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
+<p class="text-[#0F184B] dark:text-dark-text font-bold text-[13px] sm:text-[15px] lg:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
 نادر تکنولوژی، ارائه دهنده راهکارهای نوین فناوری، توسعه نرم‌افزار و خدمات دیجیتال
 </p>
 
@@ -98,7 +98,7 @@ v-for="icon in socialIcons"
 :key="icon"
 :src="`/images/${icon}.png`"
 alt="social"
-class="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain hover:opacity-80 transition cursor-pointer"
+class="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain hover:opacity-80 transition cursor-pointer dark:opacity-90 dark:hover:opacity-100"
 />
 </div>
 

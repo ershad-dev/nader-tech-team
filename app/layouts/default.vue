@@ -1,5 +1,5 @@
 <template>
-<div class="min-h-screen flex flex-col bg-[#F8F5F0]">
+<div class="min-h-screen flex flex-col bg-[#F8F5F0] dark:bg-dark-bg transition-colors duration-300">
       <CommonNavbar />
     <main class="flex-1">
       <slot />

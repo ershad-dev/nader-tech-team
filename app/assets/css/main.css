@@ -59,4 +59,13 @@
 
 body {
   font-family: 'Rokh', sans-serif;
+  @apply bg-[#F8F5F0] text-gray-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-300;
+}
+
+/* به مرورگر می‌گه که برای اسکرول‌بار، فرم‌های پیش‌فرض و... هم از تم تیره استفاده کنه */
+html {
+  color-scheme: light dark;
+}
+html.dark {
+  color-scheme: dark;
 }

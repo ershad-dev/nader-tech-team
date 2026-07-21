@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#F8F5F0] min-h-screen">
+  <div>
     <Navbar />
 
     <HomeHeroSection />
@@ -23,6 +23,3 @@ footerConfig.value = {
   bgColor: 'bg-purple-800'
 };
 </script>
-
-
-
