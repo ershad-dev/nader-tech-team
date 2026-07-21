@@ -35,17 +35,17 @@ const inputType = computed(() => {
 
 <template>
   <div class="text-right mb-4 ">
-    <label class="block mb-2 text-[#3D3E41] text-[14px] ">{{ label }}</label>
+    <label class="block mb-2 text-[#3D3E41] dark:text-dark-text-deep text-[14px] ">{{ label }}</label>
     
     <div class="relative">
 <input 
   :type="inputType"
   :value="modelValue"
   @input="$emit('update:modelValue', $event.target.value)"
-  :class="['w-full bg-[#ffffff] rounded-[25px] px-4 focus:outline-none focus:ring-2 focus:ring-[#2d6a66] border border-gray-200 transition-all', $attrs.class]"
+  :class="['w-full bg-[#ffffff] dark:bg-[#D9D9D9CC] text-black dark:text-black rounded-[25px] px-4 focus:outline-none focus:ring-2 focus:ring-[#2d6a66] dark:focus:ring-dark-accent border border-gray-200 dark:border-dark-border transition-all', $attrs.class]"
 />
       
-      <div v-if="$slots.icon" class="absolute right-4 top-3.5 text-[#1a2333]">
+      <div v-if="$slots.icon" class="absolute right-4 top-3.5 text-[#1a2333] dark:text-dark-text-deep">
         <slot name="icon" />
       </div>
 
@@ -53,7 +53,7 @@ const inputType = computed(() => {
         v-if="type === 'password'" 
         type="button"
         @click="showPassword = !showPassword"
-        class="absolute left-4 top-3.5 text-[#1a2333]/60 hover:text-[#2d6a66] transition-colors"
+        class="absolute left-4 top-3.5 text-[#1a2333]/60 dark:text-dark-text-deep/60 hover:text-[#2d6a66] dark:hover:text-dark-accent transition-colors"
       >
         <EyeIcon v-if="showPassword" class="w-5 h-5" />
         <EyeSlashIcon v-else class="w-5 h-5" />

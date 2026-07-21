@@ -122,7 +122,7 @@ const verifyCode = async () => {
 
 <template>
   <div class="text-center" dir="ltr">
-    <h1 class="text-xl font-bold text-[#1a2333] mb-10">
+    <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-10">
       کد تأیید را وارد کنید
     </h1>
 
@@ -137,11 +137,11 @@ const verifyCode = async () => {
           type="text"
           inputmode="numeric"
           maxlength="1"
-          class="w-12 h-16 bg-[#cedce0] rounded-xl text-center text-2xl font-bold text-[#1a2333] focus:outline-none focus:ring-2 focus:ring-[#2d6a66]"
+          class="w-12 h-16 bg-[#cedce0] dark:bg-[#D9D9D9CC] rounded-xl text-center text-2xl font-bold text-[#1a2333] dark:text-dark-text-deep focus:outline-none focus:ring-2 focus:ring-[#2d6a66] dark:focus:ring-dark-accent"
         />
       </div>
 
-      <div class="mb-10 text-sm text-[#1a2333] font-medium">
+      <div class="mb-10 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium">
         {{ formattedTimer }}
       </div>
 
@@ -150,7 +150,7 @@ const verifyCode = async () => {
       </AuthButton>
     </form>
 
-    <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer">
+    <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer">
       <NuxtLink to="/auth/login">
         بازگشت به صفحه ورود
       </NuxtLink>

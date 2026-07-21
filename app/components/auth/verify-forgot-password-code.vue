@@ -88,7 +88,7 @@ const verifyCode = async () => {
 
 <template>
   <div class="text-center" dir="rtl">
-    <h1 class="text-xl font-bold text-[#0F184B] mb-20 font-roboto">کد تایید را وارد کنید.</h1>
+    <h1 class="text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-20 font-roboto">کد تایید را وارد کنید.</h1>
 
     <!-- اینپوت‌های کد -->
    <form @submit.prevent="verifyCode">
@@ -102,7 +102,7 @@ const verifyCode = async () => {
       maxlength="1"
       type="text"
       inputmode="numeric"
-      class="w-12 h-14 text-center text-xl font-bold rounded-xl border border-gray-300 bg-white focus:border-[#2d6a66] focus:outline-none"
+      class="w-12 h-14 text-center text-xl font-bold rounded-xl border border-gray-300 dark:border-dark-border bg-white dark:bg-[#D9D9D9CC] focus:border-[#2d6a66] dark:focus:border-dark-accent focus:outline-none"
       @input="handleInput(index)"
       @keydown="handleBackspace($event, index)"
     />
@@ -112,14 +112,14 @@ const verifyCode = async () => {
   <div class="h-6 mb-2">
     <p
       v-if="errorMessage"
-      class="text-red-500 text-sm font-bold"
+      class="text-red-500 dark:text-red-400 text-sm font-bold"
     >
       {{ errorMessage }}
     </p>
   </div>
 
   <!-- باکس خاکستری تایمر -->
-  <div class="bg-[#ebebeb] w-fit mx-auto px-4 py-2 rounded-lg mb-6 text-[#2d6a66] font-bold text-sm">
+  <div class="bg-[#ebebeb] dark:bg-dark-input w-fit mx-auto px-4 py-2 rounded-lg mb-6 text-[#2d6a66] dark:text-dark-text-deep font-bold text-sm">
     زمان باقی مانده: {{ formattedTimer }}
   </div>
 

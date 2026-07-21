@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto xl:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white dark:bg-dark-surface rounded-[1.75rem] sm:rounded-[2rem] xl:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col xl:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-dark-border/30 transition-all duration-300" dir="rtl">
+  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto xl:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white dark:bg-[#CECDCD] rounded-[1.75rem] sm:rounded-[2rem] xl:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col xl:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-dark-border/30 transition-all duration-300" dir="rtl">
     
     <!-- Header (لوگو و همبرگر) -->
     <div class="relative flex w-full xl:w-auto justify-between items-center px-1 xl:px-0">
@@ -49,23 +49,51 @@
       <div class="hidden xl:block w-[90px] min-[1920px]:w-[110px]"></div>
 
       <!-- ۲. لینک‌های وسط (کاملاً مستقل) -->
-      <div class="flex flex-col xl:flex-row items-center justify-center gap-3 sm:gap-5 xl:gap-8 min-[1920px]:gap-10 text-[#0F184B] dark:text-dark-text font-roboto font-normal text-[14px] sm:text-[15px] xl:text-[16px] min-[1920px]:text-[24px] w-full xl:flex-1 xl:whitespace-nowrap">
-        <NuxtLink to="/" exact-active-class="!text-[#0F184B] dark:!text-dark-highlight !font-bold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">خانه</NuxtLink>
-        <NuxtLink to="/order" exact-active-class="!text-[#0F184B] dark:!text-dark-highlight !font-bold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">سفارش‌ پروژه</NuxtLink>
-        <NuxtLink to="/events" exact-active-class="!text-[#0F184B] dark:!text-dark-highlight !font-bold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">برگزاری ایونت</NuxtLink>
-        <NuxtLink to="/articles" exact-active-class="!text-[#0F184B] dark:!text-dark-highlight !font-bold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">مقالات</NuxtLink>
-        <NuxtLink to="/about" exact-active-class="!text-[#0F184B] dark:!text-dark-highlight !font-bold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">درباره ما</NuxtLink>
-        <NuxtLink to="/faq" exact-active-class="!text-[#0F184B] dark:!text-dark-highlight !font-bold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">سوالات متداول</NuxtLink>
+  <div class="flex flex-col xl:flex-row items-center justify-center gap-3 sm:gap-5 xl:gap-8 min-[1920px]:gap-10 text-[#0F184B] dark:text-[#000000] font-roboto font-normal text-[14px] sm:text-[15px] xl:text-[16px] min-[1920px]:text-[24px] w-full xl:flex-1 xl:whitespace-nowrap">
+  <NuxtLink to="/" exact-active-class="!text-[#0F184B] dark:!text-black !font-extrabold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">خانه</NuxtLink>
+  <NuxtLink to="/order" exact-active-class="!text-[#0F184B] dark:!text-black !font-extrabold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">سفارش‌ پروژه</NuxtLink>
+  <NuxtLink to="/events" exact-active-class="!text-[#0F184B] dark:!text-black !font-extrabold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">برگزاری ایونت</NuxtLink>
+  <NuxtLink to="/articles" exact-active-class="!text-[#0F184B] dark:!text-black !font-extrabold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">مقالات</NuxtLink>
+  <NuxtLink to="/about" exact-active-class="!text-[#0F184B] dark:!text-black !font-extrabold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">درباره ما</NuxtLink>
+  <NuxtLink to="/faq" exact-active-class="!text-[#0F184B] dark:!text-black !font-extrabold" class="hover:text-teal-700 dark:hover:text-dark-highlight transition" @click="isOpen = false">سوالات متداول</NuxtLink>
 
-        <!-- دکمه‌ی تغییر حالت روشن/تاریک (موبایل) -->
-        <button
-          @click="toggleColorMode"
-          class="xl:hidden flex items-center gap-2 text-[#0F184B] dark:text-dark-text mt-1"
-        >
-          <Icon v-if="colorMode.value === 'dark'" name="heroicons:sun-solid" class="w-5 h-5" />
-          <Icon v-else name="heroicons:moon-solid" class="w-5 h-5" />
-          <span>{{ colorMode.value === 'dark' ? 'حالت روشن' : 'حالت تاریک' }}</span>
-        </button>
+  <!-- دکمه‌های تغییر حالت روشن/تاریک + تغییر زبان (موبایل) -->
+  <div class="xl:hidden flex items-center gap-2 mt-1">
+    <button
+      @click="toggleColorMode"
+      class="flex items-center justify-center w-9 h-9 rounded-full text-[#0F184B] dark:text-dark-gold transition"
+      aria-label="تغییر حالت تاریک/روشن"
+    >
+      <svg v-if="colorMode.value === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+        <circle cx="12" cy="12" r="5" />
+        <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </g>
+      </svg>
+      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+      </svg>
+    </button>
+
+    <span class="text-[#0F184B] dark:text-dark-text-deep text-sm select-none">/</span>
+
+    <button
+      @click="toggleLang"
+      class="flex items-center justify-center w-9 h-9 rounded-full text-[#0F184B] dark:text-dark-text-deep transition text-xs font-bold"
+      aria-label="تغییر زبان"
+    >
+      {{ lang }}
+    </button>
+  </div>
+
+  <!-- بقیه‌ی کد (ClientOnly ...) بدون تغییر می‌مونه -->
 
         <!--
           رفع Hydration Mismatch:
@@ -103,19 +131,10 @@
         </ClientOnly>
       </div>
       
-      <!-- ۳. دکمه ورود و ثبت‌نام + تغییر حالت (سمت راست - کاملاً جدا شده) -->
+      <!-- ۳. دکمه ورود و ثبت‌نام + تغییر حالت/زبان (سمت راست - کاملاً جدا شده) -->
       <div class="hidden xl:flex items-center justify-end gap-3 w-auto min-w-[184px] min-[1920px]:min-w-[220px]" dir="ltr">
         
-        <!-- دکمه‌ی تغییر حالت روشن/تاریک (دسکتاپ) -->
-        <button
-          @click="toggleColorMode"
-          class="flex items-center justify-center w-[44px] h-[44px] min-[1920px]:w-[54px] min-[1920px]:h-[54px] rounded-full bg-gray-100 dark:bg-dark-input text-[#0F184B] dark:text-dark-gold hover:bg-gray-200 dark:hover:bg-dark-border transition shadow-sm shrink-0"
-          aria-label="تغییر حالت تاریک/روشن"
-        >
-          <Icon v-if="colorMode.value === 'dark'" name="heroicons:sun-solid" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6" />
-          <Icon v-else name="heroicons:moon-solid" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6" />
-        </button>
-
+        <!-- دکمه‌ی ورود/پروفایل (لبه‌ی چپ‌ترین) -->
         <ClientOnly>
           <NuxtLink 
             v-if="!isLoggedIn"
@@ -151,6 +170,44 @@
             </NuxtLink>
           </template>
         </ClientOnly>
+
+        <!-- گروه دکمه‌ی تغییر حالت روشن/تاریک + تغییر زبان (کنار هم، سمت راستِ دکمه‌ی ورود) -->
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- دکمه‌ی تغییر تم با آیکون SVG ساده -->
+          <button
+            @click="toggleColorMode"
+            class="flex items-center justify-center w-[44px] h-[44px] min-[1920px]:w-[54px] min-[1920px]:h-[54px] rounded-full bg-gray-100 dark:bg-dark-input text-[#0F184B] dark:text-dark-gold hover:bg-gray-200 dark:hover:bg-dark-border transition shadow-sm"
+            aria-label="تغییر حالت تاریک/روشن"
+          >
+            <!-- آفتاب: نمایش داده می‌شه وقتی الان دارک‌مود هستیم (برای رفتن به روشن) -->
+            <svg v-if="colorMode.value === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6">
+              <circle cx="12" cy="12" r="5" />
+              <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </g>
+            </svg>
+            <!-- ماه: نمایش داده می‌شه وقتی الان لایت‌مود هستیم (برای رفتن به تاریک) -->
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </button>
+
+          <!-- دکمه‌ی تغییر زبان -->
+          <button
+            @click="toggleLang"
+            class="flex items-center justify-center w-[44px] h-[44px] min-[1920px]:w-[54px] min-[1920px]:h-[54px] rounded-full bg-gray-100 dark:bg-dark-input text-[#0F184B] dark:text-dark-text-deep hover:bg-gray-200 dark:hover:bg-dark-border transition shadow-sm text-sm min-[1920px]:text-base font-bold"
+            aria-label="تغییر زبان"
+          >
+            {{ lang }}
+          </button>
+        </div>
       </div>
     </div>
   </nav>
@@ -167,5 +224,12 @@ const colorMode = useColorMode()
 function toggleColorMode() {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   isOpen.value = false
+}
+
+// دکمه‌ی تغییر زبان: فعلاً فقط ظاهریه، فقط خودِ متن دکمه بین EN/FA سوییچ می‌شه
+// و تاثیری روی زبان بقیه‌ی سایت نداره
+const lang = ref('EN')
+function toggleLang() {
+  lang.value = lang.value === 'EN' ? 'FA' : 'EN'
 }
 </script>

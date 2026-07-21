@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#F5F3EF]">
+  <div class="min-h-screen bg-[#F5F3EF] dark:bg-dark-bg">
     <!-- Navbar قبلاً ساخته شده است -->
     <Navbar />
 

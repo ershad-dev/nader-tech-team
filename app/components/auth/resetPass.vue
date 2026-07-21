@@ -79,7 +79,7 @@ const resetPassword = async () => {
 <template>
   <div class="text-center" dir="rtl">
 
-    <h1 class="text-xl font-bold text-[#1a2333] mb-8">
+    <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-8">
       تعیین رمز عبور جدید
     </h1>
 
@@ -96,7 +96,7 @@ const resetPassword = async () => {
         />
         <p
           v-if="errors.password"
-          class="text-red-500 text-[12px] text-right mt-1 px-1"
+          class="text-red-500 dark:text-red-400 text-[12px] text-right mt-1 px-1"
         >
           {{ errors.password }}
         </p>
@@ -113,7 +113,7 @@ const resetPassword = async () => {
         />
         <p
           v-if="errors.password_confirmation"
-          class="text-red-500 text-[12px] text-right mt-1 px-1"
+          class="text-red-500 dark:text-red-400 text-[12px] text-right mt-1 px-1"
         >
           {{ errors.password_confirmation }}
         </p>

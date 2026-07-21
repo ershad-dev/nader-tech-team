@@ -15,7 +15,7 @@ defineProps({
   <button
     :type="type"
     :disabled="disabled"
-    class="w-full h-[57px] bg-[#2C7379] text-white rounded-[30px] font-bold hover:bg-[#245450] transition disabled:opacity-50 disabled:cursor-not-allowed"
+    class="w-full h-[57px] bg-[#2C7379] dark:bg-dark-accent text-white dark:text-dark-text-deep rounded-[30px] font-bold hover:bg-[#245450] dark:hover:bg-dark-accent-hover transition disabled:opacity-50 disabled:cursor-not-allowed"
   >
     <slot />
   </button>

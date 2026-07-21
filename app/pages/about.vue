@@ -4,10 +4,10 @@
     <!-- Hero Section -->
 <section class="flex flex-col md:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28">
   <div class="flex-1 w-full text-center md:text-right">
-    <h1 class="text-[#0F184B] font-black text-[28px] md:text-[32px] 2xl:text-[42px] mb-6 leading-tight" v-html="pageData.title"> 
+    <h1 class="text-[#0F184B] dark:text-dark-text font-black text-[28px] md:text-[32px] 2xl:text-[42px] mb-6 leading-tight" v-html="pageData.title"> 
     </h1>
     
-    <p class="text-[#0F184B] font-bold leading-relaxed text-[18px] md:text-[26px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl 2xl:max-w-3xl mx-auto md:mx-0">
+    <p class="text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] md:text-[26px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl 2xl:max-w-3xl mx-auto md:mx-0">
       {{ pageData.intro_text }}
     </p>
 
@@ -20,7 +20,7 @@
     <div class="flex justify-center md:justify-end mt-10 md:mt-6 lg:-mt-10">
   <NuxtLink
     to="/order/requestProject"
-    class="bg-[#ECD0A0] border border-white w-full md:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] shadow-lg md:ml-[80px] flex items-center justify-center"
+    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full md:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg md:ml-[80px] flex items-center justify-center"
   >
     ارتباط با ما
   </NuxtLink>
@@ -37,19 +37,19 @@
   />
   
   <!-- بند توضیحات ۱ -->
-  <p class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-8 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] px-2 md:px-0">
+  <p class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-8 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] dark:text-dark-text px-2 md:px-0">
     {{ pageData.description_top }}
   </p>  
 
   <!-- بند توضیحات ۲ (در صورت وجود در دیزاین جدا نمایش داده می‌شود) -->
-  <p v-if="pageData.description_bottom" class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] px-2 md:px-0">
+  <p v-if="pageData.description_bottom" class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] dark:text-dark-text px-2 md:px-0">
     {{ pageData.description_bottom }}
   </p>
 </section>
 
     <!-- Team Section -->
     <section class="mb-20 2xl:mb-28">
-      <h2 class="text-[32px] 2xl:text-[38px] font-bold mb-12 text-[#877048] text-center">
+      <h2 class="text-[32px] 2xl:text-[38px] font-bold mb-12 text-[#877048] dark:text-dark-gold text-center">
         +۱۵ سال تجربه در ساخت <br> محصولات دیجیتال موفق
       </h2>
 
@@ -62,22 +62,22 @@
   <div 
     v-for="(member, index) in teamMembers" 
     :key="index" 
-    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0"
+    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] dark:bg-dark-input rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0"
   >
     <div class="w-[120px] md:w-[205px] 2xl:w-[230px] h-full shrink-0">
       <img :src="member.image" :alt="member.name" class="w-full h-full object-cover object-top rounded-[40px]" />
     </div>
     <div class="p-4 md:p-6 2xl:p-7 text-right flex-1 overflow-hidden">
-      <h3 class="text-[18px] md:text-[20px] 2xl:text-[22px] font-bold text-[#2D4745] mb-1">{{ member.name }}</h3>
-      <p class="text-[#5A6E6C] text-[16px] md:text-[20px] 2xl:text-[21px] font-medium mb-2">{{ member.role }}</p>
-      <p class="text-[14px] md:text-[16px] 2xl:text-[17px] text-[#747893] font-roboto leading-relaxed line-clamp-3">
+      <h3 class="text-[18px] md:text-[20px] 2xl:text-[22px] font-bold text-[#2D4745] dark:text-dark-text-deep mb-1">{{ member.name }}</h3>
+      <p class="text-[#5A6E6C] dark:text-dark-text-deep/80 text-[16px] md:text-[20px] 2xl:text-[21px] font-medium mb-2">{{ member.role }}</p>
+      <p class="text-[14px] md:text-[16px] 2xl:text-[17px] text-[#747893] dark:text-dark-text-deep/70 font-roboto leading-relaxed line-clamp-3">
         {{ member.desc }}
       </p>
     </div>
   </div>
 </div>
             <div>
-      <p class="font-roboto text-[14px] 2xl:text-[16px] font-normal text-[#0F184B] leading-[40px] 2xl:leading-[44px] mt-[20px]">
+      <p class="font-roboto text-[14px] 2xl:text-[16px] font-normal text-[#0F184B] dark:text-dark-text leading-[40px] 2xl:leading-[44px] mt-[20px]">
         تیم ما با بیش از ۱۵ سال تجربه حرفه‌ای، پروژه‌ها را از مرحله ایده تا اجرا و توسعه همراهی می‌کند. از طراحی و توسعه وب‌سایت‌های اختصاصی، فروشگاه‌های اینترنتی و سیستم‌های تحت وب گرفته تا تولید محتوای حرفه‌ای، هویت بصری و راهکارهای رسانه‌ای؛ تمرکز ما تنها روی اجرا نیست، بلکه روی ساخت درست است؛ جایی که عملکرد، تجربه کاربری، امنیت و رشد بلندمدت در کنار یکدیگر معنا پیدا می‌کنند.
       </p>
     </div>
@@ -92,7 +92,7 @@
       <div :key="currentCategory.title">
         
         <!-- عنوان دسته‌بندی با عرض متناسب -->
-        <h3 class="flex items-center justify-center text-center text-[14px] md:text-[15px] 2xl:text-[16px] font-bold text-white mb-8 bg-[#67A9A8] py-2 rounded-[17px] w-[180px] 2xl:w-[200px] h-[43px] 2xl:h-[46px] mx-auto px-4">
+        <h3 class="flex items-center justify-center text-center text-[14px] md:text-[15px] 2xl:text-[16px] font-bold text-white dark:text-dark-text-deep mb-8 bg-[#67A9A8] dark:bg-dark-accent py-2 rounded-[17px] w-[180px] 2xl:w-[200px] h-[43px] 2xl:h-[46px] mx-auto px-4">
           {{ currentCategory.title }}
         </h3>
 
@@ -101,7 +101,7 @@
           <div
             v-for="(service, index) in currentCategory.items"
             :key="index"
-            class="flex items-center justify-center border-[1.5px] border-[#CFD2E3] w-full h-[60px] 2xl:h-[68px] rounded-[17px] text-center hover:border-[#2D7A6F] transition cursor-pointer text-[#0F184B] px-4 text-[13px] md:text-[16px] 2xl:text-[17px]"
+            class="flex items-center justify-center border-[1.5px] border-[#CFD2E3] dark:border-dark-border w-full h-[60px] 2xl:h-[68px] rounded-[17px] text-center hover:border-[#2D7A6F] dark:hover:border-dark-highlight transition cursor-pointer text-[#0F184B] dark:text-dark-text px-4 text-[13px] md:text-[16px] 2xl:text-[17px]"
           >
             {{ service }}
           </div>

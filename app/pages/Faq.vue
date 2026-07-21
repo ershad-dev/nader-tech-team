@@ -2,14 +2,14 @@
   <section class="max-w-6xl 2xl:max-w-[1400px] mx-auto py-20 2xl:py-28 px-4 md:px-6 2xl:px-8" dir="rtl">
     
     <div class="flex flex-col items-center mb-20 2xl:mb-24">
-      <div class="bg-[#ABD7D887] w-16 h-16 2xl:w-20 2xl:h-20 rounded-full border border-gray-300 flex items-center justify-center mb-6 2xl:mb-8 ">
+      <div class="bg-[#ABD7D887] dark:bg-dark-surface w-16 h-16 2xl:w-20 2xl:h-20 rounded-full border border-gray-300 dark:border-dark-border flex items-center justify-center mb-6 2xl:mb-8 ">
         <img src="/images/faq.png" alt="FAQ" class="w-8 h-8 2xl:w-10 2xl:h-10 object-contain" />
       </div>
-      <h2 class="text-3xl 2xl:text-[42px] font-bold text-[#0F184B]">پرسش‌های متداول</h2>
+      <h2 class="text-3xl 2xl:text-[42px] font-bold text-[#0F184B] dark:text-dark-text">پرسش‌های متداول</h2>
     </div>
 
     <!-- حالت لودینگ -->
-    <div v-if="pending" class="text-center text-[#616474] py-10">
+    <div v-if="pending" class="text-center text-[#616474] dark:text-dark-text/70 py-10">
       در حال بارگذاری...
     </div>
 
@@ -19,26 +19,26 @@
     </div>
 
     <!-- حالت خالی بودن لیست -->
-    <div v-else-if="!faqs || faqs.length === 0" class="text-center text-[#616474] py-10">
+    <div v-else-if="!faqs || faqs.length === 0" class="text-center text-[#616474] dark:text-dark-text/70 py-10">
       در حال حاضر سوالی ثبت نشده است.
     </div>
 
     <!-- لیست FAQ ها -->
     <div v-else class="flex flex-col gap-4 2xl:gap-5">
       <div v-for="(item, index) in faqs" :key="item.id" 
-           class="bg-[#2C7379]/10 rounded-2xl 2xl:rounded-[24px] overflow-hidden border border-[#BFD1D53B] transition-all">
+           class="bg-[#2C7379]/10 dark:bg-dark-surface/60 rounded-2xl 2xl:rounded-[24px] overflow-hidden border border-[#BFD1D53B] dark:border-dark-border/40 transition-all">
         
         <button 
             @click="toggle(index)" 
-            class="w-full py-6 2xl:py-7 px-4 md:px-6 2xl:px-8 flex justify-between items-center text-right hover:bg-[#2C7379]/5 transition-colors"
+            class="w-full py-6 2xl:py-7 px-4 md:px-6 2xl:px-8 flex justify-between items-center text-right hover:bg-[#2C7379]/5 dark:hover:bg-dark-surface/40 transition-colors"
             >
             <!-- تغییر سایز فونت فقط برای موبایل -->
-            <p class="text-[#0F184B] font-bold text-[16px] md:text-[20px] 2xl:text-[23px] font-noto-light leading-tight">
+            <p class="text-[#0F184B] dark:text-dark-text font-bold text-[16px] md:text-[20px] 2xl:text-[23px] font-noto-light leading-tight">
               {{ item.question }}
             </p> 
             
             <svg 
-                class="w-6 h-6 2xl:w-7 2xl:h-7 text-[#747893] transition-transform duration-300 flex-shrink-0 mr-2 2xl:mr-3" 
+                class="w-6 h-6 2xl:w-7 2xl:h-7 text-[#747893] dark:text-dark-text/70 transition-transform duration-300 flex-shrink-0 mr-2 2xl:mr-3" 
                 :class="{ 'rotate-180': isOpen === index }"
                 fill="none" 
                 stroke="currentColor" 
@@ -48,7 +48,7 @@
             </svg>
         </button>
         
-        <div v-if="isOpen === index" class="px-4 md:px-6 2xl:px-8 pb-6 2xl:pb-8 pt-0 text-[#616474] text-[16px] md:text-[18px] 2xl:text-[20px] leading-[22px] md:leading-[30px] 2xl:leading-[34px] font-roboto">
+        <div v-if="isOpen === index" class="px-4 md:px-6 2xl:px-8 pb-6 2xl:pb-8 pt-0 text-[#616474] dark:text-dark-text/70 text-[16px] md:text-[18px] 2xl:text-[20px] leading-[22px] md:leading-[30px] 2xl:leading-[34px] font-roboto">
           <div class="pt-4 2xl:pt-5">
             {{ item.answer }}
           </div>

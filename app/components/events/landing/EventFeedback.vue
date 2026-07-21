@@ -4,7 +4,7 @@
 
     <!-- عنوان بخش -->
     <div class="mb-8 sm:mb-10 md:mb-12 min-[1920px]:mb-14 flex flex-col items-center">
-      <h2 class="bg-white px-4 sm:px-6 md:px-8 min-[1920px]:px-10 py-3 sm:py-4 min-[1920px]:py-5 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] font-bold text-[#0F184B] border w-[220px] sm:w-[250px] md:w-[266px] min-[1920px]:w-[300px] h-[64px] sm:h-[72px] md:h-[78px] min-[1920px]:h-[90px] text-[15px] sm:text-[18px] md:text-[20px] min-[1920px]:text-[22px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
+      <h2 class="bg-white dark:bg-dark-input px-4 sm:px-6 md:px-8 min-[1920px]:px-10 py-3 sm:py-4 min-[1920px]:py-5 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] dark:border-dark-border font-bold text-[#0F184B] dark:text-dark-text-deep border w-[220px] sm:w-[250px] md:w-[266px] min-[1920px]:w-[300px] h-[64px] sm:h-[72px] md:h-[78px] min-[1920px]:h-[90px] text-[15px] sm:text-[18px] md:text-[20px] min-[1920px]:text-[22px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
         رضایت از ایونت‌های برگزار شده
       </h2>
     </div>
@@ -34,7 +34,7 @@
       :class="[
         'w-[190px] h-[224px] object-cover rounded-[32px] transition-all duration-300 select-none pointer-events-none',
         selectedIndex === item.realIndex && item.pos === 0
-          ? 'ring-3 ring-[#A36C53] ring-inset'
+          ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset'
           : ''
       ]"
       draggable="false"
@@ -58,7 +58,7 @@
             :class="[
               'cursor-pointer w-[230px] h-[271px] sm:w-[220px] sm:h-[259px] md:w-[266px] md:h-[313px] min-[1920px]:w-[320px] min-[1920px]:h-[376px] object-cover rounded-[32px] sm:rounded-[38px] md:rounded-[49px] min-[1920px]:rounded-[56px] transition-all duration-300',
               selectedIndex === item.realIndex
-                ? 'opacity-100 ring-3 sm:ring-4 ring-[#A36C53] ring-inset'
+                ? 'opacity-100 ring-3 sm:ring-4 ring-[#A36C53] dark:ring-dark-gold ring-inset'
                 : 'opacity-95 hover:opacity-100'
             ]"
           />
@@ -82,24 +82,27 @@
     <!-- بخش نمایش متن انتخاب شده (در صورت انتخاب یک کارت) -->
     <div
       v-if="selectedIndex !== null"
-      class="testimonial-box relative bg-[#ABD7D840] w-full sm:w-[85%] md:w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
+      class="testimonial-box relative bg-[#ABD7D840] dark:bg-dark-surface/50 w-full sm:w-[85%] md:w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
     >
 
       <!-- نشانگر زبانه (Indicator) - در موبایل ثابت و وسط، در تبلت/دسکتاپ داینامیک -->
       <div 
-        class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] min-[1920px]:-top-[34px] w-[90px] sm:w-[110px] md:w-[120px] bg-[#F7F3EB] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px] min-[1920px]:mt-[34px]"
-        :style="isMobile 
-          ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%)' } 
-          : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' }"
+        class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] min-[1920px]:-top-[34px] w-[90px] sm:w-[110px] md:w-[120px] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px] min-[1920px]:mt-[34px]"
+        :style="[
+          isMobile 
+            ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%)' } 
+            : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' },
+          { '--notch-color': notchColor }
+        ]"
       >
         <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[22px] sm:-mt-[28px] md:-mt-[35px] min-[1920px]:-mt-[40px] h-[44px] sm:h-[56px] md:h-[69px] min-[1920px]:h-[78px]">
       </div>
 
       <!-- متن نظرات -->
-      <h1 class="font-bold text-[#0F184B] text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[50px] min-[1920px]:mt-[56px] text-center">
+      <h1 class="font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[50px] min-[1920px]:mt-[56px] text-center">
         تجربه همکاری از زبان مشتری 
       </h1>
-      <p class="text-[#616474] text-right text-[12px] sm:text-[13px] md:text-[14px] min-[1920px]:text-[16px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] min-[1920px]:leading-[56px] pt-4 text-center font-roboto">
+      <p class="text-[#616474] dark:text-dark-text/70 text-right text-[12px] sm:text-[13px] md:text-[14px] min-[1920px]:text-[16px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] min-[1920px]:leading-[56px] pt-4 text-center font-roboto">
         {{ testimonials[selectedIndex].text }}
       </p>
     </div>
@@ -107,8 +110,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useMobileSlider } from '@/composables/useMobileSlider'
+
+// رنگ notch وابسته به حالت دارک/لایت — دقیقاً همون الگویی که تو LeadMembers.vue استفاده شد
+const colorMode = useColorMode()
+const notchColor = computed(() => (colorMode.value === 'dark' ? '#435056' : '#F7F3EB'))
 
 const selectedIndex = ref(0); // کارت اول به صورت پیش‌فرض انتخاب شده است
 const cardRefs = ref([]);
@@ -233,7 +240,7 @@ const visibleTestimonials = visibleItems(visibleCount)
 .notch {
   position: absolute;
   height: 15px;
-  background: #F7F3EB;
+  background: var(--notch-color);
 
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
@@ -249,7 +256,7 @@ const visibleTestimonials = visibleItems(visibleCount)
   height: 20px;
 
   border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 #F7F3EB; 
+  box-shadow: 10px -10px 0 var(--notch-color);
 }
 
 /* قوس راست */
@@ -261,7 +268,7 @@ const visibleTestimonials = visibleItems(visibleCount)
   width: 20px;
   height: 20px;
   border-top-left-radius: 20px;
-  box-shadow: -10px -10px 0 #F7F3EB;
+  box-shadow: -10px -10px 0 var(--notch-color);
 }
 
 @media (max-width: 767px) {
@@ -272,12 +279,12 @@ const visibleTestimonials = visibleItems(visibleCount)
   }
   .notch::before {
     left: -14px;
-    box-shadow: 7px -7px 0 #F7F3EB;
+    box-shadow: 7px -7px 0 var(--notch-color);
     border-top-right-radius: 14px;
   }
   .notch::after {
     right: -14px;
-    box-shadow: -7px -7px 0 #F7F3EB;
+    box-shadow: -7px -7px 0 var(--notch-color);
     border-top-left-radius: 14px;
   }
 }
@@ -290,12 +297,12 @@ const visibleTestimonials = visibleItems(visibleCount)
   }
   .notch::before {
     left: -24px;
-    box-shadow: 12px -12px 0 #F7F3EB;
+    box-shadow: 12px -12px 0 var(--notch-color);
     border-top-right-radius: 24px;
   }
   .notch::after {
     right: -24px;
-    box-shadow: -12px -12px 0 #F7F3EB;
+    box-shadow: -12px -12px 0 var(--notch-color);
     border-top-left-radius: 24px;
   }
 }

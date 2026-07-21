@@ -77,11 +77,11 @@ const handleInput = (event) => {
 <template>
   <div class="text-center" dir="rtl">
 
-    <h1 class="text-xl font-bold text-[#0F184B] mb-8 font-roboto">
+    <h1 class="text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-8 font-roboto">
       خوش آمدید، وارد حساب کاربری خود شوید.
     </h1>
 
-    <h3 class="w-[130px] font-roboto text-right mb-4 text-[#0F184B] text-[16px] border-b border-[#0F184B]">
+    <h3 class="w-[130px] font-roboto text-right mb-4 text-[#0F184B] dark:text-dark-text-deep text-[16px] border-b border-[#0F184B] dark:border-dark-border">
       فراموشی رمز عبور
     </h3>
 
@@ -98,7 +98,7 @@ const handleInput = (event) => {
 
         <div
           v-if="errors.login"
-          class="text-red-500 text-[12px] text-right mt-1 px-1"
+          class="text-red-500 dark:text-red-400 text-[12px] text-right mt-1 px-1"
         >
           {{ errors.login }}
         </div>
@@ -114,7 +114,7 @@ const handleInput = (event) => {
       </div>
     </form>
 
-    <div class="mt-6 text-sm text-[#1a2333] font-medium cursor-pointer underline font-roboto">
+    <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer underline font-roboto">
       <NuxtLink to="/auth/login">
         بازگشت به ورود
       </NuxtLink>

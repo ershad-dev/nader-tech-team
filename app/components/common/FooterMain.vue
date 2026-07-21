@@ -69,7 +69,7 @@
   
   </div>
   
-  <div class="bg-[#BFD1D5] dark:bg-dark-bg w-full pt-8 sm:pt-10 lg:pt-16 transition-colors duration-300">
+<div class="bg-[#BFD1D5] dark:bg-dark-footer w-full pt-8 sm:pt-10 lg:pt-16 transition-colors duration-300">
   
   <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 sm:gap-8 lg:gap-12 text-center pb-8 sm:pb-10 lg:pb-12 px-4 lg:px-0">
   
@@ -133,8 +133,7 @@
   ];
   
   const hiddenGreenSectionRoutes = [
-    '/order/request',
-    '/articles'
+    '/order/request'
   ];
   
   const isLotteryPage = computed(() => lotteryRoutes.includes(route.path));

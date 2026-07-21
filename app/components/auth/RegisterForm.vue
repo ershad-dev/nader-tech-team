@@ -296,7 +296,7 @@ const registerUser = handleSubmit(async (values) => {
       {{ toast.message }}
     </div>
 
-    <h1 class="text-lg font-bold text-[#000000] mb-8 font-roboto">
+    <h1 class="text-lg font-bold text-[#000000] dark:text-dark-text-deep mb-8 font-roboto">
       برای ثبت نام، اطلاعات خود را وارد کنید
     </h1>
 
@@ -305,7 +305,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- نام کاربری -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium  text-[#3D3E41] mb-1 font-roboto">نام کاربری</label>
+          <label class="text-sm font-medium  text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">نام کاربری</label>
           <input
             v-model="username"
             type="text"
@@ -314,16 +314,16 @@ const registerUser = handleSubmit(async (values) => {
             autocomplete="username"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="usernameError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleUsernameInput"
           />
-          <p v-if="usernameError" class="text-red-500 text-[11px] mt-1 text-right">{{ usernameError }}</p>
+          <p v-if="usernameError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ usernameError }}</p>
         </div>
 
         <!-- نام و نام خانوادگی -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">نام و نام خانوادگی</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">نام و نام خانوادگی</label>
           <input
             v-model="full_name"
             type="text"
@@ -332,16 +332,16 @@ const registerUser = handleSubmit(async (values) => {
             autocomplete="name"
             class="h-[44px] px-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors"
             :class="fullNameError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @keydown="handleFullNameKeydown"
           />
-          <p v-if="fullNameError" class="text-red-500 text-[11px] mt-1 text-right">{{ fullNameError }}</p>
+          <p v-if="fullNameError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ fullNameError }}</p>
         </div>
 
         <!-- ایمیل -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">ایمیل</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">ایمیل</label>
           <input
             v-model="email"
             type="email"
@@ -350,15 +350,15 @@ const registerUser = handleSubmit(async (values) => {
             autocomplete="email"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="emailError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
           />
-          <p v-if="emailError" class="text-red-500 text-[11px] mt-1 text-right">{{ emailError }}</p>
+          <p v-if="emailError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ emailError }}</p>
         </div>
 
         <!-- شماره تماس -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">شماره تماس</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">شماره تماس</label>
           <input
             v-model="mobile"
             type="text"
@@ -369,16 +369,16 @@ const registerUser = handleSubmit(async (values) => {
             autocomplete="tel"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="mobileError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleMobileInput"
           />
-          <p v-if="mobileError" class="text-red-500 text-[11px] mt-1 text-right">{{ mobileError }}</p>
+          <p v-if="mobileError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ mobileError }}</p>
         </div>
 
         <!-- کد ملی -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">کد ملی</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">کد ملی</label>
           <input
             v-model="national_code"
             type="text"
@@ -388,16 +388,16 @@ const registerUser = handleSubmit(async (values) => {
             placeholder="__________"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="nationalCodeError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleNationalCodeInput"
           />
-          <p v-if="nationalCodeError" class="text-red-500 text-[11px] mt-1 text-right">{{ nationalCodeError }}</p>
+          <p v-if="nationalCodeError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ nationalCodeError }}</p>
         </div>
 
         <!-- تاریخ تولد شمسی -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">تاریخ تولد (شمسی)</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">تاریخ تولد (شمسی)</label>
           <input
             v-model="birth_date"
             type="text"
@@ -407,16 +407,16 @@ const registerUser = handleSubmit(async (values) => {
             placeholder="1370/01/01"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="birthDateError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleBirthDateInput"
           />
-          <p v-if="birthDateError" class="text-red-500 text-[11px] mt-1 text-right">{{ birthDateError }}</p>
+          <p v-if="birthDateError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ birthDateError }}</p>
         </div>
 
         <!-- استان -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">استان</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">استان</label>
           <input
             v-model="province"
             type="text"
@@ -424,15 +424,15 @@ const registerUser = handleSubmit(async (values) => {
             placeholder="استان خود را وارد کنید"
             class="h-[44px] px-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors"
             :class="provinceError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
           />
-          <p v-if="provinceError" class="text-red-500 text-[11px] mt-1 text-right">{{ provinceError }}</p>
+          <p v-if="provinceError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ provinceError }}</p>
         </div>
 
         <!-- کد پستی -->
         <div class="flex flex-col text-right">
-          <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">کد پستی</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">کد پستی</label>
           <input
             v-model="postal_code"
             type="text"
@@ -442,18 +442,18 @@ const registerUser = handleSubmit(async (values) => {
             placeholder="__________"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="postalCodeError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handlePostalCodeInput"
           />
-          <p v-if="postalCodeError" class="text-red-500 text-[11px] mt-1 text-right">{{ postalCodeError }}</p>
+          <p v-if="postalCodeError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ postalCodeError }}</p>
         </div>
 
       </div>
 
       <!-- آدرس -->
       <div class="flex flex-col mt-5 text-right">
-        <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">آدرس و نشانی</label>
+        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">آدرس و نشانی</label>
         <textarea
           v-model="address"
           dir="rtl"
@@ -461,15 +461,15 @@ const registerUser = handleSubmit(async (values) => {
           placeholder="آدرس کامل خود را وارد کنید..."
           class="px-3 py-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors resize-none leading-7"
           :class="addressError
-            ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-            : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+            ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+            : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
         />
-        <p v-if="addressError" class="text-red-500 text-[11px] mt-1 text-right">{{ addressError }}</p>
+        <p v-if="addressError" class="text-red-500 dark:text-red-400 text-[11px] mt-1 text-right">{{ addressError }}</p>
       </div>
 
       <!-- رمز عبور -->
       <div class="flex flex-col mt-5 text-right">
-        <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">رمز عبور</label>
+        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">رمز عبور</label>
         <div class="relative">
           <input
             v-model="password"
@@ -479,15 +479,15 @@ const registerUser = handleSubmit(async (values) => {
             autocomplete="new-password"
             class="h-[44px] w-full pl-10 pr-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="passwordError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handlePasswordInput"
             @keydown="handlePasswordKeydown"
           />
           <!-- دکمه نمایش/مخفی رمز -->
           <button
             type="button"
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#0F184B] transition-colors"
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/60 hover:text-[#0F184B] dark:hover:text-dark-accent transition-colors"
             @click="showPassword = !showPassword"
           >
             <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -499,15 +499,15 @@ const registerUser = handleSubmit(async (values) => {
             </svg>
           </button>
         </div>
-        <p v-if="passwordError" class="text-red-500 text-[11px] mt-1">{{ passwordError }}</p>
-        <p class="text-gray-400 text-[11px] mt-1">
+        <p v-if="passwordError" class="text-red-500 dark:text-red-400 text-[11px] mt-1">{{ passwordError }}</p>
+        <p class="text-gray-400 dark:text-dark-text-deep/60 text-[11px] mt-1">
           حداقل ۸ کاراکتر، شامل حرف بزرگ، حرف کوچک، عدد و یکی از: @ # $
         </p>
       </div>
 
       <!-- تکرار رمز عبور -->
       <div class="flex flex-col mt-5 text-right">
-        <label class="text-sm font-medium text-[#3D3E41] mb-1 font-roboto">تکرار رمز عبور</label>
+        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">تکرار رمز عبور</label>
         <div class="relative">
           <input
             v-model="password_confirmation"
@@ -517,14 +517,14 @@ const registerUser = handleSubmit(async (values) => {
             autocomplete="new-password"
             class="h-[44px] w-full pl-10 pr-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="passwordConfirmError
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-gray-300 bg-white focus:border-[#0F184B] focus:ring-2 focus:ring-[#0F184B]/20'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handlePasswordConfirmInput"
             @keydown="handlePasswordConfirmKeydown"
           />
           <button
             type="button"
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#0F184B] transition-colors"
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/60 hover:text-[#0F184B] dark:hover:text-dark-accent transition-colors"
             @click="showPasswordConfirm = !showPasswordConfirm"
           >
             <svg v-if="!showPasswordConfirm" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -536,7 +536,7 @@ const registerUser = handleSubmit(async (values) => {
             </svg>
           </button>
         </div>
-        <p v-if="passwordConfirmError" class="text-red-500 text-[11px] mt-1">{{ passwordConfirmError }}</p>
+        <p v-if="passwordConfirmError" class="text-red-500 dark:text-red-400 text-[11px] mt-1">{{ passwordConfirmError }}</p>
       </div>
 
       <!-- دکمه ثبت‌نام -->
@@ -547,7 +547,7 @@ const registerUser = handleSubmit(async (values) => {
       </div>
     </form>
 
-    <div class="mt-6 text-sm text-[#1a2333] font-bold cursor-pointer underline font-roboto">
+    <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-bold cursor-pointer underline font-roboto">
       <NuxtLink to="/auth/login">ورود / حساب کاربری دارم</NuxtLink>
     </div>
 
