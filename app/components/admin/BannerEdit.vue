@@ -1,13 +1,13 @@
 <template>
   <div class="p-4 sm:p-6 lg:p-8">
     <div
-      class="bg-[#F7F3EB] text-[#0F184B] py-3 px-4 lg:px-6 rounded-full w-full max-w-[812px] lg:w-[812px] h-[52px] lg:h-[60px] mx-auto mb-6 lg:mb-10 font-bold text-[16px] sm:text-[18px] lg:text-[20px] flex items-center justify-center shadow-xl"
+      class="bg-[#F7F3EB] dark:bg-dark-surface text-[#0F184B] dark:text-dark-text py-3 px-4 lg:px-6 rounded-full w-full max-w-[812px] lg:w-[812px] h-[52px] lg:h-[60px] mx-auto mb-6 lg:mb-10 font-bold text-[16px] sm:text-[18px] lg:text-[20px] flex items-center justify-center shadow-xl"
     >
       تغییر عکس بنر
     </div>
 
     <!-- پیام خطا / بارگذاری کلی لیست -->
-    <div v-if="loadingList" class="text-center text-[#0F184B] font-bold py-6">
+    <div v-if="loadingList" class="text-center text-[#0F184B] dark:text-dark-text font-bold py-6">
       در حال بارگذاری بنرها...
     </div>
     <div v-else-if="listError" class="text-center text-red-600 font-bold py-6">
@@ -68,8 +68,8 @@
               :class="[
                 'w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] rounded-[27px] font-bold flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50',
                 slot.is_active
-                  ? 'bg-[#7FCB86] hover:bg-[#66B36D] text-black'
-                  : 'bg-[#ABD7D8] hover:bg-[#8FB0B2] text-black'
+                  ? 'bg-[#7FCB86] hover:bg-[#66B36D] dark:bg-dark-accent dark:hover:bg-dark-accent-hover text-black dark:text-dark-text-deep'
+                  : 'bg-[#ABD7D8] hover:bg-[#8FB0B2] dark:bg-dark-input dark:hover:bg-dark-input/80 text-black dark:text-dark-text-deep'
               ]"
             >
               {{ slot.is_active ? 'فعال است' : 'تایید' }}
@@ -77,7 +77,7 @@
             <button
               @click="deleteBanner(slot)"
               :disabled="slot.busy"
-              class="w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] rounded-[27px] font-bold text-black flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50"
+              class="w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] dark:bg-dark-input dark:hover:bg-dark-input/80 rounded-[27px] font-bold text-black dark:text-dark-text-deep flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50"
             >
               حذف
             </button>
@@ -91,7 +91,7 @@
         <!-- اسلات خالی: هم برای جایگزینی و هم برای بنر کاملا جدید از همینجا آپلود می‌شه -->
         <div
           v-else
-          class="relative w-full aspect-[437/325] lg:w-[437px] lg:h-[325px] border-4 border-dashed border-[#BFD1D5] rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-all"
+          class="relative w-full aspect-[437/325] lg:w-[437px] lg:h-[325px] border-4 border-dashed border-[#BFD1D5] dark:border-dark-border rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] dark:hover:bg-dark-input/20 transition-all"
         >
           <input
             type="file"
@@ -102,11 +102,11 @@
           />
           <label
             :for="'file-slot-' + slotIndex"
-            class="cursor-pointer text-5xl sm:text-6xl text-[#BFD1D5]"
+            class="cursor-pointer text-5xl sm:text-6xl text-[#BFD1D5] dark:text-dark-border"
           >
             +
           </label>
-          <span class="text-[#0F184B] font-bold mt-2 text-sm sm:text-base">افزودن بنر جدید</span>
+          <span class="text-[#0F184B] dark:text-dark-text font-bold mt-2 text-sm sm:text-base">افزودن بنر جدید</span>
 
           <div
             v-if="emptySlotBusy[slotIndex]"

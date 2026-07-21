@@ -14,21 +14,21 @@ const hasReview = computed(() => !!project.value?.review?.description);
 </script>
 
 <template>
-  <div v-if="pending" class="min-h-screen flex items-center justify-center text-[#747893]">
+  <div v-if="pending" class="min-h-screen flex items-center justify-center text-[#747893] dark:text-dark-text">
     در حال بارگذاری...
   </div>
 
-  <div v-else-if="error || !project" class="min-h-screen flex items-center justify-center text-red-500">
+  <div v-else-if="error || !project" class="min-h-screen flex items-center justify-center text-red-500 dark:text-red-400">
     پروژه مورد نظر یافت نشد
   </div>
 
-  <div v-else class="min-h-screen p-5 sm:p-8 lg:p-10 bg-[#BFD1D5] -mt-[80px] lg:-mt-[100px] overflow-hidden">
+  <div v-else class="min-h-screen p-5 sm:p-8 lg:p-10 bg-[#BFD1D5] dark:bg-dark-bg -mt-[80px] lg:-mt-[100px] overflow-hidden">
     <div class="text-center mt-[90px] lg:mt-[100px] flex flex-wrap justify-center items-center gap-1 sm:gap-2 px-2">
-      <h2 class="text-lg sm:text-2xl lg:text-3xl font-bold text-[#2C7379] flex flex-wrap items-baseline justify-center">
+      <h2 class="text-lg sm:text-2xl lg:text-3xl font-bold text-[#2C7379] dark:text-dark-highlight flex flex-wrap items-baseline justify-center">
         <span class="rotate-12 origin-bottom translate-y-2 lg:translate-y-3 inline-block">آینده</span>
         <span class="rotate-6 origin-bottom translate-y-1 inline-block">برند</span>
         <span class="rotate-3 origin-bottom inline-block">شما</span>
-        <span class="text-[#D4A373] rotate-0 inline-block mx-1 lg:mx-2">همینجا</span>
+        <span class="text-[#D4A373] dark:text-dark-gold rotate-0 inline-block mx-1 lg:mx-2">همینجا</span>
         <span class="-rotate-3 origin-bottom inline-block">آغاز</span>
         <span class="-rotate-6 origin-bottom translate-y-1 inline-block">می‌شود</span>
       </h2>
@@ -56,36 +56,36 @@ const hasReview = computed(() => !!project.value?.review?.description);
 
     <!-- متن توضیحات پروژه -->
     <div class="mb-8 lg:mb-10">
-      <h2 class="text-teal-800 text-[19px] sm:text-[22px] lg:text-[26px] font-bold mb-2">{{ project.title }}</h2>
-      <p class="text-[13px] lg:text-[14px] text-[#0F184B] leading-[28px] sm:leading-[36px] lg:leading-[45px] font-roboto mt-[24px] lg:mt-[40px]">
+      <h2 class="text-teal-800 dark:text-dark-highlight text-[19px] sm:text-[22px] lg:text-[26px] font-bold mb-2">{{ project.title }}</h2>
+      <p class="text-[13px] lg:text-[14px] text-[#0F184B] dark:text-dark-text leading-[28px] sm:leading-[36px] lg:leading-[45px] font-roboto mt-[24px] lg:mt-[40px]">
         {{ project.description }}
       </p>
     </div>
 
-    <div class="w-full sm:w-3/4 mx-auto mb-8 lg:mb-10 h-[1.5px] bg-gradient-to-r from-white/75 to-gray-400"></div>
+    <div class="w-full sm:w-3/4 mx-auto mb-8 lg:mb-10 h-[1.5px] bg-gradient-to-r from-white/75 dark:from-dark-highlight/20 to-gray-400 dark:to-dark-border"></div>
 
     <!-- بخش نظر مشتری - فقط وقتی review.description وجود داره نمایش داده می‌شه -->
     <div v-if="hasReview" class="mt-10 lg:mt-16 max-w-[900px] mx-auto -mb-[100px] lg:-mb-[200px]">
-      <h3 class="text-[#2C7379] font-bold text-[22px] sm:text-[26px] lg:text-[32px] mb-6 lg:mb-8 flex flex-col items-center">اعتماد مشتریان</h3>
+      <h3 class="text-[#2C7379] dark:text-dark-highlight font-bold text-[22px] sm:text-[26px] lg:text-[32px] mb-6 lg:mb-8 flex flex-col items-center">اعتماد مشتریان</h3>
       <div class="w-full shadow-sm">
         <div class="flex items-center gap-3 lg:gap-4 mb-6 flex-wrap">
           <img
             :src="project.review.avatar || '/images/avater-man.jpg'"
             alt="Customer"
-            class="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] lg:w-[131px] lg:h-[131px] rounded-[14px] lg:rounded-[17px] border-4 border-white shadow-md object-cover"
+            class="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] lg:w-[131px] lg:h-[131px] rounded-[14px] lg:rounded-[17px] border-4 border-white dark:border-dark-border shadow-md object-cover"
           />
           <div class="text-right mr-[6px] lg:mr-[10px]">
-            <p class="text-[#747893] text-[13px] lg:text-[14px] font-medium">{{ project.review.name }}</p>
-            <p v-if="project.review.position" class="text-[12px] lg:text-[13px] text-[#747893] font-roboto font-medium mt-[10px] lg:mt-[25px]">{{ project.review.position }}</p>
+            <p class="text-[#747893] dark:text-dark-text text-[13px] lg:text-[14px] font-medium">{{ project.review.name }}</p>
+            <p v-if="project.review.position" class="text-[12px] lg:text-[13px] text-[#747893] dark:text-dark-text font-roboto font-medium mt-[10px] lg:mt-[25px]">{{ project.review.position }}</p>
           </div>
         </div>
 
-<div class="mb-[100px] lg:mb-[300px] w-full bg-white/50 p-5 lg:p-6 border border-white rounded-tl-[30px] lg:rounded-tl-[60px] rounded-br-[30px] lg:rounded-br-[60px] rounded-bl-[30px] lg:rounded-bl-[60px]">
-  <h4 class="text-[#0F184B] font-robot font-bold mb-3 text-[14px] lg:text-[16px] mt-[10px] lg:mt-[20px]">
+<div class="mb-[100px] lg:mb-[300px] w-full bg-white/50 dark:bg-dark-input/50 p-5 lg:p-6 border border-white dark:border-dark-border rounded-tl-[30px] lg:rounded-tl-[60px] rounded-br-[30px] lg:rounded-br-[60px] rounded-bl-[30px] lg:rounded-bl-[60px]">
+  <h4 class="text-[#0F184B] dark:text-dark-text-deep font-robot font-bold mb-3 text-[14px] lg:text-[16px] mt-[10px] lg:mt-[20px]">
     تجربه همکاری از زبان مشتری
   </h4>
 
-  <p class="text-[#616474] leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular">
+  <p class="text-[#616474] dark:text-dark-text-deep leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular">
     "{{ project.review.description }}"
   </p>
 </div>

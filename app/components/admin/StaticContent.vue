@@ -2,17 +2,17 @@
   <div class="w-full h-full flex flex-col" dir="rtl">
     <!-- Header -->
     <div class="px-5 pt-6 pb-4 lg:px-8 lg:pt-8">
-      <h1 class="text-[#0F184B] font-bold text-[19px] lg:text-[22px]">
+      <h1 class="text-[#0F184B] dark:text-white font-bold text-[19px] lg:text-[22px]">
         مدیریت محتوای صفحات
       </h1>
-      <p class="text-[#454C6A]/70 text-[12px] lg:text-[13px] mt-1">
+      <p class="text-[#454C6A]/70 dark:text-white/70 text-[12px] lg:text-[13px] mt-1">
         ویرایش محتوای کلید-مقدار صفحات سایت
       </p>
     </div>
 
     <!-- Page tabs -->
     <div class="px-5 lg:px-8">
-      <div class="flex flex-wrap justify-center items-center gap-2 mb-2 bg-[#F7F3EB] py-3 lg:py-0 lg:h-[64px] rounded-[27px] px-2">
+      <div class="flex flex-wrap justify-center items-center gap-2 mb-2 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[64px] rounded-[27px] px-2">
         <button
           v-for="p in pages"
           :key="p.slug"
@@ -20,8 +20,8 @@
           :class="[
             'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
             activePage === p.slug
-              ? 'bg-[#67A9A8] text-[#0F184B] shadow-md font-bold'
-              : 'text-[#454C6A] hover:bg-gray-200'
+              ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white shadow-md font-bold'
+              : 'text-[#454C6A] dark:text-white hover:bg-gray-200 dark:hover:bg-dark-input'
           ]"
         >
           {{ p.label }}
@@ -34,7 +34,7 @@
       <div
         v-if="toast.message"
         class="mx-5 lg:mx-8 mt-4 px-4 py-2.5 rounded-xl text-[13px] font-bold"
-        :class="toast.type === 'error' ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-[#67A9A8]/10 text-[#2C7379] border border-[#67A9A8]/40'"
+        :class="toast.type === 'error' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-white border border-red-200 dark:border-red-800/50' : 'bg-[#67A9A8]/10 dark:bg-dark-accent/10 text-[#2C7379] dark:text-white border border-[#67A9A8]/40 dark:border-dark-accent/40'"
       >
         {{ toast.message }}
       </div>
@@ -44,12 +44,12 @@
     <div class="flex-1 overflow-y-auto px-5 py-5 lg:px-8 lg:py-6 hide-scrollbar">
       <!-- Loading -->
       <div v-if="isLoading" class="flex items-center justify-center h-40">
-        <div class="w-8 h-8 border-[3px] border-[#67A9A8] border-t-transparent rounded-full animate-spin"></div>
+        <div class="w-8 h-8 border-[3px] border-[#67A9A8] dark:border-dark-accent border-t-transparent rounded-full animate-spin"></div>
       </div>
 
       <!-- Empty -->
       <div v-else-if="!items.length" class="flex flex-col items-center justify-center h-40 text-center gap-2">
-        <p class="text-[#454C6A]/70 text-[13px]">
+        <p class="text-[#454C6A]/70 dark:text-white/70 text-[13px]">
           هنوز آیتمی برای صفحه «{{ activePage }}» ثبت نشده است.
         </p>
       </div>
@@ -59,11 +59,11 @@
         <div
           v-for="item in items"
           :key="item.key"
-          class="bg-[#FFFFFF3B] p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 transition-all duration-300"
+          class="bg-[#FFFFFF3B] dark:bg-dark-input/20 p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 dark:border-dark-border transition-all duration-300"
         >
           <div class="flex items-start justify-between gap-3 mb-3">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-bold text-[#000000] text-[15px] sm:text-[17px] font-roboto">{{ item.key }}</span>
+              <span class="font-bold text-[#000000] dark:text-white text-[15px] sm:text-[17px] font-roboto">{{ item.key }}</span>
               <span
                 class="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide"
                 :class="typeBadgeClass(item.type)"
@@ -76,7 +76,7 @@
               <button
                 @click="saveItem(item)"
                 :disabled="item._saving"
-                class="px-3 py-1.5 rounded-full bg-[#67A9A8] text-[#0F184B] text-[12px] font-bold hover:bg-[#8FB0B2] transition disabled:opacity-50"
+                class="px-3 py-1.5 rounded-full bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white text-[12px] font-bold hover:bg-[#8FB0B2] dark:hover:bg-dark-accent-hover transition disabled:opacity-50"
               >
                 {{ item._saving ? '...' : 'ذخیره' }}
               </button>
@@ -88,7 +88,7 @@
             v-if="item.type === 'text'"
             v-model="item.value"
             rows="2"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] text-[13px] text-[#0F184B] focus:outline-none focus:border-[#67A9A8] resize-y"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y"
           />
 
           <textarea
@@ -96,7 +96,7 @@
             v-model="item.value"
             rows="5"
             spellcheck="false"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] text-[12px] text-[#0F184B] font-mono focus:outline-none focus:border-[#67A9A8] resize-y"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y"
           />
 
           <div v-else-if="item.type === 'image_path'" class="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -104,14 +104,14 @@
               v-if="item.value"
               :src="item.value"
               alt=""
-              class="w-16 h-16 rounded-lg object-cover border border-[#BFD1D5] shrink-0"
+              class="w-16 h-16 rounded-lg object-cover border border-[#BFD1D5] dark:border-dark-border shrink-0"
               @error="$event.target.style.visibility='hidden'"
             />
             <input
               v-model="item.value"
               type="text"
               placeholder="لینک تصویر"
-              class="w-full sm:flex-1 min-w-0 px-3 py-2 rounded-lg border border-[#BFD1D5] text-[12px] font-roboto focus:outline-none focus:border-[#67A9A8]"
+              class="w-full sm:flex-1 min-w-0 px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent"
             />
           </div>
 
@@ -119,16 +119,16 @@
             v-else-if="item.type === 'number'"
             v-model.number="item.value"
             type="number"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] text-[13px] font-roboto focus:outline-none focus:border-[#67A9A8]"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent"
           />
 
           <button
             v-else-if="item.type === 'boolean'"
             @click="item.value = !item.value"
             class="flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit transition"
-            :class="item.value ? 'bg-[#67A9A8]/15 border-[#67A9A8] text-[#2C7379]' : 'bg-gray-50 border-gray-300 text-gray-400'"
+            :class="item.value ? 'bg-[#67A9A8]/15 dark:bg-dark-accent/15 border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white' : 'bg-gray-50 dark:bg-dark-input border-gray-300 dark:border-dark-border text-gray-400 dark:text-white/60'"
           >
-            <span class="w-8 h-4 rounded-full relative transition-colors" :class="item.value ? 'bg-[#67A9A8]' : 'bg-gray-300'">
+            <span class="w-8 h-4 rounded-full relative transition-colors" :class="item.value ? 'bg-[#67A9A8] dark:bg-dark-accent' : 'bg-gray-300 dark:bg-dark-border'">
               <span
                 class="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all"
                 :class="item.value ? 'right-0.5' : 'right-4'"
@@ -141,7 +141,7 @@
             v-else
             v-model="item.value"
             rows="2"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] text-[13px] focus:outline-none focus:border-[#67A9A8] resize-y"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y"
           />
         </div>
       </div>
@@ -198,13 +198,13 @@ const typeLabel = (type) => ({
 }[type] || type)
 
 const typeBadgeClass = (type) => ({
-  text: 'bg-[#67A9A8]/15 text-[#2C7379]',
-  html: 'bg-purple-50 text-purple-500',
-  image_path: 'bg-amber-50 text-amber-600',
-  json: 'bg-blue-50 text-blue-500',
-  number: 'bg-gray-100 text-gray-500',
-  boolean: 'bg-pink-50 text-pink-500',
-}[type] || 'bg-gray-100 text-gray-500')
+  text: 'bg-[#67A9A8]/15 dark:bg-dark-accent/15 text-[#2C7379] dark:text-dark-highlight',
+  html: 'bg-purple-50 dark:bg-purple-900/30 text-purple-500 dark:text-purple-300',
+  image_path: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300',
+  json: 'bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-300',
+  number: 'bg-gray-100 dark:bg-dark-input text-gray-500 dark:text-dark-text-deep/70',
+  boolean: 'bg-pink-50 dark:bg-pink-900/30 text-pink-500 dark:text-pink-300',
+}[type] || 'bg-gray-100 dark:bg-dark-input text-gray-500 dark:text-dark-text-deep/70')
 
 const normalizeIncoming = (raw) => {
   // json values often come back as objects/arrays; keep them editable as text

@@ -159,17 +159,17 @@ watch(
       dir="rtl"
       @click.self="closeModal"
     >
-      <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+      <div class="bg-white dark:bg-dark-surface w-full max-w-lg rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         <!-- هدر -->
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 sticky top-0 bg-white rounded-t-2xl">
-          <h2 class="font-bold text-[#1a2333] text-base sm:text-lg">جزئیات قرعه‌کشی</h2>
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-dark-border sticky top-0 bg-white dark:bg-dark-surface rounded-t-2xl">
+          <h2 class="font-bold text-[#1a2333] dark:text-white text-base sm:text-lg">جزئیات قرعه‌کشی</h2>
 
           <div class="flex items-center gap-2">
             <template v-if="!loading && !errorMsg">
               <button
                 v-if="!isEditing"
                 @click="startEdit"
-                class="text-sm font-bold text-[#286463] border border-[#286463] rounded-lg px-3 py-1.5 hover:bg-[#286463]/10 transition cursor-pointer"
+                class="text-sm font-bold text-[#286463] dark:text-dark-accent border border-[#286463] dark:border-dark-accent rounded-lg px-3 py-1.5 hover:bg-[#286463]/10 dark:hover:bg-dark-accent/10 transition cursor-pointer"
               >
                 ویرایش
               </button>
@@ -177,14 +177,14 @@ watch(
                 <button
                   @click="save"
                   :disabled="saving"
-                  class="text-sm font-bold text-white bg-[#286463] rounded-lg px-3 py-1.5 hover:bg-[#1e4a49] transition cursor-pointer disabled:opacity-60"
+                  class="text-sm font-bold text-white bg-[#286463] dark:bg-dark-accent rounded-lg px-3 py-1.5 hover:bg-[#1e4a49] dark:hover:bg-dark-accent-hover transition cursor-pointer disabled:opacity-60"
                 >
                   {{ saving ? 'در حال ذخیره...' : 'ذخیره' }}
                 </button>
                 <button
                   @click="cancelEdit"
                   :disabled="saving"
-                  class="text-sm font-bold text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-50 transition cursor-pointer disabled:opacity-60"
+                  class="text-sm font-bold text-gray-500 dark:text-white/70 border border-gray-300 dark:border-dark-border rounded-lg px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-dark-input/40 transition cursor-pointer disabled:opacity-60"
                 >
                   انصراف
                 </button>
@@ -193,7 +193,7 @@ watch(
 
             <button
               @click="closeModal"
-              class="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer px-1"
+              class="text-gray-400 dark:text-white/60 hover:text-gray-600 dark:hover:text-white text-xl leading-none cursor-pointer px-1"
             >
               ✕
             </button>
@@ -202,118 +202,118 @@ watch(
 
         <!-- بدنه -->
         <div class="p-5">
-          <div v-if="loading" class="text-center py-10 text-gray-500">در حال بارگذاری...</div>
-          <div v-else-if="errorMsg" class="text-center py-10 text-red-500 font-bold">{{ errorMsg }}</div>
+          <div v-if="loading" class="text-center py-10 text-gray-500 dark:text-white/70">در حال بارگذاری...</div>
+          <div v-else-if="errorMsg" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ errorMsg }}</div>
 
           <div v-else class="flex flex-col gap-4">
             <!-- عنوان -->
             <div>
-              <label class="block text-xs font-bold text-gray-500 mb-1">عنوان</label>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">عنوان</label>
               <input
                 v-if="isEditing"
                 v-model="form.title"
                 type="text"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463]"
+                class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
               />
-              <p v-else class="text-sm text-[#1a2333] font-bold">{{ lottery?.title || '—' }}</p>
+              <p v-else class="text-sm text-[#1a2333] dark:text-white font-bold">{{ lottery?.title || '—' }}</p>
             </div>
 
             <!-- توضیحات -->
             <div>
-              <label class="block text-xs font-bold text-gray-500 mb-1">توضیحات</label>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">توضیحات</label>
               <textarea
                 v-if="isEditing"
                 v-model="form.description"
                 rows="3"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] resize-none"
+                class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent resize-none"
               ></textarea>
-              <p v-else class="text-sm text-gray-700 whitespace-pre-line">{{ lottery?.description || '—' }}</p>
+              <p v-else class="text-sm text-gray-700 dark:text-white whitespace-pre-line">{{ lottery?.description || '—' }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <!-- تاریخ شروع -->
               <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">تاریخ شروع</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ شروع</label>
                 <input
                   v-if="isEditing"
                   v-model="form.starts_at"
                   type="datetime-local"
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463]"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
                 />
-                <p v-else class="text-sm text-gray-700">{{ formatDate(lottery?.starts_at) }}</p>
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.starts_at) }}</p>
               </div>
 
               <!-- تاریخ پایان -->
               <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">تاریخ پایان</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ پایان</label>
                 <input
                   v-if="isEditing"
                   v-model="form.ends_at"
                   type="datetime-local"
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463]"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
                 />
-                <p v-else class="text-sm text-gray-700">{{ formatDate(lottery?.ends_at) }}</p>
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.ends_at) }}</p>
               </div>
 
               <!-- ظرفیت -->
               <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">ظرفیت</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">ظرفیت</label>
                 <input
                   v-if="isEditing"
                   v-model.number="form.capacity"
                   type="number"
                   min="0"
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463]"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
                 />
-                <p v-else class="text-sm text-gray-700">{{ lottery?.capacity ?? '—' }}</p>
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.capacity ?? '—' }}</p>
               </div>
 
               <!-- قیمت -->
               <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">قیمت (تومان)</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">قیمت (تومان)</label>
                 <input
                   v-if="isEditing"
                   v-model.number="form.price"
                   type="number"
                   min="0"
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463]"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
                 />
-                <p v-else class="text-sm text-gray-700">{{ lottery?.price?.toLocaleString('fa-IR') ?? '—' }}</p>
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.price?.toLocaleString('fa-IR') ?? '—' }}</p>
               </div>
 
               <!-- تعداد برندگان -->
               <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">تعداد برندگان</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تعداد برندگان</label>
                 <input
                   v-if="isEditing"
                   v-model.number="form.winner_count"
                   type="number"
                   min="1"
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463]"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
                 />
-                <p v-else class="text-sm text-gray-700">{{ lottery?.winner_count ?? '—' }}</p>
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.winner_count ?? '—' }}</p>
               </div>
 
               <!-- وضعیت -->
               <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">وضعیت</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">وضعیت</label>
                 <select
                   v-if="isEditing"
                   v-model="form.status"
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] bg-white"
+                  class="w-full border border-gray-300 dark:border-dark-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent bg-white dark:bg-dark-input dark:text-white"
                 >
                   <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">
                     {{ opt.label }}
                   </option>
                 </select>
-                <p v-else class="text-sm text-gray-700">{{ statusLabel(lottery?.status) }}</p>
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ statusLabel(lottery?.status) }}</p>
               </div>
             </div>
 
             <!-- زمان قرعه‌کشی (فقط نمایش) -->
             <div v-if="lottery?.drawn_at">
-              <label class="block text-xs font-bold text-gray-500 mb-1">زمان انجام قرعه‌کشی</label>
-              <p class="text-sm text-gray-700">{{ formatDate(lottery.drawn_at) }}</p>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">زمان انجام قرعه‌کشی</label>
+              <p class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery.drawn_at) }}</p>
             </div>
           </div>
         </div>

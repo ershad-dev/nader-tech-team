@@ -1,11 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import LotteryDraw from './LotteryDraw.vue'
 import LotteryInfoModal from './LotteryInfoModal.vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 const { authHeader, initFromStorage } = useAdminAuth()
+
+const colorMode = useColorMode()
 
 const showLotteryPage = ref(false)
 const entries = ref([])
@@ -15,6 +17,14 @@ const currentLottery = ref(null) // آبجکت کامل قرعه‌کشی جار
 const lotteryId = ref(null)
 
 const showInfoModal = ref(false)
+
+// رنگ اسکرول‌بار بر اساس حالت رنگی (دارک/لایت)
+const scrollbarThumbColor = computed(() =>
+  colorMode.value === 'dark' ? '#72A6A6' : '#67A9A8'
+)
+const scrollbarThumbHoverColor = computed(() =>
+  colorMode.value === 'dark' ? '#ADE9EA' : '#4d9aa0'
+)
 
 // پیدا کردن قرعه‌کشی جاری: اول فعال‌ترین، اگر نبود آخرین مورد کلی
 const resolveCurrentLottery = async () => {
@@ -92,10 +102,10 @@ onMounted(() => {
 <template>
   <div v-if="!showLotteryPage" class="max-w-full lg:max-w-[1000px] min-[1920px]:max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 min-[1920px]:p-12" dir="rtl">
 
-    <div class="bg-white flex items-center justify-center gap-3 py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] shadow-sm text-sm sm:text-base min-[1920px]:text-lg relative">
+    <div class="bg-white dark:bg-dark-input flex items-center justify-center gap-3 py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] dark:text-dark-text-deep shadow-sm text-sm sm:text-base min-[1920px]:text-lg relative">
       <div class="text-center">
         اطلاعات قرعه‌کشی
-        <span v-if="currentLottery" class="block text-xs font-normal text-gray-500 mt-1">
+        <span v-if="currentLottery" class="block text-xs font-normal text-gray-500 dark:text-dark-text-deep/70 mt-1">
           {{ currentLottery.title }}
         </span>
       </div>
@@ -103,30 +113,30 @@ onMounted(() => {
       <button
         v-if="currentLottery"
         @click="showInfoModal = true"
-        class="bg-[#67A9A880] text-black px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] transition-all whitespace-nowrap absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-xs sm:text-sm font-bold "
+        class="bg-[#67A9A880] dark:bg-dark-accent/60 text-black dark:text-dark-text-deep px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] dark:hover:bg-dark-accent-hover transition-all whitespace-nowrap absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-xs sm:text-sm font-bold "
       >
         جزئیات بیشتر
       </button>
     </div>
 
-    <div v-if="loading" class="text-center py-10 text-gray-500">در حال بارگذاری...</div>
-    <div v-else-if="errorMsg" class="text-center py-10 text-red-500 font-bold">{{ errorMsg }}</div>
+    <div v-if="loading" class="text-center py-10 text-gray-500 dark:text-dark-text/70">در حال بارگذاری...</div>
+    <div v-else-if="errorMsg" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ errorMsg }}</div>
 
     <template v-else>
 <!-- دسکتاپ -->
-<div class="hidden lg:block bg-[#F5F3ED] rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
+<div class="hidden lg:block bg-[#F5F3ED] dark:bg-dark-surface rounded-3xl overflow-hidden border border-gray-200 dark:border-dark-border shadow-sm">
   <div class="max-h-[360px] min-[1920px]:max-h-[440px] overflow-y-auto entries-scroll">
     <table class="w-full text-center">
-      <thead class="bg-[#BFCFD3] sticky top-0 z-10">
-        <tr class="text-[#1a2333] font-bold min-[1920px]:text-lg">
+      <thead class="bg-[#BFCFD3] dark:bg-dark-input sticky top-0 z-10">
+        <tr class="text-[#1a2333] dark:text-dark-text-deep font-bold min-[1920px]:text-lg">
           <th class="py-5 min-[1920px]:py-7">کد کاربری</th>
           <th class="py-5 min-[1920px]:py-7">کد قرعه‌کشی</th>
           <th class="py-5 min-[1920px]:py-7">نام و نام خانوادگی</th>
           <th class="py-5 min-[1920px]:py-7">شماره موبایل</th>
         </tr>
       </thead>
-      <tbody class="text-gray-600 min-[1920px]:text-lg">
-        <tr v-for="entry in entries" :key="entry.id" class="border-b border-gray-200 last:border-none">
+      <tbody class="text-gray-600 dark:text-dark-text min-[1920px]:text-lg">
+        <tr v-for="entry in entries" :key="entry.id" class="border-b border-gray-200 dark:border-dark-border last:border-none">
           <td class="py-6 min-[1920px]:py-8">{{ entry.user_id }}</td>
           <td class="py-6 min-[1920px]:py-8">{{ entry.code ?? '—' }}</td>
           <td class="py-6 min-[1920px]:py-8">{{ entry.user?.full_name }}</td>
@@ -142,23 +152,23 @@ onMounted(() => {
   <div
     v-for="entry in entries"
     :key="entry.id"
-    class="bg-[#F5F3ED] rounded-2xl border border-gray-200 shadow-sm p-4"
+    class="bg-[#F5F3ED] dark:bg-dark-input rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm p-4"
   >
-          <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
-            <span class="text-xs text-gray-500 font-bold">کد کاربری</span>
-            <span class="text-sm text-gray-700">{{ entry.user_id }}</span>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-200 dark:border-dark-border">
+            <span class="text-xs text-gray-500 dark:text-dark-text-deep/70 font-bold">کد کاربری</span>
+            <span class="text-sm text-gray-700 dark:text-dark-text-deep">{{ entry.user_id }}</span>
           </div>
-          <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
-            <span class="text-xs text-gray-500 font-bold">کد قرعه‌کشی</span>
-            <span class="text-sm text-gray-700 break-all">{{ entry.code ?? '—' }}</span>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-200 dark:border-dark-border">
+            <span class="text-xs text-gray-500 dark:text-dark-text-deep/70 font-bold">کد قرعه‌کشی</span>
+            <span class="text-sm text-gray-700 dark:text-dark-text-deep break-all">{{ entry.code ?? '—' }}</span>
           </div>
-          <div class="flex justify-between items-center py-1.5 border-b border-gray-200">
-            <span class="text-xs text-gray-500 font-bold">نام و نام خانوادگی</span>
-            <span class="text-sm text-gray-700">{{ entry.user?.full_name }}</span>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-200 dark:border-dark-border">
+            <span class="text-xs text-gray-500 dark:text-dark-text-deep/70 font-bold">نام و نام خانوادگی</span>
+            <span class="text-sm text-gray-700 dark:text-dark-text-deep">{{ entry.user?.full_name }}</span>
           </div>
           <div class="flex justify-between items-center py-1.5">
-            <span class="text-xs text-gray-500 font-bold">شماره موبایل</span>
-            <span class="text-sm text-gray-700" dir="ltr">{{ entry.user?.mobile }}</span>
+            <span class="text-xs text-gray-500 dark:text-dark-text-deep/70 font-bold">شماره موبایل</span>
+            <span class="text-sm text-gray-700 dark:text-dark-text-deep" dir="ltr">{{ entry.user?.mobile }}</span>
           </div>
         </div>
       </div>
@@ -167,7 +177,7 @@ onMounted(() => {
     <div class="mt-6 lg:mt-8 min-[1920px]:mt-12 flex justify-center">
       <button
         @click="showLotteryPage = true"
-        class="bg-[#286463] text-white px-8 sm:px-10 lg:px-12 min-[1920px]:px-16 py-2.5 sm:py-3 min-[1920px]:py-4 rounded-xl font-bold hover:bg-[#1e4a49] transition shadow-lg cursor-pointer text-sm sm:text-base min-[1920px]:text-lg w-full sm:w-auto"
+        class="bg-[#286463] dark:bg-dark-accent text-white dark:text-dark-text-deep px-8 sm:px-10 lg:px-12 min-[1920px]:px-16 py-2.5 sm:py-3 min-[1920px]:py-4 rounded-xl font-bold hover:bg-[#1e4a49] dark:hover:bg-dark-accent-hover transition shadow-lg cursor-pointer text-sm sm:text-base min-[1920px]:text-lg w-full sm:w-auto"
       >
         برگزاری قرعه‌کشی
       </button>
@@ -193,14 +203,14 @@ onMounted(() => {
   background: transparent;
 }
 .entries-scroll::-webkit-scrollbar-thumb {
-  background: #67A9A8;
+  background: v-bind(scrollbarThumbColor);
   border-radius: 9999px;
 }
 .entries-scroll::-webkit-scrollbar-thumb:hover {
-  background: #4d9aa0;
+  background: v-bind(scrollbarThumbHoverColor);
 }
 .entries-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #67A9A8 transparent;
+  scrollbar-color: v-bind(scrollbarThumbColor) transparent;
 }
 </style>

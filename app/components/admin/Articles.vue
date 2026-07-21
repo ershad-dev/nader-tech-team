@@ -236,10 +236,10 @@ onMounted(() => fetchArticles());
 <template>
   <!-- ۱. فرم افزودن/ویرایش مقاله -->
   <div v-if="isFormVisible" class="max-w-full lg:max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
-    <button @click="isFormVisible = false" class="mb-4 text-sm font-bold text-gray-500">بازگشت ← </button>
+    <button @click="isFormVisible = false" class="mb-4 text-sm font-bold text-gray-500 dark:text-dark-text">بازگشت ← </button>
 
-    <div class="bg-[#ECEDF4] p-4 sm:p-6 lg:p-8 rounded-[20px] sm:rounded-[24px] lg:rounded-[30px]">
-      <h2 class="text-lg sm:text-xl font-bold mb-5 sm:mb-8 text-[#1a2333]">
+    <div class="bg-[#ECEDF4] dark:bg-dark-surface p-4 sm:p-6 lg:p-8 rounded-[20px] sm:rounded-[24px] lg:rounded-[30px]">
+      <h2 class="text-lg sm:text-xl font-bold mb-5 sm:mb-8 text-[#1a2333] dark:text-dark-text">
         {{ isEditMode ? 'ویرایش مقاله' : 'افزودن مقاله' }}
       </h2>
 
@@ -248,71 +248,71 @@ onMounted(() => fetchArticles());
       <div class="space-y-4 sm:space-y-6">
         <!-- نام مقاله -->
         <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700">نام مقاله *</label>
-          <input v-model="form.title" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 border border-gray-300 rounded-[17px] px-4 focus:outline-none" placeholder="تفاوت طراحی سایت اختصاصی با قالب آماده" />
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">نام مقاله *</label>
+          <input v-model="form.title" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text" placeholder="تفاوت طراحی سایت اختصاصی با قالب آماده" />
           <p v-if="formErrors.title" class="text-xs text-red-600 mt-1">{{ formErrors.title[0] }}</p>
         </div>
 
         <!-- نامک (slug) -->
         <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700">نامک (Slug)</label>
-          <input v-model="form.slug" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 border border-gray-300 rounded-[17px] px-4 focus:outline-none" placeholder="در صورت خالی بودن به‌صورت خودکار ساخته می‌شود" />
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">نامک (Slug)</label>
+          <input v-model="form.slug" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text" placeholder="در صورت خالی بودن به‌صورت خودکار ساخته می‌شود" />
           <p v-if="formErrors.slug" class="text-xs text-red-600 mt-1">{{ formErrors.slug[0] }}</p>
         </div>
 
         <!-- تصویر مقاله -->
         <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700">
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">
             تصویر مقاله {{ isEditMode ? '' : '*' }}
           </label>
-          <div class="w-full min-h-[140px] sm:h-[180px] border border-gray-300 rounded-2xl flex flex-col sm:flex-row items-center justify-start gap-4 sm:gap-6 p-4 sm:px-6 bg-white/20">
+          <div class="w-full min-h-[140px] sm:h-[180px] border border-gray-300 dark:border-dark-border rounded-2xl flex flex-col sm:flex-row items-center justify-start gap-4 sm:gap-6 p-4 sm:px-6 bg-white/20 dark:bg-dark-input/20">
             <img
               v-if="thumbnailPreview"
               :src="thumbnailPreview"
               class="w-[110px] h-[132px] sm:w-[136px] sm:h-[163px] object-cover rounded-[17px]"
             />
-            <div v-else class="w-[110px] h-[132px] sm:w-[136px] sm:h-[163px] rounded-[17px] bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+            <div v-else class="w-[110px] h-[132px] sm:w-[136px] sm:h-[163px] rounded-[17px] bg-gray-200 dark:bg-dark-input flex items-center justify-center text-xs text-gray-500 dark:text-dark-text-deep">
               بدون تصویر
             </div>
 
-            <label class="bg-gray-300 px-6 py-2 rounded-xl text-sm font-bold cursor-pointer">
+            <label class="bg-gray-300 dark:bg-dark-input px-6 py-2 rounded-xl text-sm font-bold cursor-pointer dark:text-dark-text-deep">
               انتخاب تصویر
               <input type="file" accept=".jpg,.jpeg,.png,.webp" class="hidden" @change="onThumbnailChange" />
             </label>
           </div>
-          <p class="text-xs text-gray-500 mt-1">حداکثر حجم ۲ مگابایت، فرمت‌های مجاز: jpg, jpeg, png, webp</p>
+          <p class="text-xs text-gray-500 dark:text-dark-text mt-1">حداکثر حجم ۲ مگابایت، فرمت‌های مجاز: jpg, jpeg, png, webp</p>
           <p v-if="formErrors.thumbnail" class="text-xs text-red-600 mt-1">{{ formErrors.thumbnail[0] }}</p>
         </div>
 
         <!-- متن جایگزین تصویر -->
         <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700">متن جایگزین تصویر (Alt)</label>
-          <input v-model="form.thumbnail_alt" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 border border-gray-300 rounded-[17px] px-4 focus:outline-none" placeholder="تصویر مقاله" />
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن جایگزین تصویر (Alt)</label>
+          <input v-model="form.thumbnail_alt" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text" placeholder="تصویر مقاله" />
         </div>
 
         <!-- متن توضیحات -->
         <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700">متن توضیحات مقاله *</label>
-          <textarea v-model="form.content" class="w-full h-[180px] sm:h-[250px] bg-white/20 border border-gray-300 rounded-2xl p-4 focus:outline-none"></textarea>
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن توضیحات مقاله *</label>
+          <textarea v-model="form.content" class="w-full h-[180px] sm:h-[250px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-2xl p-4 focus:outline-none dark:text-dark-text"></textarea>
           <p v-if="formErrors.content" class="text-xs text-red-600 mt-1">{{ formErrors.content[0] }}</p>
         </div>
 
         <!-- سئو (اختیاری) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-bold mb-2 text-gray-700">عنوان سئو</label>
-            <input v-model="form.meta_title" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 border border-gray-300 rounded-[17px] px-4 focus:outline-none" />
+            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">عنوان سئو</label>
+            <input v-model="form.meta_title" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text" />
           </div>
           <div>
-            <label class="block text-sm font-bold mb-2 text-gray-700">توضیحات سئو</label>
-            <input v-model="form.meta_description" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 border border-gray-300 rounded-[17px] px-4 focus:outline-none" />
+            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">توضیحات سئو</label>
+            <input v-model="form.meta_description" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text" />
           </div>
         </div>
 
         <!-- وضعیت انتشار -->
         <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700">وضعیت</label>
-          <select v-model="form.status" class="w-full h-[46px] sm:h-[50px] bg-white/20 border border-gray-300 rounded-[17px] px-4 focus:outline-none">
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">وضعیت</label>
+          <select v-model="form.status" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text">
             <option value="draft">پیش‌نویس</option>
             <option value="published">منتشر شده</option>
             <option value="archived">آرشیو شده</option>
@@ -323,7 +323,7 @@ onMounted(() => fetchArticles());
           <button
             @click="saveArticle"
             :disabled="isSaving"
-            class="bg-[#286463] text-white px-8 py-3 rounded-xl font-bold text-sm w-full sm:w-[150px] disabled:opacity-60"
+            class="bg-[#286463] dark:bg-dark-accent text-white px-8 py-3 rounded-xl font-bold text-sm w-full sm:w-[150px] disabled:opacity-60"
           >
             {{ isSaving ? 'در حال ذخیره...' : 'ذخیره مقاله' }}
           </button>
@@ -335,31 +335,31 @@ onMounted(() => fetchArticles());
   <!-- ۲. لیست مقالات -->
   <div v-else class="max-w-full lg:max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
 
-    <div class="flex flex-row justify-between items-center mb-5 sm:mb-8 bg-white rounded-full w-full h-[52px] sm:h-[60px] px-3 sm:px-4">
-      <h1 class="text-base sm:text-lg lg:text-xl font-bold text-[#1a2333]">مقالات</h1>
-      <button @click="openCreateForm" class="bg-[#67A9A880] px-3 sm:px-6 py-2 rounded-full font-bold flex items-center gap-2 text-[12px] sm:text-[14px] whitespace-nowrap">
+    <div class="flex flex-row justify-between items-center mb-5 sm:mb-8 bg-white dark:bg-dark-surface rounded-full w-full h-[52px] sm:h-[60px] px-3 sm:px-4">
+      <h1 class="text-base sm:text-lg lg:text-xl font-bold text-[#1a2333] dark:text-dark-text-deep">مقالات</h1>
+      <button @click="openCreateForm" class="bg-[#67A9A880] dark:bg-dark-accent/60 px-3 sm:px-6 py-2 rounded-full font-bold flex items-center gap-2 text-[12px] sm:text-[14px] whitespace-nowrap dark:text-dark-text-deep">
         + افزودن مقاله
       </button>
     </div>
 
-    <p v-if="isLoadingList" class="text-center text-gray-500 py-8">در حال بارگذاری...</p>
+    <p v-if="isLoadingList" class="text-center text-gray-500 dark:text-dark-text py-8">در حال بارگذاری...</p>
     <p v-else-if="listError" class="text-center text-red-600 py-8">{{ listError }}</p>
-    <p v-else-if="articles.length === 0" class="text-center text-gray-500 py-8">مقاله‌ای یافت نشد.</p>
+    <p v-else-if="articles.length === 0" class="text-center text-gray-500 dark:text-dark-text py-8">مقاله‌ای یافت نشد.</p>
 
     <div v-else class="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-5 lg:gap-6">
       <div
         v-for="article in articles"
         :key="article.id"
-        class="bg-white/20 p-3 sm:p-5 lg:p-6 rounded-[16px] sm:rounded-[24px] lg:rounded-[30px] border border-gray-300 shadow-sm flex flex-col sm:flex-row items-center gap-2 sm:gap-5 lg:gap-6 h-auto lg:h-[186px]"
+        class="bg-white/20 dark:bg-dark-input/20 p-3 sm:p-5 lg:p-6 rounded-[16px] sm:rounded-[24px] lg:rounded-[30px] border border-gray-300 dark:border-dark-border shadow-sm flex flex-col sm:flex-row items-center gap-2 sm:gap-5 lg:gap-6 h-auto lg:h-[186px]"
       >
         <img :src="article.thumbnail" class="w-full h-[100px] sm:w-[110px] sm:h-[132px] lg:w-[136px] lg:h-[163px] object-cover rounded-xl sm:rounded-2xl shrink-0" />
         <div class="flex-1 w-full">
-          <h3 class="font-bold text-[12px] sm:text-base lg:text-lg mb-1.5 sm:mb-3 lg:mb-4 line-clamp-2">{{ article.title }}</h3>
+          <h3 class="font-bold text-[12px] sm:text-base lg:text-lg mb-1.5 sm:mb-3 lg:mb-4 line-clamp-2 dark:text-dark-text">{{ article.title }}</h3>
           <div class="flex flex-col gap-1 sm:gap-2 text-gray-500 text-[10px] sm:text-sm">
-            <span class="flex items-center gap-1 sm:gap-2 text-[#747893]">
+            <span class="flex items-center gap-1 sm:gap-2 text-[#747893] dark:text-dark-text">
               <AdminIconsDateVector /> {{ formatDate(article.created_at) }}
             </span>
-            <span class="flex items-center gap-1 sm:gap-2 text-[#747893]">
+            <span class="flex items-center gap-1 sm:gap-2 text-[#747893] dark:text-dark-text">
               <AdminIconsEyeVector /> {{ article.views_count }} بازدید
             </span>
           </div>
@@ -369,13 +369,13 @@ onMounted(() => fetchArticles());
           <button
             @click="deleteArticle(article)"
             :disabled="deletingId === article.id"
-            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-60"
+            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] dark:bg-dark-input rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-60 dark:text-dark-text-deep"
           >
             <AdminIconsDelete /> {{ deletingId === article.id ? 'در حال حذف...' : 'حذف' }}
           </button>
           <button
             @click="openEditForm(article)"
-            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] rounded-lg sm:rounded-[10px] text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1"
+            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] dark:bg-dark-input rounded-lg sm:rounded-[10px] text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 dark:text-dark-text-deep"
           >
             <AdminIconsEdit /> ویرایش
           </button>
@@ -385,17 +385,17 @@ onMounted(() => fetchArticles());
 
     <!-- صفحه‌بندی -->
     <div v-if="totalPages > 1" class="flex justify-center sm:justify-end gap-2 mt-6 sm:mt-8">
-      <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white border border-gray-300 font-bold hover:bg-gray-50 disabled:opacity-50">→</button>
+      <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white dark:bg-dark-input border border-gray-300 dark:border-dark-border font-bold hover:bg-gray-50 dark:hover:bg-dark-input/70 disabled:opacity-50 dark:text-dark-text-deep">→</button>
       <button
         v-for="page in totalPages"
         :key="page"
         @click="changePage(page)"
         dir="ltr"
-        :class="['w-9 h-9 sm:w-10 sm:h-10 rounded-lg font-bold border transition', currentPage === page ? 'bg-teal-800 text-white' : 'bg-white border-gray-300 hover:bg-gray-50']"
+        :class="['w-9 h-9 sm:w-10 sm:h-10 rounded-lg font-bold border transition', currentPage === page ? 'bg-teal-800 dark:bg-dark-accent text-white' : 'bg-white dark:bg-dark-input border-gray-300 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-input/70 dark:text-dark-text-deep']"
       >
         {{ page }}
       </button>
-      <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white border border-gray-300 font-bold hover:bg-gray-50 disabled:opacity-50">←</button>
+      <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white dark:bg-dark-input border border-gray-300 dark:border-dark-border font-bold hover:bg-gray-50 dark:hover:bg-dark-input/70 disabled:opacity-50 dark:text-dark-text-deep">←</button>
     </div>
   </div>
 </template>

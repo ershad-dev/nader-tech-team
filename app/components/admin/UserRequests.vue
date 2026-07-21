@@ -7,6 +7,10 @@ const API_BASE = config.public?.apiBase || 'https://nadertechnologyteam.ir'
 
 const { authHeader, initFromStorage, isLoggedIn } = useAdminAuth()
 
+// دارک‌مود برای رنگ هاردکد SVG
+const colorMode = useColorMode()
+const chevronColor = computed(() => (colorMode.value === 'dark' ? '#FFFFFF' : '#747893'))
+
 // تب‌ها - مقدار slug باید با آنچه سرور برمی‌گرداند مطابقت داشته باشد
 // ⚠️ فقط web-design تایید شده از مثال Swagger است، بقیه را با پاسخ واقعی API چک کن
 const activeTab = ref('design')
@@ -104,7 +108,7 @@ const toggleAccordion = (id) => {
 <template>
   <div class="p-4 sm:p-5 lg:p-6" dir="rtl">
 
-    <div class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0">
+    <div class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0">
       <button
         v-for="tab in tabs"
         :key="tab.id"
@@ -112,8 +116,8 @@ const toggleAccordion = (id) => {
         :class="[
           'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
           activeTab === tab.id
-            ? 'bg-[#67A9A8] text-[#0F184B] shadow-md'
-            : 'text-[] hover:bg-gray-200'
+            ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white shadow-md'
+            : 'text-[] dark:text-white hover:bg-gray-200 dark:hover:bg-dark-input'
         ]"
       >
         {{ tab.label }}
@@ -121,14 +125,14 @@ const toggleAccordion = (id) => {
     </div>
 
     <!-- حالت لودینگ -->
-    <div v-if="isLoading" class="text-center text-gray-400 mt-10">
+    <div v-if="isLoading" class="text-center text-gray-400 dark:text-white mt-10">
       در حال بارگذاری...
     </div>
 
     <!-- حالت خطا -->
-    <div v-else-if="errorMessage" class="text-center text-red-500 mt-10">
+    <div v-else-if="errorMessage" class="text-center text-red-500 dark:text-red-300 mt-10">
       {{ errorMessage }}
-      <button @click="fetchProjectRequests" class="block mx-auto mt-2 text-sm text-[#2d6a66] underline">
+      <button @click="fetchProjectRequests" class="block mx-auto mt-2 text-sm text-[#2d6a66] dark:text-dark-highlight underline">
         تلاش مجدد
       </button>
     </div>
@@ -136,20 +140,20 @@ const toggleAccordion = (id) => {
     <template v-else>
 <div class="space-y-4">
         <div v-for="user in filteredUsers" :key="user.id"
-             class="bg-[#FFFFFF3B] p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 transition-all duration-300">
+             class="bg-[#FFFFFF3B] dark:bg-dark-input/20 p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 dark:border-dark-border transition-all duration-300">
 
 <div class="flex justify-between items-start">
             <div class="flex items-center gap-3 sm:gap-4">
               <div>
-                <h3 class="font-bold text-[15px] sm:text-[17px] lg:text-[20px] text-[#000000] font-roboto">{{ user.name }}</h3>
-                <p class="text-black mt-1 lg:mt-2 font-roboto text-[13px] sm:text-[15px] lg:text-[20px]">{{ user.phone }}</p>
-                <p v-if="openUserId === user.id" class="text-[13px] sm:text-[15px] lg:text-[20px] text-black font-roboto break-all">{{ user.email }}</p>
+                <h3 class="font-bold text-[15px] sm:text-[17px] lg:text-[20px] text-[#000000] dark:text-white font-roboto">{{ user.name }}</h3>
+                <p class="text-black dark:text-white mt-1 lg:mt-2 font-roboto text-[13px] sm:text-[15px] lg:text-[20px]">{{ user.phone }}</p>
+                <p v-if="openUserId === user.id" class="text-[13px] sm:text-[15px] lg:text-[20px] text-black dark:text-white font-roboto break-all">{{ user.email }}</p>
               </div>
             </div>
           </div>
 
           <div v-if="openUserId === user.id" class="mt-4 lg:mt-6 pt-4 lg:pt-6">
-            <div class="w-full h-28 sm:h-32 p-3 sm:p-4 border border-[#2C7379] rounded-[5px] bg-white/17 text-balck text-[13px] sm:text-[14px] mb-4 font-roboto">
+            <div class="w-full h-28 sm:h-32 p-3 sm:p-4 border border-[#2C7379] dark:border-dark-accent rounded-[5px] bg-white/17 dark:bg-dark-input/20 text-balck dark:text-white text-[13px] sm:text-[14px] mb-4 font-roboto">
               {{ user.details }}
             </div>
           </div>
@@ -158,21 +162,21 @@ const toggleAccordion = (id) => {
             <button
               @click="toggleAccordion(user.id)"
               :class="[
-                'text-gray-600 text-xs sm:text-sm flex items-center gap-1 hover:text-[#2d6a66] transition-colors mt-2 lg:mt-0',
+                'text-gray-600 dark:text-white/70 text-xs sm:text-sm flex items-center gap-1 hover:text-[#2d6a66] dark:hover:text-white transition-colors mt-2 lg:mt-0',
                 openUserId === user.id ? 'lg:mt-0' : ''
               ]"
             >
               {{ openUserId === user.id ? 'بستن اطلاعات' : 'دیدن کامل اطلاعات' }}
               <span :class="{'rotate-180': openUserId === user.id}" class="transition-transform duration-300">
                 <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.41 7.41L0 6L6 0L12 6L10.59 7.41L6 2.83L1.41 7.41Z" fill="#747893"/>
+                  <path d="M1.41 7.41L0 6L6 0L12 6L10.59 7.41L6 2.83L1.41 7.41Z" :fill="chevronColor"/>
                 </svg>
               </span>
             </button>
           </div>
         </div>
 
-        <p v-if="filteredUsers.length === 0" class="text-center text-gray-400 mt-10">موردی برای نمایش وجود ندارد.</p>
+        <p v-if="filteredUsers.length === 0" class="text-center text-gray-400 dark:text-white/70 mt-10">موردی برای نمایش وجود ندارد.</p>
       </div>
 
       <!-- صفحه‌بندی -->
@@ -180,17 +184,17 @@ const toggleAccordion = (id) => {
         <button
           @click="goToPage(currentPage - 1)"
           :disabled="currentPage <= 1"
-          class="px-3 py-1.5 rounded-lg border border-gray-300 text-sm disabled:opacity-40"
+          class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-dark-border dark:text-white text-sm disabled:opacity-40"
         >
           قبلی
         </button>
-        <span class="text-sm text-gray-600">
+        <span class="text-sm text-gray-600 dark:text-white/70">
           صفحه {{ meta.current_page }} از {{ meta.last_page }}
         </span>
         <button
           @click="goToPage(currentPage + 1)"
           :disabled="currentPage >= meta.last_page"
-          class="px-3 py-1.5 rounded-lg border border-gray-300 text-sm disabled:opacity-40"
+          class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-dark-border dark:text-white text-sm disabled:opacity-40"
         >
           بعدی
         </button>

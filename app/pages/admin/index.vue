@@ -1,17 +1,17 @@
 <template>
   <div
     class="px-[12px] pt-[10px] pb-[10px] sm:px-[20px] md:px-[40px] lg:pr-[80px] lg:pl-[80px] lg:pt-[10px] lg:pb-[10px] h-screen transition-colors duration-700"
-    :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ffffff]'"
+    :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ffffff] dark:bg-dark-bg'"
   >
     <div
       class="flex flex-col lg:flex-row h-full rounded-[16px] lg:rounded-[30px] overflow-hidden shadow-xl font-sans transition-colors duration-700 relative"
-      :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-white'"
+      :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-white dark:bg-dark-bg'"
       dir="rtl"
     >
       <!-- Mobile / Tablet Top Bar -->
       <div
         class="flex lg:hidden items-center justify-between px-4 py-3 shadow-md z-20 transition-colors duration-700"
-        :class="isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]'"
+        :class="isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5] dark:bg-dark-surface'"
       >
         <div class="flex items-center gap-3">
           <img
@@ -22,7 +22,7 @@
           <div class="text-right">
             <h2
               class="font-bold text-[14px] whitespace-nowrap"
-              :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
+              :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B] dark:text-dark-text'"
             >
               {{ admin?.full_name || 'مدیر سیستم' }}
             </h2>
@@ -32,7 +32,7 @@
         <button
           @click="isMobileMenuOpen = true"
           class="p-2 rounded-lg"
-          :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
+          :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B] dark:text-dark-text'"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -56,7 +56,7 @@
           'fixed top-0 right-0 h-full w-[270px] max-w-[80vw] z-40 transform transition-transform duration-500',
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full',
           'lg:static lg:top-auto lg:right-auto lg:h-auto lg:max-w-none lg:translate-x-0 lg:z-10',
-          isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5]',
+          isGalaxyTheme ? 'bg-[#1a1a2e]' : 'bg-[#BFD1D5] dark:bg-dark-surface',
           isSidebarOpen ? 'lg:w-[253px] min-[1920px]:w-[300px]' : 'lg:w-[90px] min-[1920px]:w-[112px]'
         ]"
       >
@@ -64,7 +64,7 @@
         <button
           @click="isMobileMenuOpen = false"
           class="lg:hidden self-start mr-[18px] mb-4 p-1"
-          :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B]'"
+          :class="isGalaxyTheme ? 'text-white' : 'text-[#0F184B] dark:text-dark-text'"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -92,13 +92,13 @@
               ? 'opacity-100 max-w-[180px] min-[1920px]:max-w-[220px] translate-x-0 delay-200'
               : 'opacity-0 max-w-0 -translate-x-2 delay-0'"
           >
-            <h2 class="font-bold text-[#0F184B] text-[14px] min-[1920px]:text-[17px] whitespace-nowrap">
+            <h2 class="font-bold text-[#0F184B] dark:text-dark-text text-[14px] min-[1920px]:text-[17px] whitespace-nowrap">
               {{ admin?.full_name || 'مدیر سیستم' }}
             </h2>
-            <p class="text-gray-500 text-[12px] min-[1920px]:text-[14px] mt-1 whitespace-nowrap font-roboto">
+            <p class="text-gray-500 dark:text-dark-text/70 text-[12px] min-[1920px]:text-[14px] mt-1 whitespace-nowrap font-roboto">
               {{ admin?.mobile || '' }}
             </p>
-            <p class="w-[139px] min-[1920px]:w-[170px] text-gray-500 text-[9px] min-[1920px]:text-[11px] mt-1 whitespace-nowrap font-roboto">
+            <p class="w-[139px] min-[1920px]:w-[170px] text-gray-500 dark:text-dark-text/70 text-[9px] min-[1920px]:text-[11px] mt-1 whitespace-nowrap font-roboto">
               {{ admin?.email || '' }}
             </p>
           </div>
@@ -129,7 +129,7 @@
                 class="w-full h-full max-w-full max-h-full"
                 :class="isGalaxyTheme
                   ? 'text-white'
-                  : (activeComponent === item.component ? 'text-[#2C7379]' : 'text-[#454C6A]')"
+                  : (activeComponent === item.component ? 'text-[#2C7379] dark:text-dark-highlight' : 'text-[#454C6A] dark:text-dark-text')"
               />
             </span>
 
@@ -148,15 +148,15 @@
             @click="logout"
             class="px-4 py-1.5 flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03] font-bold border min-h-[40px] lg:min-h-[40px] min-[1920px]:min-h-[54px]"
             :class="isSidebarOpen
-              ? `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3  ${isGalaxyTheme ? 'text-white' : 'text-red-500'}`
-              : `bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500'} lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5`"
+              ? `bg-[#67A9A880] dark:bg-dark-input/30 hover:bg-[#8FB0B2] dark:hover:bg-dark-surface border border-white dark:border-dark-border gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3  ${isGalaxyTheme ? 'text-white' : 'text-red-500 dark:text-red-400'}`
+              : `bg-[#67A9A880] dark:bg-dark-input/30 hover:bg-[#8FB0B2] dark:hover:bg-dark-surface border border-white dark:border-dark-border gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right ${isGalaxyTheme ? 'text-white' : 'text-red-500 dark:text-red-400'} lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5`"
           >
             <span
               class="flex items-center justify-center flex-shrink-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-[22px] h-[22px] min-[1920px]:w-[26px] min-[1920px]:h-[26px] lg:w-[33px] lg:h-[33px] min-[1920px]:!w-[42px] min-[1920px]:!h-[42px]"
             >
               <admin-icons-logout
                 class="w-full h-full max-w-full max-h-full"
-                :class="isGalaxyTheme ? 'text-white' : 'text-red-500'"
+                :class="isGalaxyTheme ? 'text-white' : 'text-red-500 dark:text-red-400'"
               />
             </span>
 
@@ -175,7 +175,7 @@
       <!-- Main Content -->
       <main
         class="flex-1 rounded-b-[16px] lg:rounded-b-none lg:rounded-l-[40px] mr-0 lg:mr-[-20px] overflow-y-auto transition-colors duration-700 hide-scrollbar"
-        :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ECEDF4]'"
+        :class="isGalaxyTheme ? 'bg-[#0f0c29]' : 'bg-[#ECEDF4] dark:bg-dark-bg'"
       >
         <div v-if="!activeComponent" class="w-full h-full flex items-center justify-center p-4">
           <img src="/images/empty-page4.png" alt="Empty State" class="w-full max-w-[1200px] max-h-[260px] lg:max-h-[500px] object-contain " />
@@ -230,7 +230,6 @@ const StaticContent = defineAsyncComponent(() =>
   import('~/components/admin/StaticContent.vue')
 )
 
-// اطلاعات ادمین لاگین‌شده (همان دیتایی که هنگام لاگین از API گرفته و در composable ذخیره شد)
 const { admin, initFromStorage, clearAuth } = useAdminAuth()
 
 onMounted(() => {
@@ -248,11 +247,7 @@ provide('setGalaxyTheme', (value) => {
 
 const selectItem = (component) => {
   activeComponent.value = component
-
-  // اگر کاربر روی "قرعه‌کشی" کلیک کند، تم کهکشانی فعال شود
   isGalaxyTheme.value = (component === LotteryDraw)
-
-  // بعد از انتخاب آیتم، منوی موبایل بسته شود
   isMobileMenuOpen.value = false
 }
 
@@ -268,24 +263,22 @@ const navItems = [
   { name: 'مدیریت محتوای صفحات', component: StaticContent, icon: PageContentIcon }
 ]
 
-// کلاس‌های آیتم‌های منو: در موبایل همیشه حالت "باز" نمایش داده می‌شود
-// و در دسکتاپ (lg) دقیقاً همان رفتار قبلی هاور حفظ شده است
 const getNavItemClasses = (item) => {
   const isActive = activeComponent.value === item.component
 
   const openClasses = isActive
-    ? `bg-[#67A9A880] border-[#67A9A8] ${isGalaxyTheme.value ? 'text-white' : 'text-[#0F184B]'} gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3`
-    : `bg-[#67A9A880] ${isGalaxyTheme.value ? 'text-white' : 'text-[#0F184B]/80'} hover:bg-[#8FB0B2] border border-white gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3`
+    ? `bg-[#67A9A880] dark:bg-dark-accent/30 border-[#67A9A8] dark:border-dark-accent ${isGalaxyTheme.value ? 'text-white' : 'text-[#0F184B] dark:text-dark-text'} gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3`
+    : `bg-[#67A9A880] dark:bg-dark-input/30 ${isGalaxyTheme.value ? 'text-white' : 'text-[#0F184B]/80 dark:text-dark-text/80'} hover:bg-[#8FB0B2] dark:hover:bg-dark-surface border border-white dark:border-dark-border gap-4 rounded-br-3xl rounded-tl-3xl justify-start text-right min-[1920px]:px-6 min-[1920px]:py-3`
 
   const closedClassesDesktop = isActive
-    ? `lg:bg-transparent lg:border-transparent lg:justify-center lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5 ${isGalaxyTheme.value ? 'lg:text-white' : 'lg:text-[#0F184B]'}`
-    : `lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5 ${isGalaxyTheme.value ? 'lg:text-white' : 'lg:text-[#0F184B]/80'}`
+    ? `lg:bg-transparent lg:border-transparent lg:justify-center lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5 ${isGalaxyTheme.value ? 'lg:text-white' : 'lg:text-[#0F184B] lg:dark:text-dark-text'}`
+    : `lg:bg-transparent lg:border-transparent lg:justify-center lg:hover:scale-110 lg:gap-0 lg:px-0 min-[1920px]:px-0 min-[1920px]:py-1.5 ${isGalaxyTheme.value ? 'lg:text-white' : 'lg:text-[#0F184B]/80 lg:dark:text-dark-text/80'}`
 
   return isSidebarOpen.value ? openClasses : `${openClasses} ${closedClassesDesktop}`
 }
 
 const logout = () => {
-  clearAuth() // پاک کردن توکن و اطلاعات ادمین از state و localStorage
+  clearAuth()
   navigateTo('/admin/ntt20119')
 }
 </script>

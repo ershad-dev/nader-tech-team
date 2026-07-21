@@ -3,13 +3,13 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       <div>
-        <h1 class="text-[20px] lg:text-[24px] font-bold text-[#0F184B]">سوالات متداول</h1>
-        <p class="text-[13px] text-gray-500 mt-1">افزودن، ویرایش و حذف سوالات متداول سایت</p>
+        <h1 class="text-[20px] lg:text-[24px] font-bold text-[#0F184B] dark:text-dark-text">سوالات متداول</h1>
+        <p class="text-[13px] text-gray-500 dark:text-dark-text mt-1">افزودن، ویرایش و حذف سوالات متداول سایت</p>
       </div>
 
       <button
         @click="openCreateModal"
-        class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-3xl  bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white text-[#0F184B] font-bold text-[14px] shadow-md transition-all duration-300 hover:scale-[1.03] self-start sm:self-auto"
+        class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-3xl  bg-[#67A9A880] hover:bg-[#8FB0B2] dark:bg-dark-accent/60 dark:hover:bg-dark-accent-hover/60 border border-white dark:border-dark-border text-[#0F184B] dark:text-dark-text-deep font-bold text-[14px] shadow-md transition-all duration-300 hover:scale-[1.03] self-start sm:self-auto"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -32,21 +32,21 @@
     <!-- Loading state -->
     <div v-if="isLoading" class="flex flex-col items-center justify-center py-24 gap-3">
       <div class="w-10 h-10 border-4 border-[#67A9A8] border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-[13px] text-gray-400">در حال بارگذاری سوالات...</p>
+      <p class="text-[13px] text-gray-400 dark:text-dark-text">در حال بارگذاری سوالات...</p>
     </div>
 
     <!-- Empty state -->
     <div
       v-else-if="!faqs.length"
-      class="flex flex-col items-center justify-center py-24 gap-3 bg-white rounded-[24px] shadow-sm"
+      class="flex flex-col items-center justify-center py-24 gap-3 bg-white dark:bg-dark-surface rounded-[24px] shadow-sm"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-[#BFD1D5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-[#BFD1D5] dark:text-dark-border" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <p class="text-[14px] text-gray-400">هنوز سوالی ثبت نشده است</p>
+      <p class="text-[14px] text-gray-400 dark:text-dark-text">هنوز سوالی ثبت نشده است</p>
       <button
         @click="openCreateModal"
-        class="mt-2 px-5 py-2 rounded-2xl bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white text-[#0F184B] font-bold text-[13px] transition-all duration-300"
+        class="mt-2 px-5 py-2 rounded-2xl bg-[#67A9A880] hover:bg-[#8FB0B2] dark:bg-dark-accent/60 dark:hover:bg-dark-accent-hover/60 border border-white dark:border-dark-border text-[#0F184B] dark:text-dark-text-deep font-bold text-[13px] transition-all duration-300"
       >
         افزودن اولین سوال
       </button>
@@ -57,7 +57,7 @@
       <div
         v-for="item in sortedFaqs"
         :key="item.id"
-        class="border-[2px] border-gray-300 rounded-[20px] shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+        class="border-[2px] border-gray-300 dark:border-dark-border rounded-[20px] shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
       >
         <button
           @click="toggleExpand(item.id)"
@@ -66,16 +66,16 @@
           <div class="flex items-center gap-3 flex-1 min-w-0">
             <span
               class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold"
-              :class="item.is_active ? 'bg-[#67A9A880] text-[#0F184B]' : 'bg-gray-100 text-gray-400'"
+              :class="item.is_active ? 'bg-[#67A9A880] dark:bg-dark-accent/60 text-[#0F184B] dark:text-dark-text-deep' : 'bg-gray-100 dark:bg-dark-input text-gray-400 dark:text-dark-text-deep'"
             >
               {{ item.sort_order }}
             </span>
-            <h3 class="font-bold text-[14px] lg:text-[15px] text-[#0F184B] truncate">
+            <h3 class="font-bold text-[14px] lg:text-[15px] text-[#0F184B] dark:text-dark-text truncate">
               {{ item.question }}
             </h3>
             <span
               v-if="!item.is_active"
-              class="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-400 font-medium"
+              class="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-dark-input text-gray-400 dark:text-dark-text-deep font-medium"
             >
               غیرفعال
             </span>
@@ -84,7 +84,7 @@
           <div class="flex items-center gap-2 shrink-0">
             <span
               @click.stop="openEditModal(item)"
-              class="p-2 rounded-full hover:bg-[#ECEDF4] text-[#454C6A] transition-colors duration-200 cursor-pointer"
+              class="p-2 rounded-full hover:bg-[#ECEDF4] dark:hover:bg-dark-input text-[#454C6A] dark:text-dark-text transition-colors duration-200 cursor-pointer"
               title="ویرایش"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,7 +102,7 @@
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-[#454C6A] transition-transform duration-300"
+              class="w-5 h-5 text-[#454C6A] dark:text-dark-text transition-transform duration-300"
               :class="expandedId === item.id ? 'rotate-180' : ''"
               fill="none" viewBox="0 0 24 24" stroke="currentColor"
             >
@@ -113,9 +113,9 @@
 
         <transition name="expand">
           <div v-if="expandedId === item.id" class="px-5 pb-5 pt-0">
-            <div class="border-t border-[#ECEDF4] pt-4">
-              <p class="text-[13px] lg:text-[14px] text-gray-600 leading-7 whitespace-pre-line">{{ item.answer }}</p>
-              <p class="text-[11px] text-gray-600 mt-3 font-roboto">{{ formatDate(item.created_at) }}</p>
+            <div class="border-t border-[#ECEDF4] dark:border-dark-border pt-4">
+              <p class="text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 whitespace-pre-line">{{ item.answer }}</p>
+              <p class="text-[11px] text-gray-600 dark:text-dark-text mt-3 font-roboto">{{ formatDate(item.created_at) }}</p>
             </div>
           </div>
         </transition>
@@ -129,12 +129,12 @@
         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
         @click.self="closeFormModal"
       >
-        <div class="bg-white w-full max-w-[520px] rounded-[24px] shadow-2xl p-6 lg:p-7 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white dark:bg-dark-surface w-full max-w-[520px] rounded-[24px] shadow-2xl p-6 lg:p-7 max-h-[90vh] overflow-y-auto">
           <div class="flex items-center justify-between mb-5">
-            <h2 class="text-[17px] font-bold text-[#0F184B]">
+            <h2 class="text-[17px] font-bold text-[#0F184B] dark:text-dark-text">
               {{ isEditing ? 'ویرایش سوال متداول' : 'افزودن سوال متداول' }}
             </h2>
-            <button @click="closeFormModal" class="text-gray-400 hover:text-gray-600 p-1">
+            <button @click="closeFormModal" class="text-gray-400 dark:text-dark-text hover:text-gray-600 dark:hover:text-dark-text-deep p-1">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -143,45 +143,45 @@
 
           <form @submit.prevent="submitForm" class="flex flex-col gap-4">
             <div>
-              <label class="block text-[13px] font-bold text-[#0F184B] mb-2">سوال</label>
+              <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">سوال</label>
               <input
                 v-model="form.question"
                 type="text"
                 required
                 placeholder="متن سوال را وارد کنید"
-                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] text-[13px] text-[#0F184B] focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200"
+                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200"
               />
             </div>
 
             <div>
-              <label class="block text-[13px] font-bold text-[#0F184B] mb-2">پاسخ</label>
+              <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">پاسخ</label>
               <textarea
                 v-model="form.answer"
                 required
                 rows="5"
                 placeholder="متن پاسخ را وارد کنید"
-                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] text-[13px] text-[#0F184B] focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none"
+                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none"
               ></textarea>
             </div>
 
             <div class="flex items-center gap-4">
               <div class="flex-1">
-                <label class="block text-[13px] font-bold text-[#0F184B] mb-2">ترتیب نمایش</label>
+                <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">ترتیب نمایش</label>
                 <input
                   v-model.number="form.sort_order"
                   type="number"
                   min="0"
-                  class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] text-[13px] text-[#0F184B] focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200"
+                  class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200"
                 />
               </div>
 
-              <div class="flex-1 flex items-center justify-between px-4 py-2.5 rounded-2xl border border-[#BFD1D5] mt-[26px]">
-                <span class="text-[13px] font-bold text-[#0F184B]">فعال</span>
+              <div class="flex-1 flex items-center justify-between px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border mt-[26px]">
+                <span class="text-[13px] font-bold text-[#0F184B] dark:text-dark-text">فعال</span>
                 <button
                   type="button"
                   @click="form.is_active = !form.is_active"
                   class="w-11 h-6 rounded-full transition-colors duration-300 relative shrink-0"
-                  :class="form.is_active ? 'bg-[#67A9A8]' : 'bg-gray-300'"
+                  :class="form.is_active ? 'bg-[#67A9A8] dark:bg-dark-accent' : 'bg-gray-300 dark:bg-dark-input'"
                 >
                   <span
                     class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300"
@@ -197,14 +197,14 @@
               <button
                 type="submit"
                 :disabled="isSubmitting"
-                class="flex-1 py-2.5 rounded-br-2xl rounded-tl-2xl bg-[#67A9A880] hover:bg-[#8FB0B2] border border-white text-[#0F184B] font-bold text-[14px] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex-1 py-2.5 rounded-br-2xl rounded-tl-2xl bg-[#67A9A880] hover:bg-[#8FB0B2] dark:bg-dark-accent/60 dark:hover:bg-dark-accent-hover/60 border border-white dark:border-dark-border text-[#0F184B] dark:text-dark-text-deep font-bold text-[14px] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {{ isSubmitting ? 'در حال ذخیره...' : (isEditing ? 'ذخیره تغییرات' : 'افزودن سوال') }}
               </button>
               <button
                 type="button"
                 @click="closeFormModal"
-                class="px-6 py-2.5 rounded-2xl border border-[#BFD1D5] text-[#454C6A] font-bold text-[14px] hover:bg-[#ECEDF4] transition-all duration-300"
+                class="px-6 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border text-[#454C6A] dark:text-dark-text font-bold text-[14px] hover:bg-[#ECEDF4] dark:hover:bg-dark-input/20 transition-all duration-300"
               >
                 انصراف
               </button>
@@ -221,14 +221,14 @@
         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
         @click.self="closeDeleteModal"
       >
-        <div class="bg-white w-full max-w-[400px] rounded-[24px] shadow-2xl p-6 text-center">
+        <div class="bg-white dark:bg-dark-surface w-full max-w-[400px] rounded-[24px] shadow-2xl p-6 text-center">
           <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
           </div>
-          <h3 class="text-[15px] font-bold text-[#0F184B] mb-2">حذف سوال متداول</h3>
-          <p class="text-[13px] text-gray-500 mb-6">
+          <h3 class="text-[15px] font-bold text-[#0F184B] dark:text-dark-text mb-2">حذف سوال متداول</h3>
+          <p class="text-[13px] text-gray-500 dark:text-dark-text mb-6">
             آیا از حذف «{{ deleteTarget?.question }}» مطمئن هستید؟ این عملیات قابل بازگشت نیست.
           </p>
           <div class="flex items-center gap-3">
@@ -241,7 +241,7 @@
             </button>
             <button
               @click="closeDeleteModal"
-              class="flex-1 py-2.5 rounded-2xl border border-[#BFD1D5] text-[#454C6A] font-bold text-[14px] hover:bg-[#ECEDF4] transition-all duration-300"
+              class="flex-1 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border text-[#454C6A] dark:text-dark-text font-bold text-[14px] hover:bg-[#ECEDF4] dark:hover:bg-dark-input/20 transition-all duration-300"
             >
               انصراف
             </button>
