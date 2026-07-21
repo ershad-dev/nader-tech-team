@@ -19,15 +19,15 @@ const visibleProjects = visibleItems(4)
   <div class="bg-center py-10 md:py-14 xl:py-16 xl:-mt-[70px] min-[1920px]:py-20 min-[1920px]:-mt-[90px]">
     <div class="max-w-6xl mx-auto px-4 xl:px-0 min-[1920px]:max-w-[1600px]">
       <h1
-        class="ml-auto bg-[#BFD1D5] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] text-[#0F184B] rounded-[19px] shadow-sm flex items-center justify-center mt-[50px] md:mt-[70px] xl:mt-[100px] min-[1920px]:w-[200px] min-[1920px]:h-[48px] min-[1920px]:text-[20px] min-[1920px]:mt-[130px]"
+        class="ml-auto bg-[#BFD1D5] dark:bg-dark-input w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] text-[#0F184B] dark:text-dark-text-deep rounded-[19px] shadow-sm flex items-center justify-center mt-[50px] md:mt-[70px] xl:mt-[100px] min-[1920px]:w-[200px] min-[1920px]:h-[48px] min-[1920px]:text-[20px] min-[1920px]:mt-[130px]"
       >
         تولید محتوا
       </h1>
 
       <!-- حالت لودینگ / خطا / خالی -->
-      <div v-if="pending" class="text-center text-[#747893] mt-10">در حال بارگذاری...</div>
-      <div v-else-if="error" class="text-center text-red-500 mt-10">خطا در دریافت پروژه‌ها</div>
-      <div v-else-if="projects.length === 0" class="text-center text-[#747893] mt-10">پروژه‌ای یافت نشد</div>
+      <div v-if="pending" class="text-center text-[#747893] dark:text-dark-text/70 mt-10">در حال بارگذاری...</div>
+      <div v-else-if="error" class="text-center text-red-500 dark:text-red-400 mt-10">خطا در دریافت پروژه‌ها</div>
+      <div v-else-if="projects.length === 0" class="text-center text-[#747893] dark:text-dark-text/70 mt-10">پروژه‌ای یافت نشد</div>
 
       <template v-else>
       <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + سواپ با انگشت -->
@@ -71,7 +71,7 @@ const visibleProjects = visibleItems(4)
 <div
   v-for="(item, index) in visibleProjects"
   :key="item.realIndex"
-  class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
+  class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white dark:bg-dark-surface rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
   :class="[
     index >= 3 ? 'hidden xl:block' : '',
     index % 2 === 0

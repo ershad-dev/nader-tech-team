@@ -1,7 +1,7 @@
 <template>
   <!-- تغییر max-w-6xl به max-w-4xl برای جمع‌تر شدن کل صفحه -->
   <div class="max-w-4xl min-[1920px]:max-w-5xl mx-auto py-10 md:py-14 lg:py-16 min-[1920px]:py-20 px-4 lg:-mt-[80px]" dir="ltr">
-    <h2 class="text-[20px] md:text-[23px] lg:text-[26px] min-[1920px]:text-[30px] font-bold text-center text-[#2C7379] mb-8 md:mb-10 lg:mb-12 min-[1920px]:mb-16">
+    <h2 class="text-[20px] md:text-[23px] lg:text-[26px] min-[1920px]:text-[30px] font-bold text-center text-[#2C7379] dark:text-dark-highlight mb-8 md:mb-10 lg:mb-12 min-[1920px]:mb-16">
       خدمات ارائه شده
     </h2>
 
@@ -11,7 +11,7 @@
         <div
           v-for="service in contentServices"
           :key="service"
-          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:ml-[50px] lg:ml-[100px] min-[1920px]:ml-[140px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white border-[#BFD1D5] rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035]"
+          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:ml-[50px] lg:ml-[100px] min-[1920px]:ml-[140px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white dark:bg-dark-input border-[#BFD1D5] dark:border-dark-border rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 dark:hover:bg-dark-accent-hover/30 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035] dark:text-dark-text-deep"
         >
           {{ service }}
         </div>
@@ -26,14 +26,15 @@
         <div
           class="absolute bottom-0 left-0 right-0 h-[70px] md:h-[82px] lg:h-[95px] min-[1920px]:h-[110px]
                  bg-[linear-gradient(180deg,rgba(44,115,121,0.12)_0%,rgba(44,115,121,0.75)_100%)]
-                 backdrop-blur-md border-t border-white/20 px-4 md:px-5 lg:px-6 min-[1920px]:px-8"
+                 dark:bg-[linear-gradient(180deg,rgba(26,33,34,0)_0%,rgba(26,33,34,0.75)_100%)]
+                 backdrop-blur-md border-t border-white/20 dark:border-dark-border/30 px-4 md:px-5 lg:px-6 min-[1920px]:px-8"
         >
           <div class="h-full flex items-center justify-between">
 
             <NuxtLink to="/order/requestProject">
               <div
                 class="w-[38px] h-[38px] md:w-[44px] md:h-[44px] lg:w-[50px] lg:h-[50px] min-[1920px]:w-[58px] min-[1920px]:h-[58px] flex items-center justify-center
-                       rounded-full cursor-pointer hover:bg-white/20 transition"
+                       rounded-full cursor-pointer hover:bg-white/20 dark:hover:bg-dark-highlight/20 transition"
               >
                 <svg class="w-full h-full" viewBox="0 0 50 50" fill="none">
                   <rect
@@ -76,7 +77,7 @@
         <div
           v-for="service in webServices"
           :key="service"
-          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:mr-[50px] lg:mr-0 min-[1920px]:mr-[40px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white border-[#BFD1D5] rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035]"
+          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:mr-[50px] lg:mr-0 min-[1920px]:mr-[40px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white dark:bg-dark-input border-[#BFD1D5] dark:border-dark-border rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 dark:hover:bg-dark-accent-hover/30 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035] dark:text-dark-text-deep"
         >
           {{ service }}
         </div>
@@ -93,14 +94,15 @@
         <div
           class="absolute bottom-0 left-0 right-0 h-[68px] md:h-[78px] lg:h-[90px] min-[1920px]:h-[110px]
                  px-4 md:px-5 lg:px-6 min-[1920px]:px-8 bg-[linear-gradient(180deg,rgba(44,115,121,0.12)_0%,rgba(44,115,121,0.75)_100%)]
-                 backdrop-blur-md border-t border-white/20"
+                 dark:bg-[linear-gradient(180deg,rgba(26,33,34,0)_0%,rgba(26,33,34,0.75)_100%)]
+                 backdrop-blur-md border-t border-white/20 dark:border-dark-border/30"
         >
           <div class="h-full flex items-center justify-between">
 
             <!-- Arrow -->
             <NuxtLink to="/order/requestProject">
               <div class="w-[38px] h-[38px] md:w-[44px] md:h-[44px] lg:w-[50px] lg:h-[50px] min-[1920px]:w-[58px] min-[1920px]:h-[58px] flex items-center justify-center
-                          rounded-full cursor-pointer hover:bg-white/20 transition">
+                          rounded-full cursor-pointer hover:bg-white/20 dark:hover:bg-dark-highlight/20 transition">
                 <svg class="w-full h-full" viewBox="0 0 50 50" fill="none">
                   <rect x="1" y="1" width="47.9982" height="47.9982" rx="23.9991" stroke="white" stroke-width="2"/>
                   <path d="M32.1406 32.1422L17.8549 17.8564M17.8549 28.5707V17.8564H28.5692"

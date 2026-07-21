@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-6xl [@media(min-width:1920px)_and_(min-height:1024px)]:max-w-[1600px] mx-auto mt-12 text-center px-4 [@media(min-width:1920px)_and_(min-height:1024px)]:px-0" dir="rtl">
-    <h1 class="text-[20px] md:text-[32px] [@media(min-width:1920px)_and_(min-height:1024px)]:text-[40px] font-bold text-[#0F184B] mb-8 leading-relaxed [@media(min-width:1920px)_and_(min-height:1024px)]:mb-12 [@media(min-width:1920px)_and_(min-height:1024px)]:text-[44px]">
-      با دقت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55]">فتح </span> میکنیم
+    <h1 class="text-[20px] md:text-[32px] [@media(min-width:1920px)_and_(min-height:1024px)]:text-[40px] font-bold text-[#0F184B] dark:text-dark-text mb-8 leading-relaxed [@media(min-width:1920px)_and_(min-height:1024px)]:mb-12 [@media(min-width:1920px)_and_(min-height:1024px)]:text-[44px]">
+      با دقت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55] dark:text-dark-gold">فتح </span> میکنیم
     </h1>
 
     <div
       v-if="slides.length"
-      class="relative w-full max-w-[976px] [@media(min-width:1920px)_and_(min-height:1024px)]:max-w-[1600px] h-[200px] md:h-[406px] [@media(min-width:1920px)_and_(min-height:1024px)]:h-[700px] rounded-[17px] overflow-hidden mx-auto shadow-lg"
+      class="relative w-full max-w-[976px] [@media(min-width:1920px)_and_(min-height:1024px)]:max-w-[1600px] h-[200px] md:h-[406px] [@media(min-width:1920px)_and_(min-height:1024px)]:h-[700px] rounded-[17px] overflow-hidden mx-auto shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border"
     >
       <div
         v-for="(slide, index) in slides"

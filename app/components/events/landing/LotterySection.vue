@@ -56,12 +56,12 @@ function goToLoginPage() {
       <div
         class="w-[50%] sm:w-[45%] md:w-[35%] mr-1 sm:mr-4 md:mr-[20px]
                mt-2 sm:mt-4 md:mt-[20px] mb-4 sm:mb-8 lg:mb-10
-               h-[1.5px] bg-gradient-to-r from-white/75 to-gray-400"
+               h-[1.5px] bg-gradient-to-r from-white/75 to-gray-400 dark:from-dark-highlight/70 dark:to-dark-border"
       ></div>
 
       <p
         class="text-[12px] sm:text-[18px] md:text-[20px]
-               text-[#0F184B] font-roboto
+               text-[#0F184B] dark:text-dark-text font-roboto
                mr-1 sm:mr-8 md:mr-[70px] leading-snug sm:leading-relaxed text-center"
       >
         شانس خود را امتحان کنید<br />
@@ -79,10 +79,10 @@ function goToLoginPage() {
     >
       <button
         @click="goToRegister"
-        class="bg-white/90 text-[#333B6A] px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
+        class="bg-white/90 dark:bg-dark-input text-[#333B6A] dark:text-dark-text-deep px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
                rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
                text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
-               font-bold hover:bg-white transition whitespace-nowrap
+               font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
                w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
                h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
       >
@@ -91,10 +91,10 @@ function goToLoginPage() {
 
       <button
         @click="goToLoginPage"
-        class="bg-white/90 text-[#333B6A] px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
+        class="bg-white/90 dark:bg-dark-input text-[#333B6A] dark:text-dark-text-deep px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
                rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
                text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
-               font-bold hover:bg-white transition whitespace-nowrap
+               font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
                w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
                h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
       >
