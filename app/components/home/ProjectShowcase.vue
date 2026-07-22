@@ -12,8 +12,8 @@
       :class="[
         'flex-1 min-w-0 px-1 sm:px-4 lg:px-8 py-1.5 lg:py-3 lg:w-[178px] min-[1920px]:w-[210px] h-auto lg:h-[43px] min-[1920px]:h-[54px] rounded-[14px] lg:rounded-[19px] text-[10px] xs:text-[11px] sm:text-[15px] lg:text-[18px] min-[1920px]:text-[20px] font-bold transition-all duration-300 truncate whitespace-nowrap',
         activeCategory === category 
-          ? 'bg-[#2C7379] dark:bg-dark-accent text-white dark:text-dark-text-deep shadow-md'
-          : ' text-[#0F184B] dark:text-dark-text-deep hover:bg-slate-200 dark:hover:bg-dark-accent/20'
+          ? 'bg-[#2C7379] dark:bg-[#407B80] text-white dark:text-white shadow-md'
+          : ' text-[#0F184B] dark:text-white hover:bg-slate-200 dark:hover:bg-dark-accent/70'
       ]"
     >
       {{ category }}
@@ -31,7 +31,7 @@
 
 <NuxtLink
   to="/order/moreProject"
-  class="bg-[#2C7379] dark:bg-dark-accent px-4 sm:w-[147px] min-[1920px]:w-[170px] h-[30px] sm:h-[45px] min-[1920px]:h-[52px] text-white dark:text-dark-text-deep rounded-[14px] sm:rounded-[19px] text-[11px] sm:text-[17px] min-[1920px]:text-[19px] font-medium transition-all hover:bg-[#2C7379] dark:hover:bg-dark-accent-hover flex items-center justify-center gap-2 shadow-md font-roboto whitespace-nowrap overflow-hidden"
+  class="bg-[#2C7379] dark:bg-dark-accent px-4 sm:w-[147px] min-[1920px]:w-[170px] h-[30px] sm:h-[45px] min-[1920px]:h-[52px] text-white dark:text-white rounded-[14px] sm:rounded-[19px] text-[11px] sm:text-[17px] min-[1920px]:text-[19px] font-medium transition-all hover:bg-[#2C7379] dark:hover:bg-dark-accent-hover flex items-center justify-center gap-2 shadow-md font-roboto whitespace-nowrap overflow-hidden"
 >
   <span>مشاهده بیشتر</span>
 
@@ -50,7 +50,7 @@
       <NuxtLink :to="`/order/${project.slug}`">
       <img :src="resumeCover(project)" class="w-full h-[214px] sm:h-[274px] lg:w-[250px] lg:h-[344px] min-[1920px]:w-[300px] min-[1920px]:h-[414px] object-cover" />
       
-      <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 dark:bg-dark-surface/70 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 dark:border-dark-border/30 text-center">
+      <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 dark:bg-black/30 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 dark:border-dark-border/30 text-center">
         <h3 class="text-[#0F184B] dark:text-dark-text font-bold text-[14px] sm:text-[16px] lg:text-[20px] min-[1920px]:text-[22px]">{{ project.title }}</h3>
       </div>
     </NuxtLink>
@@ -74,7 +74,7 @@
     </section>
 
     <!-- ۱. بخش شوکیس (Showcase) داینامیک -->
-<section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 xl:mb-20">
+    <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 xl:mb-20">
   <div class="relative rounded-[2rem] xl:rounded-[3rem] overflow-hidden p-6 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8] dark:bg-dark-bg xl:bg-white/20 dark:xl:bg-dark-bg">
 
     <!-- عکس پس‌زمینه فقط در دسکتاپ -->
@@ -90,11 +90,11 @@
           />
       </div>
       
-      <div class="flex-1 min-w-0 min-[1920px]:max-w-[620px] text-black dark:text-dark-text xl:mr-[50px] text-center xl:text-right">
-        <h2 class="text-[20px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-dark-text lg:mt-3">{{ currentContent.title }}</h2>
-        <p class="leading-[26px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-dark-text/90 font-roboto text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
+      <div class="flex-1 min-w-0 min-[1920px]:max-w-[620px] text-black dark:text-black xl:mr-[50px] text-center xl:text-right">
+        <h2 class="text-[20px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
+        <p class="leading-[26px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
         <NuxtLink :to="currentContent.buttonLink">
-          <button class="bg-[#ECD0A0] dark:bg-dark-gold border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-dark-text-deep w-full max-w-[268px] mx-auto xl:mx-0 xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-allshadow-lg text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 xl:mt-[50px] flex items-center justify-center">
+          <button class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto xl:mx-0 xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-allshadow-lg text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 xl:mt-[50px] flex items-center justify-center">
             {{ currentContent.buttonText }}
           </button>
         </NuxtLink>

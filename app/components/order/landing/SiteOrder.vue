@@ -121,20 +121,20 @@ const steps = [
   bg-cover bg-top bg-no-repeat
   xl:bg-[length:100%_100%] xl:bg-center"
 >
+<img
+  src="/images/firooze.png"
+  alt=""
+  class="mt-[45px] sm:mt-[45px] md:mt-[65px] md:absolute md:top-0 md:right-0 xl:mt-0"
+/>
+<div class="md:absolute md:top-[260px] md:left-0 md:flex md:items-center md:gap-4 md:-mt-[90px] xl:top-[350px] xl:mt-0">
+  <img src="/images/line-flow.png" alt="" class="-mt-[130px] md:mt-0"/>
+  <img src="/images/line-flow.png" alt="" class="mt-[110px] md:mt-0" />
+</div>
+
   <img
     src="/images/firooze.png"
     alt=""
-    class="md:absolute md:top-0 md:right-0"
-
-  />
-  <img src="/images/line-flow.png" alt="" class="md:mt-[350px]">
-  <img src="/images/line-flow.png" alt="" class=" md:left-0">
-
-
-  <img
-    src="/images/firooze.png"
-    alt=""
-    class="md:absolute md:bottom-0 md:left-0"
+    class="md:absolute md:bottom-0 md:left-0 "
   />
 </div>
 

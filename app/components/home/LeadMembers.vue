@@ -2,7 +2,7 @@
   <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto px-4 mt-2 sm:mt-14 md:mt-10 xl:mt-2 2xl:mt-2 relative">
 
     <div class="relative w-full">
-      <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-full md:h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem] dark:brightness-[0.7] dark:contrast-125" alt="Background" />
+      <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-full md:h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem]" alt="Background" />
 
       <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
       <div
@@ -44,7 +44,7 @@
               class="mt-auto py-1 px-1 text-center"
               style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
             >
-              <p class="text-[#747893] dark:text-dark-text font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
+              <p class="text-[#747893] dark:text-dark-text-deep font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@
               class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative"
               style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
             >
-                <p class="text-[#747893] dark:text-dark-text font-normal text-[8px] sm:text-[10px] md:text-[13px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
+                <p class="text-[#747893] dark:text-dark-text-deep font-normal text-[8px] sm:text-[10px] md:text-[13px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
 
                 <div v-if="selectedIndex === index" class="absolute -top-3 left-1/2 -translate-x-1/2">
                 </div>
@@ -99,14 +99,14 @@
             transform: 'translateX(-50%)'
           }"
         >
-          <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[27px] xl:-mt-[30px] 2xl:-mt-[34px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px] dark:brightness-90">
+          <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[27px] xl:-mt-[30px] 2xl:-mt-[34px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
         </div>
 
-      <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 dark:bg-dark-surface/40 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 dark:border-dark-border/40 text-right mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
+        <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 dark:bg-[#D9D9D9]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 dark:border-dark-border/40 text-right mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
 
 <h3
   :class="[
-    'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] dark:text-dark-text mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
+    'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
     !isMobile && selectedIndex >= 1
       ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px] 2xl:mr-[70px]'
       : !isMobile
@@ -116,7 +116,7 @@
 >
   {{ teamMembers[selectedIndex].name }}
 </h3>
-        <p class="text-slate-700 dark:text-dark-text/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px]">
+        <p class="text-slate-700 dark:text-dark-text-deep/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px]">
           {{ teamMembers[selectedIndex].bio }}
         </p>
       </div>
@@ -165,7 +165,6 @@ const updateNotchWidth = () => {
   }
 };
 
-// محاسبه موقعیت نشانگر برای یک ایندکس مشخص (فقط در تبلت/دسکتاپ)
 const updateIndicatorPosition = async (index) => {
   await nextTick();
 
@@ -179,8 +178,6 @@ const updateIndicatorPosition = async (index) => {
 
 let resizeHandler = null;
 
-// --- اسلایدر موبایل + دکمه‌های next/prev + سواپ لمسی (composable مشترک) ---
-// انتخاب هر عضو (چه از موبایل، چه از دسکتاپ) هم پنجره‌ی اسلایدر رو جابه‌جا می‌کنه هم selectedIndex/indicator رو آپدیت می‌کنه
 const {
   mobileVisibleItems: mobileVisibleTeamMembers,
   goToSlide: selectMember,

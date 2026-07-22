@@ -25,7 +25,7 @@
            dir="rtl"
          >
          <!-- بخش پروفایل -->
-         <div class="bg-[#EDEDED] dark:bg-dark-input px-4 lg:px-8 min-[1920px]:px-10 pt-4 lg:pt-8 min-[1920px]:pt-10 pb-3 lg:pb-6 min-[1920px]:pb-8 shadow-xl dark:shadow-none -mt-[20px] shrink-0">
+         <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] px-4 lg:px-8 min-[1920px]:px-10 pt-4 lg:pt-8 min-[1920px]:pt-10 pb-3 lg:pb-6 min-[1920px]:pb-8 shadow-xl dark:shadow-none -mt-[20px] shrink-0">
            <img
              :src="customer.image"
              :alt="customer.name"
@@ -42,7 +42,7 @@
          </div>
  
          <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
-         <div class="bg-[#EDEDED] dark:bg-dark-input p-4 lg:p-8 min-[1920px]:p-10 relative flex-1 min-h-0">
+         <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-8 min-[1920px]:p-10 relative flex-1 min-h-0">
            <p
              :ref="(el) => setCommentRef(el, customer.id)"
              class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[15px] min-[1920px]:text-[16px] leading-relaxed font-roboto text-right -mt-[20px]"
@@ -53,7 +53,7 @@
              v-if="overflowMap[customer.id]"
              type="button"
              @click="openModal(customer)"
-             class="absolute bottom-2 left-4 lg:left-8 min-[1920px]:left-10 text-[10px] lg:text-[12px] min-[1920px]:text-[13px] font-bold text-[#2D7A6F] dark:text-dark-highlight hover:underline bg-[#EDEDED] dark:bg-dark-input pr-1"
+             class="absolute bottom-2 left-4 lg:left-8 min-[1920px]:left-10 text-[10px] lg:text-[12px] min-[1920px]:text-[13px] font-bold text-[#2D7A6F] dark:text-dark-highlight hover:underline bg-[#EDEDED] dark:bg-[#D5E2E53B] pr-1"
            >
              ادامه مطلب
            </button>
@@ -127,183 +127,164 @@
      </div>
    </Teleport>
  </template>
- 
- <script setup>
- import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
- 
- const scrollContainer = ref(null);
- const cardRefs = ref([]);
- const activeIndex = ref(0);
- const cardWidth = ref(414); // مقدار پیش‌فرض (دسکتاپ: عرض کارت ۳۹۰ + گپ ۲۴)
- 
- const loading = ref(true);
- const error = ref(false);
- const customers = ref([]);
- 
- // تشخیص واقعیِ overflow متن نظر مشتری (به‌جای حدس زدن بر اساس تعداد کاراکتر)
- // چون همون متن ممکنه توی دسکتاپ (کارت عریض‌تر) توی ۳ خط جا بشه ولی توی موبایل
- // (کارت باریک‌تر) کات بشه؛ پس باید بعد از رندر واقعی چک کنیم که آیا scrollHeight
- // (ارتفاع کامل متن) از clientHeight (ارتفاع قابل‌مشاهده‌ی کلمپ‌شده) بیشتره یا نه.
- const commentEls = new Map();
- const overflowMap = ref({});
- let resizeObserver;
- 
- const setCommentRef = (el, id) => {
-   if (el) {
-     commentEls.set(id, el);
-     resizeObserver?.observe(el);
-   } else {
-     commentEls.delete(id);
-   }
- };
- 
- const checkOverflow = () => {
-   commentEls.forEach((el, id) => {
-     overflowMap.value[id] = el.scrollHeight - el.clientHeight > 1;
-   });
- };
- 
- // مدیریت مودال نمایش کامل نظر مشتری
- const activeCustomer = ref(null);
- 
- const openModal = (customer) => {
-   activeCustomer.value = customer;
- };
- 
- const closeModal = () => {
-   activeCustomer.value = null;
- };
- 
- const handleKeydown = (e) => {
-   if (e.key === 'Escape') closeModal();
- };
- 
- // وقتی مودال بازه از اسکرول پشت صفحه جلوگیری می‌کنیم
- watch(activeCustomer, (val) => {
-   if (typeof document === 'undefined') return;
-   document.body.style.overflow = val ? 'hidden' : '';
- });
- 
- const config = useRuntimeConfig();
- 
- // از composable خود پروژه برای گرفتن لیست رزومه‌ها استفاده می‌کنیم
- // (همون چیزی که توی صفحه‌ی لیست نمونه‌کارها هم استفاده می‌شه)
- const { items: resumeItems, pending: listPending, error: listError } = useResumes();
- 
- // تعداد کارت فیدبکی که می‌خوایم نمایش بدیم
- const MAX_FEEDBACK_COUNT = 6;
- 
- // محاسبه‌ی پویای عرض کارت بر اساس سایز واقعی رندر شده + گپ
- const updateCardWidth = () => {
-   if (cardRefs.value && cardRefs.value.length > 0) {
-     const firstCard = cardRefs.value[0];
-     const gap = window.innerWidth >= 1920 ? 32 : window.innerWidth >= 1024 ? 24 : 16; // مچ با gap-4 / lg:gap-6 / min-[1920px]:gap-8
-     cardWidth.value = firstCard.offsetWidth + gap;
-   }
- };
- 
- const scroll = (direction) => {
-   if (scrollContainer.value) {
-     scrollContainer.value.scrollBy({
-       left: direction === 'left' ? -cardWidth.value : cardWidth.value,
-       behavior: 'smooth'
-     });
-   }
- };
- 
- // محاسبه ایندکس فعال هنگام اسکرول
- const updateIndex = () => {
-   if (scrollContainer.value) {
-     // استفاده از Math.abs برای هندل کردن RTL در مرورگرهای مختلف
-     activeIndex.value = Math.round(Math.abs(scrollContainer.value.scrollLeft) / cardWidth.value);
-   }
- };
- 
- // نکته: اندپوینت لیست (GET /resumes) فقط title, slug, cover, created_at برمی‌گردونه و review نداره.
- // review فقط توی اندپوینت تکی (GET /resumes/{slug}) موجوده - دقیقاً همون الگویی که صفحه‌ی
- // جزئیات نمونه‌کار (useResume) استفاده می‌کنه. پس برای هر آیتم لیست، یه درخواست تکی هم می‌زنیم
- // تا فقط بخش review رو استخراج کنیم.
- const buildFeedbacks = async (list) => {
-   loading.value = true;
-   error.value = false;
- 
-   try {
-     const slice = list.slice(0, MAX_FEEDBACK_COUNT);
- 
-     const details = await Promise.all(
-       slice.map((item) =>
-         $fetch(`/resumes/${item.slug}`, { baseURL: config.public.apiBase }).catch(() => null)
-       )
-     );
- 
-     customers.value = details
-       .map((res) => res?.data)
-       .filter((resume) => resume && resume.review)
-       .map((resume) => ({
-         id: resume.id,
-         name: resume.review.name,
-         role: resume.review.position,
-         comment: resume.review.description,
-         image: resume.review.avatar || '/images/customer.jpg'
-       }));
- 
-     await nextTick();
-     updateCardWidth();
-     checkOverflow();
-   } catch (err) {
-     error.value = true;
-     console.error('خطا در دریافت نظرات مشتریان:', err);
-   } finally {
-     loading.value = false;
-   }
- };
- 
- // وقتی لیست رزومه‌ها (useResumes) آماده شد، برای هرکدوم review رو می‌گیریم
- watch(
-   listPending,
-   (isPending) => {
-     if (isPending) return;
- 
-     if (listError.value) {
-       error.value = true;
-       loading.value = false;
-       return;
-     }
- 
-     buildFeedbacks(resumeItems.value);
-   },
-   { immediate: true }
- );
- 
- onMounted(() => {
-   scrollContainer.value?.addEventListener('scroll', updateIndex);
-   window.addEventListener('resize', updateCardWidth);
-   window.addEventListener('resize', checkOverflow);
-   window.addEventListener('keydown', handleKeydown);
- 
-   if (typeof ResizeObserver !== 'undefined') {
-     resizeObserver = new ResizeObserver(() => checkOverflow());
-     commentEls.forEach((el) => resizeObserver.observe(el));
-   }
- });
- 
- onUnmounted(() => {
-   scrollContainer.value?.removeEventListener('scroll', updateIndex);
-   window.removeEventListener('resize', updateCardWidth);
-   window.removeEventListener('resize', checkOverflow);
-   window.removeEventListener('keydown', handleKeydown);
-   resizeObserver?.disconnect();
-   if (typeof document !== 'undefined') document.body.style.overflow = '';
- });
- </script>
- 
- <style scoped>
- /* محدود کردن متن نظر مشتری به ۳ خط - اگه بیشتر بود با «...» کوتاه می‌شه
-    و دکمه‌ی «ادامه مطلب» (که در بالا کنترل می‌شه) کاربر رو به مودال متن کامل می‌بره */
- .comment-clamp {
-   display: -webkit-box;
-   -webkit-line-clamp: 3;
-   -webkit-box-orient: vertical;
-   overflow: hidden;
- }
- </style>
+
+<script setup>
+import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
+
+const scrollContainer = ref(null);
+const cardRefs = ref([]);
+const activeIndex = ref(0);
+const cardWidth = ref(414);
+
+const loading = ref(true);
+const error = ref(false);
+const customers = ref([]);
+
+const commentEls = new Map();
+const overflowMap = ref({});
+let resizeObserver;
+
+const setCommentRef = (el, id) => {
+  if (el) {
+    commentEls.set(id, el);
+    resizeObserver?.observe(el);
+  } else {
+    commentEls.delete(id);
+  }
+};
+
+const checkOverflow = () => {
+  commentEls.forEach((el, id) => {
+    overflowMap.value[id] = el.scrollHeight - el.clientHeight > 1;
+  });
+};
+
+const activeCustomer = ref(null);
+
+const openModal = (customer) => {
+  activeCustomer.value = customer;
+};
+
+const closeModal = () => {
+  activeCustomer.value = null;
+};
+
+const handleKeydown = (e) => {
+  if (e.key === 'Escape') closeModal();
+};
+
+watch(activeCustomer, (val) => {
+  if (typeof document === 'undefined') return;
+  document.body.style.overflow = val ? 'hidden' : '';
+});
+
+const config = useRuntimeConfig();
+
+const { items: resumeItems, pending: listPending, error: listError } = useResumes();
+
+const MAX_FEEDBACK_COUNT = 6;
+
+const updateCardWidth = () => {
+  if (cardRefs.value && cardRefs.value.length > 0) {
+    const firstCard = cardRefs.value[0];
+    const gap = window.innerWidth >= 1920 ? 32 : window.innerWidth >= 1024 ? 24 : 16;
+    cardWidth.value = firstCard.offsetWidth + gap;
+  }
+};
+
+const scroll = (direction) => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({
+      left: direction === 'left' ? -cardWidth.value : cardWidth.value,
+      behavior: 'smooth'
+    });
+  }
+};
+
+const updateIndex = () => {
+  if (scrollContainer.value) {
+    activeIndex.value = Math.round(Math.abs(scrollContainer.value.scrollLeft) / cardWidth.value);
+  }
+};
+
+const buildFeedbacks = async (list) => {
+  loading.value = true;
+  error.value = false;
+
+  try {
+    const slice = list.slice(0, MAX_FEEDBACK_COUNT);
+
+    const details = await Promise.all(
+      slice.map((item) =>
+        $fetch(`/resumes/${item.slug}`, { baseURL: config.public.apiBase }).catch(() => null)
+      )
+    );
+
+    customers.value = details
+      .map((res) => res?.data)
+      .filter((resume) => resume && resume.review)
+      .map((resume) => ({
+        id: resume.id,
+        name: resume.review.name,
+        role: resume.review.position,
+        comment: resume.review.description,
+        image: resume.review.avatar || '/images/customer.jpg'
+      }));
+
+    await nextTick();
+    updateCardWidth();
+    checkOverflow();
+  } catch (err) {
+    error.value = true;
+    console.error('خطا در دریافت نظرات مشتریان:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+watch(
+  listPending,
+  (isPending) => {
+    if (isPending) return;
+
+    if (listError.value) {
+      error.value = true;
+      loading.value = false;
+      return;
+    }
+
+    buildFeedbacks(resumeItems.value);
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  scrollContainer.value?.addEventListener('scroll', updateIndex);
+  window.addEventListener('resize', updateCardWidth);
+  window.addEventListener('resize', checkOverflow);
+  window.addEventListener('keydown', handleKeydown);
+
+  if (typeof ResizeObserver !== 'undefined') {
+    resizeObserver = new ResizeObserver(() => checkOverflow());
+    commentEls.forEach((el) => resizeObserver.observe(el));
+  }
+});
+
+onUnmounted(() => {
+  scrollContainer.value?.removeEventListener('scroll', updateIndex);
+  window.removeEventListener('resize', updateCardWidth);
+  window.removeEventListener('resize', checkOverflow);
+  window.removeEventListener('keydown', handleKeydown);
+  resizeObserver?.disconnect();
+  if (typeof document !== 'undefined') document.body.style.overflow = '';
+});
+</script>
+
+<style scoped>
+.comment-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
