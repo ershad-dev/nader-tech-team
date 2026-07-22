@@ -39,10 +39,10 @@ const statusOptions = [
 const statusLabel = (value) =>
   statusOptions.find((s) => s.value === value)?.label || value || '—'
 
-// تبدیل تاریخ ISO به فرمت مناسب input[type=datetime-local]
-const toLocalInput = (isoStr) => {
+  const toLocalInput = (isoStr) => {
   if (!isoStr) return ''
-  return isoStr.slice(0, 16)
+  // به جای slice(0,16) که برای datetime-local بود
+  return isoStr.replace('T', ' ').slice(0, 19)
 }
 
 const formatDate = (isoStr) => {
@@ -232,28 +232,29 @@ watch(
 
             <div class="grid grid-cols-2 gap-4">
               <!-- تاریخ شروع -->
-              <div>
-                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ شروع</label>
-                <input
-                  v-if="isEditing"
-                  v-model="form.starts_at"
-                  type="datetime-local"
-                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
-                />
-                <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.starts_at) }}</p>
-              </div>
+             <!-- تاریخ شروع -->
+<div>
+  <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ شروع</label>
+  <custom-date-picker
+    v-if="isEditing"
+    v-model="form.starts_at"
+    type="datetime"
+    input-class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+  />
+  <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.starts_at) }}</p>
+</div>
 
-              <!-- تاریخ پایان -->
-              <div>
-                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ پایان</label>
-                <input
-                  v-if="isEditing"
-                  v-model="form.ends_at"
-                  type="datetime-local"
-                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
-                />
-                <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.ends_at) }}</p>
-              </div>
+<!-- تاریخ پایان -->
+<div>
+  <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ پایان</label>
+  <custom-date-picker
+    v-if="isEditing"
+    v-model="form.ends_at"
+    type="datetime"
+    input-class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+  />
+  <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.ends_at) }}</p>
+</div>
 
               <!-- ظرفیت -->
               <div>

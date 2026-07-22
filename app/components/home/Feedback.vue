@@ -41,23 +41,23 @@
            </p>
          </div>
  
-         <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
-         <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-8 min-[1920px]:p-10 relative flex-1 min-h-0">
-           <p
-             :ref="(el) => setCommentRef(el, customer.id)"
-             class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[15px] min-[1920px]:text-[16px] leading-relaxed font-roboto text-right -mt-[20px]"
-           >
-             {{ customer.comment }}
-           </p>
-           <button
-             v-if="overflowMap[customer.id]"
-             type="button"
-             @click="openModal(customer)"
-             class="absolute bottom-2 left-4 lg:left-8 min-[1920px]:left-10 text-[10px] lg:text-[12px] min-[1920px]:text-[13px] font-bold text-[#2D7A6F] dark:text-dark-highlight hover:underline bg-[#EDEDED] dark:bg-[#D5E2E53B] pr-1"
-           >
-             ادامه مطلب
-           </button>
-         </div>
+        <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
+<div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-8 min-[1920px]:p-10 flex-1 min-h-0 flex flex-col">
+  <p
+    :ref="(el) => setCommentRef(el, customer.id)"
+    class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[15px] min-[1920px]:text-[16px] leading-relaxed font-roboto text-right -mt-[20px] flex-1"
+  >
+    {{ customer.comment }}
+  </p>
+  <button
+    v-if="overflowMap[customer.id]"
+    type="button"
+    @click="openModal(customer)"
+    class="mt-2 self-end shrink-0 text-[10px] lg:text-[12px] min-[1920px]:text-[13px] font-bold text-[#2D7A6F] dark:text-dark-highlight hover:underline"
+  >
+    ادامه مطلب
+  </button>
+</div>
        </div>
      </div>
  

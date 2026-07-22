@@ -2,7 +2,7 @@
   <div class="max-w-5xl mx-auto p-4 sm:p-6 md:p-10 mt-[10px] sm:mt-[15px] md:mt-[20px]">
 
     <!-- عنوان‌ها -->
-    <div class="text-center mb-6 sm:mb-8 md:mb-10">
+    <div class="text-center mb-6 sm:mb-8 md:mt-2 mt-8">
       <h2 class="text-[22px] sm:text-[28px] md:text-[34px] font-bold text-gray-800 dark:text-dark-text leading-snug">مسیر <span class="text-[#2C7379] dark:text-dark-highlight">رشد</span>، از اینجا آغاز می‌شود</h2>
       <h1 class="text-[22px] sm:text-[26px] md:text-[32px] font-extrabold text-[#2C7379] dark:text-dark-highlight mt-2 font-roboto">درخواست پروژه</h1>
       <p class="text-gray-500 mt-4 sm:mt-5 md:mt-6 text-[#2C7379] dark:text-dark-text text-[12px] sm:text-[13px] md:text-[14px] font-roboto px-2">برای شروع همکاری، فرم زیر را تکمیل کنید تا کارشناسان ما در اسرع وقت با شما تماس بگیرند.</p>

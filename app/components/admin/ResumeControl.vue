@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth' // مسیر رو مطابق پروژه‌ت تنظیم کن
 
 // ==================== تنظیمات پایه ====================
@@ -7,10 +7,6 @@ const API_BASE = 'https://nadertechnologyteam.ir'
 
 const { authHeader, initFromStorage } = useAdminAuth()
 initFromStorage()
-
-// ==================== دارک‌مود ====================
-const colorMode = useColorMode()
-const nextArrowColor = computed(() => (colorMode.value === 'dark' ? '#E9F1F2' : '#323232'))
 
 // ==================== وضعیت نمایش ====================
 const activeView = ref('list') // 'list' | 'form'
@@ -258,40 +254,40 @@ const deleteItem = async (id) => {
     <!-- پیام خطای عمومی -->
     <div
       v-if="errorMessage"
-      class="max-w-[812px] mx-auto mb-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-xl px-4 py-3"
+      class="max-w-[812px] mx-auto mb-4 bg-red-100 text-red-700 text-sm rounded-xl px-4 py-3"
     >
       {{ errorMessage }}
     </div>
 
     <!-- وضعیت نمایش لیست کارت‌ها -->
     <div v-if="activeView === 'list'">
-      <div class="flex items-center justify-between w-full max-w-[812px] lg:w-[812px] h-[54px] lg:h-[60px] mx-auto mb-6 lg:mb-8 px-4 lg:px-6 bg-white dark:bg-dark-input rounded-[27px]">
-        <h2 class="text-[16px] sm:text-[18px] lg:text-[20px] font-bold text-[#1a2333] dark:text-dark-text-deep">کنترل رزومه</h2>
-        <button @click="openForm()" class="bg-[#67A9A880] dark:bg-dark-accent/50 text-black dark:text-dark-text-deep px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] dark:hover:bg-dark-accent-hover transition-all whitespace-nowrap">
+      <div class="flex items-center justify-between w-full max-w-[812px] lg:w-[812px] h-[54px] lg:h-[60px] mx-auto mb-6 lg:mb-8 px-4 lg:px-6 bg-white rounded-[27px]">
+        <h2 class="text-[16px] sm:text-[18px] lg:text-[20px] font-bold text-[#1a2333]">کنترل رزومه</h2>
+        <button @click="openForm()" class="bg-[#67A9A880] text-black px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] transition-all whitespace-nowrap">
           + افزودن رزومه
         </button>
       </div>
 
-      <div v-if="isLoadingList" class="text-center text-gray-500 dark:text-dark-text/70 py-10">در حال بارگذاری...</div>
+      <div v-if="isLoadingList" class="text-center text-gray-500 py-10">در حال بارگذاری...</div>
 
       <div v-else class="grid grid-cols-2 lg:flex lg:flex-wrap gap-3 sm:gap-5 lg:gap-6 justify-items-center lg:justify-center max-w-full lg:max-w-[900px] mx-auto mb-10">
         <div
           v-for="item in resumeItems"
           :key="item.id"
-          class="w-full max-w-[281px] lg:w-[281px] h-auto lg:h-[379px] bg-white/17 dark:bg-dark-input/17 rounded-[16px] sm:rounded-[25px] border border-gray-300 dark:border-dark-border shadow-sm p-2 sm:p-4 flex flex-col items-center"
+          class="w-full max-w-[281px] lg:w-[281px] h-auto lg:h-[379px] bg-white/17 rounded-[16px] sm:rounded-[25px] border border-gray-300 shadow-sm p-2 sm:p-4 flex flex-col items-center"
         >
           <img :src="item.image" class="w-full aspect-[217/207] lg:w-[217px] lg:h-[207px] object-cover rounded-[16px] sm:rounded-[25px] mb-2 sm:mb-4" />
-          <h3 class="text-right font-bold text-gray-800 dark:text-dark-text-deep text-[12px] sm:text-[15px] lg:text-[16px] mt-1 sm:mt-2 w-full px-1 sm:px-2 leading-snug">{{ item.title }}</h3>
+          <h3 class="text-right font-bold text-gray-800 text-[12px] sm:text-[15px] lg:text-[16px] mt-1 sm:mt-2 w-full px-1 sm:px-2 leading-snug">{{ item.title }}</h3>
 
           <div class="flex justify-between w-full mt-auto gap-1 sm:gap-2 px-1 sm:px-2 pb-1 sm:pb-2 pt-2 sm:pt-4">
             <button
               @click="deleteItem(item.id)"
               :disabled="isDeleting"
-              class="flex-1 bg-[#BFD1D5] dark:bg-dark-input py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] text-black dark:text-dark-text-deep disabled:opacity-50"
+              class="flex-1 bg-[#BFD1D5] py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] disabled:opacity-50"
             >
               حذف
             </button>
-            <button @click="openForm(item)" class="flex-1 bg-[#BFD1D5] dark:bg-dark-input py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] text-black dark:text-dark-text-deep hover:bg-blue-100 dark:hover:bg-dark-accent-hover">ویرایش</button>
+            <button @click="openForm(item)" class="flex-1 bg-[#BFD1D5] py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] hover:bg-blue-100">ویرایش</button>
           </div>
         </div>
       </div>
@@ -306,8 +302,8 @@ const deleteItem = async (id) => {
             :class="[
               'w-[36px] h-[36px] sm:w-[40px] sm:h-[40px] rounded-[10px] flex items-center justify-center font-bold transition-all text-sm sm:text-base',
               currentPage === page
-                ? 'bg-[#2d6a66] dark:bg-dark-accent text-white'
-                : 'bg-[#e5e5e5] dark:bg-dark-input text-black dark:text-dark-text-deep hover:bg-gray-300 dark:hover:bg-dark-border'
+                ? 'bg-[#2d6a66] text-white'
+                : 'bg-[#e5e5e5] text-black hover:bg-gray-300'
             ]"
           >
             {{ page }}
@@ -316,12 +312,12 @@ const deleteItem = async (id) => {
           <button
             :disabled="currentPage === totalPages"
             @click="goToPage(currentPage + 1)"
-            class="w-[36px] h-[36px] sm:w-[40px] sm:h-[40px] bg-[#e5e5e5] dark:bg-dark-input rounded-[10px] flex items-center justify-center hover:bg-gray-300 dark:hover:bg-dark-border disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-[36px] h-[36px] sm:w-[40px] sm:h-[40px] bg-[#e5e5e5] rounded-[10px] flex items-center justify-center hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M9.28859 15.88L13.1686 12L9.28859 8.11998C8.89859 7.72998 8.89859 7.09998 9.28859 6.70998C9.67859 6.31998 10.3086 6.31998 10.6986 6.70998L15.2886 11.3C15.6786 11.69 15.6786 12.32 15.2886 12.71L10.6986 17.3C10.3086 17.69 9.67859 17.69 9.28859 17.3C8.90859 16.91 8.89859 16.27 9.28859 15.88Z"
-                :fill="nextArrowColor"
+                fill="#323232"
               />
             </svg>
           </button>
@@ -330,47 +326,47 @@ const deleteItem = async (id) => {
     </div>
 
     <!-- فرم افزودن/ویرایش -->
-    <div v-else class="max-w-full lg:max-w-[1200px] mx-auto bg-[#F4F6F8] dark:bg-dark-surface p-4 sm:p-6 lg:p-8 rounded-[24px] lg:rounded-[40px] border border-gray-200 dark:border-dark-border shadow-inner" dir="rtl">
+    <div v-else class="max-w-full lg:max-w-[1200px] mx-auto bg-[#F4F6F8] p-4 sm:p-6 lg:p-8 rounded-[24px] lg:rounded-[40px] border border-gray-200 shadow-inner" dir="rtl">
 
-      <button @click="closeForm" class="mb-6 lg:mb-8 text-gray-500 dark:text-dark-text font-bold hover:text-black dark:hover:text-dark-highlight">← بازگشت</button>
+      <button @click="closeForm" class="mb-6 lg:mb-8 text-gray-500 font-bold hover:text-black">← بازگشت</button>
 
-      <div v-if="isLoadingForm" class="text-center text-gray-500 dark:text-dark-text/70 py-10">در حال بارگذاری اطلاعات...</div>
+      <div v-if="isLoadingForm" class="text-center text-gray-500 py-10">در حال بارگذاری اطلاعات...</div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
 
         <div class="flex flex-col gap-6 lg:gap-8">
           <!-- اطلاعات پروژه -->
-          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border">
-            <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
-              <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-input rounded-full"></div> <h3>اطلاعات پروژه</h3>
+          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100">
+            <div class="flex items-center gap-2 text-[#1a2333] font-bold mb-4 lg:mb-6">
+              <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> <h3>اطلاعات پروژه</h3>
             </div>
             <div class="space-y-3 font-roboto">
 
               <div>
-                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text">نام پروژه *</label>
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700">نام پروژه *</label>
                 <input
                   v-model="form.title"
                   type="text"
                   placeholder="نام پروژه را وارد کنید"
-                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border bg-white/20 dark:bg-dark-input/20 text-black dark:text-dark-text focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
                 />
               </div>
 
               <div>
-                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text">اسلاگ (اختیاری)</label>
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700">اسلاگ (اختیاری)</label>
                 <input
                   v-model="form.slug"
                   type="text"
                   placeholder="ecommerce-website-design"
                   dir="ltr"
-                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border bg-white/20 dark:bg-dark-input/20 text-black dark:text-dark-text focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
                 />
               </div>
 
               <div>
-                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text">
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700">
                   دسته‌بندی (شناسه)
-                  <span v-if="form.category_name" class="text-gray-400 dark:text-dark-text/60 font-normal">
+                  <span v-if="form.category_name" class="text-gray-400 font-normal">
                     — دسته فعلی: {{ form.category_name }}
                   </span>
                 </label>
@@ -378,36 +374,36 @@ const deleteItem = async (id) => {
                   v-model.number="form.category_id"
                   type="number"
                   placeholder="مثلاً 1"
-                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border bg-white/20 dark:bg-dark-input/20 text-black dark:text-dark-text focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
                 />
-                <p class="text-[11px] text-gray-400 dark:text-dark-text/60 mt-1">
+                <p class="text-[11px] text-gray-400 mt-1">
                   API فعلی هنگام دریافت رزومه، فقط نام دسته را برمی‌گرداند نه شناسه؛ برای تغییر دسته، شناسه‌ی جدید را وارد کنید.
                 </p>
               </div>
 
               <div>
-                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text">توضیحات پروژه *</label>
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700">توضیحات پروژه *</label>
                 <textarea
                   v-model="form.description"
                   rows="3"
                   placeholder="توضیحات کامل پروژه"
-                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 dark:border-dark-border bg-white/20 dark:bg-dark-input/20 text-black dark:text-dark-text focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 bg-white/20 focus:outline-none focus:border-[#2D6A66]"
                 ></textarea>
               </div>
 
               <div class="flex items-center gap-2">
                 <input id="is_published" v-model="form.is_published" type="checkbox" class="w-4 h-4" />
-                <label for="is_published" class="text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text">منتشر شود</label>
+                <label for="is_published" class="text-[13px] sm:text-[14px] font-medium text-gray-700">منتشر شود</label>
               </div>
 
             </div>
           </div>
 
           <!-- تصاویر پروژه -->
-          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border">
+          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100">
             <div class="flex items-center justify-between mb-4 lg:mb-6">
-              <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base text-[#1a2333] dark:text-dark-text"><div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-input rounded-full"></div> تصاویر پروژه</h3>
-              <label class="px-3 sm:px-4 py-1 border rounded-xl text-xs font-bold bg-[#BFD1D5] dark:bg-dark-input text-black dark:text-dark-text-deep cursor-pointer">
+              <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base"><div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> تصاویر پروژه</h3>
+              <label class="px-3 sm:px-4 py-1 border rounded-xl text-xs font-bold bg-[#BFD1D5] cursor-pointer">
                 افزودن
                 <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" @change="onImagesChange" />
               </label>
@@ -417,7 +413,7 @@ const deleteItem = async (id) => {
               <div
                 v-for="img in form.existing_images"
                 :key="'existing-' + img.id"
-                class="relative w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input rounded-2xl overflow-hidden"
+                class="relative w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 rounded-2xl overflow-hidden"
               >
                 <img :src="img.image" class="w-full h-full object-cover" />
                 <button
@@ -430,7 +426,7 @@ const deleteItem = async (id) => {
               <div
                 v-for="(src, index) in form.images_preview"
                 :key="'new-' + index"
-                class="relative w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input rounded-2xl overflow-hidden"
+                class="relative w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 rounded-2xl overflow-hidden"
               >
                 <img :src="src" class="w-full h-full object-cover" />
                 <button
@@ -440,7 +436,7 @@ const deleteItem = async (id) => {
               </div>
 
               <label
-                class="w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input rounded-2xl border border-dashed border-gray-300 dark:border-dark-border flex items-center justify-center text-2xl text-gray-400 dark:text-dark-text-deep/70 cursor-pointer"
+                class="w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 rounded-2xl border border-dashed flex items-center justify-center text-2xl text-gray-400 cursor-pointer"
               >
                 +
                 <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" @change="onImagesChange" />
@@ -452,17 +448,17 @@ const deleteItem = async (id) => {
         <div class="flex flex-col gap-6 lg:gap-8">
 
           <!-- جزئیات خدمات: در مستندات فعلی API endpoint ندارد؛ فعلاً نمایشی است -->
-          <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base text-[#1a2333] dark:text-dark-text"><div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-input rounded-full"></div> جزئیات خدمات</h3>
-          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-300 dark:border-dark-border">
-            <ul class="text-sm space-y-3 lg:space-y-4 pr-2 text-gray-400 dark:text-dark-text/60">
+          <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base"><div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> جزئیات خدمات</h3>
+          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-300">
+            <ul class="text-sm space-y-3 lg:space-y-4 pr-2 text-gray-400">
               <li>این بخش در مستندات API فعلی وجود ندارد و به اندپوینت جداگانه نیاز دارد.</li>
             </ul>
           </div>
 
           <!-- اطلاعات مشتری -->
-          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border">
-            <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
-              <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-input rounded-full"></div> <h3>اطلاعات مشتری</h3>
+          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100">
+            <div class="flex items-center gap-2 text-[#1a2333] font-bold mb-4 lg:mb-6">
+              <div class="w-3 h-3 bg-[#BFD1D5] rounded-full"></div> <h3>اطلاعات مشتری</h3>
             </div>
 
             <div class="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-0 mb-4">
@@ -476,22 +472,22 @@ const deleteItem = async (id) => {
                     v-model="form.customer_name"
                     type="text"
                     placeholder="نام مشتری *"
-                    class="font-bold text-sm sm:text-base border-b border-gray-300 dark:border-dark-border bg-transparent text-black dark:text-dark-text focus:outline-none mb-1 w-full"
+                    class="font-bold text-sm sm:text-base border-b border-gray-300 bg-transparent focus:outline-none mb-1 w-full"
                   />
                   <input
                     v-model="form.customer_position"
                     type="text"
                     placeholder="سمت مشتری"
-                    class="text-xs sm:text-sm text-gray-500 dark:text-dark-text/70 border-b border-gray-200 dark:border-dark-border bg-transparent focus:outline-none w-full"
+                    class="text-xs sm:text-sm text-gray-500 border-b border-gray-200 bg-transparent focus:outline-none w-full"
                   />
                 </div>
               </div>
               <div class="flex flex-row sm:flex-col gap-2">
-                <label class="w-20 py-1 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input text-black dark:text-dark-text-deep rounded-lg text-center cursor-pointer">
+                <label class="w-20 py-1 text-[13px] sm:text-[14px] bg-[#BFD1D5] rounded-lg text-center cursor-pointer">
                   ویرایش
                   <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
                 </label>
-                <button @click="removeAvatar" class="w-20 py-1 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input text-black dark:text-dark-text-deep rounded-lg">حذف تصویر</button>
+                <button @click="removeAvatar" class="w-20 py-1 text-[13px] sm:text-[14px] bg-[#BFD1D5] rounded-lg">حذف تصویر</button>
               </div>
             </div>
 
@@ -499,17 +495,17 @@ const deleteItem = async (id) => {
               v-model="form.customer_description"
               rows="3"
               placeholder="نظر مشتری درباره پروژه *"
-              class="mt-2 w-full text-xs sm:text-sm text-gray-600 dark:text-dark-text-deep bg-gray-50 dark:bg-dark-input p-3 sm:p-4 rounded-xl focus:outline-none"
+              class="mt-2 w-full text-xs sm:text-sm text-gray-600 bg-gray-50 p-3 sm:p-4 rounded-xl focus:outline-none"
             ></textarea>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 sm:gap-4 mt-8 lg:mt-10 pt-6 border-t border-gray-200 dark:border-dark-border" dir="ltr">
+      <div class="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 sm:gap-4 mt-8 lg:mt-10 pt-6 border-t border-gray-200" dir="ltr">
         <button
           @click="saveChanges"
           :disabled="isSaving"
-          class="min-w-[84px] h-[32px] px-3 bg-[#BFD1D5] dark:bg-dark-input text-black dark:text-dark-text-deep rounded-2xl text-xs font-bold flex items-center justify-center disabled:opacity-50"
+          class="min-w-[84px] h-[32px] px-3 bg-[#BFD1D5] text-black rounded-2xl text-xs font-bold flex items-center justify-center disabled:opacity-50"
         >
           {{ isSaving ? 'در حال ذخیره...' : 'ذخیره تغییرات' }}
         </button>
