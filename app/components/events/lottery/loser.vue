@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#35434E] flex justify-center items-center p-4" dir="rtl">
+  <div class="min-h-screen bg-[#35434E] dark:bg-dark-bg flex justify-center items-center p-4" dir="rtl">
 
     <img src="/images/not-this-time.png" class="absolute inset-0 w-full h-[232px] object-cover" alt="Not This Time" />
 
@@ -10,7 +10,7 @@
         <Icon name="heroicons:face-frown" class="w-12 h-12 text-white mb-4" />
 
         <h2 class="text-xl font-bold text-white mb-4">
-          این بار <span class="text-[#D4AF37]">شانس</span> با شما نبود
+          این بار <span class="text-[#D4AF37] dark:text-dark-gold">شانس</span> با شما نبود
         </h2>
 
         <p class="text-white/90 text-sm leading-relaxed">

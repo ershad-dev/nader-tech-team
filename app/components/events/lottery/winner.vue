@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#9ED8A7] flex justify-center items-center p-4" dir="rtl">
+  <div class="min-h-screen bg-[#9ED8A7] dark:bg-dark-bg flex justify-center items-center p-4" dir="rtl">
 
     <div class="w-full max-w-md">
 
@@ -13,21 +13,21 @@
         <p class="text-white text-[20px] fon-700">شما برنده قرعه‌کشی هستید</p>
       </div>
 
-      <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-xl">
-        <h2 class="text-[#1A5715] font-bold text-xl mb-6 text-center"> شما برنده شدید</h2>
+      <div class="bg-white dark:bg-dark-surface rounded-[2rem] p-6 md:p-8 shadow-xl">
+        <h2 class="text-[#1A5715] dark:text-dark-highlight font-bold text-xl mb-6 text-center"> شما برنده شدید</h2>
 
         <div class="space-y-6">
-          <div class="border-b border-gray-300 pb-2">
-            <p class="text-gray-400 text-[14px] mb-1 font-roboto">قرعه‌کشی</p>
-            <p class="font-bold text-gray-800">{{ lottery?.title || '-' }}</p>
+          <div class="border-b border-gray-300 dark:border-dark-border/60 pb-2">
+            <p class="text-gray-400 dark:text-dark-text-deep/70 text-[14px] mb-1 font-roboto">قرعه‌کشی</p>
+            <p class="font-bold text-gray-800 dark:text-dark-text-deep">{{ lottery?.title || '-' }}</p>
           </div>
-          <div v-if="loginCheck?.name" class="border-b border-gray-300 pb-2">
-            <p class="text-gray-400 text-[14px] mb-1 font-roboto">نام و نام خانوادگی</p>
-            <p class="font-bold text-gray-800">{{ loginCheck.name }}</p>
+          <div v-if="loginCheck?.name" class="border-b border-gray-300 dark:border-dark-border/60 pb-2">
+            <p class="text-gray-400 dark:text-dark-text-deep/70 text-[14px] mb-1 font-roboto">نام و نام خانوادگی</p>
+            <p class="font-bold text-gray-800 dark:text-dark-text-deep">{{ loginCheck.name }}</p>
           </div>
           <div v-if="loginCheck?.code">
-            <p class="text-gray-400 text-[14px] mb-1 font-roboto">کد قرعه‌کشی</p>
-            <p class="font-bold text-gray-800">{{ loginCheck.code }}</p>
+            <p class="text-gray-400 dark:text-dark-text-deep/70 text-[14px] mb-1 font-roboto">کد قرعه‌کشی</p>
+            <p class="font-bold text-gray-800 dark:text-dark-text-deep">{{ loginCheck.code }}</p>
           </div>
         </div>
       </div>

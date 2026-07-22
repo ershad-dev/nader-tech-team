@@ -12,8 +12,8 @@
       :class="[
         'flex-1 min-w-0 px-1 sm:px-4 lg:px-8 py-1.5 lg:py-3 lg:w-[178px] min-[1920px]:w-[210px] h-auto lg:h-[43px] min-[1920px]:h-[54px] rounded-[14px] lg:rounded-[19px] text-[10px] xs:text-[11px] sm:text-[15px] lg:text-[18px] min-[1920px]:text-[20px] font-bold transition-all duration-300 truncate whitespace-nowrap',
         activeCategory === category 
-          ? 'bg-[#2C7379] dark:bg-dark-accent text-white shadow-md'
-          : ' text-[#0F184B] dark:text-dark-text hover:bg-slate-200 dark:hover:bg-dark-accent/20'
+          ? 'bg-[#2C7379] dark:bg-dark-accent text-white dark:text-dark-text-deep shadow-md'
+          : ' text-[#0F184B] dark:text-dark-text-deep hover:bg-slate-200 dark:hover:bg-dark-accent/20'
       ]"
     >
       {{ category }}
@@ -31,7 +31,7 @@
 
 <NuxtLink
   to="/order/moreProject"
-  class="bg-[#2C7379] dark:bg-dark-accent px-4 sm:w-[147px] min-[1920px]:w-[170px] h-[30px] sm:h-[45px] min-[1920px]:h-[52px] text-white rounded-[14px] sm:rounded-[19px] text-[11px] sm:text-[17px] min-[1920px]:text-[19px] font-medium transition-all hover:bg-[#2C7379] dark:hover:bg-dark-accent-hover flex items-center justify-center gap-2 shadow-md font-roboto whitespace-nowrap overflow-hidden"
+  class="bg-[#2C7379] dark:bg-dark-accent px-4 sm:w-[147px] min-[1920px]:w-[170px] h-[30px] sm:h-[45px] min-[1920px]:h-[52px] text-white dark:text-dark-text-deep rounded-[14px] sm:rounded-[19px] text-[11px] sm:text-[17px] min-[1920px]:text-[19px] font-medium transition-all hover:bg-[#2C7379] dark:hover:bg-dark-accent-hover flex items-center justify-center gap-2 shadow-md font-roboto whitespace-nowrap overflow-hidden"
 >
   <span>مشاهده بیشتر</span>
 
@@ -78,7 +78,7 @@
   <div class="relative rounded-[2rem] xl:rounded-[3rem] overflow-hidden p-6 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8] dark:bg-dark-bg xl:bg-white/20 dark:xl:bg-dark-bg">
 
     <!-- عکس پس‌زمینه فقط در دسکتاپ -->
-    <img src="/images/bg-services.png" class="hidden xl:block absolute inset-0 w-[1105px] min-[1920px]:w-full object-cover z-0 dark:brightness-[0.65] dark:contrast-125" />
+    <img src="/images/bg-services.png" class="hidden xl:block absolute inset-0 w-[1105px] min-[1920px]:w-full object-cover z-0" />
 
     <div class="relative z-10 flex flex-col xl:flex-row items-center gap-6 xl:gap-12 min-[1920px]:gap-16 min-[1920px]:flex-nowrap">
       <div class="flex-1 w-full">

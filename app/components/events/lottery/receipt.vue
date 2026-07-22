@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-[#F9F7F2] flex justify-center items-center p-4" dir="rtl">
+  <div class="min-h-screen bg-[#F9F7F2] dark:bg-dark-bg flex justify-center items-center p-4" dir="rtl">
 
-    <div ref="pdfTarget" class="w-full max-w-lg bg-white rounded-3xl shadow-xl overflow-hidden relative pb-8">
+    <div ref="pdfTarget" class="w-full max-w-lg bg-white dark:bg-dark-surface rounded-3xl shadow-xl overflow-hidden relative pb-8">
 
       <div class="w-full h-48 md:h-56 relative">
         <img src="/images/lottery-header-reg.jpg" class="w-full h-full object-cover" />
@@ -9,9 +9,9 @@
 
       <div class="px-6 md:px-10">
 
-        <h2 class="text-green-600 font-bold text-lg md:text-xl text-center my-6">ثبت‌نام با موفقیت انجام شد</h2>
+        <h2 class="text-green-600 dark:text-green-400 font-bold text-lg md:text-xl text-center my-6">ثبت‌نام با موفقیت انجام شد</h2>
 
-        <div v-if="!registration" class="text-center text-gray-400 text-sm py-6">
+        <div v-if="!registration" class="text-center text-gray-400 dark:text-dark-text/60 text-sm py-6">
           اطلاعات ثبت‌نامی یافت نشد. لطفاً دوباره از صفحه ثبت‌نام اقدام کنید.
         </div>
 
@@ -19,56 +19,56 @@
           <!-- کد قرعه‌کشی: طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره
                که همون کد قرعه‌کشی/بلیط کاربره؛ دیگه نیازی به حدس زدن اسم فیلد نیست -->
           <div class="text-center mb-8">
-            <div class="bg-[#C5E0E3] text-[#2D7A6F] px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">کد قرعه‌کشی</div>
-            <p v-if="registration.code" class="text-2xl font-bold text-[#2C7379] font-roboto">{{ registration.code }}</p>
-            <p v-else class="text-sm text-red-400 font-roboto">این فیلد در پاسخ API موجود نیست</p>
+            <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">کد قرعه‌کشی</div>
+            <p v-if="registration.code" class="text-2xl font-bold text-[#2C7379] dark:text-dark-highlight font-roboto">{{ registration.code }}</p>
+            <p v-else class="text-sm text-red-400 dark:text-red-300 font-roboto">این فیلد در پاسخ API موجود نیست</p>
           </div>
 
-          <p class="text-amber-600 text-xs text-center mb-4 leading-relaxed font-roboto">
+          <p class="text-amber-600 dark:text-amber-400 text-xs text-center mb-4 leading-relaxed font-roboto">
             این کد رو به همراه شماره موبایل‌تون یادداشت کنید؛ برای مشاهده‌ی نتیجه‌ی قرعه‌کشی (صفحه‌ی ورود) به این‌ها نیاز دارید.
           </p>
 
-          <div class="bg-[#BFD1D580]/50 border border-[#6F78B780] rounded-2xl p-4 md:p-6 mb-8 w-full">
-            <div class="space-y-4 text-gray-600 text-sm md:text-base">
-              <div class="flex justify-between border-b pb-3 font-roboto">
+          <div class="bg-[#BFD1D580]/50 dark:bg-dark-input/40 border border-[#6F78B780] dark:border-dark-border rounded-2xl p-4 md:p-6 mb-8 w-full">
+            <div class="space-y-4 text-gray-600 dark:text-dark-text-deep text-sm md:text-base">
+              <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
                 <span>نام و نام خانوادگی</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.full_name }}</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.full_name }}</span>
               </div>
 
-              <div class="flex justify-between border-b pb-3 font-roboto">
+              <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
                 <span>نام کاربری</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.username }}</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.username }}</span>
               </div>
 
-              <div class="flex justify-between border-b pb-3 font-roboto">
+              <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
                 <span>شماره موبایل</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.mobile }}</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.mobile }}</span>
               </div>
 
-              <div class="flex justify-between border-b pb-3 font-roboto">
+              <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
                 <span>ایمیل</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.email }}</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.email }}</span>
               </div>
 
-              <div class="flex justify-between border-b pb-3 font-roboto">
+              <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
                 <span>استان</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ registration.user.province }}</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.province }}</span>
               </div>
 
               <div class="flex justify-between font-roboto">
                 <span>مبلغ پرداختی</span>
-                <span class="font-medium text-gray-800 font-roboto">{{ formatPrice(registration.lottery.price) }} تومان</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ formatPrice(registration.lottery.price) }} تومان</span>
               </div>
             </div>
           </div>
 
           <div class="text-center mb-8">
-            <div class="bg-[#C5E0E3] text-[#2D7A6F] px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">قرعه‌کشی</div>
-            <p class="text-lg md:text-xl font-bold text-[#2C7379]">{{ registration.lottery.title }}</p>
-            <p class="text-gray-400 text-xs mt-2 font-roboto">تاریخ ثبت‌نام: {{ formatDate(registration.registered_at) }}</p>
+            <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">قرعه‌کشی</div>
+            <p class="text-lg md:text-xl font-bold text-[#2C7379] dark:text-dark-highlight">{{ registration.lottery.title }}</p>
+            <p class="text-gray-400 dark:text-dark-text/60 text-xs mt-2 font-roboto">تاریخ ثبت‌نام: {{ formatDate(registration.registered_at) }}</p>
           </div>
 
-          <p class="text-red-400 text-xs text-center mb-8 leading-relaxed font-roboto">
+          <p class="text-red-400 dark:text-red-300 text-xs text-center mb-8 leading-relaxed font-roboto">
             لطفاً از این صفحه اسکرین‌شات تهیه کنید؛ هنگام ورود، بلیط شما بر اساس این اطلاعات بررسی خواهد شد.
           </p>
 
@@ -83,7 +83,7 @@
               </svg>
             </button>
 
-            <NuxtLink to="/" class="w-full max-w-[375px] h-[47px] bg-[#2D7A6F] text-white flex justify-center items-center rounded-2xl font-bold hover:bg-teal-800 transition shadow-lg">
+            <NuxtLink to="/" class="w-full max-w-[375px] h-[47px] bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep flex justify-center items-center rounded-2xl font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-lg">
               بازگشت به خانه
             </NuxtLink>
 

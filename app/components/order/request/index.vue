@@ -9,7 +9,7 @@
     </div>
 
     <!-- بدنه اصلی (گرید) -->
-    <div class="bg-[#2C737938] dark:bg-dark-surface/40 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+    <div class="bg-[#2C737938] dark:bg-dark-surface p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 
       <div class="md:col-span-1 border-b-2 md:border-b-0 md:border-l-2 border-gray-300 dark:border-dark-border pb-6 md:pb-0 md:pl-6 space-y-4 sm:space-y-6 md:space-y-8">
 
@@ -31,7 +31,7 @@
             </div>
             <div class="min-w-0 md:min-w-fit">
               <h4 class="font-bold text-[#0F184B] dark:text-dark-text font-roboto text-[11px] sm:text-[12.5px] md:text-base leading-tight md:leading-normal">پاسخ سریع</h4>
-              <p class="text-[9px] sm:text-[10px] md:text-[13px] text-[#747893] dark:text-dark-text/80 font-noto-light font-bold leading-[13px] sm:leading-[14px] md:leading-normal mt-1 md:mt-0">کارشناسان ما در کمتر از ۲۴ ساعت <br>با شما تماس خواهند گرفت.</p>
+              <p class="text-[9px] sm:text-[10px] md:text-[13px] text-[#747893] dark:text-dark-text font-noto-light font-bold leading-[13px] sm:leading-[14px] md:leading-normal mt-1 md:mt-0">کارشناسان ما در کمتر از ۲۴ ساعت <br>با شما تماس خواهند گرفت.</p>
             </div>
           </div>
 
@@ -41,7 +41,7 @@
             </div>
             <div class="min-w-0 md:min-w-fit">
               <h4 class="font-bold text-[#0F184B] dark:text-dark-text font-roboto text-[11px] sm:text-[12.5px] md:text-base leading-tight md:leading-normal">راهکار اختصاصی</h4>
-              <p class="text-[9px] sm:text-[10px] md:text-[13px] text-[#747893] dark:text-dark-text/80 font-noto-light font-bold leading-[13px] sm:leading-[14px] md:leading-normal mt-1 md:mt-0">ما برای هر پروژه،<br> راهکار متناسب<br> با نیاز شما ارائه می‌دهیم.</p>
+              <p class="text-[9px] sm:text-[10px] md:text-[13px] text-[#747893] dark:text-dark-text font-noto-light font-bold leading-[13px] sm:leading-[14px] md:leading-normal mt-1 md:mt-0">ما برای هر پروژه،<br> راهکار متناسب<br> با نیاز شما ارائه می‌دهیم.</p>
             </div>
           </div>
 
@@ -51,7 +51,7 @@
             </div>
             <div class="min-w-0 md:min-w-fit">
               <h4 class="font-bold text-[#0F184B] dark:text-dark-text font-roboto text-[11px] sm:text-[12.5px] md:text-base leading-tight md:leading-normal">تجربه و تخصص</h4>
-              <p class="text-[9px] sm:text-[10px] md:text-[13px] text-[#747893] dark:text-dark-text/80 font-noto-light font-bold leading-[13px] sm:leading-[14px] md:leading-normal mt-1 md:mt-0">تیم ما با سال ها <br> تجربه بهترین نتیجه را به <br> شما تضمین می‌کند.</p>
+              <p class="text-[9px] sm:text-[10px] md:text-[13px] text-[#747893] dark:text-dark-text font-noto-light font-bold leading-[13px] sm:leading-[14px] md:leading-normal mt-1 md:mt-0">تیم ما با سال ها <br> تجربه بهترین نتیجه را به <br> شما تضمین می‌کند.</p>
             </div>
           </div>
 
@@ -64,7 +64,7 @@
         <!-- پیام موفقیت -->
         <div
           v-if="successMessage"
-          class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl text-[13px] sm:text-[14px]"
+          class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl text-[13px] sm:text-[14px]"
         >
           {{ successMessage }}
         </div>
@@ -72,7 +72,7 @@
         <!-- پیام خطای عمومی -->
         <div
           v-if="generalError"
-          class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl text-[13px] sm:text-[14px]"
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl text-[13px] sm:text-[14px]"
         >
           {{ generalError }}
         </div>
@@ -84,14 +84,14 @@
             <div class="relative group">
               <div
                 v-show="!form.name"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/70 transition-opacity duration-300 pointer-events-none"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 pointer-events-none"
               >
                 <OrderRequestIconsPerson />
               </div>
 
               <input
                 v-model="form.name"
-                class="w-full pr-10 p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/35 dark:text-dark-text-deep rounded-xl border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] text-[13px] sm:text-[14px] md:text-[16px]"
+                class="w-full pr-10 p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/40 rounded-xl border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] text-[13px] sm:text-[14px] md:text-[16px] text-black dark:text-black"
                 :class="errors.name ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
               />
             </div>
@@ -106,7 +106,7 @@
 
               <div
                 v-show="!form.mobile"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/70 transition-opacity duration-300 pointer-events-none"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 pointer-events-none"
               >
                 <OrderRequestIconsCall />
               </div>
@@ -114,7 +114,7 @@
               <input
                 v-model="form.mobile"
                 placeholder=" "
-                class="w-full pr-10 p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/35 dark:text-dark-text-deep rounded-xl border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] text-[13px] sm:text-[14px] md:text-[16px]"
+                class="w-full pr-10 p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/40 rounded-xl border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] text-[13px] sm:text-[14px] md:text-[16px] text-black dark:text-black"
                 :class="errors.mobile ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
               />
             </div>
@@ -131,7 +131,7 @@
 
             <div
               v-show="!form.email"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/70 transition-opacity duration-300 pointer-events-none"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-opacity duration-300 pointer-events-none"
             >
               <OrderRequestIconsEmail />
             </div>
@@ -139,7 +139,7 @@
             <input
               v-model="form.email"
               placeholder=" "
-              class="w-full pr-10 p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/35 dark:text-dark-text-deep rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] text-[13px] sm:text-[14px] md:text-[16px]"
+              class="w-full pr-10 p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/40 rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] text-[13px] sm:text-[14px] md:text-[16px] text-black dark:text-black"
               :class="errors.email ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             />
           </div>
@@ -147,20 +147,20 @@
         </div>
 
         <div>
-          <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto text-[13px] sm:text-[14px] md:text-[16px]">
+          <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto mt-[30px] sm:mt-[40px] md:mt-[50px] text-[13px] sm:text-[14px] md:text-[16px]">
              درخواست برای
           </label>
 
           <div class="relative">
             <div
               @click="isOpen = !isOpen"
-              class="w-full p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/35 rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border cursor-pointer flex justify-between items-center shadow-[0_3px_0px_rgba(0,0,0,0.15)] -mb-[5px]"
+              class="w-full p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/40 rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border cursor-pointer flex justify-between items-center shadow-[0_3px_0px_rgba(0,0,0,0.15)] -mb-[5px]"
               :class="errors.service_id ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             >
               <span class="text-gray-500 dark:text-dark-text-deep text-[13px] sm:text-[14px] md:text-[16px]">
                 {{ selected ? selected.title : (servicesLoading ? 'در حال بارگذاری...' : 'انتخاب کنید') }}
               </span>
-              <Icon name="heroicons:chevron-down" class="text-gray-400 dark:text-dark-text-deep/70" />
+              <Icon name="heroicons:chevron-down" class="text-gray-400 dark:text-dark-text-deep" />
             </div>
 
             <ul
@@ -171,7 +171,7 @@
                 v-for="option in options"
                 :key="option.id"
                 @click="select(option)"
-                class="p-2.5 sm:p-3 text-[#747893] dark:text-dark-text-deep min-h-[40px] sm:min-h-[44px] md:min-h-[47px] font-noto-light font-bold text-[13px] sm:text-[16px] md:text-[20px] text-center cursor-pointer transition hover:bg-gray-100 dark:hover:bg-dark-surface/40 border-b border-gray-400 dark:border-dark-border last:border-b-0 flex items-center justify-center"
+                class="p-2.5 sm:p-3 text-[#747893] dark:text-dark-text-deep min-h-[40px] sm:min-h-[44px] md:min-h-[47px] font-noto-light font-bold text-[13px] sm:text-[16px] md:text-[20px] text-center cursor-pointer transition hover:bg-gray-100 dark:hover:bg-dark-border/40 border-b border-gray-400 dark:border-dark-border last:border-b-0 flex items-center justify-center"
               >
                 {{ option.title }}
               </li>
@@ -187,7 +187,7 @@
 
           <textarea
             v-model="form.description"
-            class="w-full bg-white/35 dark:bg-dark-input/35 dark:text-dark-text-deep p-3 sm:p-3.5 md:p-4 rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] h-32 sm:h-36 md:h-40 text-[13px] sm:text-[14px] md:text-[16px]"
+            class="w-full bg-white/35 dark:bg-dark-input/40 p-3 sm:p-3.5 md:p-4 rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border outline-none focus:ring-2 focus:ring-teal-700 shadow-[0_3px_0px_rgba(0,0,0,0.15)] h-32 sm:h-36 md:h-40 text-[13px] sm:text-[14px] md:text-[16px] text-black dark:text-black"
             :class="errors.description ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
           ></textarea>
           <p v-if="errors.description" class="text-red-600 dark:text-red-400 text-[11px] sm:text-[12px] mt-1">{{ errors.description[0] }}</p>
@@ -196,7 +196,7 @@
         <button
           type="submit"
           :disabled="submitting"
-          class="w-full bg-teal-800 dark:bg-dark-accent text-white py-3 sm:py-3.5 md:py-4 rounded-xl font-bold hover:bg-teal-900 dark:hover:bg-dark-accent-hover transition flex justify-center items-center gap-2 text-[14px] sm:text-[15px] md:text-[16px] disabled:opacity-60 disabled:cursor-not-allowed"
+          class="w-full bg-teal-800 dark:bg-dark-accent text-white dark:text-dark-text-deep py-3 sm:py-3.5 md:py-4 rounded-xl font-bold hover:bg-teal-900 dark:hover:bg-dark-accent-hover transition flex justify-center items-center gap-2 text-[14px] sm:text-[15px] md:text-[16px] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <OrderRequestIconsSend />
           {{ submitting ? 'در حال ارسال...' : 'ارسال درخواست' }}
@@ -208,28 +208,9 @@
   </div>
 </template>
 
-
-
 <script setup>
-const { token, initAuth } = useAuth()
-const router = useRouter()
-const route = useRoute()
-
-const isLoggedIn = computed(() => !!token.value)
-
-onMounted(() => {
-  initAuth()
-
-  // چک کردن بعد از initAuth، توی nextTick تا مطمئن بشیم state آپدیت شده
-  nextTick(() => {
-    if (!isLoggedIn.value) {
-      router.push(`/auth/login?redirect=${route.fullPath}`)
-    }
-  })
-})
-
 // ---- state لیست خدمات (درخواست برای) ----
-const options = ref([])
+const options = ref([])       // { id, title, slug, ... }
 const isOpen = ref(false)
 const selected = ref(null)
 const servicesLoading = ref(false)
@@ -289,9 +270,6 @@ const submitForm = async () => {
   try {
     const res = await $fetch(`https://nadertechnologyteam.ir/api/requests`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token.value}`
-      },
       body: {
         service_id: form.service_id,
         name: form.name,
@@ -308,11 +286,11 @@ const submitForm = async () => {
     const data = e?.data || e?.response?._data
 
     if (status === 422 && data?.errors) {
+      // خطاهای اعتبارسنجی فیلد به فیلد
       errors.value = data.errors
       generalError.value = data.message || 'The given data was invalid.'
     } else if (status === 401) {
       generalError.value = data?.message || 'Unauthenticated.'
-      router.push(`/auth/login?redirect=${route.fullPath}`)
     } else {
       generalError.value = data?.message || 'خطایی رخ داد. لطفا دوباره تلاش کنید.'
     }

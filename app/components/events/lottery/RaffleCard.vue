@@ -3,7 +3,7 @@
 
 <template>
   <!-- کانتینر اصلی کارت با سایز محدود، گوشه‌های گرد، سایه و حاشیه ظریف -->
-  <div class="max-w-md w-full bg-white rounded-[2rem] overflow-hidden shadow-lg border border-gray-100">
+  <div class="max-w-md w-full bg-white dark:bg-dark-surface rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 dark:border-dark-border">
      
     <!-- بخش بالایی کارت که برای نمایش تصویر یا بنر قرعه‌کشی استفاده می‌شود -->
     <!-- اسلات در اینجا یعنی هر محتوایی که بیرون از این کامپوننت ارسال شود، در اینجا قرار می‌گیرد -->

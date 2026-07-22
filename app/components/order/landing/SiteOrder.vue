@@ -115,13 +115,28 @@ const steps = [
   dir="rtl"
 >
   <!-- لایه‌ی پس‌زمینه‌ی جدا -->
-  <div
-    class="absolute inset-0 -z-10 rounded-[50px] xxl:rounded-[60px] overflow-hidden
-    bg-[url('/images/bg-flow-2.png')]
-    bg-cover bg-top bg-no-repeat
-    xl:bg-[length:100%_100%] xl:bg-center
-   "
-  ></div>
+<div
+  class="absolute inset-0 -z-10 rounded-[50px] xxl:rounded-[60px] overflow-hidden
+  bg-[url('/images/bg-flow3.png')]
+  bg-cover bg-top bg-no-repeat
+  xl:bg-[length:100%_100%] xl:bg-center"
+>
+  <img
+    src="/images/firooze.png"
+    alt=""
+    class="md:absolute md:top-0 md:right-0"
+
+  />
+  <img src="/images/line-flow.png" alt="" class="md:mt-[350px]">
+  <img src="/images/line-flow.png" alt="" class=" md:left-0">
+
+
+  <img
+    src="/images/firooze.png"
+    alt=""
+    class="md:absolute md:bottom-0 md:left-0"
+  />
+</div>
 
 <div class="relative z-10 max-w-6xl xxl:max-w-[1300px] mx-auto">
   <div class="flex flex-col items-center text-center mb-8 md:mb-10 xxl:mb-14">

@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-[#F9F7F2] flex justify-center items-center p-4" dir="rtl">
+  <div class="min-h-screen bg-[#F9F7F2] dark:bg-dark-bg flex justify-center items-center p-4" dir="rtl">
 
-    <RaffleCard class="w-full max-w-sm bg-white p-6 md:p-8 rounded-3xl shadow-xl">
+    <RaffleCard class="w-full max-w-sm bg-white dark:bg-dark-surface p-6 md:p-8 rounded-3xl shadow-xl">
 
       <div class="flex justify-center mb-8 md:mb-12">
         <div class="animate-spin-slow w-48 h-48 md:w-[310px] md:h-[310px]">
@@ -9,10 +9,10 @@
         </div>
       </div>
 
-      <div class="bg-[#ebebeb] rounded-3xl p-6 md:p-8 text-center shadow-sm border border-gray-200">
-        <p class="text-gray-500 text-sm mb-2">وضعیت شما</p>
-        <h2 class="text-xl md:text-2xl font-bold text-[#2D7A6F] mb-4">در انتظار قرعه‌کشی</h2>
-        <p class="text-gray-500 text-sm md:text-base leading-relaxed">
+      <div class="bg-[#ebebeb] dark:bg-dark-input rounded-3xl p-6 md:p-8 text-center shadow-sm border border-gray-200 dark:border-dark-border">
+        <p class="text-gray-500 dark:text-dark-text-deep/70 text-sm mb-2">وضعیت شما</p>
+        <h2 class="text-xl md:text-2xl font-bold text-[#2D7A6F] dark:text-dark-highlight mb-4">در انتظار قرعه‌کشی</h2>
+        <p class="text-gray-500 dark:text-dark-text-deep/70 text-sm md:text-base leading-relaxed">
           <template v-if="error">{{ error }}</template>
           <template v-else>
             لطفاً منتظر بمانید<br>
