@@ -79,7 +79,7 @@ function goToLoginPage() {
     >
       <button
         @click="goToRegister"
-        class="bg-white/90 dark:bg-dark-input text-[#333B6A] dark:text-dark-text-deep px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
+        class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
                rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
                text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
                font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
@@ -91,7 +91,7 @@ function goToLoginPage() {
 
       <button
         @click="goToLoginPage"
-        class="bg-white/90 dark:bg-dark-input text-[#333B6A] dark:text-dark-text-deep px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
+        class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
                rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
                text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
                font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[1100px] mx-auto py-8 sm:py-12 md:py-16 px-4 sm:px-5 md:px-6 bg-[#ABD7D8]/25 dark:bg-dark-surface/50 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[3rem] mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8 md:mb-10 shadow-xl" dir="rtl">
+  <div class="max-w-[1100px] mx-auto py-8 sm:py-12 md:py-16 px-4 sm:px-5 md:px-6 bg-[#ABD7D8]/25 dark:bg-[#ABD7D857] rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[3rem] mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8 md:mb-10 shadow-xl" dir="rtl">
 
     <!-- لودینگ -->
     <div v-if="pending" class="text-center py-16 text-slate-500 dark:text-dark-text/70">در حال بارگذاری مقاله...</div>
@@ -28,7 +28,7 @@
           </svg>
           <span class="text-[13px] sm:text-[14px] md:text-[16px]">{{ formatDate(article.published_at) }}</span>
         </div>
-        <span class="text-slate-400 dark:text-dark-text/50 text-xs">{{ article.views_count }} بازدید</span>
+        <!-- <span class="text-slate-400 dark:text-dark-text/50 text-xs">{{ article.views_count }} بازدید</span> -->
       </div>
 
       <!-- content از سرور HTML است -->

@@ -38,7 +38,7 @@ const steps = [
 
     <div class="relative z-10 max-w-[1054px] xxl:max-w-[1440px] mx-auto px-4 xl:px-0">
 <h1
-  class="ml-auto bg-[#fcfaf4] dark:bg-dark-input w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] xxl:w-[200px] xxl:h-[48px] xxl:text-[20px] text-[#2d6a66] dark:text-dark-text flex items-center justify-center rounded-[19px] shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border mt-[80px] md:mt-[70px] xl:mt-[100px] xxl:mt-[120px]"
+  class="ml-auto bg-[#fcfaf4] dark:bg-[#ADE9EA] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] xxl:w-[200px] xxl:h-[48px] xxl:text-[20px] text-[#2d6a66] dark:text-[#407B80] flex items-center justify-center rounded-[19px] shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border mt-[80px] md:mt-[70px] xl:mt-[100px] xxl:mt-[120px]"
 >
   طراحی سایت
 </h1>
@@ -149,13 +149,13 @@ const steps = [
     v-for="(step, index) in steps"
     :key="index"
     :class="[
-      'relative bg-[#E4E6EB] dark:bg-dark-surface rounded-[1.5rem] md:rounded-[1.75rem] w-[105px] sm:w-[140px] md:w-[140px] xl:w-[182px] xxl:w-[210px] h-[160px] sm:h-[190px] md:h-[195px] xl:h-[235px] xxl:h-[270px] flex flex-col shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-transform duration-500 mt-[12px] sm:mt-[20px] md:mt-[20px] xl:mt-[50px] xxl:mt-[60px]',
+      'relative bg-[#E4E6EB] dark:bg-[#96ACB1] rounded-[1.5rem] md:rounded-[1.75rem] w-[105px] sm:w-[140px] md:w-[140px] xl:w-[182px] xxl:w-[210px] h-[160px] sm:h-[190px] md:h-[195px] xl:h-[235px] xxl:h-[270px] flex flex-col shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-transform duration-500 mt-[12px] sm:mt-[20px] md:mt-[20px] xl:mt-[50px] xxl:mt-[60px]',
       index % 2 !== 0 ? 'xl:translate-y-12 xxl:translate-y-14' : '',
     ]"
   >
       <div class="absolute -right-1 top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[30px] xxl:h-[36px] bg-[#EAAA3C] dark:bg-dark-gold rounded-full -mt-[6px] md:-mt-[6px] xxl:-mt-[8px]"></div>
 
-      <div class="bg-white dark:bg-dark-input p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
+      <div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
         <div class="flex items-center h-full gap-1">
           <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[10px] xxl:ml-[14px] text-[#EAAA3C] dark:text-dark-gold rokh-bold-num mt-2">
             {{ (index + 1).toLocaleString('fa-IR') }}
@@ -164,9 +164,9 @@ const steps = [
         </div>
       </div>
 
-      <div class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow text-[#747893] dark:text-dark-text/80 text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 ">
-        {{ step.desc }}
-      </div>
+<div class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 ">
+  {{ step.desc }}
+</div>
     </div>
   </div>
 </div>

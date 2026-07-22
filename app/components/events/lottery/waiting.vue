@@ -5,7 +5,7 @@
 
       <div class="flex justify-center mb-8 md:mb-12">
         <div class="animate-spin-slow w-48 h-48 md:w-[310px] md:h-[310px]">
-          <img src="/images/hourglass.png" alt="در انتظار قرعه‌کشی" class="w-full h-full object-contain" />
+          <img src="/images/clock-sheni.png" alt="در انتظار قرعه‌کشی" class="w-full h-full object-contain" />
         </div>
       </div>
 
@@ -79,7 +79,7 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
+<!-- <style scoped>
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -88,4 +88,4 @@ onUnmounted(() => {
 .animate-spin-slow {
   animation: spin-slow 5s linear infinite;
 }
-</style>
+</style> -->

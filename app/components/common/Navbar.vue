@@ -86,32 +86,32 @@
 
       <!-- ۲. آیکون تم + دکمه EN/FA (بین دکمه‌ی ثبت‌نام و لینک‌ها) -->
       <div class="hidden xl:flex items-center gap-2 pl-4 border-l border-gray-200 dark:border-dark-border/40 shrink-0">
-  <button
-    @click="toggleColorMode"
-    class="flex items-center justify-center text-[#0F184B] dark:text-dark-text-deep hover:opacity-70 transition"
-    aria-label="تغییر حالت تاریک/روشن"
-  >
-    <svg v-if="colorMode.value === 'dark'" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M11.0174 2.80157C6.37072 3.29221 2.75 7.22328 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C16.7767 21.25 20.7078 17.6293 21.1984 12.9826C19.8717 14.6669 17.8126 15.75 15.5 15.75C11.4959 15.75 8.25 12.5041 8.25 8.5C8.25 6.18738 9.33315 4.1283 11.0174 2.80157ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C12.7166 1.25 13.0754 1.82126 13.1368 2.27627C13.196 2.71398 13.0342 3.27065 12.531 3.57467C10.8627 4.5828 9.75 6.41182 9.75 8.5C9.75 11.6756 12.3244 14.25 15.5 14.25C17.5882 14.25 19.4172 13.1373 20.4253 11.469C20.7293 10.9658 21.286 10.804 21.7237 10.8632C22.1787 10.9246 22.75 11.2834 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="currentColor"/>
-    </svg>
-    <svg v-else viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6">
-      <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
+        <button
+          @click="toggleLang"
+          class="text-[#0F184B] dark:text-dark-text-deep font-roboto font-medium text-[14px] min-[1920px]:text-[18px] hover:opacity-70 transition"
+        >
+          {{ langLabel }}
+        </button>
 
-  <span class="flex items-center text-gray-300 dark:text-black">
-    <svg viewBox="-6.5 0 32 32" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 min-[1920px]:w-4 min-[1920px]:h-4" fill="currentColor">
-      <path d="M3.625 27.094l9.563-26.688h2.406l-9.563 26.688h-2.406z"></path>
-    </svg>
-  </span>
+        <span class="flex items-center text-gray-300 dark:text-black">
+          <svg viewBox="-6.5 0 32 32" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 min-[1920px]:w-4 min-[1920px]:h-4" fill="currentColor">
+            <path d="M3.625 27.094l9.563-26.688h2.406l-9.563 26.688h-2.406z"></path>
+          </svg>
+        </span>
 
-  <button
-    @click="toggleLang"
-    class="text-[#0F184B] dark:text-dark-text-deep font-roboto font-medium text-[14px] min-[1920px]:text-[18px] hover:opacity-70 transition"
-  >
-    {{ langLabel }}
-  </button>
-</div>
+        <button
+          @click="toggleColorMode"
+          class="flex items-center justify-center text-[#0F184B] dark:text-dark-text-deep hover:opacity-70 transition"
+          aria-label="تغییر حالت تاریک/روشن"
+        >
+          <svg v-if="colorMode.value === 'dark'" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.0174 2.80157C6.37072 3.29221 2.75 7.22328 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C16.7767 21.25 20.7078 17.6293 21.1984 12.9826C19.8717 14.6669 17.8126 15.75 15.5 15.75C11.4959 15.75 8.25 12.5041 8.25 8.5C8.25 6.18738 9.33315 4.1283 11.0174 2.80157ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C12.7166 1.25 13.0754 1.82126 13.1368 2.27627C13.196 2.71398 13.0342 3.27065 12.531 3.57467C10.8627 4.5828 9.75 6.41182 9.75 8.5C9.75 11.6756 12.3244 14.25 15.5 14.25C17.5882 14.25 19.4172 13.1373 20.4253 11.469C20.7293 10.9658 21.286 10.804 21.7237 10.8632C22.1787 10.9246 22.75 11.2834 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="currentColor"/>
+          </svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6">
+            <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
 
       <!-- ۳. لینک‌های وسط (چپ‌ترین گروه در دسکتاپ) -->
       <div class="flex flex-col xl:flex-row xl:flex-row-reverse items-center justify-center gap-3 sm:gap-5 xl:gap-8 min-[1920px]:gap-10 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal text-[14px] sm:text-[15px] xl:text-[16px] min-[1920px]:text-[24px] w-full xl:flex-1 xl:whitespace-nowrap">
@@ -125,6 +125,13 @@
         <!-- دکمه‌ی تغییر حالت روشن/تاریک + EN/FA (موبایل) -->
         <div class="xl:hidden flex items-center gap-4 mt-1">
           <button
+            @click="toggleLang"
+            class="text-[#0F184B] dark:text-dark-text-deep font-medium"
+          >
+            {{ langLabel }}
+          </button>
+
+          <button
             @click="toggleColorMode"
             class="flex items-center gap-2 text-[#0F184B] dark:text-dark-text-deep"
           >
@@ -135,13 +142,6 @@
               <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>{{ colorMode.value === 'dark' ? 'حالت روشن' : 'حالت تاریک' }}</span>
-          </button>
-
-          <button
-            @click="toggleLang"
-            class="text-[#0F184B] dark:text-dark-text-deep font-medium"
-          >
-            {{ langLabel }}
           </button>
         </div>
 
@@ -203,3 +203,11 @@ function toggleLang() {
   langLabel.value = langLabel.value === 'EN' ? 'FA' : 'EN'
 }
 </script>
+
+<style scoped>
+@media (max-width: 1279px) {
+  nav {
+    direction: rtl;
+  }
+}
+</style>

@@ -18,7 +18,7 @@
         v-for="post in articles"
         :key="post.id"
         :to="`/articles/${post.slug}`"
-        class="w-full md:w-[281px] 2xl:w-[350px] h-[210px] sm:h-[260px] md:h-[379px] 2xl:h-[430px] bg-[#ABD7D8]/35 dark:bg-dark-surface/50 rounded-[16px] sm:rounded-[20px] md:rounded-[25px] 2xl:rounded-[28px] p-2 sm:p-3 md:p-4 2xl:p-5 flex flex-col relative transition-transform"
+        class="w-full md:w-[281px] 2xl:w-[350px] h-[210px] sm:h-[260px] md:h-[379px] 2xl:h-[430px] bg-[#ABD7D8]/35 dark:bg-dark-[#ABD7D857] rounded-[16px] sm:rounded-[20px] md:rounded-[25px] 2xl:rounded-[28px] p-2 sm:p-3 md:p-4 2xl:p-5 flex flex-col relative transition-transform"
       >
         <div class="relative w-full">
           <div class="absolute inset-0 rounded-[16px] sm:rounded-[20px] md:rounded-[25px] 2xl:rounded-[28px]"></div>

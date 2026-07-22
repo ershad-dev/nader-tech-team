@@ -11,7 +11,7 @@
         <div
           v-for="service in contentServices"
           :key="service"
-          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:ml-[50px] lg:ml-[100px] min-[1920px]:ml-[140px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white dark:bg-dark-input border-[#BFD1D5] dark:border-dark-border rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 dark:hover:bg-dark-accent-hover/30 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035] dark:text-dark-text-deep"
+          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:ml-[50px] lg:ml-[100px] min-[1920px]:ml-[140px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white dark:bg-white/50 border-[#BFD1D5] dark:border-dark-border rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 dark:hover:bg-dark-accent-hover/30 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035] dark:text-dark-text-deep"
         >
           {{ service }}
         </div>
@@ -77,7 +77,7 @@
         <div
           v-for="service in webServices"
           :key="service"
-          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:mr-[50px] lg:mr-0 min-[1920px]:mr-[40px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white dark:bg-dark-input border-[#BFD1D5] dark:border-dark-border rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 dark:hover:bg-dark-accent-hover/30 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035] dark:text-dark-text-deep"
+          class="border-[1.5px] w-full max-w-[317px] min-[1920px]:max-w-[380px] mx-auto md:mx-0 md:mr-[50px] lg:mr-0 min-[1920px]:mr-[40px] md:w-[280px] lg:w-[317px] min-[1920px]:w-[380px] h-[50px] md:h-[55px] lg:h-[60px] min-[1920px]:h-[70px] bg-white dark:bg-white/50 border-[#BFD1D5] dark:border-dark-border rounded-[32px] py-3 px-6 text-center hover:bg-teal-50 dark:hover:bg-dark-accent-hover/30 transition cursor-pointer text-[13px] md:text-[14px] min-[1920px]:text-[16px] flex items-center justify-center text-[#081035] dark:text-dark-text-deep"
         >
           {{ service }}
         </div>

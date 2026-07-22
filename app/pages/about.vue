@@ -62,15 +62,15 @@
   <div 
     v-for="(member, index) in teamMembers" 
     :key="index" 
-    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] dark:bg-dark-input rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0"
+    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] dark:bg-[#3B5D6C] rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0"
   >
     <div class="w-[120px] md:w-[205px] 2xl:w-[230px] h-full shrink-0">
       <img :src="member.image" :alt="member.name" class="w-full h-full object-cover object-top rounded-[40px]" />
     </div>
     <div class="p-4 md:p-6 2xl:p-7 text-right flex-1 overflow-hidden">
-      <h3 class="text-[18px] md:text-[20px] 2xl:text-[22px] font-bold text-[#2D4745] dark:text-dark-text-deep mb-1">{{ member.name }}</h3>
-      <p class="text-[#5A6E6C] dark:text-dark-text-deep/80 text-[16px] md:text-[20px] 2xl:text-[21px] font-medium mb-2">{{ member.role }}</p>
-      <p class="text-[14px] md:text-[16px] 2xl:text-[17px] text-[#747893] dark:text-dark-text-deep/70 font-roboto leading-relaxed line-clamp-3">
+      <h3 class="text-[18px] md:text-[20px] 2xl:text-[22px] font-bold text-[#2D4745] dark:text-white mb-1">{{ member.name }}</h3>
+      <p class="text-[#5A6E6C] dark:text-white text-[16px] md:text-[20px] 2xl:text-[21px] font-medium mb-2">{{ member.role }}</p>
+      <p class="text-[14px] md:text-[16px] 2xl:text-[17px] text-[#747893] dark:text-white font-roboto leading-relaxed line-clamp-3">
         {{ member.desc }}
       </p>
     </div>
@@ -92,7 +92,7 @@
       <div :key="currentCategory.title">
         
         <!-- عنوان دسته‌بندی با عرض متناسب -->
-        <h3 class="flex items-center justify-center text-center text-[14px] md:text-[15px] 2xl:text-[16px] font-bold text-white dark:text-dark-text-deep mb-8 bg-[#67A9A8] dark:bg-dark-accent py-2 rounded-[17px] w-[180px] 2xl:w-[200px] h-[43px] 2xl:h-[46px] mx-auto px-4">
+        <h3 class="flex items-center justify-center text-center text-[14px] md:text-[15px] 2xl:text-[16px] font-bold text-white dark:text-white mb-8 bg-[#67A9A8] dark:bg-dark-accent py-2 rounded-[17px] w-[180px] 2xl:w-[200px] h-[43px] 2xl:h-[46px] mx-auto px-4">
           {{ currentCategory.title }}
         </h3>
 

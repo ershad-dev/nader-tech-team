@@ -4,7 +4,7 @@
 
     <!-- عنوان بخش -->
     <div class="mb-8 sm:mb-10 md:mb-12 min-[1920px]:mb-14 flex flex-col items-center">
-      <h2 class="bg-white dark:bg-dark-input px-4 sm:px-6 md:px-8 min-[1920px]:px-10 py-3 sm:py-4 min-[1920px]:py-5 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] dark:border-dark-border font-bold text-[#0F184B] dark:text-dark-text-deep border w-[220px] sm:w-[250px] md:w-[266px] min-[1920px]:w-[300px] h-[64px] sm:h-[72px] md:h-[78px] min-[1920px]:h-[90px] text-[15px] sm:text-[18px] md:text-[20px] min-[1920px]:text-[22px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
+      <h2 class="bg-white dark:bg-[#93BFBF52] px-4 sm:px-6 md:px-8 min-[1920px]:px-10 py-3 sm:py-4 min-[1920px]:py-5 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] dark:border-dark-border font-bold text-[#0F184B] dark:text-white border w-[220px] sm:w-[250px] md:w-[266px] min-[1920px]:w-[300px] h-[64px] sm:h-[72px] md:h-[78px] min-[1920px]:h-[90px] text-[15px] sm:text-[18px] md:text-[20px] min-[1920px]:text-[22px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
         رضایت از ایونت‌های برگزار شده
       </h2>
     </div>
@@ -82,7 +82,7 @@
     <!-- بخش نمایش متن انتخاب شده (در صورت انتخاب یک کارت) -->
     <div
       v-if="selectedIndex !== null"
-      class="testimonial-box relative bg-[#ABD7D840] dark:bg-dark-surface/50 w-full sm:w-[85%] md:w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
+      class="testimonial-box relative bg-[#ABD7D840] dark:bg-[#D9D9D9]/20 w-full sm:w-[85%] md:w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
     >
 
       <!-- نشانگر زبانه (Indicator) - در موبایل ثابت و وسط، در تبلت/دسکتاپ داینامیک -->
@@ -99,7 +99,7 @@
       </div>
 
       <!-- متن نظرات -->
-      <h1 class="font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[50px] min-[1920px]:mt-[56px] text-center">
+      <h1 class="font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[40px] min-[1920px]:mt-[56px] text-start">
         تجربه همکاری از زبان مشتری 
       </h1>
       <p class="text-[#616474] dark:text-dark-text/70 text-right text-[12px] sm:text-[13px] md:text-[14px] min-[1920px]:text-[16px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] min-[1920px]:leading-[56px] pt-4 text-center font-roboto">

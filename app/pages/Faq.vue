@@ -26,7 +26,7 @@
     <!-- لیست FAQ ها -->
     <div v-else class="flex flex-col gap-4 2xl:gap-5">
       <div v-for="(item, index) in faqs" :key="item.id" 
-           class="bg-[#2C7379]/10 dark:bg-dark-surface/60 rounded-2xl 2xl:rounded-[24px] overflow-hidden border border-[#BFD1D53B] dark:border-dark-border/40 transition-all">
+           class="bg-[#2C7379]/10 dark:bg-[#ADE9EA3B] rounded-2xl 2xl:rounded-[24px] overflow-hidden border border-[#BFD1D53B] dark:border-dark-border/40 transition-all">
         
         <button 
             @click="toggle(index)" 

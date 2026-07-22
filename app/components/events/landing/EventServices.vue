@@ -1,11 +1,11 @@
 <template>
-  <section class="relative bg-[#ABD7D8] dark:bg-dark-surface p-5 sm:p-8 md:p-9 xl:p-10 min-[1920px]:p-12 rounded-[16px] md:rounded-[18px] xl:rounded-[20px] min-[1920px]:rounded-[24px] mt-8 mx-auto w-full xl:w-[1110px] min-[1920px]:w-[1400px] max-w-full">
+  <section class="relative bg-[#ABD7D8] dark:bg-[#96ACB1] p-5 sm:p-8 md:p-9 xl:p-10 min-[1920px]:p-12 rounded-[16px] md:rounded-[18px] xl:rounded-[20px] min-[1920px]:rounded-[24px] mt-8 mx-auto w-full xl:w-[1110px] min-[1920px]:w-[1400px] max-w-full">
 
-    <img
+    <!-- <img
       src="/images/texture.png"
       alt=""
       class="absolute w-[220px] sm:w-[380px] md:w-[550px] xl:w-[900px] min-[1920px]:w-[1050px] h-auto object-contain opacity-30 dark:opacity-15 pointer-events-none -mt-[60px] sm:-mt-[120px] md:-mt-[200px] xl:-mt-[350px] min-[1920px]:-mt-[420px] -mr-[20px] sm:-mr-[40px] md:-mr-[60px] xl:-mr-[100px] min-[1920px]:-mr-[130px] top-0 right-0 xl:top-auto xl:right-auto"
-    />
+    /> -->
 
     <!-- بخش توضیحات -->
     <div class="mb-8 md:mb-9 xl:mb-10 relative z-10">
@@ -22,7 +22,7 @@
       </p>
     </div>
 
-    <h2 class="relative z-10 text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] text-[#A36C53] dark:text-dark-gold font-bold mb-4 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px] text-center sm:text-right">خدمات ایونت</h2>
+    <h2 class="relative z-10 text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] text-[#A36C53] dark:[#A36C53] font-bold mb-4 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px] text-center sm:text-right">خدمات ایونت</h2>
 
     <!-- لیست کارت‌ها (فراخوانی کامپوننت با ارسال services به عنوان prop) -->
     <div class="relative z-10 space-y-6 mb-10 md:mb-11 xl:mb-12 flex flex-col items-center text-center">
