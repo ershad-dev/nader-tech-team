@@ -36,9 +36,13 @@ const hasReview = computed(() => !!project.value?.review?.description);
 
     <!-- بخش بالایی: تصاویر پله‌ای -->
     <div class="relative w-full py-10 lg:py-20 mt-[50px]">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] lg:w-[654px] lg:h-[654px] rounded-full bg-gradient-to-b from-[#2C7379] via-[#2C7379]/80 via-[#B2B4C2] to-[#BFD1D5] z-0 -mt-[60px] lg:-mt-[100px]"></div>
-      <div class="hidden sm:block absolute top-10 left-10 w-16 h-16 lg:w-24 lg:h-24 bg-teal-700 rounded-full opacity-80"></div>
-      <div class="hidden sm:block absolute bottom-20 right-20 w-10 h-10 lg:w-16 lg:h-16 bg-teal-700 rounded-full opacity-80"></div>
+      <div
+  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] lg:w-[654px] lg:h-[654px] rounded-full z-0 -mt-[60px] lg:-mt-[100px]
+  bg-gradient-to-b from-[#2C7379] via-[#2C7379]/80 via-[#B2B4C2] to-[#BFD1D5]
+  dark:bg-gradient-to-b dark:from-[#BFD1D5] dark:via-[#B2B4C2] dark:via-[#2C7379]/80 dark:to-[#2C7379]"
+></div>
+      <div class="hidden sm:block absolute top-10 left-10 w-16 h-16 lg:w-24 lg:h-24 bg-teal-700 rounded-full opacity-80 dark:bg-[#ADE9EA]"></div>
+      <div class="hidden sm:block absolute bottom-20 right-20 w-10 h-10 lg:w-16 lg:h-16 bg-teal-700 rounded-full opacity-80 dark:bg-[#ADE9EA]"></div>
       <div class="absolute top-0 right-0 w-[40%] h-full bg-[#a8c1c3]/20 rounded-l-full -z-20"></div>
 
       <div v-if="galleryImages.length" class="flex justify-center items-center gap-3 sm:gap-6 lg:gap-14 mb-10 lg:mb-16 px-4 mt-[20px] lg:mt-[30px] z-10">
@@ -80,12 +84,12 @@ const hasReview = computed(() => !!project.value?.review?.description);
           </div>
         </div>
 
-<div class="mb-[100px] lg:mb-[300px] w-full bg-white/50 dark:bg-dark-input/50 p-5 lg:p-6 border border-white dark:border-dark-border rounded-tl-[30px] lg:rounded-tl-[60px] rounded-br-[30px] lg:rounded-br-[60px] rounded-bl-[30px] lg:rounded-bl-[60px]">
-  <h4 class="text-[#0F184B] dark:text-dark-text-deep font-robot font-bold mb-3 text-[14px] lg:text-[16px] mt-[10px] lg:mt-[20px]">
+<div class="mb-[100px] lg:mb-[300px] w-full bg-white/50 dark:bg-[#00000040] p-5 lg:p-6 border border-white dark:border-dark-border rounded-tl-[30px] lg:rounded-tl-[60px] rounded-br-[30px] lg:rounded-br-[60px] rounded-bl-[30px] lg:rounded-bl-[60px]">
+  <h4 class="text-[#0F184B] dark:text-white font-robot font-bold mb-3 text-[14px] lg:text-[16px] mt-[10px] lg:mt-[20px]">
     تجربه همکاری از زبان مشتری
   </h4>
 
-  <p class="text-[#616474] dark:text-dark-text-deep leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular">
+  <p class="text-[#616474] dark:text-white leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular">
     "{{ project.review.description }}"
   </p>
 </div>

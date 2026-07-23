@@ -81,9 +81,9 @@
 
     <!-- بخش نمایش متن انتخاب شده (در صورت انتخاب یک کارت) -->
     <div
-      v-if="selectedIndex !== null"
-      class="testimonial-box relative bg-[#ABD7D840] dark:bg-[#D9D9D9]/20 w-full sm:w-[85%] md:w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
-    >
+  v-if="selectedIndex !== null"
+  class="testimonial-box relative bg-[#ABD7D840] dark:bg-[#D9D9D9]/20 w-full sm:w-[85%] md:w-[90%] md:max-w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
+>
 
       <!-- نشانگر زبانه (Indicator) - در موبایل ثابت و وسط، در تبلت/دسکتاپ داینامیک -->
 <div 
@@ -241,7 +241,7 @@ const visibleTestimonials = visibleItems(visibleCount)
   position: absolute;
   height: 20px;
   background: var(--notch-color);
-  --r: 10px;
+  --r: 13px;
   clip-path: shape(
     from 0 100%,
     arc by var(--r) calc(-1 * var(--r)) of var(--r),

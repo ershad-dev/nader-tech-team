@@ -99,7 +99,7 @@
     transform: 'translateX(-50%) scaleY(-1)'
   }"
 >
-  <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[8px] sm:-mt-[24px] md:-mt-[17px] xl:mt-[15px] 2xl:-mt-[24px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
+  <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[8px] sm:mt-[24px] md:mt-[17px] xl:mt-[15px] 2xl:mt-[10px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
 </div>
 
         <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 dark:bg-[#D9D9D9]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 dark:border-dark-border/40 text-right mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
@@ -148,19 +148,19 @@ const teamMembers = [
 const updateNotchWidth = () => {
   const w = window.innerWidth;
   if (w < 640) {
-    notchWidth.value = 90;   // قبلاً 45
+    notchWidth.value = 60;   // قبلاً 45
     isMobile.value = true;
   } else if (w < 768) {
-    notchWidth.value = 120;  // قبلاً 60
+    notchWidth.value = 100;  // قبلاً 60
     isMobile.value = true;
   } else if (w < 1280) {
-    notchWidth.value = 170;  // قبلاً 85
+    notchWidth.value = 90;  // قبلاً 85
     isMobile.value = false;
   } else if (w < 1536) {
-    notchWidth.value = 200;  // قبلاً 100
+    notchWidth.value = 150;  // قبلاً 100
     isMobile.value = false;
   } else {
-    notchWidth.value = 240;  // قبلاً 120
+    notchWidth.value = 200;  // قبلاً 120
     isMobile.value = false;
   }
 };
@@ -250,7 +250,7 @@ onUnmounted(() => {
 @media (min-width: 1536px) {
   .notch {
     height: 30px;
-    --r: 10px;
+    --r: 19px;
   }
 }
 </style>

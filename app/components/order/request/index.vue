@@ -225,8 +225,8 @@ const select = (option) => {
 const fetchServices = async () => {
   servicesLoading.value = true
   try {
-    const res = await $fetch(`https://nadertechnologyteam.ir/api/services`)
-    options.value = res?.data?.services || []
+    const res = await $fetch(`https://nadertechnologyteam.ir/api/requests/types`)
+    options.value = res?.data || []
   } catch (e) {
     console.error('خطا در دریافت لیست خدمات:', e)
   } finally {

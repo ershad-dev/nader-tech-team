@@ -75,7 +75,7 @@
 
     <!-- ۱. بخش شوکیس (Showcase) داینامیک -->
     <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 xl:mb-20">
-  <div class="relative rounded-[2rem] xl:rounded-[3rem] overflow-hidden p-6 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8] dark:bg-dark-bg xl:bg-white/20 dark:xl:bg-dark-bg">
+  <div class="relative rounded-[2rem] xl:rounded-[3rem] overflow-hidden p-6 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8]  xl:bg-white/20 dark:xl:bg-dark-bg">
 
     <!-- عکس پس‌زمینه فقط در دسکتاپ -->
     <img src="/images/bg-services.png" class="hidden xl:block absolute inset-0 w-[1105px] min-[1920px]:w-full object-cover z-0" />

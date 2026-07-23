@@ -217,7 +217,8 @@ const prevCategory = () => {
 // با این کد، هر وقت وارد صفحه about می‌شوید، فوترِ لایوت خودش را آپدیت می‌کند
 const footerConfig = useState('footerConfig');
 footerConfig.value = {
-  title1: '    در <span class="text-[#ECD0A0]">نادر تکنولوژی</span>، کیفیت یک انتخاب نیست؛ یک اصل است.'
+  title1: '    در <span class="text-[#ECD0A0]">نادر تکنولوژی</span>، کیفیت یک انتخاب نیست؛ یک اصل است.',
+  titleMargin: '-mt-[100px]'
 };
 
 //اسلایدر با کشید موس در حالت دسکتاپ + autoplay

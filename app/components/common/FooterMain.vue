@@ -9,9 +9,8 @@
 
       <div class="bg-[#2C7379] dark:bg-[#407B80] h-[200px] w-full pt-10 pb-20 flex flex-col items-center">
 
-        <div class="flex justify-center items-center overflow-hidden">
-
-          <svg viewBox="0 0 700 150" class="w-[500px] h-[120px]">
+        <div class="flex justify-center items-center">
+          <svg viewBox="0 0 700 150" class="w-[500px] h-auto">
             <path id="curve-path-desktop" d="M 50,120 Q 350,50 650,120" fill="transparent" />
             <text font-size="50" font-weight="bold" fill="white">
               <textPath href="#curve-path-desktop" startOffset="50%" text-anchor="middle">
@@ -22,8 +21,12 @@
 
         </div>
 
-        <div v-html="title1" class="text-white dark:text-dark-text text-[32px] font-bold mt-4 text-center px-4"></div>
-
+        <div v-html="title1" 
+     :class="[
+       'text-white dark:text-dark-text text-[32px] font-bold text-center px-4',
+       footerConfig?.titleMargin || 'mt-4'
+     ]">
+</div>
       </div>
 
       <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
@@ -119,7 +122,7 @@
 
   <script setup>
   const route = useRoute();
-
+  const footerConfig = useState('footerConfig');
   const links = ['خانه', 'سفارش گیری پروژه', 'برگزاری ایونت', 'درباره ما'];
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 

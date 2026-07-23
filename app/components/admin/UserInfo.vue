@@ -1,26 +1,26 @@
 <template>
   <div class="p-4 sm:p-6">
     <div
-      class="w-full max-w-[812px] lg:w-[812px] bg-[#F7F3EB] text-[#0F184B] py-3 px-4 lg:px-6 rounded-full mx-auto mb-6 lg:mb-8 font-bold text-[18px] sm:text-[20px] lg:text-[24px] flex justify-center items-center shadow-xl"
+      class="w-full max-w-[812px] lg:w-[812px] bg-[#F7F3EB] dark:bg-dark-surface text-[#0F184B] dark:text-dark-text py-3 px-4 lg:px-6 rounded-full mx-auto mb-6 lg:mb-8 font-bold text-[18px] sm:text-[20px] lg:text-[24px] flex justify-center items-center shadow-xl"
     >
       اطلاعات کاربران
     </div>
 
     <!-- حالت لودینگ -->
-    <div v-if="loading" class="text-center py-10 text-[#0F184B] font-bold">
+    <div v-if="loading" class="text-center py-10 text-[#0F184B] dark:text-dark-text font-bold">
       در حال بارگذاری...
     </div>
 
     <!-- حالت خطا -->
     <div
       v-else-if="errorMessage"
-      class="text-center py-10 text-red-600 font-bold"
+      class="text-center py-10 text-red-600 dark:text-red-400 font-bold"
     >
       {{ errorMessage }}
       <div>
         <button
           @click="fetchUsers()"
-          class="mt-3 px-4 py-2 bg-[#0F184B] text-white rounded-full text-sm"
+          class="mt-3 px-4 py-2 bg-[#0F184B] dark:bg-dark-accent text-white dark:text-dark-text-deep rounded-full text-sm"
         >
           تلاش مجدد
         </button>
@@ -28,9 +28,9 @@
     </div>
 
     <template v-else>
-      <div class="w-full text-black text-[14px] sm:text-[16px] lg:text-[20px] font-noto-light font-medium">
+      <div class="w-full text-black dark:text-dark-text text-[14px] sm:text-[16px] lg:text-[20px] font-noto-light font-medium">
         <!-- Table Header (فقط دسکتاپ) -->
-        <div class="hidden lg:grid grid-cols-4 bg-[#BFD1D5] py-4 px-6 rounded-t-2xl font-bold text-center">
+        <div class="hidden lg:grid grid-cols-4 bg-[#BFD1D5] dark:bg-dark-surface py-4 px-6 rounded-t-2xl font-bold text-center">
           <div>کد کاربری</div>
           <div>نام و نام خانوادگی</div>
           <div>شماره موبایل</div>
@@ -40,7 +40,7 @@
         <!-- بدون کاربر -->
         <div
           v-if="users.length === 0"
-          class="text-center py-10 text-gray-500 bg-[#F7F3EB] rounded-2xl lg:rounded-none"
+          class="text-center py-10 text-gray-500 dark:text-dark-text/60 bg-[#F7F3EB] dark:bg-dark-bg rounded-2xl lg:rounded-none"
         >
           کاربری یافت نشد
         </div>
@@ -48,32 +48,32 @@
         <div
           v-for="user in users"
           :key="user.id"
-          class="border-b border-[#E5E5E5] last:border-none bg-[#F7F3EB] rounded-2xl lg:rounded-none mb-3 lg:mb-0 shadow-sm lg:shadow-none overflow-hidden"
+          class="border-b border-[#E5E5E5] dark:border-dark-border/30 last:border-none bg-[#F7F3EB] dark:bg-dark-bg rounded-2xl lg:rounded-none mb-3 lg:mb-0 shadow-sm lg:shadow-none overflow-hidden"
         >
           <!-- Row: دسکتاپ همون گرید قبلی / موبایل و تبلت کارت عمودی -->
           <div
             @click="toggleUser(user.id)"
-            class="cursor-pointer hover:bg-[#FDFBF7] transition-all
+            class="cursor-pointer hover:bg-[#FDFBF7] dark:hover:bg-dark-surface/50 transition-all
                    flex flex-col gap-2 py-4 px-4
                    lg:grid lg:grid-cols-4 lg:text-[18px] lg:font-bold lg:py-6 lg:px-6 lg:text-center lg:gap-0"
           >
             <div class="flex justify-between items-center lg:block">
-              <span class="text-xs text-gray-500 font-normal lg:hidden">کد کاربری</span>
+              <span class="text-xs text-gray-500 dark:text-dark-text/60 font-normal lg:hidden">کد کاربری</span>
               <span class="font-bold">{{ user.id }}</span>
             </div>
 
             <div class="flex justify-between items-center lg:block">
-              <span class="text-xs text-gray-500 font-normal lg:hidden">نام و نام خانوادگی</span>
+              <span class="text-xs text-gray-500 dark:text-dark-text/60 font-normal lg:hidden">نام و نام خانوادگی</span>
               <span class="break-words whitespace-normal">{{ user.full_name }}</span>
             </div>
 
             <div class="flex justify-between items-center lg:block">
-              <span class="text-xs text-gray-500 font-normal lg:hidden">شماره موبایل</span>
+              <span class="text-xs text-gray-500 dark:text-dark-text/60 font-normal lg:hidden">شماره موبایل</span>
               <span class="break-words whitespace-normal" dir="ltr">{{ user.mobile || '—' }}</span>
             </div>
 
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-1">
-              <span class="text-xs text-gray-500 font-normal lg:hidden">ایمیل</span>
+              <span class="text-xs text-gray-500 dark:text-dark-text/60 font-normal lg:hidden">ایمیل</span>
               <span class="break-words whitespace-normal text-left lg:text-center w-full" dir="ltr">{{ user.email || '—' }}</span>
             </div>
           </div>
@@ -81,10 +81,10 @@
           <!-- Expanded Details -->
           <div
             v-if="expandedId === user.id"
-            class="px-4 pb-4 lg:px-6 lg:pb-6 bg-[#F7F3EB]"
+            class="px-4 pb-4 lg:px-6 lg:pb-6 bg-[#F7F3EB] dark:bg-dark-bg"
           >
             <!-- لودینگ جزئیات (در صورت فراخوانی GET /api/admin/users/{user}) -->
-            <div v-if="detailLoading" class="text-center py-4 text-sm text-gray-500">
+            <div v-if="detailLoading" class="text-center py-4 text-sm text-gray-500 dark:text-dark-text/60">
               در حال دریافت جزئیات...
             </div>
 
@@ -97,69 +97,69 @@
               />
 
               <div
-                class="border border-[#BFD1D5] rounded-2xl bg-white/20 p-4 lg:p-6 w-full max-w-full lg:max-w-[850px]"
+                class="border border-[#BFD1D5] dark:border-dark-border/40 rounded-2xl bg-white/20 dark:bg-dark-surface/30 p-4 lg:p-6 w-full max-w-full lg:max-w-[850px]"
               >
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
                   <div>
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       تاریخ تولد
                     </label>
-                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ formatDate(user.birth_date) }}
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       استان
                     </label>
-                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ user.province || '—' }}
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       کد ملی
                     </label>
-                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ user.national_code || '—' }}
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       کد پستی
                     </label>
-                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ user.postal_code || '—' }}
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       نام کاربری
                     </label>
-                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ user.username || '—' }}
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       تاریخ عضویت
                     </label>
-                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-11 px-3 py-2 flex items-center bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ formatDate(user.created_at) }}
                     </div>
                   </div>
 
                   <div class="col-span-1 sm:col-span-2 lg:col-span-3">
-                    <label class="block text-xs text-gray-500 mb-1">
+                    <label class="block text-xs text-gray-500 dark:text-dark-text/60 mb-1">
                       آدرس و نشانی
                     </label>
-                    <div class="min-h-[48px] px-3 py-3 bg-[#BFD1D580] border rounded-[10px] text-sm break-words whitespace-normal">
+                    <div class="min-h-[48px] px-3 py-3 bg-[#BFD1D580] dark:bg-dark-input/50 border dark:border-dark-border/30 rounded-[10px] text-sm break-words whitespace-normal">
                       {{ user.address || '—' }}
                     </div>
                   </div>
@@ -180,19 +180,19 @@
         <button
           :disabled="!links.prev"
           @click="goToPage(meta.current_page - 1)"
-          class="px-3 py-1 rounded-full bg-[#F7F3EB] disabled:opacity-40 text-sm"
+          class="px-3 py-1 rounded-full bg-[#F7F3EB] dark:bg-dark-surface dark:text-dark-text disabled:opacity-40 text-sm"
         >
           قبلی
         </button>
 
-        <span class="text-sm">
+        <span class="text-sm dark:text-dark-text">
           صفحه {{ meta.current_page }} از {{ meta.last_page }}
         </span>
 
         <button
           :disabled="!links.next"
           @click="goToPage(meta.current_page + 1)"
-          class="px-3 py-1 rounded-full bg-[#F7F3EB] disabled:opacity-40 text-sm"
+          class="px-3 py-1 rounded-full bg-[#F7F3EB] dark:bg-dark-surface dark:text-dark-text disabled:opacity-40 text-sm"
         >
           بعدی
         </button>
