@@ -86,17 +86,17 @@
     >
 
       <!-- نشانگر زبانه (Indicator) - در موبایل ثابت و وسط، در تبلت/دسکتاپ داینامیک -->
-      <div 
-        class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] min-[1920px]:-top-[34px] w-[90px] sm:w-[110px] md:w-[120px] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px] min-[1920px]:mt-[34px]"
-        :style="[
-          isMobile 
-            ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%)' } 
-            : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%)' },
-          { '--notch-color': notchColor }
-        ]"
-      >
-        <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[22px] sm:-mt-[28px] md:-mt-[35px] min-[1920px]:-mt-[40px] h-[44px] sm:h-[56px] md:h-[69px] min-[1920px]:h-[78px]">
-      </div>
+<div 
+  class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] min-[1920px]:-top-[34px] w-[90px] sm:w-[110px] md:w-[120px] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px] min-[1920px]:mt-[34px]"
+  :style="[
+    isMobile 
+      ? { left: '50%', width: notchWidth + 'px', transform: 'translateX(-50%) scaleY(-1)' } 
+      : { left: indicatorLeft + 'px', width: notchWidth + 'px', transform: 'translateX(-50%) scaleY(-1)' },
+    { '--notch-color': notchColor }
+  ]"
+>
+  <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[12px] sm:-mt-[28px] md:mt-[10px] min-[1920px]:mt-[40px] h-[40px] sm:h-[50px] md:h-[60px] min-[1920px]:h-[70px]">
+</div>
 
       <!-- متن نظرات -->
       <h1 class="font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[40px] min-[1920px]:mt-[56px] text-start">
@@ -239,72 +239,35 @@ const visibleTestimonials = visibleItems(visibleCount)
 
 .notch {
   position: absolute;
-  height: 15px;
+  height: 20px;
   background: var(--notch-color);
-
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  --r: 10px;
+  clip-path: shape(
+    from 0 100%,
+    arc by var(--r) calc(-1 * var(--r)) of var(--r),
+    vline to var(--r),
+    arc by var(--r) calc(-1 * var(--r)) of var(--r) cw,
+    curve by calc(100% - 4 * var(--r)) 0 with calc((100% - 4 * var(--r)) / 2) calc(-1 * var(--r) / 2),
+    arc by var(--r) var(--r) of var(--r) cw,
+    vline to calc(100% - var(--r)),
+    arc by var(--r) var(--r) of var(--r)
+  );
 }
 
-/* قوس چپ */
-.notch::before {
-  content: "";
-  position: absolute;
-  left: -20px;
-  top: 0;
-  width: 20px;
-  height: 20px;
-
-  border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 var(--notch-color);
-}
-
-/* قوس راست */
-.notch::after {
-  content: "";
-  position: absolute;
-  right: -20px;
-  top: 0;
-  width: 20px;
-  height: 20px;
-  border-top-left-radius: 20px;
-  box-shadow: -10px -10px 0 var(--notch-color);
+/* آرو باید دوباره فلیپ بشه چون والدش (.notch) فلیپ خورده */
+.notch-arrow {
+  transform: scaleY(-1);
 }
 
 @media (max-width: 767px) {
-  .notch::before,
-  .notch::after {
-    width: 14px;
-    height: 14px;
-  }
-  .notch::before {
-    left: -14px;
-    box-shadow: 7px -7px 0 var(--notch-color);
-    border-top-right-radius: 14px;
-  }
-  .notch::after {
-    right: -14px;
-    box-shadow: -7px -7px 0 var(--notch-color);
-    border-top-left-radius: 14px;
+  .notch {
+    --r: 8px;
   }
 }
 
 @media (min-width: 1920px) {
-  .notch::before,
-  .notch::after {
-    width: 24px;
-    height: 24px;
-  }
-  .notch::before {
-    left: -24px;
-    box-shadow: 12px -12px 0 var(--notch-color);
-    border-top-right-radius: 24px;
-  }
-  .notch::after {
-    right: -24px;
-    box-shadow: -12px -12px 0 var(--notch-color);
-    border-top-left-radius: 24px;
+  .notch {
+    --r: 7px;
   }
 }
-
 </style>

@@ -90,17 +90,17 @@
 
     <div v-if="selectedIndex !== null" class="mt-[40px] sm:mt-[60px] md:mt-24 md:mt-28 xl:mt-32 2xl:mt-36 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 2xl:px-20 animate-fade-in">
 
-        <div
-          class="notch absolute -top-[18px] sm:-top-[24px] md:-top-[27px] xl:-top-[30px] 2xl:-top-[34px] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[18px] sm:mt-[24px] md:mt-[27px] xl:mt-[30px] 2xl:mt-[34px]"
-          :style="{
-            '--notch-color': notchColor,
-            left: isMobile ? '50%' : indicatorLeft + 'px',
-            width: notchWidth + 'px',
-            transform: 'translateX(-50%)'
-          }"
-        >
-          <img src="/images/arrow-on-team3.png" alt="arrow" class="-mt-[18px] sm:-mt-[24px] md:-mt-[27px] xl:-mt-[30px] 2xl:-mt-[34px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
-        </div>
+<div
+  class="notch absolute -top-[18px] sm:-top-[24px] md:-top-[27px] xl:-top-[30px] 2xl:-top-[34px] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[18px] sm:mt-[24px] md:mt-[27px] xl:mt-[30px] 2xl:mt-[34px]"
+  :style="{
+    '--notch-color': notchColor,
+    left: isMobile ? '50%' : indicatorLeft + 'px',
+    width: notchWidth + 'px',
+    transform: 'translateX(-50%) scaleY(-1)'
+  }"
+>
+  <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[8px] sm:-mt-[24px] md:-mt-[17px] xl:mt-[15px] 2xl:-mt-[24px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
+</div>
 
         <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 dark:bg-[#D9D9D9]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 dark:border-dark-border/40 text-right mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
 
@@ -148,19 +148,19 @@ const teamMembers = [
 const updateNotchWidth = () => {
   const w = window.innerWidth;
   if (w < 640) {
-    notchWidth.value = 45;
+    notchWidth.value = 90;   // قبلاً 45
     isMobile.value = true;
   } else if (w < 768) {
-    notchWidth.value = 60;
+    notchWidth.value = 120;  // قبلاً 60
     isMobile.value = true;
   } else if (w < 1280) {
-    notchWidth.value = 85;
+    notchWidth.value = 170;  // قبلاً 85
     isMobile.value = false;
   } else if (w < 1536) {
-    notchWidth.value = 100;
+    notchWidth.value = 200;  // قبلاً 100
     isMobile.value = false;
   } else {
-    notchWidth.value = 120;
+    notchWidth.value = 240;  // قبلاً 120
     isMobile.value = false;
   }
 };
@@ -219,62 +219,38 @@ onUnmounted(() => {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.notch {
+ .notch {
   position: absolute;
   height: 25px;
   background: var(--notch-color, #F7F3EB);
-
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  --r: 16px;
+  clip-path: shape(
+    from 0 100%,
+    arc by var(--r) calc(-1 * var(--r)) of var(--r),
+    vline to var(--r),
+    arc by var(--r) calc(-1 * var(--r)) of var(--r) cw,
+    curve by calc(100% - 4 * var(--r)) 0 with calc((100% - 4 * var(--r)) / 2) calc(-1 * var(--r) / 2),
+    arc by var(--r) var(--r) of var(--r) cw,
+    vline to calc(100% - var(--r)),
+    arc by var(--r) var(--r) of var(--r)
+  );
 }
 
-.notch::before {
-  content: "";
-  position: absolute;
-  left: -20px;
-  top: 0;
-  width: 20px;
-  height: 20px;
-
-  border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 var(--notch-color, #F7F3EB);
-}
-
-.notch::after {
-  content: "";
-  position: absolute;
-  right: -20px;
-  top: 0;
-  width: 20px;
-  height: 20px;
-  border-top-left-radius: 20px;
-  box-shadow: -10px -10px 0 var(--notch-color, #F7F3EB);
+.notch-arrow {
+  transform: scaleY(-1);
 }
 
 @media (max-width: 767px) {
   .notch {
     height: 14px;
-  }
-  .notch::before,
-  .notch::after {
-    width: 11px;
-    height: 11px;
-  }
-  .notch::before {
-    left: -11px;
-    box-shadow: 5px -5px 0 var(--notch-color, #F7F3EB);
-    border-top-right-radius: 11px;
-  }
-  .notch::after {
-    right: -11px;
-    box-shadow: -5px -5px 0 var(--notch-color, #F7F3EB);
-    border-top-left-radius: 11px;
+    --r: 8px;
   }
 }
 
 @media (min-width: 1536px) {
   .notch {
     height: 30px;
+    --r: 10px;
   }
 }
 </style>

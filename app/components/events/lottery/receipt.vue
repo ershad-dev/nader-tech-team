@@ -25,7 +25,7 @@
           </div>
 
           <p class="text-amber-600 dark:text-amber-400 text-xs text-center mb-4 leading-relaxed font-roboto">
-            این کد رو به همراه شماره موبایل‌تون یادداشت کنید؛ برای مشاهده‌ی نتیجه‌ی قرعه‌کشی (صفحه‌ی ورود) به این‌ها نیاز دارید.
+            این کد رو به همراه شماره موبایل‌تون یادداشت کنید.
           </p>
 
           <div class="bg-[#BFD1D580]/50 dark:bg-dark-input/40 border border-[#6F78B780] dark:border-dark-border rounded-2xl p-4 md:p-6 mb-8 w-full">
@@ -83,7 +83,7 @@
               </svg>
             </button>
 
-            <NuxtLink to="/" class="w-full max-w-[375px] h-[47px] bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep flex justify-center items-center rounded-2xl font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-lg">
+            <NuxtLink to="/events" class="w-full max-w-[375px] h-[47px] bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep flex justify-center items-center rounded-2xl font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-lg">
               بازگشت به خانه
             </NuxtLink>
 
@@ -115,16 +115,42 @@ function formatPrice(value) {
 }
 
 const downloadPDF = async () => {
-  const html2pdf = (await import('html2pdf.js')).default
+  const html2canvas = (await import('html2canvas')).default
+  const { jsPDF } = await import('jspdf')
 
-  const options = {
-    margin: 10,
-    filename: 'Lottery-Registration.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }
+  const el = pdfTarget.value
+  if (!el) return
 
-  html2pdf().set(options).from(pdfTarget.value).save()
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    windowWidth: el.scrollWidth,
+    windowHeight: el.scrollHeight,
+    onclone: (clonedDoc) => {
+      clonedDoc.documentElement.setAttribute('dir', 'rtl')
+      clonedDoc.documentElement.setAttribute('lang', 'fa')
+      clonedDoc.body.setAttribute('dir', 'rtl')
+      clonedDoc.body.classList.remove('dark')
+    }
+  })
+
+  const imgData = canvas.toDataURL('image/jpeg', 0.98)
+
+  // سایز PDF رو دقیقاً از روی ابعاد خود canvas می‌سازیم (نه گرد کردن px->mm جدا)
+  const pxToMm = (px) => (px * 25.4) / 96 / 2 // تقسیم بر scale چون canvas دو برابر شده
+  const widthMm = pxToMm(canvas.width)
+  const heightMm = pxToMm(canvas.height)
+
+  const pdf = new jsPDF({
+    orientation: widthMm > heightMm ? 'landscape' : 'portrait',
+    unit: 'mm',
+    format: [widthMm, heightMm]
+  })
+
+  // تصویر رو دقیقاً به اندازه کل صفحه می‌چسبونیم - بدون مارجین و بدون کسری که باعث صفحه دوم بشه
+  pdf.addImage(imgData, 'JPEG', 0, 0, widthMm, heightMm, undefined, 'FAST')
+
+  pdf.save('Lottery-Registration.pdf')
 }
 </script>

@@ -65,8 +65,8 @@
             class="bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep px-6 min-[1920px]:px-8 py-2.5 min-[1920px]:py-3 rounded-full text-sm min-[1920px]:text-[19px] font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-sm whitespace-nowrap"
           >
             <div class="flex items-center justify-center gap-2 min-[1920px]:gap-3">
-              <Icon name="heroicons:user-solid" class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6" />
-              <span>پروفایل</span>
+              <CommonIconsUserAvatar class="w-5 h-5 min-[1920px]:w-6 min-[1920px]:h-6" />
+              <span class="mt-[5px]">پروفایل</span>
             </div>
           </NuxtLink>
 
@@ -141,7 +141,6 @@
             <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
               <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>{{ colorMode.value === 'dark' ? 'حالت روشن' : 'حالت تاریک' }}</span>
           </button>
         </div>
 
@@ -167,8 +166,8 @@
               class="w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep font-bold rounded-full text-[14px] sm:text-[16px] hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-sm"
               @click="isOpen = false"
             >
-              <span>پروفایل</span>
-              <Icon name="heroicons:user-solid" class="w-5 h-5 sm:w-6 sm:h-6" />
+              <span >پروفایل</span>
+              <CommonIconsUserAvatar class="w-5 h-5 sm:w-6 sm:h-6" />
             </NuxtLink>
           </div>
 
