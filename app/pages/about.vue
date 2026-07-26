@@ -3,28 +3,60 @@
     
     <!-- Hero Section -->
 <section class="flex flex-col md:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28">
-  <div class="flex-1 w-full text-center md:text-right">
-    <h1 class="text-[#0F184B] dark:text-dark-text font-black text-[28px] md:text-[32px] 2xl:text-[42px] mb-6 leading-tight" v-html="pageData.title"> 
-    </h1>
-    
-    <p class="text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] md:text-[26px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl 2xl:max-w-3xl mx-auto md:mx-0">
-      {{ pageData.intro_text }}
-    </p>
+  
+  <div class="flex-1 w-full text-center md:text-right relative pt-[70px] sm:pt-[90px] md:pt-0">
 
-    <!-- تصویر فلش: فقط در دسکتاپ نمایش داده می‌شود -->
-    <div class="hidden lg:flex justify-center px-4">
-  <img src="/images/curved-arrow.png" alt="فلش" class="w-[700px] 2xl:w-[850px] object-contain -mt-10" />
-</div>
+    <div class="md:flex md:items-center md:gap-6 lg:block">
 
-    <!-- دکمه: در موبایل وسط‌چین و در دسکتاپ طبق طراحی شما -->
-    <div class="flex justify-center md:justify-end mt-10 md:mt-6 lg:-mt-10">
+      <!-- محتوا: عنوان، متن، فلش، دکمه (نسخه‌ی موبایل/دسکتاپ) -->
+      <div class="md:w-1/2 lg:w-full">
+        <h1 class="relative z-10 text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] md:text-[32px] lg:text-[36px] 2xl:text-[42px] mb-6 leading-tight mt-12 sm:mt-14 md:mt-0" v-html="pageData.title">
+        </h1>
+
+        <!-- max-w فقط تو md بیشتر شد تا خط‌ها بلندتر بشن -->
+        <p class="relative z-10 text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] md:text-[26px] lg:text-[28px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl md:max-w-[520px] lg:max-w-2xl 2xl:max-w-3xl mx-auto md:mx-0">
+          {{ pageData.intro_text }}
+        </p>
+
+        <div class="hidden lg:flex justify-center px-4">
+          <img src="/images/curved-arrow.png" alt="فلش" class="w-[700px] 2xl:w-[850px] object-contain -mt-10" />
+        </div>
+
+        <!-- دکمه نسخه اصلی: موبایل و دسکتاپ (نه md) -->
+        <div class="flex justify-center mt-10 md:hidden lg:flex lg:justify-end lg:mt-0 lg:-mt-10">
+          <NuxtLink
+            to="/order/requestProject"
+            class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] lg:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg lg:ml-[80px] flex items-center justify-center"
+          >
+            ارتباط با ما
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- ستون دایره + دکمه‌ی زیرش (فقط md) -->
+      <div class="absolute -top-[10px] sm:-top-[15px] left-1/2 -translate-x-1/2 z-0
+                  md:static md:left-auto md:translate-x-0 md:top-auto md:mt-0 md:w-1/2 md:flex md:flex-col md:items-center md:self-start md:-mt-15
+                  lg:absolute lg:block lg:w-auto lg:top-0 lg:left-0 lg:-translate-y-1/3 lg:mt-[120px] 2xl:mt-[140px]">
+
+        <p class="bg-black rounded-full
+                  w-[120px] h-[120px]
+                  sm:w-[160px] sm:h-[160px]
+                  md:w-[200px] md:h-[200px]
+                  lg:w-[280px] lg:h-[280px]
+                  2xl:w-[350px] 2xl:h-[350px]">
+        </p>
+
+<div class="hidden md:flex lg:hidden justify-center mt-[100px] w-full">
   <NuxtLink
     to="/order/requestProject"
-    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full md:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg md:ml-[80px] flex items-center justify-center"
+    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-[200px] h-[57px] px-8 py-3 text-[20px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg flex items-center justify-center"
   >
     ارتباط با ما
   </NuxtLink>
 </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -221,10 +253,17 @@ footerConfig.value = {
   titleMargin: '-mt-[100px]'
 };
 
-//اسلایدر با کشید موس در حالت دسکتاپ + autoplay
+// =====================================================
+// اسلایدر تیم: درگ با موس/لمس + autoplay
+// اصلاح‌شده: autoplay فقط زمانی فعال است که اسلایدر
+// واقعاً در دید کاربر باشد، و اسکرول فقط داخل خودِ
+// کانتینر انجام می‌شود (بدون جابه‌جایی کل صفحه)
+// =====================================================
 const slider = ref(null)
 let teamAutoplayTimer = null
 let teamAutoplayIndex = 0
+let sliderObserver = null
+let isSliderVisible = false
 
 const clearTeamAutoplay = () => {
   if (teamAutoplayTimer) {
@@ -235,7 +274,7 @@ const clearTeamAutoplay = () => {
 
 const startTeamAutoplay = () => {
   clearTeamAutoplay()
-  if (!teamMembers.length) return
+  if (!teamMembers.length || !isSliderVisible) return
 
   teamAutoplayTimer = setInterval(() => {
     const el = slider.value
@@ -245,20 +284,37 @@ const startTeamAutoplay = () => {
     const target = el.children[teamAutoplayIndex]
 
     if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        inline: 'start',
-        block: 'nearest'
+      // به‌جای scrollIntoView (که کل صفحه را اسکرول می‌کرد)
+      // فقط اسکرول افقیِ خودِ کانتینر را تغییر می‌دهیم
+      el.scrollTo({
+        left: target.offsetLeft - el.offsetLeft,
+        behavior: 'smooth'
       })
     }
-  }, 5000) // ۷ ثانیه
+  }, 5000) // هر ۵ ثانیه
 }
 
 onMounted(() => {
   const el = slider.value
-
   if (!el) return
 
+  // --- IntersectionObserver: فقط وقتی اسلایدر دیده می‌شود autoplay را روشن کن ---
+  sliderObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        isSliderVisible = entry.isIntersecting
+        if (isSliderVisible) {
+          startTeamAutoplay()
+        } else {
+          clearTeamAutoplay()
+        }
+      })
+    },
+    { threshold: 0.4 } // وقتی حداقل ۴۰٪ از اسلایدر دیده شود
+  )
+  sliderObserver.observe(el)
+
+  // --- درگ با ماوس (دسکتاپ) ---
   let isDown = false
   let startX
   let scrollLeft
@@ -272,30 +328,26 @@ onMounted(() => {
 
   el.addEventListener('mouseleave', () => {
     isDown = false
-    startTeamAutoplay()
+    if (isSliderVisible) startTeamAutoplay()
   })
 
   el.addEventListener('mouseup', () => {
     isDown = false
-    startTeamAutoplay()
+    if (isSliderVisible) startTeamAutoplay()
   })
 
   el.addEventListener('mousemove', (e) => {
     if (!isDown) return
-
     e.preventDefault()
-
     const x = e.pageX - el.offsetLeft
     const walk = (x - startX) * 2
-
     el.scrollLeft = scrollLeft - walk
   })
 
   // توقف autoplay وقتی موس روی اسلایدر است (دسکتاپ)
   el.addEventListener('mouseenter', clearTeamAutoplay)
 
-
-  //حالت موبایل با کشیدن انگشت
+  // --- درگ با لمس (موبایل) ---
   let touchStartX = 0
   let touchScrollLeft = 0
 
@@ -308,22 +360,18 @@ onMounted(() => {
   el.addEventListener('touchmove', (e) => {
     const x = e.touches[0].pageX
     const walk = (x - touchStartX) * 2
-
     el.scrollLeft = touchScrollLeft - walk
   })
 
   el.addEventListener('touchend', () => {
-    startTeamAutoplay()
+    if (isSliderVisible) startTeamAutoplay()
   })
-
-  // شروع autoplay
-  startTeamAutoplay()
 })
 
 onBeforeUnmount(() => {
   clearTeamAutoplay()
+  if (sliderObserver) sliderObserver.disconnect()
 })
-
 </script>
 
 

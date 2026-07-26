@@ -179,7 +179,7 @@
           <span
             class="flex-1 flex items-center justify-center overflow-hidden whitespace-nowrap transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-[15px] lg:text-[15px] min-[1920px]:text-[17px]"
             :class="isSidebarOpen
-              ? 'opacity-100 max-w-[150px] min-[1920px]:max-w-[180px] mr-4'
+              ? 'opacity-100 max-w-[150px] min-[1920px]:max-w-[180px] '
               : 'opacity-100 max-w-[150px] ml-0 lg:opacity-0 lg:max-w-0 min-[1920px]:opacity-0 min-[1920px]:max-w-0'"
           >
             {{ item.name }}

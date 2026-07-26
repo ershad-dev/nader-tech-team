@@ -170,7 +170,6 @@ const API_BASE = 'https://nadertechnologyteam.ir/api'
 const { authHeader, initFromStorage } = useAdminAuth()
 
 const pages = ref([
-  { slug: 'home', label: 'خانه' },
   { slug: 'about', label: 'درباره ما' },
   { slug: 'events', label: 'ایونت‌ها' },
 ])

@@ -83,22 +83,10 @@ function goToLoginPage() {
                rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
                text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
                font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
-               w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
-               h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
+               w-full sm:w-[220px] md:w-[520px] min-[1920px]:w-[260px]
+               h-[44px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px]"
       >
         ثبت‌نام در قرعه‌کشی
-      </button>
-
-      <button
-        @click="goToLoginPage"
-        class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
-               rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
-               text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
-               font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
-               w-full sm:w-[220px] md:w-[190px] min-[1920px]:w-[260px]
-               h-[44px] sm:h-[56px] md:h-[48px] min-[1920px]:h-[84px]"
-      >
-        ورود به قرعه‌کشی
       </button>
     </div>
   </section>

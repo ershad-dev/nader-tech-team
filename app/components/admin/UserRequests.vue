@@ -11,38 +11,46 @@ const { authHeader, initFromStorage, isLoggedIn } = useAdminAuth()
 const colorMode = useColorMode()
 const chevronColor = computed(() => (colorMode.value === 'dark' ? '#FFFFFF' : '#747893'))
 
-// تب‌ها - مقدار slug باید با آنچه سرور برمی‌گرداند مطابقت داشته باشد
-// ⚠️ فقط web-design تایید شده از مثال Swagger است، بقیه را با پاسخ واقعی API چک کن
-const activeTab = ref('design')
-const tabs = [
-  { id: 'design', label: 'درخواست طراحی سایت', slug: 'web-design' },
-  { id: 'content', label: 'درخواست تولید محتوا', slug: 'content-production' },
-  { id: 'event', label: 'درخواست برگزاری ایونت', slug: 'event' },
-  { id: 'collab', label: 'درخواست همکاری', slug: 'collaboration' },
-  { id: 'feedback', label: 'انتقادات و پیشنهادات', slug: 'feedback' },
-]
+// ---- تب‌ها: دیگر حدسی نیستند؛ مستقیماً از API گرفته می‌شوند ----
+const tabs = ref([])          // { id, title } از /api/admin/requests/types
+const activeTab = ref(null)   // مقدار آن یک id عددی است (یا null یعنی "همه")
+const tabsLoading = ref(false)
 
+const fetchRequestTypes = async () => {
+  tabsLoading.value = true
+  try {
+    const res = await $fetch(`${API_BASE}/admin/requests/types`, {
+      method: 'GET',
+      headers: { ...authHeader() },
+    })
+    tabs.value = res?.data || []
+  } catch (err) {
+    console.error('خطا در دریافت انواع درخواست:', err)
+    tabs.value = []
+  } finally {
+    tabsLoading.value = false
+  }
+}
+
+// 👇👇👇 این بلوک باید اینجا برگرده (قبل از fetchProjectRequests) 👇👇👇
 const DEFAULT_AVATAR = '/images/user-avatar.jpg'
 
-// وضعیت‌ها
 const isLoading = ref(false)
 const errorMessage = ref('')
 const requests = ref([])
 
-// صفحه‌بندی
 const currentPage = ref(1)
 const perPage = ref(10)
 const meta = ref({ current_page: 1, last_page: 1, total: 0 })
+// 👆👆👆 تا اینجا 👆👆👆
 
 const fetchProjectRequests = async () => {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const res = await $fetch(`https://nadertechnologyteam.ir/api/admin/requests`, {
+    const res = await $fetch(`${API_BASE}/admin/requests`, {
       method: 'GET',
-      headers: {
-        ...authHeader(),
-      },
+      headers: { ...authHeader() },
       query: {
         page: currentPage.value,
         per_page: perPage.value,
@@ -55,10 +63,22 @@ const fetchProjectRequests = async () => {
       phone: item.mobile,
       email: item.email,
       details: item.description,
+      serviceId: item.service?.id ?? null,
       serviceSlug: item.service?.slug || '',
       serviceTitle: item.service?.title || '',
       avatar: DEFAULT_AVATAR,
     }))
+
+    console.log('requests fetched:', requests.value)
+
+    // 👇👇👇 دقیقاً همین‌جا اضافه کنید 👇👇👇
+    console.log('serviceId map:', requests.value.map(r => ({
+      requestId: r.id,
+      name: r.name,
+      serviceId: r.serviceId,
+      serviceTitle: r.serviceTitle,
+    })))
+    // 👆👆👆 تا اینجا 👆👆👆
 
     if (res.meta) {
       meta.value = res.meta
@@ -76,8 +96,12 @@ const fetchProjectRequests = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   initFromStorage()
+  await fetchRequestTypes()
+  // ⚠️ به‌جای فعال کردن خودکار اولین تب، فعلاً روی "همه" می‌مونیم
+  // activeTab.value = tabs.value.length > 0 ? tabs.value[0].id : null
+  activeTab.value = null   // نمایش همه تا مشکل مچ‌شدن id حل بشه
   fetchProjectRequests()
 })
 
@@ -86,11 +110,10 @@ watch(currentPage, () => {
   fetchProjectRequests()
 })
 
-// فیلتر کردن بر اساس تب انتخاب‌شده (بر اساس slug سرویس)
+// ---- فیلتر بر اساس id واقعی سرویس، نه slug حدسی ----
 const filteredUsers = computed(() => {
-  const currentTab = tabs.find((t) => t.id === activeTab.value)
-  if (!currentTab) return requests.value
-  return requests.value.filter((r) => r.serviceSlug === currentTab.slug)
+  if (activeTab.value === null) return requests.value // "همه" یا حالت پیش‌فرض
+  return requests.value.filter((r) => r.serviceId === activeTab.value)
 })
 
 const goToPage = (page) => {
@@ -108,21 +131,21 @@ const toggleAccordion = (id) => {
 <template>
   <div class="p-4 sm:p-5 lg:p-6" dir="rtl">
 
-    <div class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0">
-      <button
-        v-for="tab in tabs"
-        :key="tab.id"
-        @click="activeTab = tab.id"
-        :class="[
-          'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
-          activeTab === tab.id
-            ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white shadow-md'
-            : 'text-[] dark:text-white hover:bg-gray-200 dark:hover:bg-dark-input'
-        ]"
-      >
-        {{ tab.label }}
-      </button>
-    </div>
+<div class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0">
+  <button
+    v-for="tab in tabs"
+    :key="tab.id"
+    @click="activeTab = tab.id"
+    :class="[
+      'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
+      activeTab === tab.id
+        ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white shadow-md'
+        : 'text-[] dark:text-white hover:bg-gray-200 dark:hover:bg-dark-input'
+    ]"
+  >
+    {{ tab.title }}
+  </button>
+</div>
 
     <!-- حالت لودینگ -->
     <div v-if="isLoading" class="text-center text-gray-400 dark:text-white mt-10">

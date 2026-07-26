@@ -95,7 +95,7 @@
     { '--notch-color': notchColor }
   ]"
 >
-  <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[12px] sm:-mt-[28px] md:mt-[10px] min-[1920px]:mt-[40px] h-[40px] sm:h-[50px] md:h-[60px] min-[1920px]:h-[70px]">
+  <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[12px] sm:-mt-[28px] md:mt-[13px] min-[1920px]:mt-[15px] h-[40px] sm:h-[50px] md:h-[60px] min-[1920px]:h-[70px]">
 </div>
 
       <!-- متن نظرات -->
@@ -239,7 +239,7 @@ const visibleTestimonials = visibleItems(visibleCount)
 
 .notch {
   position: absolute;
-  height: 20px;
+  height: 22px;
   background: var(--notch-color);
   --r: 13px;
   clip-path: shape(

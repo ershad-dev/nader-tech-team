@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-[380px] sm:h-[500px] md:h-[814px] overflow-hidden -mt-[90px]">
+  <div class="relative w-full h-[380px] sm:h-[500px] md:h-[634px] xxl:h-[800px] overflow-hidden -mt-[90px]">
     <!-- تصویر اصلی (تمام عرض) -->
     <img
       src="/images/eventheader.jpg"

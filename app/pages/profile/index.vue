@@ -357,32 +357,30 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="max-w-[1110px] mx-auto p-4 md:p-8">
+  <div class="max-w-[1110px] 2xl:max-w-[1400px] mx-auto p-4 md:p-8 2xl:p-12 mt-30">
 
     <div
       v-if="toast.message"
       :class="[
-        'fixed top-5 left-5 right-5 sm:right-auto p-3 sm:p-4 rounded text-white z-50 text-[13px] sm:text-[15px]',
-        toast.type === 'success'
-          ? 'bg-green-500'
-          : 'bg-red-500'
+        'fixed top-20 sm:top-24 left-5 right-5 sm:right-auto p-3 sm:p-4 2xl:p-5 rounded text-white z-[9999] text-[13px] sm:text-[15px] 2xl:text-[17px]',
+        toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
       ]"
     >
       {{ toast.message }}
     </div>
 
-    <div class="bg-[#2C73792B] p-4 sm:p-6 md:p-10 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] shadow-sm">
+    <div class="bg-[#2C73792B] p-4 sm:p-6 md:p-10 2xl:p-14 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] 2xl:rounded-[48px] shadow-sm mt-[50px]">
 
       <div class="flex justify-center w-full">
-        <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] mb-6 sm:mb-8 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 w-full max-w-[652px] h-auto sm:h-[187px] shadow-xl" dir="rtl">
+        <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 2xl:p-8 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] 2xl:rounded-[32px] mb-6 sm:mb-8 2xl:mb-10 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 2xl:gap-8 w-full max-w-[652px] 2xl:max-w-[760px] h-auto sm:h-[187px] 2xl:h-[210px] shadow-xl" dir="rtl">
 
           <img
             :src="getAvatarUrl(userData.avatar)"
-            class="w-[70px] h-[70px] sm:w-[120px] sm:h-[120px] md:w-[143px] md:h-[143px] rounded-full border-4 border-white shadow-sm object-cover flex-shrink-0"
+            class="w-[70px] h-[70px] sm:w-[120px] sm:h-[120px] md:w-[143px] md:h-[143px] 2xl:w-[165px] 2xl:h-[165px] rounded-full border-4 border-white shadow-sm object-cover flex-shrink-0"
           />
 
-          <div class="flex flex-col items-start sm:items-center gap-2">
-            <span class="text-[#0F184B] font-bold text-[13px] sm:text-[15px] md:text-[16px] mb-1">
+          <div class="flex flex-col items-start sm:items-center gap-2 2xl:gap-3">
+            <span class="text-[#0F184B] font-bold text-[13px] sm:text-[15px] md:text-[16px] 2xl:text-[18px] mb-1">
               عکس پروفایل
             </span>
 
@@ -395,7 +393,7 @@ const logout = () => {
             />
 
             <button
-              class="bg-[#2C7379] w-[120px] sm:w-[143px] h-[32px] sm:h-[39px] text-white text-[11px] sm:text-[15px] font-normal py-2 px-3 sm:px-6 rounded-[12px] sm:rounded-[17px] hover:bg-[#235652] transition font-roboto whitespace-nowrap flex items-center justify-center mt-[6px] sm:mt-[10px]"
+              class="bg-[#2C7379] w-[120px] sm:w-[143px] 2xl:w-[165px] h-[32px] sm:h-[39px] 2xl:h-[46px] text-white text-[11px] sm:text-[15px] 2xl:text-[17px] font-normal py-2 px-3 sm:px-6 rounded-[12px] sm:rounded-[17px] hover:bg-[#235652] transition font-roboto whitespace-nowrap flex items-center justify-center mt-[6px] sm:mt-[10px]"
               @click="fileInput?.click()"
               :disabled="loadingAvatar"
             >
@@ -403,7 +401,7 @@ const logout = () => {
             </button>
 
             <button
-              class="text-[#747893] text-[11px] sm:text-[15px] font-normal mt-[6px] sm:mt-[10px] font-roboto"
+              class="text-[#747893] text-[11px] sm:text-[15px] 2xl:text-[17px] font-normal mt-[6px] sm:mt-[10px] font-roboto"
               @click="deleteAvatar"
               :disabled="loadingAvatar || !userData.avatar"
             >
@@ -414,32 +412,32 @@ const logout = () => {
         </div>
       </div>
 
-      <div class="bg-[#ffffff]/10 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border-[0.5px] border-[#D9D9D9] shadow-xl mt-6 sm:mt-8">
+      <div class="bg-[#ffffff]/10 p-4 sm:p-6 md:p-8 2xl:p-12 rounded-2xl sm:rounded-3xl 2xl:rounded-[40px] border-[0.5px] border-[#D9D9D9] shadow-xl mt-6 sm:mt-8 2xl:mt-10">
 
 <!-- Profile Tab -->
 <div v-if="activeTab === 'profile'"
-     class="grid grid-cols-2 md:grid-cols-2 gap-x-2 sm:gap-x-3 md:gap-x-1 gap-y-3 sm:gap-y-4 font-roboto justify-items-center"
+     class="flex flex-col lg:grid lg:grid-cols-2 2xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-x-6 2xl:gap-x-10 lg:gap-y-5 2xl:gap-y-8 font-roboto items-center lg:justify-items-center w-full"
      dir="rtl">
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام کاربری</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">نام کاربری</label>
     <input
       v-model="userData.username"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">نام و نام خانوادگی</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">نام و نام خانوادگی</label>
     <input
       v-model="userData.full_name"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
@@ -447,83 +445,83 @@ const logout = () => {
 
   <!-- شماره موبایل همیشه readonly است؛ تغییرش فقط از تب
        «تغییر شماره موبایل» ممکن است -->
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">شماره موبایل</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">شماره موبایل</label>
     <input
       v-model="userData.mobile"
       readonly
-      class="w-full sm:w-[300px] h-11 sm:h-14 bg-white/70 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] cursor-not-allowed text-black"
+      class="w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 bg-white/70 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] cursor-not-allowed text-black"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">ایمیل</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">ایمیل</label>
     <input
       v-model="userData.email"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">تاریخ تولد</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">تاریخ تولد</label>
     <input
       v-model="userData.birth_date"
       placeholder="1370/01/01"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد ملی</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">کد ملی</label>
     <input
       v-model="userData.national_code"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">استان</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">استان</label>
     <input
       v-model="userData.province"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full sm:w-fit">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">کد پستی</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">کد پستی</label>
     <input
       v-model="userData.postal_code"
       :readonly="!isEditing"
       :class="[
-        'w-full sm:w-[300px] h-11 sm:h-14 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[300px] 2xl:w-[340px] h-11 sm:h-14 2xl:h-16 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     />
   </div>
 
-  <div class="flex flex-col gap-2 w-full col-span-2 md:col-span-2 md:w-[604px]">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black mr-1">آدرس و نشانی</label>
+  <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:col-span-2 2xl:col-span-1 lg:w-[604px] 2xl:w-[340px]">
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">آدرس و نشانی</label>
     <textarea
       v-model="userData.address"
       :readonly="!isEditing"
       :class="[
-        'w-full md:w-[604px] h-20 sm:h-24 rounded-[12px] sm:rounded-[17px] px-3 sm:px-4 py-3 sm:py-4 text-[13px] sm:text-[15px] text-black',
+        'w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:w-[604px] 2xl:w-[340px] h-20 sm:h-24 2xl:h-28 rounded-[12px] sm:rounded-[17px] 2xl:rounded-[20px] px-3 sm:px-4 2xl:px-5 py-3 sm:py-4 2xl:py-5 text-[13px] sm:text-[15px] 2xl:text-[17px] text-black',
         isEditing ? 'bg-white' : 'bg-white/70 cursor-not-allowed'
       ]"
     ></textarea>
@@ -532,31 +530,30 @@ const logout = () => {
 </div>
 
         <!-- Security Tab -->
-<!-- Security Tab -->
-        <div v-else-if="activeTab === 'security'" class="space-y-5 sm:space-y-6">
+        <div v-else-if="activeTab === 'security'" class="space-y-5 sm:space-y-6 2xl:space-y-8 max-w-[500px] 2xl:max-w-[600px] mx-auto">
           <AuthInput
             label="رمز عبور فعلی"
             type="password"
             v-model="passwordData.current_password"
-            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+            class="[&>div>input]:h-[44px] 2xl:[&>div>input]:h-[54px] [&>div>input]:py-4 2xl:[&>label]:text-[17px]"
           />
 
           <AuthInput
             label="رمز عبور جدید"
             type="password"
             v-model="passwordData.new_password"
-            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+            class="[&>div>input]:h-[44px] 2xl:[&>div>input]:h-[54px] [&>div>input]:py-4 2xl:[&>label]:text-[17px]"
           />
 
           <AuthInput
             label="تکرار رمز عبور جدید"
             type="password"
             v-model="passwordData.new_password_confirmation"
-            class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+            class="[&>div>input]:h-[44px] 2xl:[&>div>input]:h-[54px] [&>div>input]:py-4 2xl:[&>label]:text-[17px]"
           />
 
           <AuthButton
-            class="h-12 !rounded-[15px]"
+            class="h-12 2xl:h-14 !rounded-[15px] 2xl:text-[17px]"
             @click="changePassword"
             :disabled="loading"
           >
@@ -568,30 +565,29 @@ const logout = () => {
           </AuthButton>
         </div>
 
-        
 <!-- Change Mobile Tab -->
-<div v-else-if="activeTab === 'changeMobile'" class="space-y-8 sm:space-y-10 mb-[100px] mt-[100px]" dir="rtl">
-  <div class="flex items-center justify-center gap-4 w-full">
-    <label class="text-[12px] sm:text-[15px] font-normal text-black whitespace-nowrap font-roboto ">
+<div v-else-if="activeTab === 'changeMobile'" class="space-y-6 sm:space-y-10 2xl:space-y-12 mt-10 mb-16 sm:mt-[100px] sm:mb-[100px] px-4 sm:px-0" dir="rtl">
+  <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 2xl:gap-6 w-full">
+    <label class="text-[13px] sm:text-[15px] 2xl:text-[17px] font-normal text-black whitespace-nowrap font-roboto">
       شماره تلفن همراه
     </label>
 
-    <div class="relative w-full sm:w-[570px]">
+    <div class="relative w-full sm:w-[570px] 2xl:w-[650px]">
       <input
         v-model="newMobile"
         placeholder="09xxxxxxxxx"
-        class="w-full h-11 sm:h-14 bg-white rounded-[17px] px-4 pr-11 text-[13px] sm:text-[15px] shadow-sm text-black"
+        class="w-full h-11 sm:h-14 2xl:h-16 bg-white rounded-[17px] 2xl:rounded-[20px] px-4 2xl:px-5 pr-11 2xl:pr-12 text-[13px] sm:text-[15px] 2xl:text-[17px] shadow-sm text-black"
       />
-      <PhoneIcon class="w-5 h-5 text-[#1a2333] absolute right-4 top-1/2 -translate-y-1/2" />
+      <PhoneIcon class="w-5 h-5 2xl:w-6 2xl:h-6 text-[#1a2333] absolute right-4 top-1/2 -translate-y-1/2" />
     </div>
 
-    <span class="text-[12px] sm:text-[15px] invisible whitespace-nowrap" aria-hidden="true">
+    <span class="hidden sm:inline-block text-[15px] 2xl:text-[17px] invisible whitespace-nowrap" aria-hidden="true">
       شماره تلفن همراه
     </span>
   </div>
 
   <AuthButton
-    class="h-12 !rounded-full w-full sm:w-[420px] mx-auto block"
+    class="h-12 2xl:h-14 !rounded-full w-full sm:w-[420px] 2xl:w-[480px] 2xl:text-[17px] mx-auto block"
     @click="changeMobile"
     :disabled="loading"
   >
@@ -602,21 +598,14 @@ const logout = () => {
     }}
   </AuthButton>
 </div>
-        <!-- Profile Actions -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-8 sm:mt-10"
-          v-if="activeTab === 'profile'"
-        >
-          
-        </div>
 
 <!-- Bottom Menu -->
 <div
-  class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 md:gap-12 mt-8 text-[#1a2333] dark:text-white font-bold text-[14px] sm:text-[16px]"
+  class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 md:gap-12 2xl:gap-16 mt-8 2xl:mt-12 text-[#1a2333] dark:text-white font-bold text-[14px] sm:text-[16px] 2xl:text-[18px]"
 >
   <button
     @click="activeTab = activeTab === 'profile' ? 'security' : 'profile'"
-    class="flex items-center gap-2 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
+    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
   >
     {{
       activeTab === 'profile'
@@ -626,42 +615,42 @@ const logout = () => {
 
     <ShieldCheckIcon
       v-if="activeTab === 'profile'"
-      class="w-5 h-5 sm:w-6 sm:h-6"
+      class="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7"
     />
 
     <UserCircleIcon
       v-else
-      class="w-5 h-5 sm:w-6 sm:h-6"
+      class="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7"
     />
   </button>
 
   <button
     @click="activeTab = 'changeMobile'; newMobile = ''"
-    class="flex items-center gap-2 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
+    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
   >
     تغییر شماره موبایل
 
-    <DevicePhoneMobileIcon class="w-5 h-5 sm:w-6 sm:h-6" />
+    <DevicePhoneMobileIcon class="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
   </button>
 
   <button
     @click="logout"
-    class="flex items-center gap-2 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
+    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
   >
     خروج از حساب کاربری
 
-    <ArrowRightOnRectangleIcon class="w-5 h-5 sm:w-6 sm:h-6" />
+    <ArrowRightOnRectangleIcon class="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
   </button>
 </div>
 
         <!-- Profile Actions -->
         <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-8 sm:mt-10"
+          class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 2xl:gap-6 mt-8 sm:mt-10 2xl:mt-14 max-w-[700px] 2xl:max-w-[820px] mx-auto"
           v-if="activeTab === 'profile'"
         >
           <template v-if="!isEditing">
             <button
-              class="bg-[#2C7379] text-white py-2 rounded-[15px] font-bold h-12 text-[14px] sm:text-[16px] col-span-1 md:col-span-2 hover:bg-[#235652] transition"
+              class="bg-[#2C7379] text-white py-2 rounded-[15px] 2xl:rounded-[18px] font-bold h-12 2xl:h-14 text-[14px] sm:text-[16px] 2xl:text-[18px] col-span-1 md:col-span-2 hover:bg-[#235652] transition"
               @click="isEditing = true"
             >
               ویرایش اطلاعات
@@ -670,7 +659,7 @@ const logout = () => {
 
           <template v-else>
             <button
-              class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] font-bold h-12 text-[14px] sm:text-[16px]"
+              class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] 2xl:rounded-[18px] font-bold h-12 2xl:h-14 text-[14px] sm:text-[16px] 2xl:text-[18px]"
               @click="cancelEdit"
               :disabled="loading"
             >
@@ -678,7 +667,7 @@ const logout = () => {
             </button>
 
             <AuthButton
-              class="h-12 !rounded-[15px]"
+              class="h-12 2xl:h-14 !rounded-[15px] 2xl:text-[18px]"
               @click="updateProfile"
               :disabled="loading"
             >

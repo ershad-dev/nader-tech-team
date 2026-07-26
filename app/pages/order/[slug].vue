@@ -23,7 +23,7 @@ const hasReview = computed(() => !!project.value?.review?.description);
   </div>
 
   <div v-else class="min-h-screen p-5 sm:p-8 lg:p-10 bg-[#BFD1D5] dark:bg-dark-bg -mt-[80px] lg:-mt-[100px] overflow-hidden">
-    <div class="text-center mt-[90px] lg:mt-[100px] flex flex-wrap justify-center items-center gap-1 sm:gap-2 px-2">
+    <div class="text-center mt-[120px] lg:mt-[120px] flex flex-wrap justify-center items-center gap-1 sm:gap-2 px-2">
       <h2 class="text-lg sm:text-2xl lg:text-3xl font-bold text-[#2C7379] dark:text-dark-highlight flex flex-wrap items-baseline justify-center">
         <span class="rotate-12 origin-bottom translate-y-2 lg:translate-y-3 inline-block">آینده</span>
         <span class="rotate-6 origin-bottom translate-y-1 inline-block">برند</span>

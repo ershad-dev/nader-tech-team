@@ -214,19 +214,27 @@ const options = ref([])       // { id, title, slug, ... }
 const isOpen = ref(false)
 const selected = ref(null)
 const servicesLoading = ref(false)
+const dropdownRef = ref(null)
 
 const select = (option) => {
   selected.value = option
-  form.service_id = option.id
+  form.type_id = option.id
   isOpen.value = false
-  if (errors.value.service_id) delete errors.value.service_id
+  if (errors.value.type_id) delete errors.value.type_id
+}
+
+// --- بستن دراپ‌داون با کلیک بیرون ---
+const handleClickOutside = (e) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+    isOpen.value = false
+  }
 }
 
 const fetchServices = async () => {
   servicesLoading.value = true
   try {
     const res = await $fetch(`https://nadertechnologyteam.ir/api/requests/types`)
-    options.value = res?.data || []
+    options.value = res?.data || res || []
   } catch (e) {
     console.error('خطا در دریافت لیست خدمات:', e)
   } finally {
@@ -235,12 +243,17 @@ const fetchServices = async () => {
 }
 
 onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
   fetchServices()
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 
 // ---- state فرم ----
 const form = reactive({
-  service_id: null,
+  type_id: null,
   name: '',
   mobile: '',
   email: '',
@@ -253,7 +266,7 @@ const successMessage = ref('')
 const submitting = ref(false)
 
 const resetForm = () => {
-  form.service_id = null
+  form.type_id = null
   form.name = ''
   form.mobile = ''
   form.email = ''
@@ -261,22 +274,38 @@ const resetForm = () => {
   selected.value = null
 }
 
+// --- اعتبارسنجی سمت کلاینت قبل از ارسال ---
+const validateClientSide = () => {
+  const localErrors = {}
+  if (!form.name.trim()) localErrors.name = ['نام و نام خانوادگی الزامی است']
+  if (!form.mobile.trim()) localErrors.mobile = ['شماره تماس الزامی است']
+  if (!form.type_id) localErrors.type_id = ['انتخاب نوع درخواست الزامی است']
+  if (!form.description.trim()) localErrors.description = ['توضیحات الزامی است']
+  errors.value = localErrors
+  return Object.keys(localErrors).length === 0
+}
+
 const submitForm = async () => {
   errors.value = {}
   generalError.value = ''
   successMessage.value = ''
+
+  if (!validateClientSide()) return
+
   submitting.value = true
+
+  const payload = {
+    type_id: form.type_id,
+    name: form.name,
+    mobile: form.mobile,
+    email: form.email,
+    description: form.description
+  }
 
   try {
     const res = await $fetch(`https://nadertechnologyteam.ir/api/requests`, {
       method: 'POST',
-      body: {
-        service_id: form.service_id,
-        name: form.name,
-        mobile: form.mobile,
-        email: form.email,
-        description: form.description
-      }
+      body: payload
     })
 
     successMessage.value = res?.message || 'درخواست با موفقیت ثبت شد.'
@@ -286,7 +315,6 @@ const submitForm = async () => {
     const data = e?.data || e?.response?._data
 
     if (status === 422 && data?.errors) {
-      // خطاهای اعتبارسنجی فیلد به فیلد
       errors.value = data.errors
       generalError.value = data.message || 'The given data was invalid.'
     } else if (status === 401) {
