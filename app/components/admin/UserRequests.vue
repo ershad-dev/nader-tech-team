@@ -7,14 +7,12 @@ const API_BASE = config.public?.apiBase || 'https://nadertechnologyteam.ir'
 
 const { authHeader, initFromStorage, isLoggedIn } = useAdminAuth()
 
-// دارک‌مود برای رنگ هاردکد SVG
 const colorMode = useColorMode()
 const chevronColor = computed(() => (colorMode.value === 'dark' ? '#FFFFFF' : '#747893'))
 
-// ---- تب‌ها: دیگر حدسی نیستند؛ مستقیماً از API گرفته می‌شوند ----
-const tabs = ref([])          // { id, title } از /api/admin/requests/types
-const activeTab = ref(null)   // مقدار آن یک id عددی است (یا null یعنی "همه")
-const tabsLoading = ref(false)
+const tabs = ref([])
+const activeTab = ref(null)
+const tabsLoading = ref(true)   // 👈 تغییر: از false به true
 
 const fetchRequestTypes = async () => {
   tabsLoading.value = true
@@ -32,17 +30,16 @@ const fetchRequestTypes = async () => {
   }
 }
 
-// 👇👇👇 این بلوک باید اینجا برگرده (قبل از fetchProjectRequests) 👇👇👇
 const DEFAULT_AVATAR = '/images/user-avatar.jpg'
-
-const isLoading = ref(false)
+const isLoading = ref(true)   // 👈 تغییر: از false به true
 const errorMessage = ref('')
 const requests = ref([])
-
 const currentPage = ref(1)
 const perPage = ref(10)
 const meta = ref({ current_page: 1, last_page: 1, total: 0 })
-// 👆👆👆 تا اینجا 👆👆👆
+
+// 👇 جدید: state لودینگ ترکیبی برای کل صفحه
+const isPageLoading = computed(() => tabsLoading.value || isLoading.value)
 
 const fetchProjectRequests = async () => {
   isLoading.value = true
@@ -63,22 +60,10 @@ const fetchProjectRequests = async () => {
       phone: item.mobile,
       email: item.email,
       details: item.description,
-      serviceId: item.service?.id ?? null,
-      serviceSlug: item.service?.slug || '',
-      serviceTitle: item.service?.title || '',
+      serviceId: item.type?.id ?? null,
+      serviceTitle: item.type?.title || '',
       avatar: DEFAULT_AVATAR,
     }))
-
-    console.log('requests fetched:', requests.value)
-
-    // 👇👇👇 دقیقاً همین‌جا اضافه کنید 👇👇👇
-    console.log('serviceId map:', requests.value.map(r => ({
-      requestId: r.id,
-      name: r.name,
-      serviceId: r.serviceId,
-      serviceTitle: r.serviceTitle,
-    })))
-    // 👆👆👆 تا اینجا 👆👆👆
 
     if (res.meta) {
       meta.value = res.meta
@@ -99,20 +84,16 @@ const fetchProjectRequests = async () => {
 onMounted(async () => {
   initFromStorage()
   await fetchRequestTypes()
-  // ⚠️ به‌جای فعال کردن خودکار اولین تب، فعلاً روی "همه" می‌مونیم
-  // activeTab.value = tabs.value.length > 0 ? tabs.value[0].id : null
-  activeTab.value = null   // نمایش همه تا مشکل مچ‌شدن id حل بشه
-  fetchProjectRequests()
+  activeTab.value = tabs.value.length > 0 ? tabs.value[0].id : null   // 👈 تغییر اینجا
+  await fetchProjectRequests()
 })
 
-// هر بار صفحه تغییر کند، دوباره دیتا بگیر
 watch(currentPage, () => {
   fetchProjectRequests()
 })
 
-// ---- فیلتر بر اساس id واقعی سرویس، نه slug حدسی ----
 const filteredUsers = computed(() => {
-  if (activeTab.value === null) return requests.value // "همه" یا حالت پیش‌فرض
+  if (activeTab.value === null) return requests.value
   return requests.value.filter((r) => r.serviceId === activeTab.value)
 })
 
@@ -121,7 +102,6 @@ const goToPage = (page) => {
   currentPage.value = page
 }
 
-// مدیریت آکاردئون
 const openUserId = ref(null)
 const toggleAccordion = (id) => {
   openUserId.value = openUserId.value === id ? null : id
@@ -131,28 +111,31 @@ const toggleAccordion = (id) => {
 <template>
   <div class="p-4 sm:p-5 lg:p-6" dir="rtl">
 
-<div class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0">
-  <button
-    v-for="tab in tabs"
-    :key="tab.id"
-    @click="activeTab = tab.id"
-    :class="[
-      'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
-      activeTab === tab.id
-        ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white shadow-md'
-        : 'text-[] dark:text-white hover:bg-gray-200 dark:hover:bg-dark-input'
-    ]"
-  >
-    {{ tab.title }}
-  </button>
-</div>
+    <!-- تب‌ها فقط وقتی نمایش داده می‌شن که واقعاً آماده باشن -->
+    <div
+      v-if="tabs.length > 0"
+      class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0"
+    >
+      <button
+        v-for="tab in tabs"
+        :key="tab.id"
+        @click="activeTab = tab.id"
+        :class="[
+          'px-3 sm:px-4 lg:px-5 py-2 rounded-full transition-all text-[12px] sm:text-[13px] lg:text-[14px] font-medium h-[36px] sm:h-[38px] lg:h-[41px]',
+          activeTab === tab.id
+            ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white shadow-md'
+            : 'text-[] dark:text-white hover:bg-gray-200 dark:hover:bg-dark-input'
+        ]"
+      >
+        {{ tab.title }}
+      </button>
+    </div>
 
-    <!-- حالت لودینگ -->
-    <div v-if="isLoading" class="text-center text-gray-400 dark:text-white mt-10">
+    <!-- یک state واحد برای «کل صفحه در حال بارگذاری» -->
+    <div v-if="isPageLoading" class="text-center text-gray-400 dark:text-white mt-10">
       در حال بارگذاری...
     </div>
 
-    <!-- حالت خطا -->
     <div v-else-if="errorMessage" class="text-center text-red-500 dark:text-red-300 mt-10">
       {{ errorMessage }}
       <button @click="fetchProjectRequests" class="block mx-auto mt-2 text-sm text-[#2d6a66] dark:text-dark-highlight underline">
@@ -161,11 +144,11 @@ const toggleAccordion = (id) => {
     </div>
 
     <template v-else>
-<div class="space-y-4">
+      <div class="space-y-4">
         <div v-for="user in filteredUsers" :key="user.id"
              class="bg-[#FFFFFF3B] dark:bg-dark-input/20 p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 dark:border-dark-border transition-all duration-300">
 
-<div class="flex justify-between items-start">
+          <div class="flex justify-between items-start">
             <div class="flex items-center gap-3 sm:gap-4">
               <div>
                 <h3 class="font-bold text-[15px] sm:text-[17px] lg:text-[20px] text-[#000000] dark:text-white font-roboto">{{ user.name }}</h3>
@@ -202,7 +185,6 @@ const toggleAccordion = (id) => {
         <p v-if="filteredUsers.length === 0" class="text-center text-gray-400 dark:text-white/70 mt-10">موردی برای نمایش وجود ندارد.</p>
       </div>
 
-      <!-- صفحه‌بندی -->
       <div v-if="meta.last_page > 1" class="flex justify-center items-center gap-2 mt-6">
         <button
           @click="goToPage(currentPage - 1)"

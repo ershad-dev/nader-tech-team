@@ -88,7 +88,7 @@
             v-if="item.type === 'text'"
             v-model="item.value"
             rows="2"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
           />
 
           <textarea
@@ -96,10 +96,11 @@
             v-model="item.value"
             rows="5"
             spellcheck="false"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
           />
 
-          <div v-else-if="item.type === 'image_path'" class="flex flex-col sm:flex-row sm:items-center gap-3">
+          <!-- image_path: URL input + upload from system (base64) -->
+          <div v-else-if="item.type === 'image_path'" class="flex flex-col sm:flex-row sm:items-start gap-3">
             <img
               v-if="item.value"
               :src="item.value"
@@ -107,19 +108,34 @@
               class="w-16 h-16 rounded-lg object-cover border border-[#BFD1D5] dark:border-dark-border shrink-0"
               @error="$event.target.style.visibility='hidden'"
             />
-            <input
-              v-model="item.value"
-              type="text"
-              placeholder="لینک تصویر"
-              class="w-full sm:flex-1 min-w-0 px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent"
-            />
+            <div class="w-full sm:flex-1 min-w-0 flex flex-col gap-2">
+              <input
+                v-model="item.value"
+                type="text"
+                placeholder="لینک تصویر یا آپلود از سیستم"
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+              />
+              <label
+                class="w-fit cursor-pointer px-3 py-1.5 rounded-full border border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white text-[11px] font-bold hover:bg-[#67A9A8]/10 dark:hover:bg-dark-accent/10 transition"
+                :class="{ 'opacity-50 pointer-events-none': item._uploading }"
+              >
+                {{ item._uploading ? 'در حال خواندن فایل...' : 'آپلود از سیستم' }}
+                <input
+                  type="file"
+                  accept="image/*"
+                  class="hidden"
+                  :disabled="item._uploading"
+                  @change="onImageFileSelected($event, item)"
+                />
+              </label>
+            </div>
           </div>
 
           <input
             v-else-if="item.type === 'number'"
             v-model.number="item.value"
             type="number"
-            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent"
+            class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
           />
 
           <button
@@ -163,9 +179,14 @@ import { ref, reactive, onMounted, watch } from 'vue'
 //                                    Returns { data: { id, ... } }
 // این نسخه از کامپوننت فقط ویرایش دارد؛ بخش‌های افزودن آیتم جدید و
 // حذف آیتم عمداً حذف شده‌اند.
+//
+// آپلود تصویر: بک‌اند endpoint جدایی برای آپلود فایل ندارد، پس تصویر
+// انتخاب‌شده از سیستم کاربر به base64 (data URL) تبدیل می‌شود و مثل
+// هر مقدار متنی دیگر از طریق همان POST /api/admin/page ذخیره می‌شود.
 // ─────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024 // 2MB
 
 const { authHeader, initFromStorage } = useAdminAuth()
 
@@ -214,7 +235,7 @@ const normalizeIncoming = (raw) => {
   if (raw.type === 'boolean' && typeof value === 'string') {
     value = value === 'true' || value === '1'
   }
-  return { ...raw, value, _saving: false }
+  return { ...raw, value, _saving: false, _uploading: false }
 }
 
 const fetchItems = async (page) => {
@@ -239,6 +260,37 @@ const selectPage = (slug) => {
   activePage.value = slug
 }
 
+// Convert a selected image file into a base64 data URL and put it
+// straight into item.value (same field used for a manual image link).
+const onImageFileSelected = (event, item) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  if (!file.type.startsWith('image/')) {
+    showToast('فایل انتخاب‌شده تصویر نیست', 'error')
+    event.target.value = ''
+    return
+  }
+  if (file.size > MAX_IMAGE_SIZE) {
+    showToast('حجم تصویر نباید بیشتر از ۲ مگابایت باشد', 'error')
+    event.target.value = ''
+    return
+  }
+
+  item._uploading = true
+  const reader = new FileReader()
+  reader.onload = () => {
+    item.value = reader.result // e.g. "data:image/png;base64,...."
+    item._uploading = false
+  }
+  reader.onerror = () => {
+    showToast('خطا در خواندن فایل تصویر', 'error')
+    item._uploading = false
+  }
+  reader.readAsDataURL(file)
+  event.target.value = '' // allow re-selecting the same file later
+}
+
 const buildOutgoingValue = (item) => {
   if (item.type === 'json') {
     try {
@@ -251,7 +303,7 @@ const buildOutgoingValue = (item) => {
 }
 
 // Real write endpoint from the backend (Ali, 24 Tir):
-// POST /api/page  body: { page, key, value, type }
+// POST /api/admin/page  body: { page, key, value, type }
 // Upserts by (page, key) — creates if new, updates if that combo exists.
 // Requires the admin bearer token. Response: { message, data: { id, key, value, type, page } }
 const upsertPageItem = async ({ page, key, value, type }) => {
@@ -271,7 +323,12 @@ const saveItem = async (item) => {
     if (saved?.id) item.id = saved.id
     showToast(`«${item.key}» ذخیره شد`)
   } catch (err) {
-    showToast(err?.data?.message || err?.message || 'ذخیره ناموفق بود', 'error')
+    const raw = String(err?.data?.message || err?.message || '')
+    if (item.type === 'image_path' && raw.includes('Data too long for column')) {
+      showToast('حجم تصویر برای ذخیره خیلی زیاده.', 'error')
+    } else {
+      showToast(raw || 'ذخیره ناموفق بود', 'error')
+    }
   } finally {
     item._saving = false
   }

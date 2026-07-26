@@ -149,7 +149,7 @@
                 type="text"
                 required
                 placeholder="متن سوال را وارد کنید"
-                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200"
+                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 bg-white/20"
               />
             </div>
 
@@ -160,7 +160,7 @@
                 required
                 rows="5"
                 placeholder="متن پاسخ را وارد کنید"
-                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none"
+                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none bg-white/20"
               ></textarea>
             </div>
 
@@ -171,7 +171,7 @@
                   v-model.number="form.sort_order"
                   type="number"
                   min="0"
-                  class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200"
+                  class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 bg-white/20"
                 />
               </div>
 
