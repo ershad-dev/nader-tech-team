@@ -33,9 +33,9 @@
 
   <div class="shape bg-[#2C7379] dark:bg-[#407B80]">
     <NuxtLink to="/order/requestProject">
-      <button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block mr-[55px] mt-[10px] ">
-        درخواست همکاری
-      </button>
+      <button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block mr-[55px] mt-[10px]">
+  درخواست همکاری
+</button>
     </NuxtLink>
   </div>
 
@@ -58,10 +58,11 @@
 
       <div class="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-        <div class=" shape-pill-mobile bg-[#2C7379] dark:bg-[#3D676B]">
+        <div class=" shape-pill-mobile bg-[#2C7379] dark:bg-[#407B80]">
           <NuxtLink to="/order/requestProject">
-<button class="btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all flex items-center justify-center">              درخواست همکاری
-            </button>
+            <button class="btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all flex items-center justify-center">
+            درخواست همکاری
+          </button> 
           </NuxtLink>
         </div>
 
@@ -80,11 +81,13 @@
   <h3 class="text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">لینک های مهم</h3>
 
   <ul class="space-y-2 sm:space-y-3">
-  <li v-for="link in links" :key="link" class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
-  <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
-  <span>{{ link }}</span>
+  <li v-for="link in links" :key="link.path" class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
+    <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
+    <NuxtLink :to="link.path" class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors">
+      {{ link.name }}
+    </NuxtLink>
   </li>
-  </ul>
+</ul>
 
   </div>
 
@@ -122,7 +125,12 @@
   <script setup>
   const route = useRoute();
   const footerConfig = useState('footerConfig');
-  const links = ['خانه', 'سفارش گیری پروژه', 'برگزاری ایونت', 'درباره ما'];
+  const links = [
+  { name: 'خانه', path: '/' },
+  { name: 'سفارش گیری پروژه', path: '/order/requestProject' },
+  { name: 'برگزاری ایونت', path: '/events' },
+  { name: 'درباره ما', path: '/about' }
+];
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 
   const lotteryRoutes = [
@@ -226,6 +234,10 @@
     width: 195px;
     height: 40px;
   }
+}
+
+.btn-cooperate {
+  transform: scaleY(-1);
 }
 
  

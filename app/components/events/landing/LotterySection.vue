@@ -28,8 +28,8 @@ function goToLoginPage() {
 
 <template>
   <section
-    class="relative w-full md:w-[1110px] min-[1920px]:w-[1400px] max-w-full mx-auto
-           h-auto min-h-[380px] sm:min-h-[420px] md:h-[629px] min-[1920px]:h-[700px]
+    class="relative w-[360px] md:w-[1110px] min-[1920px]:w-[1400px] max-w-full mx-auto
+           h-auto min-h-[380px] sm:min-h-[420px] md:h-[629px] lg:h-[560px] xl:h-[600px] min-[1920px]:h-[700px]
            rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
            overflow-hidden
            p-5 sm:p-8 md:p-12 min-[1920px]:p-16
@@ -39,7 +39,7 @@ function goToLoginPage() {
     <img
       src="/images/bglottery.png"
       alt="قرعه کشی"
-      class="absolute inset-0 w-full h-full object-cover"
+      class="absolute inset-0 w-full h-full object-cover object-center"
     />
 
     <!-- لایه شفاف -->
@@ -50,7 +50,7 @@ function goToLoginPage() {
       <img
         src="/images/rebon-lottery1.png"
         alt=""
-        class="w-[160px] h-[60px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px] min-[1920px]:mr-[50px] mr-[13px]"
+        class="w-[160px] h-[60px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px] min-[1920px]:mr-[50px] mr-[13px] object-covor"
       />
       
 
