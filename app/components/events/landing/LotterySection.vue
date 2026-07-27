@@ -50,8 +50,9 @@ function goToLoginPage() {
       <img
         src="/images/rebon-lottery1.png"
         alt=""
-        class="w-[160px] h-[60px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px]"
+        class="w-[160px] h-[60px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px] min-[1920px]:mr-[50px] mr-[13px]"
       />
+      
 
       <div
         class="w-[50%] sm:w-[45%] md:w-[35%] mr-1 sm:mr-4 md:mr-[20px]
@@ -60,9 +61,9 @@ function goToLoginPage() {
       ></div>
 
       <p
-        class="text-[12px] sm:text-[18px] md:text-[20px]
-               text-[#0F184B] dark:text-dark-text font-roboto
-               mr-1 sm:mr-8 md:mr-[70px] leading-snug sm:leading-relaxed text-center"
+        class="text-[13px] sm:text-[18px] md:text-[20px]
+               text-[#0F184B] dark:text-[#0F184B] font-roboto
+                mr-[20px] sm:mr-8 md:mr-[70px] leading-snug sm:leading-relaxed text-center min-[1920px]:text-[28px] "
       >
         شانس خود را امتحان کنید<br />
         و برنده جوایز هیجان انگیز شوید
@@ -81,10 +82,10 @@ function goToLoginPage() {
         @click="goToRegister"
         class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
                rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
-               text-[14px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
+               text-[12px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
                font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
-               w-full sm:w-[220px] md:w-[520px] min-[1920px]:w-[260px]
-               h-[44px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px]"
+               w-[120px] mb-[140px] mr-[30px] sm:w-[220px] md:w-[220px] md:mr-[85px] md:mb-[70px] min-[1920px]:w-[260px]
+               h-[38px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px] min-[1920px]:mr-[110px]"
       >
         ثبت‌نام در قرعه‌کشی
       </button>

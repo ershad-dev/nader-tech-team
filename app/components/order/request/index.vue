@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <a class="text-[#0F184B] dark:text-dark-text text-[13px] sm:text-[14px] md:text-[16px] flex items-center justify-center font-noto-light font-bold underline underline-offset-4 whitespace-nowrap">
+        <a class="text-[#0F184B] dark:text-dark-text text-[13px] sm:text-[14px] md:text-[16px] flex items-center justify-center font-noto-light font-bold whitespace-nowrap">
           چرا با ما همکاری کنید
         </a>
 

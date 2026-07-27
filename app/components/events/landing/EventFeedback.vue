@@ -170,7 +170,7 @@ const updateResponsiveValues = () => {
 
   if (w < 640) {
     visibleCount.value = 1;
-    notchWidth.value = 90;
+    notchWidth.value = 120;
     isMobile.value = true;
   } else if (w < 768) {
     visibleCount.value = 2;
@@ -178,7 +178,7 @@ const updateResponsiveValues = () => {
     isMobile.value = false;
   } else if (w < 1920) {
     visibleCount.value = 3;
-    notchWidth.value = 140;
+    notchWidth.value = 200;
     isMobile.value = false;
   } else {
     visibleCount.value = 3;
@@ -239,9 +239,9 @@ const visibleTestimonials = visibleItems(visibleCount)
 
 .notch {
   position: absolute;
-  height: 22px;
+  height: 38px;
   background: var(--notch-color);
-  --r: 13px;
+  --r: 25px;
   clip-path: shape(
     from 0 100%,
     arc by var(--r) calc(-1 * var(--r)) of var(--r),
@@ -261,7 +261,8 @@ const visibleTestimonials = visibleItems(visibleCount)
 
 @media (max-width: 767px) {
   .notch {
-    --r: 8px;
+    --r: 16px;
+    height: 28px;
   }
 }
 

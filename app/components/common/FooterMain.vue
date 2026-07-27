@@ -58,10 +58,9 @@
 
       <div class="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-        <div class="shape shape-mobile bg-[#2C7379] dark:bg-[#3D676B]">
+        <div class=" shape-pill-mobile bg-[#2C7379] dark:bg-[#3D676B]">
           <NuxtLink to="/order/requestProject">
-            <button class="btn-cooperate btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold relative z-30 h-[32px] sm:h-[42px] w-[150px] sm:w-[230px] flex items-center justify-center">
-              درخواست همکاری
+<button class="btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all flex items-center justify-center">              درخواست همکاری
             </button>
           </NuxtLink>
         </div>
@@ -159,21 +158,14 @@
   });
   </script>
 
-  <style scoped>
-  :nth-child(1 of .shape) {
-    clip-path: shape(
-      from 0 100%,
-      arc by var(--r) calc(-1*var(--r)) of var(--r),
-      vline to var(--r),
-      arc by var(--r) calc(-1*var(--r)) of var(--r) cw,
-      hline to calc(100% - 2*var(--r)),
-      arc by var(--r) var(--r) of var(--r) cw,
-      vline to calc(100% - var(--r)),
-      arc by var(--r) var(--r) of var(--r)
-    )
-  }
-
-  :nth-child(2 of .shape) {
+ <style scoped>
+  .shape {
+    --r: 26px;
+    margin-bottom: -27px;
+    width: 379px;
+    height: 60px;
+    color: #fff;
+    transform: scaleY(-1);
     clip-path: shape(
       from 0 100%,
       curve by var(--r) calc(-1*var(--r)) with var(--r) 0,
@@ -183,38 +175,58 @@
       curve by var(--r) var(--r) with var(--r) 0,
       vline to calc(100% - var(--r)),
       curve by var(--r) var(--r) with 0 var(--r)
-    )
+    );
   }
 
-  .shape {
-    --r: 26px;
-    margin-bottom: -27px;
-    width: 379px;
-    height: 60px;
-    color: #fff;
-    transform: scaleY(-1);
-  }
+.shape-pill-mobile {
+  width: 150px;
+  height: 40px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
 
-  .shape-mobile {
-    --r: 14px;
-    margin-bottom: -15px;
-    width: 150px;
-    height: 32px;
-  }
+.btn-cooperate-mobile {
+  width: 130px;
+  height: 30px;
+}
 
-  @media (min-width: 640px) {
-    .shape-mobile {
-      --r: 18px;
-      width: 230px;
-      height: 42px;
-      margin-bottom: -19px;
-    }
+@media (min-width: 640px) {
+  .shape-pill-mobile {
+    width: 220px;
+    height: 52px;
   }
+  .btn-cooperate-mobile {
+    width: 195px;
+    height: 40px;
+  }
+}.shape-pill-mobile {
+  width: 150px;
+  height: 40px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
 
-  .btn-cooperate {
-    transform: scaleY(-1);
+.btn-cooperate-mobile {
+  width: 130px;
+  height: 30px;
+}
+
+@media (min-width: 640px) {
+  .shape-pill-mobile {
+    width: 220px;
+    height: 52px;
   }
-  .btn-cooperate:hover {
-    transform: scaleY(-1) scale(1.05);
+  .btn-cooperate-mobile {
+    width: 195px;
+    height: 40px;
   }
-  </style>
+}
+
+ 
+</style>

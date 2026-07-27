@@ -31,7 +31,7 @@
            dir="rtl"
          >
          <!-- بخش پروفایل -->
-         <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] px-4 lg:px-6 min-[1920px]:px-8 pt-4 lg:pt-6 min-[1920px]:pt-8 pb-3 lg:pb-4 min-[1920px]:pb-6 shadow-xl dark:shadow-none -mt-[20px] shrink-0">
+         <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] px-4 lg:px-6 min-[1920px]:px-8 pt-4 lg:pt-6 min-[1920px]:pt-8 pb-3 lg:pb-4 min-[1920px]:pb-6 shadow-xl dark:shadow-none -mt-[5px] shrink-0">
            <img
              :src="customer.image"
              :alt="customer.name"

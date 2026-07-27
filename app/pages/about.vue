@@ -2,7 +2,7 @@
   <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto py-16 px-4 2xl:px-12 overflow-x-hidden" dir="rtl">
     
     <!-- Hero Section -->
-<section class="flex flex-col md:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28">
+<section class="flex flex-col md:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28 mt-8">
   
   <div class="flex-1 w-full text-center md:text-right relative pt-[70px] sm:pt-[90px] md:pt-0">
 
@@ -14,19 +14,19 @@
         </h1>
 
         <!-- max-w فقط تو md بیشتر شد تا خط‌ها بلندتر بشن -->
-        <p class="relative z-10 text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] md:text-[26px] lg:text-[28px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl md:max-w-[520px] lg:max-w-2xl 2xl:max-w-3xl mx-auto md:mx-0">
+        <p class="relative z-10 text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] md:text-[26px] lg:text-[28px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl md:max-w-[520px] lg:max-w-xl 2xl:max-w-3xl mx-auto md:mx-0">
           {{ pageData.intro_text }}
         </p>
 
         <div class="hidden lg:flex justify-center px-4">
-          <img src="/images/curved-arrow.png" alt="فلش" class="w-[700px] 2xl:w-[850px] object-contain -mt-10" />
+          <img src="/images/curved-arrow.png" alt="فلش" class="w-[750px] 2xl:w-[850px] object-contain mt-10 lg:-mt-1 lg:ml-[150px]" />
         </div>
 
         <!-- دکمه نسخه اصلی: موبایل و دسکتاپ (نه md) -->
         <div class="flex justify-center mt-10 md:hidden lg:flex lg:justify-end lg:mt-0 lg:-mt-10">
           <NuxtLink
             to="/order/requestProject"
-            class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] lg:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg lg:ml-[80px] flex items-center justify-center"
+            class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] lg:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg lg:ml-[80px] flex items-center justify-center lg:-mt-10 md:-mt-10"
           >
             ارتباط با ما
           </NuxtLink>
@@ -35,21 +35,24 @@
 
       <!-- ستون دایره + دکمه‌ی زیرش (فقط md) -->
       <div class="absolute -top-[10px] sm:-top-[15px] left-1/2 -translate-x-1/2 z-0
-                  md:static md:left-auto md:translate-x-0 md:top-auto md:mt-0 md:w-1/2 md:flex md:flex-col md:items-center md:self-start md:-mt-15
+                  md:static md:left-auto md:translate-x-0 md:top-auto md:mt-0 md:w-1/2 md:flex md:flex-col md:items-center md:self-start md:-mt-8
                   lg:absolute lg:block lg:w-auto lg:top-0 lg:left-0 lg:-translate-y-1/3 lg:mt-[120px] 2xl:mt-[140px]">
 
         <p class="bg-black rounded-full
-                  w-[120px] h-[120px]
-                  sm:w-[160px] sm:h-[160px]
-                  md:w-[200px] md:h-[200px]
-                  lg:w-[280px] lg:h-[280px]
-                  2xl:w-[350px] 2xl:h-[350px]">
+                  w-[160px] h-[160px]
+                  sm:w-[220px] sm:h-[220px]
+                  md:w-[220px] md:h-[220px]
+                  lg:w-[360px] lg:h-[360px]
+                  2xl:w-[360px] 2xl:h-[360px]
+                  -mt-12
+                  sm:mt-[50px]
+                  lg:mt-0">
         </p>
 
-<div class="hidden md:flex lg:hidden justify-center mt-[100px] w-full">
+<div class="hidden md:flex lg:hidden justify-center mt-[100px] w-full ">
   <NuxtLink
     to="/order/requestProject"
-    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-[200px] h-[57px] px-8 py-3 text-[20px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg flex items-center justify-center"
+    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-[200px] h-[57px] px-8 py-3 text-[20px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg flex items-center justify-center "
   >
     ارتباط با ما
   </NuxtLink>
