@@ -13,6 +13,7 @@ const {
 } = useMobileSlider(projects, { swipeThreshold: 40 });
 
 const visibleProjects = visibleItems(4);
+
 </script>
 
 <template>
@@ -76,29 +77,28 @@ const visibleProjects = visibleItems(4);
         xl/2xl (۱۲۸۰ به بالا): ۴ ستون
         min-[1920px]: تنظیمات اختصاصی برای مانیتورهای Full HD (۱۹۲۰x۱۰۸۰ / ۱۹۲۰x۱۰۲۴)
       -->
-        <div
-          class="hidden md:grid grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 xl:gap-8 2xl:gap-[60px] justify-items-center mt-8 md:mt-10 xl:mt-[50px] min-[1920px]:gap-[80px] min-[1920px]:mt-[70px]"
-        >
-          <div
-            v-for="(item, index) in visibleProjects"
-            :key="item.realIndex"
-            class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
-            :class="[
-              index >= 3 ? 'hidden xl:block' : '',
-              index % 2 === 0
-                ? 'md:-translate-y-4 xl:-translate-y-6 min-[1920px]:-translate-y-8'
-                : 'md:translate-y-4 xl:translate-y-6 min-[1920px]:translate-y-8',
-            ]"
-          >
-            <NuxtLink :to="`/order/${item.data.slug}`">
-              <img
-                :src="resumeCover(item.data)"
-                class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
-                :alt="item.data.title"
-              />
-            </NuxtLink>
-          </div>
-        </div>
+<div
+  class="hidden md:grid grid-cols-4 gap-4 md:gap-5 lg:gap-6 xl:gap-8 2xl:gap-[60px] justify-items-center mt-8 md:mt-10 xl:mt-[50px] min-[1920px]:gap-[80px] min-[1920px]:mt-[70px]"
+>
+  <div
+    v-for="(item, index) in visibleProjects"
+    :key="item.realIndex"
+    class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
+    :class="[
+      index % 2 === 0
+        ? 'md:-translate-y-4 xl:-translate-y-6 min-[1920px]:-translate-y-8'
+        : 'md:translate-y-4 xl:translate-y-6 min-[1920px]:translate-y-8',
+    ]"
+  >
+    <NuxtLink :to="`/order/${item.data.slug}`">
+      <img
+        :src="resumeCover(item.data)"
+        class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
+        :alt="item.data.title"
+      />
+    </NuxtLink>
+  </div>
+</div>
       </template>
 
       <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->

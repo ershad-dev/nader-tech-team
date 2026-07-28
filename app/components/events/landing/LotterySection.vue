@@ -33,35 +33,34 @@ function goToLoginPage() {
            rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
            overflow-hidden
            p-5 sm:p-8 md:p-12 min-[1920px]:p-16
-           mt-[30px] sm:mt-[60px] md:mt-[75px] min-[1920px]:mt-[90px]"
+           -mt-[50px] sm:mt-[60px] md:mt-[75px] min-[1920px]:mt-[90px]  "
   >
     <!-- تصویر پس‌زمینه -->
-    <img
-      src="/images/bglottery.png"
-      alt="قرعه کشی"
-      class="absolute inset-0 w-full h-full object-cover object-center"
-    />
+<img
+  src="/images/bglottery.png"
+  alt="قرعه کشی"
+  class="absolute inset-0 w-full h-full object-contain sm:object-cover object-center"
+/>
 
     <!-- لایه شفاف -->
-    <div class="absolute inset-0 bg-white/10"></div>
 
     <!-- بخش متن‌ها (بالا) -->
     <div class="relative z-10 text-white text-right flex flex-col items-start">
       <img
         src="/images/rebon-lottery1.png"
         alt=""
-        class="w-[160px] h-[60px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px] min-[1920px]:mr-[50px] mr-[13px] object-covor"
+        class="w-[120px] h-[50px] mt-[100px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px] min-[1920px]:mr-[50px] mr-[26px] object-covor md:mt-[15px] md:mr-[5px]"
       />
       
 
-      <div
-        class="w-[50%] sm:w-[45%] md:w-[35%] mr-1 sm:mr-4 md:mr-[20px]
-               mt-2 sm:mt-4 md:mt-[20px] mb-4 sm:mb-8 lg:mb-10
-               h-[1.5px] bg-gradient-to-r from-white/75 to-gray-400 dark:from-dark-highlight/70 dark:to-dark-border"
-      ></div>
+<div
+  class="w-[50%] sm:w-[45%] md:w-[35%] mr-1 sm:mr-4 md:mr-[70px] lg:mr-[20px]
+         mt-2 sm:mt-4 md:mt-[20px] mb-4 sm:mb-8 lg:mb-10
+         h-[1.5px] bg-gradient-to-r from-white/75 to-gray-400 dark:from-dark-highlight/70 dark:to-dark-border "
+></div>
 
       <p
-        class="text-[13px] sm:text-[18px] md:text-[20px]
+        class="text-[10px] sm:text-[18px] md:text-[20px]
                text-[#0F184B] dark:text-[#0F184B] font-roboto
                 mr-[20px] sm:mr-8 md:mr-[70px] leading-snug sm:leading-relaxed text-center min-[1920px]:text-[28px] "
       >
@@ -78,17 +77,18 @@ function goToLoginPage() {
              z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 min-[1920px]:gap-6
              w-auto"
     >
-      <button
-        @click="goToRegister"
-        class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6 py-3
-               rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
-               text-[12px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
-               font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
-               w-[120px] mb-[140px] mr-[30px] sm:w-[220px] md:w-[220px] md:mr-[85px] md:mb-[70px] min-[1920px]:w-[260px]
-               h-[38px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px] min-[1920px]:mr-[110px]"
-      >
-        ثبت‌نام در قرعه‌کشی
-      </button>
+<button
+  @click="goToRegister"
+  class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6
+         flex items-center justify-center leading-none
+         rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
+         text-[9px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
+         font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
+         w-[100px] mb-[100px] mr-[30px] sm:w-[220px] md:w-[220px] md:mr-[85px] md:mb-[70px] min-[1920px]:w-[260px]
+         h-[26px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px] min-[1920px]:mr-[110px]"
+>
+  ثبت‌نام در قرعه‌کشی
+</button>
     </div>
   </section>
 </template>

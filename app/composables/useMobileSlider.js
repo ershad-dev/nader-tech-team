@@ -48,17 +48,19 @@ export function useMobileSlider(items, options = {}) {
 
   // کارت‌های قابل نمایش در دسکتاپ/تبلت (N کارت پشت‌سرهم از ایندکس جاری)
   // count می‌تونه عدد ثابت، ref، یا تابع getter باشه (برای شمارش واکنش‌گرا مثل تعداد ستون‌های ریسپانسیو)
-  const visibleItems = (count) => computed(() => {
-    const total = getTotal()
-    if (total === 0) return []
-    const resolvedCount = typeof count === 'function' ? count() : unref(count)
-    const result = []
-    for (let i = 0; i < resolvedCount; i++) {
-      const idx = (currentSlide.value + i) % total
-      result.push({ data: getItem(idx), realIndex: idx })
-    }
-    return result
-  })
+const visibleItems = (count) => computed(() => {
+  const total = getTotal()
+  if (total === 0) return []
+  const rawCount = typeof count === 'function' ? count() : unref(count)
+  // اگه تعداد کل آیتم‌ها کمتر از count باشه، جلوی تکرار realIndex (و در نتیجه key تکراری) رو می‌گیریم
+  const resolvedCount = Math.min(rawCount, total)
+  const result = []
+  for (let i = 0; i < resolvedCount; i++) {
+    const idx = (currentSlide.value + i) % total
+    result.push({ data: getItem(idx), realIndex: idx })
+  }
+  return result
+})
 
   const goToSlide = (index) => {
     const total = getTotal()

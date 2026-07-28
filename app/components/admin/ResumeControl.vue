@@ -29,6 +29,7 @@ const fetchResumes = async (page = 1) => {
   errorMessage.value = ''
   try {
     // نکته: در $fetch از کلید "query" استفاده می‌کنیم نه "params"
+    // مسیر واقعی طبق پروژه: /api/admin/resumes (plural)
     const res = await $fetch(`${API_BASE}/api/admin/resumes`, {
       method: 'GET',
       query: { page, per_page: perPage.value },
@@ -58,6 +59,51 @@ const goToPage = (page) => {
 
 fetchResumes(1)
 
+// ==================== دسته‌بندی‌ها (از Services) ====================
+// ⚠️ مسیر واقعی: /api/services (نه /api/project-services که توی سواگر اومده بود)
+// ⚠️ این endpoint یک لیست flat از همه‌ی خدمات برمی‌گردونه (بدون parent_id).
+// طبق هماهنگی با بک‌اند، فقط ۳ تای زیر «دسته‌بندی اصلی رزومه» هستن، بقیه
+// زیرخدمات/موارد دیگه‌ان که ربطی به دسته‌بندی رزومه ندارن. چون فیلد
+// مشخصی برای تشخیص خودکار وجود نداره، این id ها فعلاً هاردکد شدن:
+//   1  = طراحی سایت (وب‌سایت)
+//   8  = تولید محتوا
+//   15 = برگزاری ایونت
+// اگه بعداً بک‌اند یک راه تشخیص برنامه‌نویسی‌شده (مثلاً یک فیلد is_main_category
+// یا endpoint جدا) اضافه کرد، این لیست هاردکد باید حذف بشه.
+const MAIN_CATEGORY_IDS = [1, 8, 15]
+
+const categories = ref([])
+const isLoadingCategories = ref(false)
+
+const fetchCategories = async () => {
+  isLoadingCategories.value = true
+  try {
+    const res = await $fetch(`${API_BASE}/api/services`, {
+      method: 'GET',
+    })
+
+    // ساختار پاسخ: { data: { services: [...] } }
+    // برای اطمینان، چند حالت محتمل دیگه رو هم پشتیبانی می‌کنیم
+    const services =
+      res?.data?.services ??
+      (Array.isArray(res?.data) ? res.data : null) ??
+      (Array.isArray(res?.services) ? res.services : null) ??
+      (Array.isArray(res) ? res : null) ??
+      []
+
+    // فقط سه دسته‌بندی اصلی رزومه رو (بر اساس id هاردکد شده) نگه می‌داریم
+    categories.value = services.filter((s) => MAIN_CATEGORY_IDS.includes(s.id))
+  } catch (err) {
+    console.error(err)
+    // اگه گرفتن دسته‌بندی‌ها خطا داد، فرم همچنان قابل استفاده می‌مونه
+    // فقط select دسته‌بندی خالی می‌مونه
+  } finally {
+    isLoadingCategories.value = false
+  }
+}
+
+fetchCategories()
+
 // ==================== فرم افزودن/ویرایش ====================
 const emptyForm = () => ({
   id: null,
@@ -86,10 +132,16 @@ const openForm = async (item = null) => {
   selectedItem.value = item
   activeView.value = 'form'
 
+  // مطمئن می‌شیم لیست دسته‌بندی‌ها موجوده (مثلاً اگه فراخوانی اول شکست خورده بود)
+  if (categories.value.length === 0 && !isLoadingCategories.value) {
+    fetchCategories()
+  }
+
   if (item && item.id) {
     isLoadingForm.value = true
     errorMessage.value = ''
     try {
+      // مسیر واقعی: /api/admin/resumes/{id}
       const res = await $fetch(`${API_BASE}/api/admin/resumes/${item.id}`, {
         method: 'GET',
         headers: { ...authHeader() },
@@ -101,13 +153,13 @@ const openForm = async (item = null) => {
       form.description = d.description || ''
       form.is_published = !!d.is_published
 
-      // ⚠️ طبق مستندات سواگر، پاسخ GET تکی فقط "category" (نام دسته‌بندی به‌صورت رشته)
-      // برمی‌گردونه، نه category_id. پس اینجا نمی‌تونیم id رو دوباره پر کنیم.
-      // فقط نام رو برای نمایش نگه می‌داریم؛ اگه می‌خوای کاربر بتونه دسته رو در فرم ویرایش
-      // عوض کنه، باید یک endpoint جدا برای لیست دسته‌بندی‌ها (id + name) بگیری و اینجا
-      // با تطبیق نام، id مربوطه رو پیدا کنی یا از یک select پر شده از آن لیست استفاده کنی.
-      form.category_id = null
+      // ⚠️ پاسخ GET تکی فقط "category" (نام دسته‌بندی به‌صورت رشته) رو برمی‌گردونه،
+      // نه category_id. برای اینکه select ازپیش‌انتخاب‌شده باشه، با تطبیق نام
+      // دسته با title سرویس‌ها، id مربوطه رو پیدا می‌کنیم (راه‌حل موقت تا وقتی
+      // بک‌اند خود category_id رو هم توی GET تکی برگردونه).
       form.category_name = d.category || ''
+      const matched = categories.value.find((c) => c.title === form.category_name)
+      form.category_id = matched ? matched.id : null
 
       form.customer_name = d.review?.name || ''
       form.customer_position = d.review?.position || ''
@@ -198,6 +250,7 @@ const saveChanges = async () => {
 
     if (form.id) {
       // آپدیت - از _method=PUT روی POST طبق مستندات استفاده می‌شه
+      // مسیر واقعی: /api/admin/resumes/{id}
       await $fetch(`${API_BASE}/api/admin/resumes/${form.id}`, {
         method: 'POST',
         query: { _method: 'PUT' },
@@ -229,6 +282,7 @@ const deleteItem = async (id) => {
   isDeleting.value = true
   errorMessage.value = ''
   try {
+    // مسیر واقعی: /api/admin/resumes/{id}
     await $fetch(`${API_BASE}/api/admin/resumes/${id}`, {
       method: 'DELETE',
       headers: { ...authHeader() },
@@ -363,21 +417,40 @@ const deleteItem = async (id) => {
                 />
               </div>
 
-              <!-- <div>
-                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text/80">
-                  دسته‌بندی (شناسه)
-                  <span v-if="form.category_name" class="text-gray-400 dark:text-dark-text/50 font-normal">
+              <div>
+                <label class="block mb-2 text-[13px] sm:text-[14px] md:text-[14px] min-[1920px]:text-[16px] font-medium text-gray-700 dark:text-dark-text/80">
+                  دسته‌بندی
+                  <span v-if="form.category_name && !form.category_id" class="text-gray-400 dark:text-dark-text/50 font-normal">
                     — دسته فعلی: {{ form.category_name }}
                   </span>
                 </label>
-                <input
-                  v-model.number="form.category_id"
-                  type="number"
-                  placeholder="مثلاً 1"
-                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
-                />
-
-              </div> -->
+                <div class="relative">
+                  <select
+                    v-model.number="form.category_id"
+                    :disabled="isLoadingCategories"
+                    class="w-full h-[42px] sm:h-[45px] md:h-[46px] min-[1920px]:h-[52px] pr-4 pl-10 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/40 dark:bg-dark-input/40 text-gray-800 dark:text-dark-text text-[13px] sm:text-[14px] min-[1920px]:text-[16px] appearance-none cursor-pointer transition-colors focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <option :value="null" disabled class="bg-white dark:bg-dark-surface text-gray-400 dark:text-dark-text/50">
+                      {{ isLoadingCategories ? 'در حال بارگذاری...' : 'انتخاب دسته‌بندی' }}
+                    </option>
+                    <option
+                      v-for="cat in categories"
+                      :key="cat.id"
+                      :value="cat.id"
+                      class="bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+                    >
+                      {{ cat.title }}
+                    </option>
+                  </select>
+                  <svg
+                    class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 w-4 h-4 min-[1920px]:w-5 min-[1920px]:h-5 text-gray-500 dark:text-dark-text/60"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+              </div>
 
               <div>
                 <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text/80">جزییات پروژه *</label>

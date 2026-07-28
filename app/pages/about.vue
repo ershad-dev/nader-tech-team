@@ -294,7 +294,7 @@ const startTeamAutoplay = () => {
         behavior: 'smooth'
       })
     }
-  }, 5000) // هر ۵ ثانیه
+  }, 3000) // هر 3 ثانیه
 }
 
 onMounted(() => {

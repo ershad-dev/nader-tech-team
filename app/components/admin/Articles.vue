@@ -312,7 +312,7 @@ onMounted(() => fetchArticles());
         <!-- وضعیت انتشار -->
         <div>
           <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">وضعیت</label>
-          <select v-model="form.status" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text">
+          <select v-model="form.status" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-black">
             <option value="draft">پیش‌نویس</option>
             <option value="published">منتشر شده</option>
             <option value="archived">آرشیو شده</option>

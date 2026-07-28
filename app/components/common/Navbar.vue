@@ -1,13 +1,13 @@
 <template>
-  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto xl:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white dark:bg-[#CECDCD] rounded-[1.75rem] sm:rounded-[2rem] xl:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col xl:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-dark-border/30 transition-all duration-300" dir="ltr">
+  <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] lg:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto lg:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white dark:bg-[#CECDCD] rounded-[1.75rem] sm:rounded-[2rem] lg:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col lg:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-dark-border/30 transition-all duration-300" dir="ltr">
 
     <!-- Header (لوگو و همبرگر) -->
-    <div class="relative flex w-full xl:w-auto justify-between items-center px-1 xl:px-0">
+    <div class="relative flex w-full lg:w-auto justify-between items-center px-1 lg:px-0">
 
       <!-- آیکون همبرگر (سمت چپ) - انیمیشن تبدیل به ضربدر -->
       <button
         @click="isOpen = !isOpen"
-        class="xl:hidden relative z-10 w-9 h-9 sm:w-10 sm:h-10 flex flex-col items-center justify-center gap-[6px] p-1.5 sm:p-2 text-[#0F184B] dark:text-dark-text-deep"
+        class="lg:hidden relative z-10 w-9 h-9 sm:w-10 sm:h-10 flex flex-col items-center justify-center gap-[6px] p-1.5 sm:p-2 text-[#0F184B] dark:text-dark-text-deep"
         aria-label="منو"
       >
         <span
@@ -25,12 +25,12 @@
       </button>
 
       <!-- متن وسط (موبایل و تبلت) - نادر تکنولوژی -->
-      <span class="xl:hidden absolute left-1/2 -translate-x-1/2 text-[#0F184B] dark:text-dark-text-deep font-bold text-[20px] sm:text-[16px] whitespace-nowrap">
+      <span class="lg:hidden absolute left-1/2 -translate-x-1/2 text-[#0F184B] dark:text-dark-text-deep font-bold text-[20px] sm:text-[16px] whitespace-nowrap">
         نادر تکنولوژی
       </span>
 
       <!-- لوگو (سمت راست) -->
-      <div class="xl:hidden">
+      <div class="lg:hidden">
         <img src="/images/ntt-logo.jpg" alt="Logo" class="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
       </div>
 
@@ -39,14 +39,14 @@
     <!-- بدنه اصلی منو -->
     <div
       class="w-full flex flex-col overflow-hidden transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-500
-             xl:flex xl:flex-row xl:items-center xl:overflow-visible xl:max-h-none xl:opacity-100 xl:translate-y-0 xl:mt-0 xl:gap-6"
+             lg:flex lg:flex-row lg:items-center lg:overflow-visible lg:max-h-none lg:opacity-100 lg:translate-y-0 lg:mt-0 lg:gap-6"
       :class="isOpen
         ? 'max-h-[600px] opacity-100 translate-y-0 mt-3 sm:mt-4 gap-4 sm:gap-5'
         : 'max-h-0 opacity-0 -translate-y-2 mt-0 gap-0'"
     >
 
       <!-- ۱. دکمه‌ی ورود/ثبت‌نام یا پروفایل (سمت راست‌ترین آیتم در دسکتاپ) -->
-      <div class="hidden xl:flex items-center justify-end shrink-0">
+      <div class="hidden lg:flex items-center justify-end shrink-0">
         <ClientOnly>
           <NuxtLink
             v-if="!isLoggedIn"
@@ -85,7 +85,7 @@
       </div>
 
       <!-- ۲. آیکون تم + دکمه EN/FA (بین دکمه‌ی ثبت‌نام و لینک‌ها) -->
-      <div class="hidden xl:flex items-center gap-2 pl-4 border-l border-gray-200 dark:border-dark-border/40 shrink-0">
+      <div class="hidden lg:flex items-center gap-2 pl-4 border-l border-gray-200 dark:border-dark-border/40 shrink-0">
         <button
           @click="toggleLang"
           class="text-[#0F184B] dark:text-dark-text-deep font-roboto font-medium text-[14px] min-[1920px]:text-[18px] hover:opacity-70 transition"
@@ -114,7 +114,7 @@
       </div>
 
       <!-- ۳. لینک‌های وسط (چپ‌ترین گروه در دسکتاپ) -->
-      <div class="flex flex-col xl:flex-row xl:flex-row-reverse items-center justify-center gap-3 sm:gap-5 xl:gap-8 min-[1920px]:gap-10 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal text-[14px] sm:text-[15px] xl:text-[16px] min-[1920px]:text-[24px] w-full xl:flex-1 xl:whitespace-nowrap">
+      <div class="flex flex-col lg:flex-row lg:flex-row-reverse items-center justify-center gap-3 sm:gap-5 lg:gap-8 min-[1920px]:gap-10 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal text-[14px] sm:text-[15px] lg:text-[16px] min-[1920px]:text-[24px] w-full lg:flex-1 lg:whitespace-nowrap">
         <NuxtLink to="/" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">خانه</NuxtLink>
         <NuxtLink to="/order" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">سفارش‌ پروژه</NuxtLink>
         <NuxtLink to="/events" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">برگزاری ایونت</NuxtLink>
@@ -123,7 +123,7 @@
         <NuxtLink to="/faq" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">سوالات متداول</NuxtLink>
 
         <!-- دکمه‌ی تغییر حالت روشن/تاریک + EN/FA (موبایل) -->
-        <div class="xl:hidden flex items-center gap-4 mt-1">
+        <div class="lg:hidden flex items-center gap-4 mt-1">
           <button
             @click="toggleLang"
             class="text-[#0F184B] dark:text-dark-text-deep font-medium"
@@ -155,12 +155,12 @@
           تا در همان یک لحظه‌ی اول هم چیزی نامنطبق دیده نشود.
         -->
         <ClientOnly>
-          <div v-if="!isLoggedIn" class="flex flex-col gap-2 w-full xl:hidden mt-2">
+          <div v-if="!isLoggedIn" class="flex flex-col gap-2 w-full lg:hidden mt-2">
             <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] dark:text-dark-accent font-bold border border-[#2D7A6F] dark:border-dark-accent rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ورود</NuxtLink>
             <NuxtLink to="/auth/register" class="w-full text-center py-2 sm:py-2.5 bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep font-bold rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ثبت‌نام</NuxtLink>
           </div>
 
-          <div v-else class="w-full xl:hidden mt-2">
+          <div v-else class="w-full lg:hidden mt-2">
             <NuxtLink
               to="/profile"
               class="w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep font-bold rounded-full text-[14px] sm:text-[16px] hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-sm"
@@ -172,7 +172,7 @@
           </div>
 
           <template #fallback>
-            <div class="flex flex-col gap-2 w-full xl:hidden mt-2">
+            <div class="flex flex-col gap-2 w-full lg:hidden mt-2">
               <NuxtLink to="/auth/login" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] dark:text-dark-accent font-bold border border-[#2D7A6F] dark:border-dark-accent rounded-full text-[14px] sm:text-[16px] " @click="isOpen = false">ورود</NuxtLink>
               <NuxtLink to="/auth/register" class="w-full text-center py-2 sm:py-2.5 bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep font-bold rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">ثبت‌نام</NuxtLink>
             </div>
@@ -204,7 +204,7 @@ function toggleLang() {
 </script>
 
 <style scoped>
-@media (max-width: 1279px) {
+@media (max-width: 1023px) {
   nav {
     direction: rtl;
   }
