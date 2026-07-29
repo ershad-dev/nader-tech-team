@@ -1,7 +1,10 @@
 <script setup>
 import { useMobileSlider } from '@/composables/useMobileSlider'
+import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
-const { items: webProjects } = useResumes('web')
+// این بخش فقط پروژه‌های دسته‌بندی «طراحی سایت» رو نشون می‌ده،
+// پس category_id واقعی (1) مستقیم پاس داده می‌شه.
+const { items: webProjects } = useResumes(RESUME_CATEGORY_IDS.web)
 
 const {
   mobileVisibleItems: mobileVisibleProjects,

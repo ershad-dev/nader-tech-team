@@ -60,10 +60,10 @@
 
       <!-- کنترل‌های اسلایدر -->
       <div class="flex items-center justify-between mt-8 lg:mt-12 px-2">
-        <div class="flex justify-center gap-3 lg:gap-4 z-20">
-          <HomeIconsSliderButton direction="left" @click="prevSlide" />
-          <HomeIconsSliderButton direction="right" @click="nextSlide" />
-        </div>
+<div v-if="totalSlides > 1" class="flex justify-center gap-3 lg:gap-4 z-20">
+  <HomeIconsSliderButton direction="left" @click="prevSlide" />
+  <HomeIconsSliderButton direction="right" @click="nextSlide" />
+</div>
 
         <div class="flex gap-2">
           <div v-for="i in totalSlides" :key="i" 
@@ -107,17 +107,21 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
+// نگاشت عنوان تب (برای نمایش و برای contentMap) به شناسه‌ی واقعی دسته‌بندی
+// که به API فرستاده می‌شه (category_id)
 const categoryMap = {
-  'طراحی سایت': 'web',
-  'تولید محتوا': 'content',
-  'برگزاری ایونت': 'event', // <-- جدید
+  'طراحی سایت': RESUME_CATEGORY_IDS.web,
+  'تولید محتوا': RESUME_CATEGORY_IDS.content,
+  'برگزاری ایونت': RESUME_CATEGORY_IDS.event,
 }
 const categories = Object.keys(categoryMap)
 
 const activeCategory = ref('طراحی سایت')
-const activeType = computed(() => categoryMap[activeCategory.value])
-const { items, pending } = useResumes(activeType)
+// این computed یه رفرنس واکنشی از category_id واقعیه که به useResumes پاس داده می‌شه
+const activeCategoryId = computed(() => categoryMap[activeCategory.value])
+const { items, pending } = useResumes(activeCategoryId)
 
 const currentIndex = ref(0)
 const itemsPerPage = ref(4)
@@ -173,14 +177,31 @@ const visibleProjects = computed(() => {
   return result
 })
 
+// --- نسخه دیباگ: totalSlides رو تازه و مستقیم داخل خود تابع محاسبه می‌کنیم
+// تا مطمئن بشیم به مقدار stale computed وابسته نیست. لاگ‌ها موقتی‌ان،
+// بعد از پیدا کردن علت باگ می‌تونی حذفشون کنی.
 const nextSlide = () => {
-  if (totalSlides.value > 0) currentIndex.value = (currentIndex.value + 1) % totalSlides.value
+  const total = Math.ceil(items.value.length / itemsPerPage.value)
+  console.log('[nextSlide] before:', currentIndex.value, 'total:', total, 'items:', items.value.length, 'perPage:', itemsPerPage.value)
+  if (total > 0) currentIndex.value = (currentIndex.value + 1) % total
+  console.log('[nextSlide] after:', currentIndex.value)
 }
 const prevSlide = () => {
-  if (totalSlides.value > 0) currentIndex.value = (currentIndex.value - 1 + totalSlides.value) % totalSlides.value
+  const total = Math.ceil(items.value.length / itemsPerPage.value)
+  console.log('[prevSlide] before:', currentIndex.value, 'total:', total, 'items:', items.value.length, 'perPage:', itemsPerPage.value)
+  if (total > 0) currentIndex.value = (currentIndex.value - 1 + total) % total
+  console.log('[prevSlide] after:', currentIndex.value)
 }
 
 watch(activeCategory, () => {
   currentIndex.value = 0
+})
+
+// وقتی totalSlides عوض بشه (چه با تغییر دسته‌بندی، چه با resize که itemsPerPage
+// رو تغییر می‌ده)، اگه currentIndex از رنج جدید خارج شده باشه، ریستش می‌کنیم.
+watch(totalSlides, (newTotal) => {
+  if (currentIndex.value > newTotal - 1) {
+    currentIndex.value = 0
+  }
 })
 </script>

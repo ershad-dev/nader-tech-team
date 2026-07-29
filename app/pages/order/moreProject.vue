@@ -6,11 +6,8 @@
       <p class="text-[#747893] dark:text-dark-text/80 text-[13px] sm:text-[14px] lg:text-base mb-6 sm:mb-8 lg:mb-10">مروری بر پروژه‌های اجرا شده و نمونه کارهای ما</p>
 
       <!--
-        نکته: این تب‌ها فعلاً فقط ظاهری هستن. چون API فعلی (GET /api/resumes)
-        هیچ فیلد یا پارامتر category‌ای برنمی‌گردونه/قبول نمی‌کنه، امکان فیلتر
-        واقعی روی دسته‌بندی وجود نداره. کلیک روی هر تب فقط وضعیت انتخاب‌شده
-        (استایل) رو تغییر می‌ده، ولی لیست پروژه‌ها همیشه همه‌ی آیتم‌ها رو نشون می‌ده.
-        اگه بک‌اند فیلد category رو به لیست اضافه کرد، می‌شه فیلتر واقعی رو برگردوند.
+        فیلتر واقعیه: با انتخاب هر تب، category_id متناظر به GET /api/resumes
+        فرستاده می‌شه. «مشاهده همه» یعنی category_id اصلاً فرستاده نشه (لیست کامل).
       -->
       <div class="flex justify-center mb-8 lg:mb-10 px-2">
         <div class="w-full max-w-[846px] lg:w-[846px] h-auto lg:h-[59px] bg-white dark:bg-dark-input rounded-[30px] lg:rounded-[48px] p-1 shadow-sm border border-gray-100 dark:border-dark-border flex flex-nowrap items-center justify-center gap-1 sm:gap-2 overflow-hidden">
@@ -75,21 +72,31 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
-// این لیست فقط برای نمایش تب‌ها استفاده می‌شه؛ دیگه به هیچ query یا
-// فیلتری روی API متصل نیست (چون API از category پشتیبانی نمی‌کنه).
-const categories = ['طراحی سایت', 'تولید محتوا' ,'برگذاری ایونت']
+// نگاشت عنوان تب به category_id واقعی که به API فرستاده می‌شه
+const categoryMap = {
+  'طراحی سایت': RESUME_CATEGORY_IDS.web,
+  'تولید محتوا': RESUME_CATEGORY_IDS.content,
+  'برگزاری ایونت': RESUME_CATEGORY_IDS.event,
+}
+const categories = Object.keys(categoryMap)
 
 const activeCategory = ref('مشاهده همه')
 
-// دیگه هیچ پارامتری به useResumes پاس داده نمی‌شه؛ لیست همیشه کامل می‌آد
-const { items, pending, error } = useResumes()
+// وقتی «مشاهده همه» انتخابه، null می‌فرستیم (یعنی بدون فیلتر)؛
+// در غیر این صورت category_id متناظر با تب انتخاب‌شده
+const activeCategoryId = computed(() =>
+  activeCategory.value === 'مشاهده همه' ? null : categoryMap[activeCategory.value]
+)
+
+const { items, pending, error } = useResumes(activeCategoryId)
 
 const currentIndex = ref(0)
 const itemsPerPage = 12
 
-// چون فیلتر واقعی وجود نداره، تغییر دسته‌بندی فقط اسلایدر رو ریست می‌کنه
-// (رفتار قبلی حفظ شده، صرفاً بدون تاثیر روی داده‌ها)
+// با تغییر دسته‌بندی، useResumes به‌صورت خودکار (چون activeCategoryId ریشه‌ی
+// reactive داره) درخواست جدید می‌زنه؛ اینجا فقط اسلایدر رو ریست می‌کنیم
 watch(activeCategory, () => {
   currentIndex.value = 0
 })

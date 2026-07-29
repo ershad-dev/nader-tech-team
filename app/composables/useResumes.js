@@ -1,18 +1,35 @@
-// لیست پروژه‌ها با فیلتر اختیاری بر اساس category ('web' | 'content')
-export const useResumes = (categoryInput = null) => {
+// ==================== شناسه‌های دسته‌بندی اصلی رزومه ====================
+// این سه id مطابق /api/services هاردکد شدن، چون فیلد مشخصی برای تشخیص
+// خودکار "دسته‌بندی اصلی رزومه" از بقیه‌ی سرویس‌ها وجود نداره.
+// (دقیقاً همون id هایی که توی کامپوننت ادمین ResumeControl.vue هم استفاده شدن)
+//   1  = طراحی سایت
+//   8  = تولید محتوا
+//   15 = برگزاری ایونت
+// اگه بک‌اند بعداً یه راه تشخیص برنامه‌نویسی‌شده اضافه کرد، این باید حذف بشه.
+export const RESUME_CATEGORY_IDS = {
+  web: 1,
+  content: 8,
+  event: 15,
+}
+
+// لیست پروژه‌ها با فیلتر اختیاری بر اساس category_id
+// categoryIdInput می‌تونه عدد ساده، null (یعنی همه)، یا ref/computed باشه
+export const useResumes = (categoryIdInput = null) => {
   const config = useRuntimeConfig()
-  const category = isRef(categoryInput) ? categoryInput : ref(categoryInput)
+  const categoryId = isRef(categoryIdInput) ? categoryIdInput : ref(categoryIdInput)
 
   const query = computed(() => {
     const q = { per_page: 100 }
-    if (category.value) q.category = category.value
+    // فقط وقتی مقدار داریم پارامتر رو اضافه می‌کنیم؛ در غیر این صورت
+    // (null / undefined) یعنی "مشاهده همه" و category_id اصلاً فرستاده نمی‌شه
+    if (categoryId.value) q.category_id = categoryId.value
     return q
   })
 
   const { data, pending, error, refresh } = useFetch('/resumes', {
     baseURL: config.public.apiBase,
     query,
-    key: computed(() => `resumes-${category.value || 'all'}`),
+    key: computed(() => `resumes-${categoryId.value || 'all'}`),
     default: () => ({ data: [], meta: null }),
   })
 

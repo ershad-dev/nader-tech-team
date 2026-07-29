@@ -33,24 +33,30 @@ function goToLoginPage() {
            rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
            overflow-hidden
            p-5 sm:p-8 md:p-12 min-[1920px]:p-16
-           -mt-[50px] sm:mt-[60px] md:mt-[75px] min-[1920px]:mt-[90px]  "
+           -mt-[50px] sm:mt-[60px] md:mt-[25px] min-[1920px]:mt-[90px]  "
   >
     <!-- تصویر پس‌زمینه -->
 <img
   src="/images/bglottery.png"
   alt="قرعه کشی"
-  class="absolute inset-0 w-full h-full object-contain sm:object-cover object-center"
+  class="absolute inset-0 w-full h-full object-contain min-[900px]:object-cover object-center"
 />
 
     <!-- لایه شفاف -->
 
     <!-- بخش متن‌ها (بالا) -->
-    <div class="relative z-10 text-white text-right flex flex-col items-start">
-      <img
-        src="/images/rebon-lottery1.png"
-        alt=""
-        class="w-[120px] h-[50px] mt-[100px] xs:w-[190px] xs:h-[72px] sm:w-[300px] sm:h-[114px] md:w-[380px] md:h-[144px] min-[1920px]:mr-[50px] mr-[26px] object-covor md:mt-[15px] md:mr-[5px]"
-      />
+    <div class="relative z-10 text-white text-right flex flex-col items-start min-[1920px]:-mt-[100px] md:-mt-[50px]">
+<img
+  src="/images/rebon-lottery1.png"
+  alt=""
+  class="w-[120px] h-[50px] mt-[85px]
+         xs:w-[190px] xs:h-[72px]
+         sm:w-[300px] sm:h-[114px]
+         md:w-[300px] md:h-[100px] md:mt-[110px] md:mr-[35px] 
+         lg:w-[380px] lg:h-[144px]
+         min-[1920px]:mr-[50px] 
+         mr-[26px] object-cover"
+/>
       
 
 <div
@@ -70,13 +76,13 @@ function goToLoginPage() {
     </div>
 
     <!-- بخش دکمه‌ها (پوزیشن مطلق، سمت راست) -->
-    <div
-      class="absolute right-5 sm:right-8 md:right-12 min-[1920px]:right-16
-             bottom-5 sm:bottom-8 md:bottom-24 min-[1920px]:bottom-32
-             left-5 sm:left-auto
-             z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 min-[1920px]:gap-6
-             w-auto"
-    >
+<div
+  class="absolute right-5 sm:right-8 md:right-12 min-[1920px]:right-16
+         top-auto md:top-[380px] min-[1920px]:top-[600px]
+         left-5 sm:left-auto
+         z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 min-[1920px]:gap-6
+         w-auto"
+>
 <button
   @click="goToRegister"
   class="bg-white/90 dark:bg-[#435056] text-[#333B6A] dark:text-white px-4 sm:px-8 md:px-4 min-[1920px]:px-6
@@ -84,8 +90,9 @@ function goToLoginPage() {
          rounded-[12px] sm:rounded-[17px] min-[1920px]:rounded-[20px]
          text-[9px] sm:text-[18px] md:text-[15px] min-[1920px]:text-[20px]
          font-bold hover:bg-white dark:hover:bg-dark-accent-hover/50 transition whitespace-nowrap
-         w-[100px] mb-[100px] mr-[30px] sm:w-[220px] md:w-[220px] md:mr-[85px] md:mb-[70px] min-[1920px]:w-[260px]
-         h-[26px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px] min-[1920px]:mr-[110px]"
+         w-[100px] mt-[20px] mr-[30px] sm:w-[220px] md:w-[220px] md:mr-[85px] md:mb-[70px] min-[1920px]:w-[260px]
+         h-[26px] sm:h-[56px] md:h-[58px] min-[1920px]:h-[84px] min-[1920px]:mr-[110px] min-[1920px]:-mt-[100px] md:mt-[20px]
+         "
 >
   ثبت‌نام در قرعه‌کشی
 </button>

@@ -4,7 +4,7 @@
     <RaffleCard class="w-full max-w-lg bg-white dark:bg-dark-surface rounded-3xl shadow-xl overflow-hidden relative pb-8">
 
       <div class="w-full h-48 md:h-56 relative ">
-        <img src="/images/lottery-header-reg.jpg" class="w-full h-full object-cover" />
+        <img src="/images/lottery-header.jpg" class="w-full h-full object-cover object-top" />
       </div>
 
       <div class="px-6 md:px-10 ">

@@ -72,25 +72,25 @@
            class=" hover:text-gray transition" 
          />
        </div>
-       <div class="flex gap-2">
-         <button
-           v-for="(item, index) in customers" 
-           :key="item.id"
-           type="button"
-           :aria-label="`رفتن به اسلاید ${index + 1}`"
-           @click="goToSlide(index)"
-           :class="[
-             'h-2 rounded-full transition-all duration-300 cursor-pointer',
-             activeIndex === index ? 'w-8 bg-[#2D7A6F] dark:bg-dark-accent' : 'w-2 bg-slate-300 dark:bg-dark-border'
-           ]"
-         ></button>
-       </div>
+<div class="flex gap-2">
+  <button
+    v-for="(dot, index) in dotsArray"
+    :key="index"
+    type="button"
+    :aria-label="`رفتن به اسلاید ${index + 1}`"
+    @click="goToSlide(index)"
+    :class="[
+      'h-2 rounded-full transition-all duration-300 cursor-pointer',
+      activeIndex === index ? 'w-8 bg-[#2D7A6F] dark:bg-dark-accent' : 'w-2 bg-slate-300 dark:bg-dark-border'
+    ]"
+  ></button>
+</div>
      </div>
    </section>
  </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 
 const sectionRef = ref(null);
 const scrollContainer = ref(null);
@@ -109,6 +109,14 @@ const { items: resumeItems, pending: listPending, error: listError } = useResume
 const MAX_FEEDBACK_COUNT = 6;
 const AUTOPLAY_INTERVAL_MS = 5000;
 const AUTOPLAY_RESUME_DELAY_MS = 4000;
+const MAX_DOTS = 3;
+
+/* ----------------- Dots (حداکثر 3 تا) ----------------- */
+const dotsCount = computed(() => Math.min(customers.value.length, MAX_DOTS));
+const dotsArray = computed(() => Array.from({ length: dotsCount.value }));
+const itemsPerDot = computed(() =>
+  dotsCount.value > 0 ? Math.ceil(customers.value.length / dotsCount.value) : 1
+);
 
 const updateCardWidth = () => {
   if (cardRefs.value && cardRefs.value.length > 0) {
@@ -129,12 +137,15 @@ const scroll = (direction) => {
 
 const updateIndex = () => {
   if (scrollContainer.value) {
-    activeIndex.value = Math.round(Math.abs(scrollContainer.value.scrollLeft) / cardWidth.value);
+    const cardIndex = Math.round(Math.abs(scrollContainer.value.scrollLeft) / cardWidth.value);
+    const dotIndex = Math.min(Math.floor(cardIndex / itemsPerDot.value), dotsCount.value - 1);
+    activeIndex.value = Math.max(dotIndex, 0);
   }
 };
 
-const goToSlide = (index) => {
-  const card = cardRefs.value[index];
+const goToSlide = (dotIndex) => {
+  const cardIndex = dotIndex * itemsPerDot.value;
+  const card = cardRefs.value[cardIndex];
   if (card) {
     card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
@@ -259,7 +270,6 @@ onUnmounted(() => {
   if (resumeTimeout) clearTimeout(resumeTimeout);
 });
 </script>
-
 <style scoped>
 .comment-clamp {
   display: -webkit-box;
