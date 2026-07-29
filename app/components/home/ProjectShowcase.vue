@@ -74,27 +74,32 @@
     </section>
 
     <!-- ۱. بخش شوکیس (Showcase) داینامیک -->
-    <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 xl:mb-20">
-  <div class="relative rounded-[2rem] xl:rounded-[3rem] overflow-hidden p-6 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8]  xl:bg-white/20 dark:xl:bg-dark-bg">
+<!-- ۱. بخش شوکیس (Showcase) داینامیک -->
+<!-- ۱. بخش شوکیس (Showcase) داینامیک -->
+<section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 lg:mb-20">
+  <div class="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden p-6 lg:p-8 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8] lg:bg-white/20 dark:lg:bg-dark-bg">
 
-    <!-- عکس پس‌زمینه فقط در دسکتاپ -->
-    <img src="/images/bg-services.png" class="hidden xl:block absolute inset-0 w-[1105px] min-[1920px]:w-full object-cover z-0" />
-
-    <div class="relative z-10 flex flex-col xl:flex-row items-center gap-6 xl:gap-12 min-[1920px]:gap-16 min-[1920px]:flex-nowrap">
-      <div class="flex-1 w-full">
+    <!-- عکس پس‌زمینه فقط در دسکتاپ - حالا کاملا فلوئید -->
+<!-- عکس پس‌زمینه از ۱۰۲۴ به بعد نمایش داده می‌شه، ولی کاملاً ریسپانسیو -->
+<img 
+  src="/images/bg-services.png" 
+  class="hidden min-[1024px]:block absolute inset-0 w-full h-full object-cover z-0" 
+/>
+    <div class="relative z-10 flex flex-col lg:flex-row items-center gap-6 lg:gap-8 xl:gap-12 min-[1920px]:gap-16 min-[1920px]:flex-nowrap">
+      <div class="flex-1 w-full lg:max-w-[45%] xl:max-w-none">
         <img 
             :key="currentContent.image" 
             :src="currentContent.image" 
             :alt="currentContent.title"
-            class="w-full h-[220px] xl:w-[506px] xl:h-[386px] min-[1920px]:w-[650px] min-[1920px]:h-[480px] object-cover rounded-tl-[17px] rounded-br-[17px] rounded-tr-[65px] rounded-bl-[65px] shadow-xl dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-500" 
+            class="w-full h-[220px] lg:h-[280px] xl:w-[506px] xl:h-[386px] min-[1920px]:w-[650px] min-[1920px]:h-[480px] object-cover rounded-tl-[17px] rounded-br-[17px] rounded-tr-[65px] rounded-bl-[65px] shadow-xl dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-500" 
           />
       </div>
       
-      <div class="flex-1 min-w-0 min-[1920px]:max-w-[620px] text-black dark:text-black xl:mr-[50px] text-center xl:text-right">
-        <h2 class="text-[20px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
-        <p class="leading-[26px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
+      <div class="flex-1 min-w-0 lg:max-w-[50%] xl:max-w-none min-[1920px]:max-w-[620px] text-black dark:text-black lg:mr-0 xl:mr-[50px] text-center lg:text-right">
+        <h2 class="text-[20px] lg:text-[22px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 lg:mb-5 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
+        <p class="leading-[26px] lg:leading-[32px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 lg:mb-7 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[13px] lg:text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
         <NuxtLink :to="currentContent.buttonLink">
-          <button class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto xl:mx-0 xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-allshadow-lg text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 xl:mt-[50px] flex items-center justify-center">
+          <button class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto lg:mx-0 lg:w-full lg:max-w-[240px] xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-allshadow-lg text-[18px] lg:text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 lg:mt-8 xl:mt-[50px] flex items-center justify-center">
             {{ currentContent.buttonText }}
           </button>
         </NuxtLink>
