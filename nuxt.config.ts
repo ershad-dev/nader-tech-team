@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  ssr: false,
   compatibilityDate: '2026-06-06',
   css: ['~/assets/css/main.css'],
   modules: [
