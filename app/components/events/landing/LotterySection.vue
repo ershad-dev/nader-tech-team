@@ -22,10 +22,11 @@ function goToLoginPage() {
 </script>
 
 <template>
-  <div class="w-full px-4 sm:px-6 md:px-10 lg:px-14 xl:px-20 min-[1920px]:px-32">
+  <div class="w-full px-4 sm:px-5 md:px-8 lg:px-10 xl:px-14 min-[1920px]:px-32">
     <section
       class="relative w-full max-w-[1400px] mx-auto
-             aspect-[1110/629] rounded-2xl overflow-hidden mt-[50px]"
+             aspect-[1110/629] rounded-2xl overflow-hidden
+             mt-[24px] sm:mt-[32px] md:mt-[40px] lg:mt-[50px]"
     >
       <!-- بک‌گراند -->
       <img
@@ -35,34 +36,51 @@ function goToLoginPage() {
       />
 
       <!-- کانتینر بیرونی -->
-      <div class="absolute inset-0 z-10 flex items-center justify-start px-[4%] text-white">
+<div
+  dir="rtl"
+  class="absolute inset-0 z-10 flex items-center justify-start
+         px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white -mr-[50px]"
+>
+      >
         <!-- بلوک محتوا -->
         <div class="flex flex-col items-center text-center">
-          <img
-            src="/images/rebon-lottery1.png"
-            alt=""
-            class="w-[42%] max-w-[420px] h-auto object-contain"
-          />
+<img
+  src="/images/rebon-lottery1.png"
+  alt=""
+  class="w-[60%] sm:w-[68%] md:w-[60%] lg:w-[52%] xl:w-[60%]
+         max-w-[200px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[600px]
+         h-auto object-contain"
+/>
           <div
-            class="w-[55%] h-[2px] mt-[3%] mb-[3%]
+            class="w-[60%] sm:w-[58%] md:w-[56%] lg:w-[55%]
+                   h-[1.5px] sm:h-[2px]
+                   mt-[2.5%] sm:mt-[3%]
+                   mb-[2.5%] sm:mb-[3%]
                    bg-gradient-to-r from-white/75 to-gray-400"
           ></div>
-          <p class="text-[clamp(14px,3vw,28px)] text-[#0F184B] font-roboto leading-snug">
+          <p
+            class="text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[26px] min-[1920px]:text-[28px]
+                   text-[#0F184B] font-roboto leading-snug"
+          >
             شانس خود را امتحان کنید<br />
             و برنده جوایز هیجان انگیز شوید
           </p>
-
-          <button
-            @click="goToRegister"
-            class="mt-[4%] bg-white/90 text-[#333B6A]
-                   px-5 sm:px-6 md:px-8 lg:px-10
-                   py-2.5 sm:py-3 md:py-3.5
-                   rounded-xl sm:rounded-2xl
-                   text-[clamp(13px,1.8vw,20px)] font-bold
-                   hover:bg-white transition whitespace-nowrap"
-          >
-            ثبت‌نام در قرعه‌کشی
-          </button>
+<button
+  @click="goToRegister"
+  class="bg-white/90 text-[#333B6A]
+         flex items-center justify-center
+         mt-[18%] sm:mt-[22%] md:mt-[26%] lg:mt-[28%]
+         w-[80px] h-[26px]
+         sm:w-[130px] sm:h-[38px]
+         md:w-auto md:h-auto
+         px-4 sm:px-6 md:px-8 lg:px-10
+         md:py-3 lg:py-3.5
+         rounded-lg sm:rounded-xl md:rounded-2xl
+         text-[9px] sm:text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]
+         font-bold hover:bg-white transition whitespace-nowrap leading-none"
+>
+  ثبت‌نام در قرعه‌کشی
+</button>
         </div>
       </div>
     </section>

@@ -60,7 +60,7 @@
 
       <!-- کنترل‌های اسلایدر -->
       <div class="flex items-center justify-between mt-8 lg:mt-12 px-2">
-<div v-if="totalSlides > 1" class="flex justify-center gap-3 lg:gap-4 z-20">
+<div  class="flex justify-center gap-3 lg:gap-4 z-20">
   <HomeIconsSliderButton direction="left" @click="prevSlide" />
   <HomeIconsSliderButton direction="right" @click="nextSlide" />
 </div>
@@ -177,11 +177,8 @@ const visibleProjects = computed(() => {
   const all = items.value
   if (all.length === 0) return []
   const start = currentIndex.value * itemsPerPage.value
-  const result = []
-  for (let i = 0; i < itemsPerPage.value; i++) {
-    result.push(all[(start + i) % all.length])
-  }
-  return result
+  // فقط چیزی که واقعاً هست رو برمی‌گردونه، بدون چرخوندن و تکرار از اول
+  return all.slice(start, start + itemsPerPage.value)
 })
 
 // --- نسخه دیباگ: totalSlides رو تازه و مستقیم داخل خود تابع محاسبه می‌کنیم
