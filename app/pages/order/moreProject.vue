@@ -52,8 +52,8 @@
 
       <div v-if="!pending && !error" class="flex items-center justify-between mt-8 sm:mt-10 lg:mt-12 px-4 max-w-6xl mx-auto">
         <div class="flex gap-2 sm:gap-3 lg:gap-4 z-20">
-          <HomeIconsSliderButton direction="left" @click="prevSlide" />
-          <HomeIconsSliderButton direction="right" @click="nextSlide" />
+          <SliderButton direction="left" @click="prevSlide" />
+          <SliderButton direction="right" @click="nextSlide" />
         </div>
 
         <div class="flex gap-1.5 sm:gap-2">

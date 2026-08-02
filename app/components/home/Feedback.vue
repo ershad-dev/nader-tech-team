@@ -48,25 +48,25 @@
          </div>
  
         <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
-<div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-6 min-[1920px]:p-8 flex-1 min-h-0 flex flex-col">
-  <p
-    class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[13px] min-[1920px]:text-[14px] leading-relaxed font-roboto text-right -mt-[20px] flex-1"
-  >
-    {{ customer.comment }}
-  </p>
-</div>
+        <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-6 min-[1920px]:p-8 flex-1 min-h-0 flex flex-col">
+          <p
+            class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[13px] min-[1920px]:text-[14px] leading-relaxed font-roboto text-right -mt-[20px] flex-1"
+          >
+            {{ customer.comment }}
+          </p>
+        </div>
        </div>
      </div>
  
      <div class="flex items-center justify-center sm:justify-between mt-4 gap-5">
  
  <div class="hidden sm:flex gap-2">
-         <HomeIconsSliderButtonFb 
+         <SliderButton 
            direction="left" 
            @click="scroll('right')" 
            class=" hover:text-gray transition" 
          />
-         <HomeIconsSliderButtonFb 
+         <SliderButton 
            direction="right" 
            @click="scroll('left')" 
            class=" hover:text-gray transition" 

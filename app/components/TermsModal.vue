@@ -76,11 +76,11 @@
               <div
                 v-for="(section, sIndex) in termsSections"
                 :key="section.category || sIndex"
-                :class="sIndex !== termsSections.length - 1 ? 'mb-6' : ''"
+                :class="sIndex !== termsSections.length - 1 ? 'mb-10' : ''"
               >
                 <h3
                   v-if="section.category"
-                  class="text-[15px] sm:text-[16px] font-bold text-[#0F184B] dark:text-dark-text mb-3 pb-2 border-b border-gray-200 dark:border-gray-700"
+                  class="text-[15px] sm:text-[17px] font-bold text-[#2C7379] dark:text-[#8FE3E8] mb-4 pb-2 border-b-2 border-[#2C7379]/30 dark:border-[#8FE3E8]/30"
                 >
                   {{ section.category }}
                 </h3>
@@ -88,12 +88,12 @@
                 <div
                   v-for="item in section.items"
                   :key="item.id ?? item.title"
-                  class="mb-4 last:mb-0"
+                  class="mb-5 last:mb-0"
                 >
-                  <p class="font-bold text-[#0F184B] dark:text-dark-text mb-1">
+                  <p class="font-bold text-[#8B6F2E] dark:text-[#ECD0A0] mb-1.5">
                     {{ item.title }}
                   </p>
-                  <p class="text-[#2D4745] dark:text-dark-text/80">
+                  <p class="text-[#5B6B76] dark:text-[#B7C4C6]">
                     {{ item.description }}
                   </p>
                 </div>
