@@ -87,6 +87,18 @@
       {{ link.name }}
     </NuxtLink>
   </li>
+
+  <!-- لینک قوانین و مقررات -->
+  <li class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
+    <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
+    <button
+      type="button"
+      @click="showTermsModal = true"
+      class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors cursor-pointer"
+    >
+      قوانین و مقررات
+    </button>
+  </li>
 </ul>
 
   </div>
@@ -118,11 +130,16 @@
 
   </div>
 
+  <!-- مودال قوانین و مقررات -->
+  <TermsModal v-model="showTermsModal" />
+
   </footer>
 
   </template>
 
   <script setup>
+  import TermsModal from '~/components/TermsModal.vue'
+
   const route = useRoute();
   const footerConfig = useState('footerConfig');
   const links = [
@@ -132,6 +149,8 @@
   { name: 'درباره ما', path: '/about' }
 ];
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
+
+  const showTermsModal = ref(false);
 
   const lotteryRoutes = [
     '/events/lottery/register',

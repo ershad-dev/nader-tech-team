@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import TermsAgreement from '~/components/TermsAgreement.vue'
 
 definePageMeta({ layout: 'auth' })
 
@@ -12,13 +13,17 @@ const toast = ref({ message: '', type: '' })
 // تعریف وضعیت خطاها برای هر فیلد
 const errors = ref({
   login: '',
-  password: ''
+  password: '',
+  terms: ''
 })
 
 const form = ref({
   login: '',
   password: ''
 })
+
+// وضعیت پذیرش قوانین و مقررات
+const agreedToTerms = ref(false)
 
 // تابع نمایش پیام‌های عمومی (Toast)
 const showToast = (message, type = 'error') => {
@@ -54,7 +59,7 @@ const handlePasswordKeydown = (e) => {
 
 const loginUser = async () => {
   // ۱. ریست کردن خطاهای قبلی قبل از ارسال مجدد
-  errors.value = { login: '', password: '' }
+  errors.value = { login: '', password: '', terms: '' }
 
   const loginValue = String(form.value.login || '').trim()
 
@@ -74,8 +79,13 @@ const loginUser = async () => {
     errors.value.password = 'رمز عبور را وارد کنید'
   }
 
+  // ۴. اعتبارسنجی پذیرش قوانین و مقررات
+  if (!agreedToTerms.value) {
+    errors.value.terms = 'پذیرفتن قوانین و مقررات الزامی است'
+  }
+
   // اگر خطای کلاینت وجود داشت، عملیات متوقف شود
-  if (errors.value.login || errors.value.password) return
+  if (errors.value.login || errors.value.password || errors.value.terms) return
 
   loading.value = true
 
@@ -111,7 +121,7 @@ const loginUser = async () => {
       }
     }
   } catch (error) {
-    // ۴. مدیریت خطاهای دریافتی از سرور
+    // ۵. مدیریت خطاهای دریافتی از سرور
     const serverErrors = error?.response?._data?.errors
     if (serverErrors) {
       errors.value = { ...errors.value, ...serverErrors }
@@ -210,13 +220,18 @@ const loginUser = async () => {
         </div>
       </div>
 
-      <div class="text-right mb-[70px]">
+      <div class="text-right mb-6">
         <NuxtLink
           to="/auth/forgot-password"
           class="text-sm font-bold text-[#1a2333] dark:text-dark-text-deep underline decoration-2 underline-offset-4 font-roboto"
         >
           فراموشی رمز
         </NuxtLink>
+      </div>
+
+      <!-- پذیرش قوانین و مقررات -->
+      <div class="text-right mb-[40px]">
+        <TermsAgreement v-model="agreedToTerms" :error="errors.terms" />
       </div>
 
 <AuthButton

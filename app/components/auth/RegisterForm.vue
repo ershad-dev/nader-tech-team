@@ -3,6 +3,11 @@ import { ref } from 'vue'
 import { useForm, useField, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 
+import TermsAgreement from '~/components/TermsAgreement.vue'
+
+const agreedToTerms = ref(false)
+const agreedToTermsError = ref('')
+
 definePageMeta({ layout: 'auth' })
 
 // ==================== اسکیما ولیدیشن ====================
@@ -228,6 +233,13 @@ function convertJalaliStringToGregorianISO(jalaliStr) {
 
 // ==================== ثبت‌نام ====================
 const registerUser = handleSubmit(async (values) => {
+  if (!agreedToTerms.value) {
+    agreedToTermsError.value = 'پذیرفتن قوانین و مقررات الزامی است'
+    showToast('لطفاً قوانین و مقررات را بپذیرید', 'error')
+    return
+  }
+  agreedToTermsError.value = ''
+
   loading.value = true
   try {
     // FIX: ساخت payload مطابق ساختار دقیق API (تبدیل تاریخ + نام فیلد address)
@@ -537,6 +549,12 @@ const registerUser = handleSubmit(async (values) => {
           </button>
         </div>
         <p v-if="passwordConfirmError" class="text-red-500 dark:text-red-400 text-[11px] mt-1">{{ passwordConfirmError }}</p>
+      </div>
+      
+
+<!-- پذیرش قوانین و مقررات -->
+      <div class="mt-5 text-right">
+        <TermsAgreement v-model="agreedToTerms" :error="agreedToTermsError" />
       </div>
 
       <!-- دکمه ثبت‌نام -->

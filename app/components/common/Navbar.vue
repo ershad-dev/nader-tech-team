@@ -55,7 +55,7 @@
           >
             <div class="flex items-center justify-center gap-2 min-[1920px]:gap-3">
               <img src="/images/Vector-profile.svg" alt="" class="w-4 h-4 min-[1920px]:w-5 min-[1920px]:h-5" />
-              <span>ثبت نام</span>
+              <span>  ورود/ ثبت نام</span>
             </div>
           </NuxtLink>
 
