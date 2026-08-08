@@ -143,10 +143,12 @@
   const route = useRoute();
   const footerConfig = useState('footerConfig');
   const links = [
-  { name: 'خانه', path: '/' },
+  // { name: 'خانه', path: '/' },
   { name: 'سفارش گیری پروژه', path: '/order/requestProject' },
   { name: 'برگزاری ایونت', path: '/events' },
-  { name: 'درباره ما', path: '/about' }
+  { name: 'درباره ما', path: '/about' },
+  { name: 'نمونه پروژه ها', path: '/order/moreProject' },
+
 ];
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 

@@ -23,30 +23,30 @@
                 : 'z-10 scale-75 opacity-40 translate-x-[80px]'
           ]"
         >
-          <div
-            :class="[
-              'bg-white dark:bg-dark-input rounded-[20px] h-[110px] w-[100px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 flex flex-col overflow-hidden',
-              selectedIndex === item.realIndex && item.pos === 0
-                ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset'
-                : ''
-            ]"
-          >
-            <div class="w-full h-[72px] overflow-hidden">
-              <img
-                :src="item.data.image"
-                :alt="item.data.name"
-                class="w-full h-full object-scale-down select-none pointer-events-none"
-                draggable="false"
-              />
-            </div>
+<div
+  :class="[
+    'bg-white dark:bg-dark-input rounded-[20px] h-[90px] w-[100px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 flex flex-col overflow-hidden',
+    selectedIndex === item.realIndex && item.pos === 0
+      ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset'
+      : ''
+  ]"
+>
+  <div class="w-full h-[72px] overflow-hidden">
+    <img
+      :src="item.data.image"
+      :alt="item.data.name"
+      class="w-full h-full object-cover object-top select-none pointer-events-none"
+      draggable="false"
+    />
+  </div>
 
-            <div
-              class="mt-auto py-1 px-1 text-center"
-              style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
-            >
-              <p class="text-[#747893] dark:text-dark-text-deep font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
-            </div>
-          </div>
+  <div
+    class="py-1 px-1 text-center"
+    style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+  >
+    <p class="text-[#747893] dark:text-dark-text-deep font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
+  </div>
+</div>
         </div>
       </div>
 
@@ -61,17 +61,17 @@
             :ref="el => { cardRefs[index] = el }"
             @click="selectMember(index)"
             :class="[
-              'bg-white dark:bg-dark-input rounded-[14px] sm:rounded-[20px] md:rounded-[28px] xl:rounded-[40px] 2xl:rounded-[48px] h-[74px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[130px] md:w-[140px] xl:h-[185px] xl:w-[200px] 2xl:h-[280px] 2xl:w-[305px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 cursor-pointer flex flex-col overflow-hidden',
+              'bg-white dark:bg-dark-input rounded-[14px] sm:rounded-[20px] md:rounded-[28px] xl:rounded-[40px] 2xl:rounded-[48px] h-[74px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[140px] md:w-[140px] xl:h-[195px] xl:w-[200px] 2xl:h-[290px] 2xl:w-[305px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 cursor-pointer flex flex-col overflow-hidden',
               selectedIndex === index ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset' : ''
             ]"
           >
-            <div class="w-full h-[48px] sm:h-[62px] md:h-[105px] xl:h-[155px] 2xl:h-[235px] overflow-hidden">
-              <img
-                :src="member.image"
-                :alt="member.name"
-                class="w-full h-full object-scale-down"
-              />
-            </div>
+<div class="w-full h-[68px] sm:h-[62px] md:h-[105px] xl:h-[155px] 2xl:h-[235px] overflow-hidden">
+  <img
+    :src="member.image"
+    :alt="member.name"
+    class="w-full h-full object-cover object-top"
+  />
+</div>
 
             <div
               class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative"
@@ -106,19 +106,19 @@
 
 <h3
   :class="[
-    'text-[12px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
+    'text-[10px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
     !isMobile && selectedIndex >= 1
-      ? 'mr-[5px] sm:mr-[45px] md:mr-[70px] xl:mr-[60px] 2xl:mr-[70px]'
+      ? 'mr-[5px] sm:mr-[45px] md:mr-[20px] xl:mr-[60px] 2xl:mr-[70px]'
       : !isMobile
-        ? 'mr-[80px] sm:mr-[130px] md:mr-[190px] xl:mr-[175px] 2xl:mr-[200px]'
+        ? 'mr-[80px] sm:mr-[130px] md:mr-[150px] xl:mr-[135px] 2xl:mr-[200px]'
         : ''
   ]"
 >
-  {{ teamMembers[selectedIndex].name }}
+  {{ teamMembers[selectedIndex].roal }}
 </h3>
-        <p class="text-slate-700 dark:text-dark-text-deep/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px]">
-          {{ teamMembers[selectedIndex].bio }}
-        </p>
+<p class="text-slate-700 dark:text-dark-text-deep/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px] leading-relaxed 2xl:leading-loose">
+  {{ teamMembers[selectedIndex].bio }}
+</p>
       </div>
     </div>
   </div>
@@ -139,10 +139,10 @@ const notchWidth = ref(100);
 const isMobile = ref(false);
 
 const teamMembers = [
-  { id: 1, name: 'علی ادریسی', bio:  ' علی ادریسی با بیش از ۹ سال تجربه تخصصی در حوزه برنامه‌نویسی، طراحی سایت، توسعه اپلیکیشن، امنیت سایبری، دیجیتال مارکتینگ و آموزش برنامه‌نویسی، مدیریت و راهبری تیم نادرتک را بر عهده دارد. ایشان مؤسس فروشگاه اینترنتی کدوتمبل، نخستین فروشگاه اینترنتی تخصصی میوه در خراسان شمالی، و همچنین بنیان‌گذار پیج آموزشی ادریسی کدینگ هستند که در زمینه آموزش برنامه‌نویسی و فناوری فعالیت می‌کند. همکاری با تیم تولید محتوای دانشگاه صنعتی شریف و اجرای پروژه‌های متعدد فناوری، بخشی از سوابق حرفه‌ای ایشان است. تمرکز اصلی او ارائه راهکارهای نوآورانه، توسعه نرم‌افزار، طراحی وب‌سایت‌های حرفه‌ای و هدایت پروژه‌های دیجیتال برای رشد کسب‌وکارها است', image: '/images/icon-team.jpg' },
-  { id: 2, name: 'امیر سهامی', bio: 'امیر سهامی با بیش از ۱۰ سال تجربه حرفه‌ای در حوزه تئاتر، به‌عنوان نویسنده، کارگردان، بازیگر و مشاور هنری فعالیت داشته است. او با بهره‌گیری از تجربه خود در روایت‌پردازی، سناریونویسی و تولید محتوای خلاق، مدیریت واحد تولید محتوای نادرتک را بر عهده دارد. تخصص ایشان در خلق محتوای هدفمند و تأثیرگذار، به برندها کمک می‌کند تا ارتباطی مؤثر با مخاطبان خود برقرار کرده و حضور قدرتمندتری در فضای دیجیتال داشته باشند', image: '/images/icon-team.jpg' },
-  { id: 3, name: 'علی ناویانی', bio: 'علی ناویانی با بیش از ۳ سال تجربه تخصصی در زمینه طراحی سایت، توسعه وب و برنامه‌نویسی، مدیریت واحد برنامه‌نویسی نادرتک را بر عهده دارد. او به جدیدترین فناوری‌ها و استانداردهای توسعه وب مسلط بوده و در طراحی وب‌سایت‌های سریع، امن، واکنش‌گرا و بهینه برای موتورهای جستجو (SEO) نقش مؤثری ایفا می‌کند. تمرکز او ارائه راهکارهای فنی مدرن و توسعه پروژه‌های اختصاصی متناسب با نیاز هر کسب‌وکار است', image: '/images/icon-team.jpg' },
-  { id: 4, name: 'مهدی محمدی', bio: 'مهدی محمدی با بیش از ۵ سال تجربه در حوزه بازارهای مالی، ترید و فناوری هوش مصنوعی، مدیریت فنی بخش AI نادرتک را بر عهده دارد. تخصص او در توسعه راهکارهای مبتنی بر هوش مصنوعی، تحلیل داده، اتوماسیون فرآیندها و استفاده از فناوری‌های نوین، به کسب‌وکارها کمک می‌کند تا با افزایش بهره‌وری و تصمیم‌گیری هوشمند، عملکرد بهتری در بازار رقابتی داشته باشند. او همواره در تلاش است تا جدیدترین تکنولوژی‌های هوش مصنوعی را در پروژه‌های نادرتک به کار گیرد', image: '/images/icon-team.jpg' }
+  { id: 1, roal:"مدیر ارشد و بنیان‌گذار نادرتک" , name: 'علی ادریسی', bio:  'علی ادریسی با بیش از ۹ سال تجربه در حوزه برنامه‌نویسی، طراحی و توسعه وب و اپلیکیشن، امنیت سایبری و دیجیتال مارکتینگ، مدیریت و راهبری تیم نادرتک را بر عهده دارد. او بنیان‌گذار کدوتمبل، نخستین فروشگاه اینترنتی تخصصی میوه در خراسان شمالی، و ادریس کدینگ، مجموعه آموزشی برنامه‌نویسی، است. همچنین سابقه همکاری با تیم تولید محتوای دانشگاه صنعتی شریف و اجرای پروژه‌های متنوع فناوری را در کارنامه خود دارد. تمرکز او بر ارائه راهکارهای نوآورانه و توسعه پروژه‌های دیجیتال برای رشد کسب‌وکارها است', image: '/images/edrisipoor.png' },
+  { id: 2, roal:"سرپرست واحد تولید محتوا", name: 'امیر سهامی', bio: 'امیر سهامی با بیش از ۱۰ سال تجربه حرفه‌ای در حوزه تئاتر، به‌عنوان نویسنده، کارگردان، بازیگر و مشاور هنری فعالیت داشته است. او همچنین برنده عنوان بهترین کارگردان و بهترین بازیگر استان خراسان شمالی بوده و با بهره‌گیری از تجربه خود در روایت‌پردازی، سناریونویسی و تولید محتوای خلاق، مدیریت واحد تولید محتوای نادرتک را بر عهده دارد. تخصص او در خلق محتوای هدفمند و تأثیرگذار، به برندها کمک می‌کند ارتباطی مؤثر با مخاطبان خود برقرار کرده و حضوری قدرتمندتر در فضای دیجیتال داشته باشند', image: '/images/sahamii.png' },
+  { id: 3, roal:"سرپرست واحد برنامه‌نویسی" , name: 'علی ناویانی', bio: 'علی ناویانی با بیش از ۳ سال تجربه تخصصی در حوزه طراحی UI/UX، طراحی رابط کاربری با Figma، توسعه وب و برنامه‌نویسی، سرپرستی واحد برنامه‌نویسی نادرتک را بر عهده دارد. او در طراحی تجربه‌های کاربری مدرن، طراحی وب‌سایت‌های حرفه‌ای، توسعه وب‌اپلیکیشن‌ها و پیاده‌سازی محصولات دیجیتال سریع، امن و واکنش‌گرا نقش مؤثری ایفا می‌کند. تمرکز او ارائه راهکارهای فنی و طراحی خلاقانه متناسب با نیاز کسب‌وکارها و خلق تجربه‌های دیجیتال کارآمد است', image: '/images/naviani.png' },
+  { id: 4, roal:"سرپرست واحد هوش مصنوعی" , name: 'مهدی محمدی', bio: 'مهدی محمدی سرپرست واحد هوش مصنوعی و فناوری این مجموعه است. او با بیش از ۵ سال تجربه در حوزه هوش مصنوعی، تحلیل داده، بازارهای مالی و فناوری‌های نوین، مسئولیت راهبری فنی، تحقیق و توسعه (R&D) و توسعه راهکارهای هوشمند را بر عهده دارد. همچنین با بهره‌گیری از فناوری‌های نوین تولید محتوا و انیمیشن، در طراحی و اجرای پروژه‌های خلاقانه و تولید محتوای دیجیتال نقش مؤثری ایفا می‌کند. تمرکز او بر ارائه راهکارهای نوآورانه، اتوماسیون فرآیندها و توسعه محصولات دیجیتال است تا کسب‌وکارها با استفاده از فناوری، سریع‌تر و هوشمندانه‌تر رشد کنند', image: '/images/mohammadi.png' }
 ];
 
 const updateNotchWidth = () => {

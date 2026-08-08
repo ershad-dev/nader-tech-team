@@ -104,6 +104,14 @@ function formatDate(dateStr) {
     return dateStr;
   }
 }
+
+
+const scrollbarConfig = useScrollbarConfig();
+scrollbarConfig.value = {
+  light: '#ECD0A0',
+  dark: '#ECD0A0'
+};
+
 </script>
 
 <style scoped>

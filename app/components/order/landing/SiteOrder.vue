@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { useMobileSlider } from '@/composables/useMobileSlider'
 import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
@@ -17,14 +18,46 @@ const {
 
 const visibleProjects = visibleItems(3)
 
-// steps آرایه ثابت - بدون تغییر
-const steps = [
+// ── فرایند همکاری (steps) ────────────────────────────────────
+// این مراحل قبلاً یک آرایه‌ی ثابت (hardcoded) بودن. الان از پنل ادمین
+// (تب «سفارش» → آیتم key="workflow", type="json") مدیریت می‌شن، پس
+// از همون endpoint عمومی صفحه‌ی order خونده می‌شن:
+//   GET /api/page/order  ->  { data: [ { key: "workflow", value: "<json-string>", type: "json", ... } ] }
+//
+// value آیتم workflow رشته‌ی JSON آرایه‌ای از {id, title, content} است.
+// content هر مرحله از طریق ادیتور Tiptap در پنل ادمین ساخته می‌شه، یعنی
+// HTML است (نه متن ساده) — پس در تمپلیت با v-html رندر می‌شه.
+//
+// اگر fetch با خطا مواجه بشه یا آیتم workflow خالی/نامعتبر باشه، به یک
+// آرایه‌ی ثابت (fallbackSteps) برمی‌گردیم تا این بخش از صفحه هیچ‌وقت
+// خالی نمونه.
+const API_BASE = 'https://nadertechnologyteam.ir/api'
+
+const fallbackSteps = [
   { title: 'سفارش', desc: 'سفارش نیازهای خود را با ما در میان بگذارید و سفارش پروژه را ثبت کنید.' },
   { title: 'تحلیل', desc: 'تحلیل نیازها و اهداف شما به دقت بررسی و تحلیل می‌شود.' },
   { title: 'اجرا', desc: 'اجرا تیم ما بر اساس برنامه‌ریزی انجام شده پروژه را با کیفیت اجرا می‌کند.' },
   { title: 'تحویل', desc: 'تحویل پروژه در موعد مقرر با کیفیت نهایی به شما تحویل داده می‌شود.' },
   { title: 'پشتیبانی', desc: 'پشتیبانی پس از تحویل، همراهی و پشتیبانی ما ادامه خواهد داشت.' },
 ]
+
+const { data: orderPageRes } = await useFetch(`${API_BASE}/page/order`)
+
+const steps = computed(() => {
+  const list = orderPageRes.value?.data ?? []
+  const workflowItem = list.find(i => i.key === 'workflow')
+  if (!workflowItem?.value) return fallbackSteps
+
+  try {
+    const parsed = JSON.parse(workflowItem.value)
+    if (Array.isArray(parsed) && parsed.length) {
+      return parsed.map(s => ({ title: s.title, desc: s.content }))
+    }
+  } catch {
+    // مقدار JSON نامعتبر بود — سکوت و بازگشت به fallback
+  }
+  return fallbackSteps
+})
 </script>
 
 <template>
@@ -167,9 +200,10 @@ const steps = [
         </div>
       </div>
 
-<div class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 ">
-  {{ step.desc }}
-</div>
+<div
+  class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 [&_p]:m-0"
+  v-html="step.desc"
+></div>
     </div>
   </div>
 </div>

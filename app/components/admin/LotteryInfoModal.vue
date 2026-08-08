@@ -14,8 +14,12 @@ const emit = defineEmits(['close', 'updated'])
 
 const loading = ref(false)
 const saving = ref(false)
-const errorMsg = ref('')
 const isEditing = ref(false)
+
+// خطای بارگذاری اولیه (fetchDetails) -> کل مودال را جایگزین می‌کند
+const loadError = ref('')
+// خطای فرم / ذخیره‌سازی (save) -> فقط بالای فرم نمایش داده می‌شود، فرم را حذف نمی‌کند
+const formError = ref('')
 
 const lottery = ref(null) // داده‌ی اصلی (فقط نمایش)
 const form = reactive({
@@ -27,6 +31,7 @@ const form = reactive({
   price: 0,
   winner_count: 1,
   status: 'draft',
+  location: '',
 })
 
 const statusOptions = [
@@ -39,7 +44,7 @@ const statusOptions = [
 const statusLabel = (value) =>
   statusOptions.find((s) => s.value === value)?.label || value || '—'
 
-  const toLocalInput = (isoStr) => {
+const toLocalInput = (isoStr) => {
   if (!isoStr) return ''
   // به جای slice(0,16) که برای datetime-local بود
   return isoStr.replace('T', ' ').slice(0, 19)
@@ -63,11 +68,13 @@ const fillForm = (data) => {
   form.price = data.price ?? 0
   form.winner_count = data.winner_count ?? 1
   form.status = data.status || 'draft'
+  form.location = data.location || ''
 }
 
 const fetchDetails = async () => {
   loading.value = true
-  errorMsg.value = ''
+  loadError.value = ''
+  formError.value = ''
   isEditing.value = false
 
   try {
@@ -79,10 +86,10 @@ const fetchDetails = async () => {
     fillForm(res.data)
   } catch (err) {
     console.error(err)
-    if (err?.response?.status === 401) errorMsg.value = 'احراز هویت نشده است.'
-    else if (err?.response?.status === 403) errorMsg.value = 'دسترسی مجاز نیست.'
-    else if (err?.response?.status === 404) errorMsg.value = 'قرعه‌کشی یافت نشد.'
-    else errorMsg.value = 'خطا در دریافت اطلاعات.'
+    if (err?.response?.status === 401) loadError.value = 'احراز هویت نشده است.'
+    else if (err?.response?.status === 403) loadError.value = 'دسترسی مجاز نیست.'
+    else if (err?.response?.status === 404) loadError.value = 'قرعه‌کشی یافت نشد.'
+    else loadError.value = 'خطا در دریافت اطلاعات.'
   } finally {
     loading.value = false
   }
@@ -90,18 +97,29 @@ const fetchDetails = async () => {
 
 const startEdit = () => {
   if (lottery.value) fillForm(lottery.value)
+  formError.value = ''
   isEditing.value = true
 }
 
 const cancelEdit = () => {
   if (lottery.value) fillForm(lottery.value)
+  formError.value = ''
   isEditing.value = false
 }
 
 const save = async () => {
-  saving.value = true
-  errorMsg.value = ''
+  formError.value = ''
 
+  if (!form.title.trim()) {
+    formError.value = 'عنوان الزامی است.'
+    return
+  }
+  if (!form.location.trim()) {
+    formError.value = 'مکان برگزاری الزامی است.'
+    return
+  }
+
+  saving.value = true
   try {
     const res = await $fetch(`${API_BASE}/admin/lotteries/${props.lotteryId}`, {
       method: 'PUT',
@@ -115,6 +133,7 @@ const save = async () => {
         update: Number(form.price), // نکته: بک‌اند این فیلد رو به اسم "update" می‌خواد نه "price"
         winner_count: Number(form.winner_count),
         status: form.status,
+        location: form.location,
       },
     })
     lottery.value = res.data
@@ -124,13 +143,13 @@ const save = async () => {
   } catch (err) {
     console.error(err)
     if (err?.response?.status === 422) {
-      errorMsg.value = 'اطلاعات وارد شده نامعتبر است.'
+      formError.value = 'اطلاعات وارد شده نامعتبر است.'
     } else if (err?.response?.status === 401) {
-      errorMsg.value = 'احراز هویت نشده است.'
+      formError.value = 'احراز هویت نشده است.'
     } else if (err?.response?.status === 403) {
-      errorMsg.value = 'دسترسی مجاز نیست.'
+      formError.value = 'دسترسی مجاز نیست.'
     } else {
-      errorMsg.value = 'خطا در ذخیره‌سازی اطلاعات.'
+      formError.value = 'خطا در ذخیره‌سازی اطلاعات.'
     }
   } finally {
     saving.value = false
@@ -140,6 +159,7 @@ const save = async () => {
 const closeModal = () => {
   if (saving.value) return
   isEditing.value = false
+  formError.value = ''
   emit('close')
 }
 
@@ -165,7 +185,7 @@ watch(
           <h2 class="font-bold text-[#1a2333] dark:text-white text-base sm:text-lg">جزئیات قرعه‌کشی</h2>
 
           <div class="flex items-center gap-2">
-            <template v-if="!loading && !errorMsg">
+            <template v-if="!loading && !loadError">
               <button
                 v-if="!isEditing"
                 @click="startEdit"
@@ -203,9 +223,17 @@ watch(
         <!-- بدنه -->
         <div class="p-5">
           <div v-if="loading" class="text-center py-10 text-gray-500 dark:text-white/70">در حال بارگذاری...</div>
-          <div v-else-if="errorMsg" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ errorMsg }}</div>
+          <div v-else-if="loadError" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ loadError }}</div>
 
           <div v-else class="flex flex-col gap-4">
+            <!-- خطای فرم / ذخیره‌سازی: فقط بالای فرم نشون داده میشه، فرم حذف نمیشه -->
+            <div
+              v-if="formError"
+              class="text-sm text-red-600 dark:text-red-400 font-bold bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg px-3 py-2"
+            >
+              {{ formError }}
+            </div>
+
             <!-- عنوان -->
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">عنوان</label>
@@ -217,6 +245,8 @@ watch(
               />
               <p v-else class="text-sm text-[#1a2333] dark:text-white font-bold">{{ lottery?.title || '—' }}</p>
             </div>
+
+
 
             <!-- توضیحات -->
             <div>
@@ -232,29 +262,28 @@ watch(
 
             <div class="grid grid-cols-2 gap-4">
               <!-- تاریخ شروع -->
-             <!-- تاریخ شروع -->
-<div>
-  <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ شروع</label>
-  <custom-date-picker
-    v-if="isEditing"
-    v-model="form.starts_at"
-    type="datetime"
-    input-class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
-  />
-  <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.starts_at) }}</p>
-</div>
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ شروع</label>
+                <custom-date-picker
+                  v-if="isEditing"
+                  v-model="form.starts_at"
+                  type="datetime"
+                  input-class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+                />
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.starts_at) }}</p>
+              </div>
 
-<!-- تاریخ پایان -->
-<div>
-  <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ پایان</label>
-  <custom-date-picker
-    v-if="isEditing"
-    v-model="form.ends_at"
-    type="datetime"
-    input-class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
-  />
-  <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.ends_at) }}</p>
-</div>
+              <!-- تاریخ پایان -->
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">تاریخ پایان</label>
+                <custom-date-picker
+                  v-if="isEditing"
+                  v-model="form.ends_at"
+                  type="datetime"
+                  input-class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+                />
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery?.ends_at) }}</p>
+              </div>
 
               <!-- ظرفیت -->
               <div>
@@ -281,6 +310,17 @@ watch(
                 />
                 <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.price?.toLocaleString('fa-IR') ?? '—' }}</p>
               </div>
+                          <!-- مکان برگزاری -->
+            <div>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">مکان برگزاری</label>
+              <input
+                v-if="isEditing"
+                v-model="form.location"
+                type="text"
+                class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+              />
+              <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.location || '—' }}</p>
+            </div>
 
               <!-- تعداد برندگان -->
               <div>

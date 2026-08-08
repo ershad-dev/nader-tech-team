@@ -2,63 +2,44 @@
   <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto py-16 px-4 2xl:px-12 overflow-x-hidden" dir="rtl">
     
     <!-- Hero Section -->
-<section class="flex flex-col md:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28 mt-8">
-  
-  <div class="flex-1 w-full text-center md:text-right relative pt-[70px] sm:pt-[90px] md:pt-0">
+<section class="flex flex-col lg:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28 mt-8">
 
-    <div class="md:flex md:items-center md:gap-6 lg:block">
-
-      <!-- محتوا: عنوان، متن، فلش، دکمه (نسخه‌ی موبایل/دسکتاپ) -->
-      <div class="md:w-1/2 lg:w-full">
-        <h1 class="relative z-10 text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] md:text-[32px] lg:text-[36px] 2xl:text-[42px] mb-6 leading-tight mt-12 sm:mt-14 md:mt-0" v-html="pageData.title">
+  <div class="flex-1 w-full text-center lg:text-right relative pt-[70px] sm:pt-[90px] lg:pt-0">
+    <div class="lg:block">
+      <!-- محتوا: عنوان، متن، فلش، دکمه -->
+      <div class="lg:w-full md:mt-[100px] lg:-mt-[20px]">
+        <h1 class="relative z-10 text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] lg:text-[36px] 2xl:text-[42px] mb-6 leading-tight mt-12 sm:mt-14  lg:mt-0 " v-html="pageData.title">
         </h1>
-
-        <!-- max-w فقط تو md بیشتر شد تا خط‌ها بلندتر بشن -->
-        <p class="relative z-10 text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] md:text-[26px] lg:text-[28px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl md:max-w-[520px] lg:max-w-xl 2xl:max-w-3xl mx-auto md:mx-0">
+<p class="relative z-10 text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] lg:mt-0 lg:max-w-[600px] xl:max-w-[700px] 2xl:max-w-4xl lg:text-[28px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl mx-auto lg:mx-0">
           {{ pageData.intro_text }}
         </p>
-
         <div class="hidden lg:flex justify-center px-4">
           <img src="/images/curved-arrow.png" alt="فلش" class="w-[750px] 2xl:w-[850px] object-contain mt-10 lg:-mt-1 lg:ml-[150px]" />
         </div>
-
-        <!-- دکمه نسخه اصلی: موبایل و دسکتاپ (نه md) -->
-        <div class="flex justify-center mt-10 md:hidden lg:flex lg:justify-end lg:mt-0 lg:-mt-10">
+        <!-- دکمه -->
+        <div class="flex justify-center mt-10 lg:justify-end lg:mt-0 lg:-mt-10">
           <NuxtLink
             to="/order/requestProject"
-            class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] lg:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg lg:ml-[80px] flex items-center justify-center lg:-mt-10 md:-mt-10"
+            class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] xl:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg lg:ml-[80px] flex items-center justify-center"
           >
             ارتباط با ما
           </NuxtLink>
         </div>
       </div>
-
-      <!-- ستون دایره + دکمه‌ی زیرش (فقط md) -->
+      <!-- دایره -->
       <div class="absolute -top-[10px] sm:-top-[15px] left-1/2 -translate-x-1/2 z-0
-                  md:static md:left-auto md:translate-x-0 md:top-auto md:mt-0 md:w-1/2 md:flex md:flex-col md:items-center md:self-start md:-mt-8
-                  lg:absolute lg:block lg:w-auto lg:top-0 lg:left-0 lg:-translate-y-1/3 lg:mt-[120px] 2xl:mt-[140px]">
-
+                  lg:left-0 lg:translate-x-0 lg:top-0 lg:-translate-y-1/3 lg:mt-[120px] 2xl:mt-[140px]">
         <p class="bg-black rounded-full
                   w-[160px] h-[160px]
                   sm:w-[220px] sm:h-[220px]
-                  md:w-[220px] md:h-[220px]
                   lg:w-[360px] lg:h-[360px]
                   2xl:w-[360px] 2xl:h-[360px]
                   -mt-12
                   sm:mt-[50px]
-                  lg:mt-0">
+                  md:-mt-[40px]
+                  lg:mt-[134px]">
         </p>
-
-<div class="hidden md:flex lg:hidden justify-center mt-[100px] w-full ">
-  <NuxtLink
-    to="/order/requestProject"
-    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-[200px] h-[57px] px-8 py-3 text-[20px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg flex items-center justify-center "
-  >
-    ارتباط با ما
-  </NuxtLink>
-</div>
       </div>
-
     </div>
   </div>
 </section>
@@ -158,6 +139,22 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 // =====================================================
+// تبدیل مسیر نسبی تصویر به URL کامل قابل نمایش
+// =====================================================
+// مقادیر type="image_path" که از بک‌اند برمی‌گردند، مسیر نسبی هستند
+// (مثل "pages/about/xxx.jpg") نه یک URL کامل. باید STORAGE_BASE بهشان
+// اضافه شود تا در <img :src> درست کار کنند.
+// اگر مقدار از قبل یک URL کامل (http/https)، blob یا data باشد،
+// دست‌نخورده برگردانده می‌شود.
+const STORAGE_BASE = 'https://nadertechnologyteam.ir/storage/'
+
+const resolveImageUrl = (value) => {
+  if (!value) return value
+  if (/^(https?:|blob:|data:)/.test(value)) return value
+  return STORAGE_BASE + value.replace(/^\/+/, '')
+}
+
+// =====================================================
 // اتصال به API صفحه about
 // =====================================================
 // کلیدهای ثابت طبق مستندات:
@@ -176,7 +173,12 @@ const { data: aboutRes, error: aboutError } = await useFetch(
 
 if (aboutRes.value && aboutRes.value.data) {
   aboutRes.value.data.forEach((item) => {
-    pageData.value[item.key] = item.value
+    // فیلدهای تصویری باید قبل از استفاده resolve شوند
+    if (item.type === 'image_path') {
+      pageData.value[item.key] = resolveImageUrl(item.value)
+    } else {
+      pageData.value[item.key] = item.value
+    }
   })
 } else if (aboutError.value) {
   console.error('خطا در دریافت اطلاعات صفحه about:', aboutError.value)
@@ -375,6 +377,14 @@ onBeforeUnmount(() => {
   clearTeamAutoplay()
   if (sliderObserver) sliderObserver.disconnect()
 })
+
+
+const scrollbarConfig = useScrollbarConfig();
+scrollbarConfig.value = {
+  light: '#ECD0A0',
+  dark: '#ECD0A0'
+};
+
 </script>
 
 

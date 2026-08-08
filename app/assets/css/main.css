@@ -64,8 +64,39 @@ body {
 
 /* به مرورگر می‌گه که برای اسکرول‌بار، فرم‌های پیش‌فرض و... هم از تم تیره استفاده کنه */
 html {
-  color-scheme: light dark;
+  color-scheme: light;
 }
+
+
+/* main.css - این بخش رو اضافه کن */
+
+:root {
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-track: transparent;
+}
+
 html.dark {
-  color-scheme: dark;
+  --scrollbar-thumb: #4b5563;
+}
+
+/* فایرفاکس */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* کروم / سافاری / اج */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
 }

@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen bg-[#F5F3EF] dark:bg-dark-bg">
-    <!-- Navbar قبلاً ساخته شده است -->
-    <Navbar />
+
 
     <main>
       <!-- بخش Hero (تصویر تمام عرض با افکت شیشه‌ای و هلال) -->
@@ -12,17 +11,10 @@
         <EventsLandingEventFeedback />
 
 
-      <!-- بخش‌های دیگر لندینگ -->
-      <!-- <div class="container mx-auto px-4 py-12 space-y-16">
-        <EventsLandingEventInfo />
-        <EventsLandingEventServices />
-        <EventsLandingRaffleCta />
-        <EventsLandingEventGallery />
-      </div> -->
+
     </main>
 
-    <!-- Footer قبلاً ساخته شده است -->
-    <Footer />
+
   </div>
 </template>
 
@@ -36,5 +28,11 @@ definePageMeta({
 footerConfig.value = {
   title: ' شروع یک تجربه متفاوت ',
   bgColor: 'bg-purple-800'
+};
+
+const scrollbarConfig = useScrollbarConfig();
+scrollbarConfig.value = {
+  light: '#747893',
+  dark: '#747893'
 };
 </script>

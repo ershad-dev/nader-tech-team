@@ -1,117 +1,135 @@
 <template>
-  <div class="min-h-screen bg-[#F9F7F2] dark:bg-dark-bg flex justify-center items-center p-4 md:p-8 " dir="rtl">
+  <section class="relative bg-[#ABD7D8] dark:bg-[#96ACB1] p-5 sm:p-8 md:p-9 xl:p-10 min-[1920px]:p-12 rounded-[16px] md:rounded-[18px] xl:rounded-[20px] min-[1920px]:rounded-[24px] mt-8 mx-auto w-full xl:w-[1110px] min-[1920px]:w-[1400px] max-w-full">
 
-    <RaffleCard class="w-full max-w-lg bg-white dark:bg-dark-surface rounded-3xl shadow-xl overflow-hidden relative pb-8">
+    <!-- <img
+      src="/images/texture.png"
+      alt=""
+      class="absolute w-[220px] sm:w-[380px] md:w-[550px] xl:w-[900px] min-[1920px]:w-[1050px] h-auto object-contain opacity-30 dark:opacity-15 pointer-events-none -mt-[60px] sm:-mt-[120px] md:-mt-[200px] xl:-mt-[350px] min-[1920px]:-mt-[420px] -mr-[20px] sm:-mr-[40px] md:-mr-[60px] xl:-mr-[100px] min-[1920px]:-mr-[130px] top-0 right-0 xl:top-auto xl:right-auto"
+    /> -->
 
-      <div class="w-full h-48 md:h-56 relative ">
-        <img src="/images/lottery-header.jpg" class="w-full h-full object-cover object-top" />
+    <!-- بخش توضیحات -->
+    <div class="mb-8 md:mb-9 xl:mb-10 relative z-10">
+
+      <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
+        {{ pageData.description_1 }}
+
+        <br>
+        <br>
+      <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-roboto font-light text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
+        {{ pageData.description_2 }}
+      </p>
+
+      </p>
+    </div>
+
+    <h2 class="relative z-10 text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] text-[#A36C53] dark:[#A36C53] font-bold mb-4 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px] text-center sm:text-right">خدمات ایونت</h2>
+
+    <!-- لیست کارت‌ها (فراخوانی کامپوننت با ارسال services به عنوان prop) -->
+    <div class="relative z-10 space-y-6 mb-10 md:mb-11 xl:mb-12 flex flex-col items-center text-center">
+      <ServiceCard :services="services" />
+    </div>
+
+    <!-- بخش دکمه و فلش -->
+    <div class="relative z-10 flex flex-col xl:flex-row items-center xl:justify-between mt-6 md:mt-8 xl:mt-10 px-2 md:px-4 gap-6 md:gap-7 xl:gap-0">
+
+      <!-- متن (سمت راست) -->
+      <div class="text-center xl:text-right mr-0 xl:mr-[20px] min-[1920px]:mr-[35px] mt-0 xl:-mt-[100px] min-[1920px]:-mt-[115px] order-1 lg:mt-0.5">
+        <span class="text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">رویداد بعدی خود را</span>
+        <span class="text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">حرفه‌ای برگزار کنید</span>
       </div>
 
-      <div class="px-6 md:px-10 ">
-
-        <!-- حالت لودینگ اولیه (در حال گرفتن اطلاعات قرعه‌کشی) -->
-        <div v-if="pending" class="py-10 text-center text-gray-400 dark:text-dark-text/60 text-sm">
-          در حال دریافت اطلاعات قرعه‌کشی...
-        </div>
-
-        <!-- خطای دریافت اطلاعات قرعه‌کشی -->
-        <div v-else-if="loadError" class="py-10 text-center text-red-500 dark:text-red-400 text-sm">
-          {{ loadError }}
-        </div>
-
-        <template v-else-if="lottery">
-          <h1 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-dark-text mb-4 text-center mt-6">{{ lottery.title }}</h1>
-          <div class="w-16 h-1 bg-[#2D7A6F] dark:bg-dark-accent rounded-full mx-auto mb-6"></div>
-
-          <p class="text-gray-500 dark:text-dark-text/70 text-sm md:text-base leading-relaxed mb-8 text-center">
-            {{ lottery.description }}
-          </p>
-
-          <!-- اطلاعات قرعه‌کشی که از API واقعی میاد (تاریخ شروع، پایان و ظرفیت) -->
-          <div class="bg-[#ebebeb] dark:bg-dark-input rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm mb-8 overflow-hidden">
-            <div class="flex items-center p-3 md:p-4 border-b border-gray-300 dark:border-dark-border/60">
-              <Icon name="heroicons:calendar-days" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
-              <span class="w-full text-gray-700 dark:text-dark-text-deep text-sm md:text-base">شروع: {{ formatDate(lottery.starts_at) }}</span>
-            </div>
-            <div class="flex items-center p-3 md:p-4 border-b border-gray-300 dark:border-dark-border/60">
-              <Icon name="heroicons:clock" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
-              <span class="w-full text-gray-700 dark:text-dark-text-deep text-sm md:text-base">پایان: {{ formatDate(lottery.ends_at) }}</span>
-            </div>
-            <div class="flex items-center p-3 md:p-4">
-              <Icon name="heroicons:users" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
-              <span class="w-full text-gray-700 dark:text-dark-text-deep text-sm md:text-base">ظرفیت: {{ lottery.capacity }} نفر</span>
-            </div>
-          </div>
-
-          <p class="text-lg font-bold text-gray-800 dark:text-dark-text mb-2 text-center">قیمت: {{ formatPrice(lottery.price) }} تومان</p>
-
-          <!-- پیام خطای ثبت‌نام (ظرفیت تکمیل، قبلاً ثبت‌نام شده، عدم احراز هویت و ...) -->
-          <p v-if="submitError" class="text-red-500 dark:text-red-400 text-sm text-center mb-4">{{ submitError }}</p>
-
-          <button
-            @click="handleRegister"
-            :disabled="submitting"
-            class="w-full bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep py-3 md:py-4 rounded-2xl font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-lg text-sm md:text-base disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {{ submitting ? 'در حال ثبت‌نام...' : 'ثبت‌نام در قرعه‌کشی' }}
-          </button>
-        </template>
+      <!-- فلش (وسط) - فقط در دسکتاپ واقعی نمایش داده می‌شود -->
+      <div class="hidden xl:flex flex-1 justify-center px-4 order-2">
+        <img src="/images/curved-arrow.png" alt="فلش" class="min-w-[600px] lg:min-w-[650px] xl:min-w-[700px] min-[1920px]:min-w-[780px] -ml-[150px] lg:-ml-[175px] xl:-ml-[195px] min-[1920px]:-ml-[220px] object-contain dark:opacity-80" />
       </div>
-    </RaffleCard>
-  </div>
+
+      <!-- دکمه ( درخواست همکاری) -->
+      <NuxtLink to="/order/requestProject" class="order-3">
+        <button class="bg-[#ECD0A0] dark:bg-dark-gold px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] dark:hover:bg-dark-gold/80 dark:text-dark-text-deep transition w-full max-w-[263px] md:w-[263px] xl:w-[263px] min-[1920px]:w-[300px] h-[48px] min-[1920px]:h-[54px] mt-0 xl:mt-[90px] min-[1920px]:mt-[105px]">
+          درخواست همکاری
+        </button>
+      </NuxtLink>
+
+    </div>
+  </section>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { apiFetch, LOTTERIES_PATH } from '~/composables/useApi'
-import { useActiveLottery } from '~/composables/useActiveLottery'
+import { ref } from 'vue'
+import ServiceCard from '@/components/events/landing/ServiceCard.vue'
 
-const { lottery, pending, fetchActiveLottery } = useActiveLottery()
-
-const loadError = ref('')
-const submitting = ref(false)
-const submitError = ref('')
-
-onMounted(async () => {
-  try {
-    await fetchActiveLottery()
-  } catch (err) {
-    loadError.value = err.message
-  }
+const pageData = ref({
+  description_1: '',
+  description_2: ''
 })
 
-function formatDate(value) {
-  if (!value) return '-'
-  return new Date(value).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' })
-}
+// تصاویر پیش‌فرض (در صورتی که API تصویر برنگردونه)
+const defaultImages = [
+  '/images/event-card-1.png',
+  '/images/event-card-2.jpg',
+  '/images/event-card-3.jpg'
+]
 
-function formatPrice(value) {
-  if (value == null) return '-'
-  return new Intl.NumberFormat('fa-IR').format(value)
-}
+const services = ref([])
 
-async function handleRegister() {
-  if (!lottery.value) return
-  submitting.value = true
-  submitError.value = ''
+// یک آیتم service_N رو (متن ساده با جداکننده‌ی خط جدید) به { title, description } تبدیل می‌کنه.
+// خط اول -> عنوان، بقیه‌ی خط‌ها (اگه بود) -> توضیحات.
+const parseServiceValue = (raw) => {
+  const text = String(raw ?? '')
+  const newlineIndex = text.indexOf('\n')
 
-  try {
-    // POST /api/lotteris/{lottery}/register  (مسیر واقعی سرور، نه lotteries)
-    const res = await apiFetch(`${LOTTERIES_PATH}/${lottery.value.id}/register`, {
-      method: 'POST'
-    })
-
-    // اطلاعات ثبت‌نام (کاربر، قرعه‌کشی، تاریخ ثبت‌نام) رو برای صفحه رسید نگه می‌داریم
-    const registration = useState('lottery-registration', () => null)
-    registration.value = res.data
-
-    await navigateTo('/events/lottery/success')
-  } catch (err) {
-    // بر اساس کدهای پاسخ سند Swagger: 400 (ظرفیت تکمیل)، 401 (عدم احراز هویت)،
-    // 409 (قبلاً ثبت‌نام کرده)، 422 (قرعه‌کشی فعال نیست)
-    submitError.value = err.data?.message || err.message
-  } finally {
-    submitting.value = false
+  if (newlineIndex === -1) {
+    // فقط یک خط بود؛ کل متن رو به عنوان title در نظر می‌گیریم
+    return { title: text.trim(), description: '' }
   }
+
+  const title = text.slice(0, newlineIndex).trim()
+  const description = text.slice(newlineIndex + 1).trim()
+  return { title, description }
+}
+
+// طبق داکیومنت API، پارامتر page به‌صورت query string ارسال می‌شه، نه path
+// GET /api/page?page=events
+const { data: eventsRes, error: eventsError } = await useFetch(
+  'https://nadertechnologyteam.ir/api/page',
+  { query: { page: 'events' } }
+)
+
+if (eventsRes.value && eventsRes.value.data) {
+  const items = eventsRes.value.data
+  const findValue = (key) => items.find((i) => i.key === key)?.value || ''
+
+  pageData.value.description_1 = findValue('description_1')
+  pageData.value.description_2 = findValue('description_2')
+
+  // 1) پیدا کردن همه‌ی شماره‌هایی که کلید service_N دارن (به‌صورت داینامیک)
+  //    توجه: دیگه دنبال service_N_title نمی‌گردیم، چون title و description
+  //    الان توی یک کلید واحد service_N (متن با خط جدید به عنوان جداکننده) هستن.
+  const serviceNumbers = new Set()
+  const serviceKeyRegex = /^service_(\d+)$/
+
+  items.forEach((item) => {
+    const match = item.key.match(serviceKeyRegex)
+    if (match) {
+      serviceNumbers.add(Number(match[1]))
+    }
+  })
+
+  // 2) مرتب‌سازی شماره‌ها تا ترتیب کارت‌ها درست باشه (1، 2، 3، 4، ...)
+  const sortedNumbers = Array.from(serviceNumbers).sort((a, b) => a - b)
+
+  // 3) ساخت آرایه‌ی services بر اساس شماره‌های واقعی موجود در دیتابیس
+  services.value = sortedNumbers.map((n, index) => {
+    const imageFromApi = findValue(`service_${n}_image`)
+    const { title, description } = parseServiceValue(findValue(`service_${n}`))
+    return {
+      title,
+      description,
+      // اگر API خودش تصویر برگردوند از اون استفاده کن، وگرنه از پیش‌فرض‌ها به‌ترتیب استفاده کن
+      image: imageFromApi || defaultImages[index % defaultImages.length]
+    }
+  })
+} else if (eventsError.value) {
+  console.error('خطا در دریافت اطلاعات صفحه events:', eventsError.value)
 }
 </script>
