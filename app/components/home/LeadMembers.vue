@@ -5,84 +5,80 @@
       <img src="/images/bg-team.svg" class="-mr-[7px] max-aouto w-full h-full md:h-auto object-cover rounded-[1.5rem] sm:rounded-[2.2rem] md:rounded-[2.6rem] xl:rounded-[3rem] 2xl:rounded-[3.4rem]" alt="Background" />
 
       <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
-      <div
-        class="absolute inset-0 flex md:hidden items-center justify-center mt-[50px]"
-        @touchstart="onTouchStart"
-        @touchend="onTouchEnd"
-      >
-        <div
-          v-for="item in mobileVisibleTeamMembers"
-          :key="item.realIndex"
-          @click="selectMember(item.realIndex)"
-          class="absolute transition-all duration-500 ease-out cursor-pointer"
-          :class="[
-            item.pos === 0
-              ? 'z-20 scale-100 opacity-100 translate-x-0'
-              : item.pos === -1
-                ? 'z-10 scale-75 opacity-40 -translate-x-[80px]'
-                : 'z-10 scale-75 opacity-40 translate-x-[80px]'
-          ]"
-        >
 <div
-  :class="[
-    'bg-white dark:bg-dark-input rounded-[20px] h-[90px] w-[100px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 flex flex-col overflow-hidden',
-    selectedIndex === item.realIndex && item.pos === 0
-      ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset'
-      : ''
-  ]"
+  class="absolute inset-0 flex md:hidden items-center justify-center mt-[50px]"
+  @touchstart="onTouchStart"
+  @touchend="onTouchEnd"
 >
-  <div class="w-full h-[72px] overflow-hidden">
-    <img
-      :src="item.data.image"
-      :alt="item.data.name"
-      class="w-full h-full object-cover object-top select-none pointer-events-none"
-      draggable="false"
-    />
-  </div>
-
   <div
-    class="py-1 px-1 text-center"
-    style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+    v-for="item in mobileVisibleTeamMembers"
+    :key="item.realIndex"
+    @click="selectMember(item.realIndex)"
+    class="absolute transition-all duration-500 ease-out cursor-pointer"
+    :class="[
+      item.pos === 0
+        ? 'z-20 scale-100 opacity-100 translate-x-0'
+        : item.pos === -1
+          ? 'z-10 scale-75 opacity-40 -translate-x-[105px]'
+          : 'z-10 scale-75 opacity-40 translate-x-[105px]'
+    ]"
   >
-    <p class="text-[#747893] dark:text-dark-text-deep font-normal text-[8px] font-roboto truncate">{{ item.data.name }}</p>
+    <div
+      :class="[
+        'relative bg-white dark:bg-dark-input rounded-[24px] h-[110px] w-[120px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 flex flex-col overflow-hidden',
+        selectedIndex === item.realIndex && item.pos === 0
+          ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset'
+          : ''
+      ]"
+    >
+      <img
+        :src="item.data.image"
+        :alt="item.data.name"
+        class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+        draggable="false"
+      />
+
+      <div
+        class="mt-auto py-1.5 px-1.5 text-center relative z-10 backdrop-blur-md"
+        style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+      >
+        <p class="text-white dark:text-white font-bold text-[10px] font-roboto truncate">{{ item.data.name }}</p>
+      </div>
+    </div>
   </div>
 </div>
-        </div>
-      </div>
 
       <!-- تبلت و دسکتاپ: گرید کارت‌ها (absolute روی همون کانتینر عکس، دیگه با margin منفی حدسی جدا نمی‌افته) -->
       <div class="hidden md:flex absolute inset-0 justify-center items-end pb-6 xl:pb-8 2xl:pb-10 px-4">
 
         <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 2xl:gap-5 w-[600px] xl:w-[853px] 2xl:w-[1300px]">
 
-          <div
-            v-for="(member, index) in teamMembers"
-            :key="member.id"
-            :ref="el => { cardRefs[index] = el }"
-            @click="selectMember(index)"
-            :class="[
-              'bg-white dark:bg-dark-input rounded-[14px] sm:rounded-[20px] md:rounded-[28px] xl:rounded-[40px] 2xl:rounded-[48px] h-[74px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[140px] md:w-[140px] xl:h-[195px] xl:w-[200px] 2xl:h-[290px] 2xl:w-[305px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 cursor-pointer flex flex-col overflow-hidden',
-              selectedIndex === index ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset' : ''
-            ]"
-          >
-<div class="w-full h-[68px] sm:h-[62px] md:h-[105px] xl:h-[155px] 2xl:h-[235px] overflow-hidden">
+<div
+  v-for="(member, index) in teamMembers"
+  :key="member.id"
+  :ref="el => { cardRefs[index] = el }"
+  @click="selectMember(index)"
+  :class="[
+    'relative bg-white dark:bg-dark-input rounded-[14px] sm:rounded-[20px] md:rounded-[28px] xl:rounded-[40px] 2xl:rounded-[48px] h-[74px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[140px] md:w-[140px] xl:h-[195px] xl:w-[200px] 2xl:h-[290px] 2xl:w-[305px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 ease-out cursor-pointer flex flex-col overflow-hidden hover:scale-110 hover:z-20',
+    selectedIndex === index ? 'ring-3 ring-[#A36C53] dark:ring-dark-gold ring-inset scale-105 z-10' : ''
+  ]"
+>
+  <!-- عکس پس‌زمینه که کل کارت رو می‌گیره -->
   <img
     :src="member.image"
     :alt="member.name"
-    class="w-full h-full object-cover object-top"
+    class="absolute inset-0 w-full h-full object-cover"
   />
+
+  <!-- نوار اسم شیشه‌ای -->
+  <div
+    class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative z-10 backdrop-blur-md"
+    style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+  >
+<p class="text-[#ffffff] dark:text-[#ffffff] font-bold text-[8px] sm:text-[10px] md:text-[13px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
+    <div v-if="selectedIndex === index" class="absolute -top-3 left-1/2 -translate-x-1/2"></div>
+  </div>
 </div>
-
-            <div
-              class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative"
-              style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
-            >
-                <p class="text-[#747893] dark:text-dark-text-deep font-normal text-[8px] sm:text-[10px] md:text-[13px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
-
-                <div v-if="selectedIndex === index" class="absolute -top-3 left-1/2 -translate-x-1/2">
-                </div>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -116,7 +112,7 @@
 >
   {{ teamMembers[selectedIndex].roal }}
 </h3>
-<p class="text-slate-700 dark:text-dark-text-deep/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px] leading-relaxed 2xl:leading-loose">
+<p class="text-slate-700 dark:text-dark-text-deep/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px] xl:leading-loose md:leading-loose 2xl:leading-loose">
   {{ teamMembers[selectedIndex].bio }}
 </p>
       </div>
@@ -139,8 +135,8 @@ const notchWidth = ref(100);
 const isMobile = ref(false);
 
 const teamMembers = [
-  { id: 1, roal:"مدیر ارشد و بنیان‌گذار نادرتک" , name: 'علی ادریسی', bio:  'علی ادریسی با بیش از ۹ سال تجربه در حوزه برنامه‌نویسی، طراحی و توسعه وب و اپلیکیشن، امنیت سایبری و دیجیتال مارکتینگ، مدیریت و راهبری تیم نادرتک را بر عهده دارد. او بنیان‌گذار کدوتمبل، نخستین فروشگاه اینترنتی تخصصی میوه در خراسان شمالی، و ادریس کدینگ، مجموعه آموزشی برنامه‌نویسی، است. همچنین سابقه همکاری با تیم تولید محتوای دانشگاه صنعتی شریف و اجرای پروژه‌های متنوع فناوری را در کارنامه خود دارد. تمرکز او بر ارائه راهکارهای نوآورانه و توسعه پروژه‌های دیجیتال برای رشد کسب‌وکارها است', image: '/images/edrisipoor.png' },
-  { id: 2, roal:"سرپرست واحد تولید محتوا", name: 'امیر سهامی', bio: 'امیر سهامی با بیش از ۱۰ سال تجربه حرفه‌ای در حوزه تئاتر، به‌عنوان نویسنده، کارگردان، بازیگر و مشاور هنری فعالیت داشته است. او همچنین برنده عنوان بهترین کارگردان و بهترین بازیگر استان خراسان شمالی بوده و با بهره‌گیری از تجربه خود در روایت‌پردازی، سناریونویسی و تولید محتوای خلاق، مدیریت واحد تولید محتوای نادرتک را بر عهده دارد. تخصص او در خلق محتوای هدفمند و تأثیرگذار، به برندها کمک می‌کند ارتباطی مؤثر با مخاطبان خود برقرار کرده و حضوری قدرتمندتر در فضای دیجیتال داشته باشند', image: '/images/sahamii.png' },
+  { id: 1, roal:"مدیر ارشد و بنیان‌گذار نادرتک" , name: 'علی ادریسی', bio:  'علی ادریسی با بیش از ۹ سال تجربه در حوزه برنامه‌نویسی، طراحی و توسعه وب و اپلیکیشن، امنیت سایبری و دیجیتال مارکتینگ، مدیریت و راهبری تیم نادرتک را بر عهده دارد. او بنیان‌گذار کدوتمبل، نخستین فروشگاه اینترنتی تخصصی میوه در خراسان شمالی، و ادریس کدینگ، مجموعه آموزشی برنامه‌نویسی، است. همچنین سابقه همکاری با تیم تولید محتوای دانشگاه صنعتی شریف و اجرای پروژه‌های متنوع فناوری را در کارنامه خود دارد. تمرکز او بر ارائه راهکارهای نوآورانه و توسعه پروژه‌های دیجیتال برای رشد کسب‌وکارها است', image: '/images/Ali Idrisipour.png' },
+  { id: 2, roal:"سرپرست واحد تولید محتوا", name: 'امیر سهامی', bio: 'امیر سهامی با بیش از ۱۰ سال تجربه حرفه‌ای در حوزه تئاتر، به‌عنوان نویسنده، کارگردان، بازیگر و مشاور هنری فعالیت داشته است. او همچنین برنده عنوان بهترین کارگردان و بهترین بازیگر استان خراسان شمالی بوده و با بهره‌گیری از تجربه خود در روایت‌پردازی، سناریونویسی و تولید محتوای خلاق، مدیریت واحد تولید محتوای نادرتک را بر عهده دارد. تخصص او در خلق محتوای هدفمند و تأثیرگذار، به برندها کمک می‌کند ارتباطی مؤثر با مخاطبان خود برقرار کرده و حضوری قدرتمندتر در فضای دیجیتال داشته باشند', image: '/images/sahami.png' },
   { id: 3, roal:"سرپرست واحد برنامه‌نویسی" , name: 'علی ناویانی', bio: 'علی ناویانی با بیش از ۳ سال تجربه تخصصی در حوزه طراحی UI/UX، طراحی رابط کاربری با Figma، توسعه وب و برنامه‌نویسی، سرپرستی واحد برنامه‌نویسی نادرتک را بر عهده دارد. او در طراحی تجربه‌های کاربری مدرن، طراحی وب‌سایت‌های حرفه‌ای، توسعه وب‌اپلیکیشن‌ها و پیاده‌سازی محصولات دیجیتال سریع، امن و واکنش‌گرا نقش مؤثری ایفا می‌کند. تمرکز او ارائه راهکارهای فنی و طراحی خلاقانه متناسب با نیاز کسب‌وکارها و خلق تجربه‌های دیجیتال کارآمد است', image: '/images/naviani.png' },
   { id: 4, roal:"سرپرست واحد هوش مصنوعی" , name: 'مهدی محمدی', bio: 'مهدی محمدی سرپرست واحد هوش مصنوعی و فناوری این مجموعه است. او با بیش از ۵ سال تجربه در حوزه هوش مصنوعی، تحلیل داده، بازارهای مالی و فناوری‌های نوین، مسئولیت راهبری فنی، تحقیق و توسعه (R&D) و توسعه راهکارهای هوشمند را بر عهده دارد. همچنین با بهره‌گیری از فناوری‌های نوین تولید محتوا و انیمیشن، در طراحی و اجرای پروژه‌های خلاقانه و تولید محتوای دیجیتال نقش مؤثری ایفا می‌کند. تمرکز او بر ارائه راهکارهای نوآورانه، اتوماسیون فرآیندها و توسعه محصولات دیجیتال است تا کسب‌وکارها با استفاده از فناوری، سریع‌تر و هوشمندانه‌تر رشد کنند', image: '/images/mohammadi.png' }
 ];

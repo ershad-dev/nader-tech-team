@@ -8,7 +8,7 @@
     /> -->
 
     <!-- بخش توضیحات -->
-    <div class="mb-8 md:mb-9 xl:mb-10 relative z-10">
+    <div class="mb-8 md:mb-9 xl:mb-10 relative z-10 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px]">
 
       <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
         {{ pageData.description_1 }}
@@ -30,10 +30,17 @@
     </div>
 
 <!-- بخش سوالات (questions) -->
-<div v-if="questions.length" class="relative z-10 mb-10 md:mb-11 xl:mb-12">
-  <ul class="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-x-6 md:gap-y-4 xl:gap-x-8 xl:gap-y-5 min-[1920px]:gap-x-10 min-[1920px]:gap-y-6 max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] mx-auto">
+<div v-if="questions.length" class="relative z-10 mb-10 md:mb-11 xl:mb-12 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px]">
+  <h3
+    v-if="questionsTitle"
+    class="text-center sm:text-right text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#A36C53] dark:text-dark-gold mb-4 md:mb-5 xl:mb-6"
+  >
+    {{ questionsTitle }}
+  </h3>
+
+  <ul class="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-x-6 md:gap-y-4 xl:gap-x-8 xl:gap-y-5 min-[1920px]:gap-x-10 min-[1920px]:gap-y-6 max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px]">
     <li
-      v-for="(question, index) in questions"
+      v-for="(question, index) in questionsList"
       :key="index"
       class="flex items-start gap-2 text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px]"
     >
@@ -69,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ServiceCard from '@/components/events/landing/ServiceCard.vue'
 
 // ── Image URL resolver ──────────────────────────────────────
@@ -99,6 +106,10 @@ const defaultImages = [
 
 const services = ref([])
 const questions = ref([])
+
+// اولین آیتم questions به عنوان تایتل و بقیه به عنوان لیست سوالات
+const questionsTitle = computed(() => questions.value[0] || '')
+const questionsList = computed(() => questions.value.slice(1))
 
 const { data: eventsRes, error: eventsError } = await useFetch(
   'https://nadertechnologyteam.ir/api/page/events'

@@ -1,44 +1,50 @@
 <template>
-  <div class="max-w-6xl [@media(min-width:1920px)_and_(min-height:1024px)]:max-w-[1600px] mx-auto mt-12 text-center px-4 [@media(min-width:1920px)_and_(min-height:1024px)]:px-0" dir="rtl">
-    <h1 class="text-[20px] md:text-[32px] [@media(min-width:1920px)_and_(min-height:1024px)]:text-[40px] font-bold text-[#0F184B] mb-8 leading-relaxed [@media(min-width:1920px)_and_(min-height:1024px)]:mb-12 [@media(min-width:1920px)_and_(min-height:1024px)]:text-[44px]">
-      با دقت می اندیشیم ،با کیفیت میسازیم، با جسارت <span class="text-[#B18F55]">فتح </span> میکنیم
+  <div
+    class="max-w-6xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-[1700px] mx-auto mt-12 text-center px-4"
+    dir="rtl"
+  >
+    <h1
+      class="text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B] mb-8 leading-relaxed lg:mb-10 2xl:mb-12"
+    >
+      با دقت می اندیشیم ،با کیفیت میسازیم، با جسارت
+      <span class="text-[#B18F55]">فتح </span> میکنیم
     </h1>
 
     <div
       v-if="slides.length"
-      class="relative w-full max-w-[976px] [@media(min-width:1920px)_and_(min-height:1024px)]:max-w-[1600px] h-[200px] md:h-[406px] [@media(min-width:1920px)_and_(min-height:1024px)]:h-[700px] rounded-[17px] overflow-hidden mx-auto shadow-lg"
+      class="relative w-full max-w-[976px] lg:max-w-[1100px] xl:max-w-[1280px] 2xl:max-w-[1500px] aspect-[21/9] rounded-[17px] overflow-hidden mx-auto shadow-lg"
     >
-      <div
-        v-for="(slide, index) in slides"
-        :key="slide.id"
-        v-show="currentSlide === index"
-        class="w-full h-full transition-opacity duration-500"
-      >
-        <NuxtLink to="/auth/login" class="block w-full h-full">
-          <img :src="slide.image" :alt="slide.alt || slide.title" class="w-full h-full object-cover" />
-        </NuxtLink>
-      </div>
+      <Transition name="slide-fade">
+        <div :key="currentSlide" class="absolute inset-0 w-full h-full">
+          <NuxtLink to="/auth/login" class="block w-full h-full">
+            <img
+              :src="slides[currentSlide].image"
+              :alt="slides[currentSlide].alt || slides[currentSlide].title"
+              class="w-full h-full object-cover"
+            />
+          </NuxtLink>
+        </div>
+      </Transition>
     </div>
 
     <div
       v-if="slides.length > 1"
-      class="flex justify-center gap-4 mt-6 [@media(min-width:1920px)_and_(min-height:1024px)]:mt-10 [@media(min-width:1920px)_and_(min-height:1024px)]:gap-6"
+      class="flex justify-center gap-4 mt-6 lg:mt-8 2xl:mt-10 lg:gap-5 2xl:gap-6"
     >
-      <SliderButton direction="left" @click="nextSlide" />
-      <SliderButton direction="right" @click="prevSlide" />
+      <SliderButton direction="left" @click="handleNext" />
+      <SliderButton direction="right" @click="handlePrev" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 
 const currentSlide = ref(0);
 const slides = ref([]);
 
 const config = useRuntimeConfig();
 
-// استفاده مستقیم از useFetch در setup (نه داخل onMounted)
 const { data, error } = await useFetch('https://nadertechnologyteam.ir/api/banners', {
   baseURL: config.public.apiBase,
 });
@@ -58,5 +64,69 @@ const prevSlide = () => {
   if (!slides.value.length) return;
   currentSlide.value = (currentSlide.value - 1 + slides.value.length) % slides.value.length;
 };
+
+let autoplayTimer = null;
+
+const startAutoplay = () => {
+  stopAutoplay();
+  if (slides.value.length <= 1) return;
+  autoplayTimer = setInterval(() => {
+    nextSlide();
+  }, 4000);
+};
+
+const stopAutoplay = () => {
+  if (autoplayTimer) {
+    clearInterval(autoplayTimer);
+    autoplayTimer = null;
+  }
+};
+
+const handleNext = () => {
+  nextSlide();
+  startAutoplay();
+};
+
+const handlePrev = () => {
+  prevSlide();
+  startAutoplay();
+};
+
+onMounted(() => {
+  startAutoplay();
+});
+
+onUnmounted(() => {
+  stopAutoplay();
+});
+
+watch(
+  () => slides.value.length,
+  () => {
+    startAutoplay();
+  }
+);
 </script>
 
+<style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: scale(1.04);
+}
+.slide-fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
+}
+.slide-fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+</style>  
