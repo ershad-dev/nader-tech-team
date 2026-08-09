@@ -109,6 +109,14 @@
   نادر تکنولوژی، ارائه دهنده راهکارهای نوین فناوری، توسعه نرم‌افزار و خدمات دیجیتال
   </p>
 
+  <a
+    href="mailto:info@nadertech.com"
+    dir="ltr"
+    class="text-[#2D4745] dark:text-dark-text/80 text-[13px] sm:text-[15px] lg:text-[16px] hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors"
+  >
+    info@nadertech.com
+  </a>
+
   <div class="flex justify-center gap-2 sm:gap-3 flex-wrap">
   <img
   v-for="icon in socialIcons"
