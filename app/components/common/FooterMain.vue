@@ -4,27 +4,15 @@
 
   <div v-if="showGreenSection" class="relative w-full">
 
-   
+    <!-- ===================== نسخه دسکتاپ ===================== -->
     <div class="hidden lg:block relative w-full">
 
-      <div class="bg-[#2C7379] dark:bg-[#407B80] h-[200px] w-full pt-10 pb-20 flex flex-col items-center">
+      <div class="bg-[#2C7379] dark:bg-[#407B80] h-[200px] w-full flex flex-col items-center justify-center gap-3">
 
-        <div class="flex justify-center items-center">
-          <svg viewBox="0 0 700 150" class="w-[500px] h-auto">
-            <path id="curve-path-desktop" d="M 50,120 Q 350,50 650,120" fill="transparent" />
-            <text font-size="50" font-weight="bold" fill="white">
-              <textPath href="#curve-path-desktop" startOffset="50%" text-anchor="middle">
-                {{ title }}
-              </textPath>
-            </text>
-          </svg>
-
-        </div>
-
-        <div v-html="title1" 
+        <div v-html="randomText"
      :class="[
        'text-white dark:text-dark-text text-[32px] font-bold text-center px-4',
-       footerConfig?.titleMargin || 'mt-4'
+       footerConfig?.titleMargin || ''
      ]">
 </div>
       </div>
@@ -46,13 +34,9 @@
     <!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
     <div class="lg:hidden relative w-full">
 
-      <div class="bg-[#2C7379] dark:bg-[#407B80] w-full pt-4 pb-8 sm:pt-6 sm:pb-10 px-4 flex flex-col items-center gap-1.5 sm:gap-2">
+      <div class="bg-[#2C7379] dark:bg-[#407B80] w-full py-6 sm:py-8 px-4 flex flex-col items-center justify-center gap-1.5 sm:gap-2">
 
-        <h2 class="text-white dark:text-dark-text text-[16px] sm:text-[22px] font-bold text-center leading-snug">
-          {{ title }}
-        </h2>
-
-        <div v-html="title1" class="text-white dark:text-dark-text text-[12px] sm:text-[15px] font-bold text-center leading-snug"></div>
+        <div v-html="randomText" class="text-white dark:text-dark-text text-[16px] sm:text-[22px] font-bold text-center leading-snug"></div>
 
       </div>
 
@@ -112,9 +96,9 @@
   <a
     href="mailto:info@nadertech.com"
     dir="ltr"
-    class="text-[#2D4745] dark:text-dark-text/80 text-[13px] sm:text-[15px] lg:text-[16px] hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors"
+    class="text-[#2D4745] dark:text-dark-text/80 text-[13px] sm:text-[15px] lg:text-[16px] hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors font-roboto"
   >
-    info@nadertech.com
+nadertechteam@protonmail.com
   </a>
 
   <div class="flex justify-center gap-2 sm:gap-3 flex-wrap">
@@ -147,12 +131,13 @@
 
   <script setup>
   import TermsModal from '~/components/TermsModal.vue'
+  import promoTexts from '~/assets/data/promoTexts.json'
 
   const route = useRoute();
   const footerConfig = useState('footerConfig');
   const links = [
   // { name: 'خانه', path: '/' },
-  { name: 'سفارش گیری پروژه', path: '/order/requestProject' },
+  { name: 'سفارش گیری پروژه', path: '/order' },
   { name: 'برگزاری ایونت', path: '/events' },
   { name: 'درباره ما', path: '/about' },
   { name: 'نمونه پروژه ها', path: '/order/moreProject' },
@@ -161,6 +146,46 @@
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 
   const showTermsModal = ref(false);
+
+  // ---------------------------------------------------------
+  // متن‌های رندوم بخش سبز فوتر
+  // randomTitle -> عنوان اصلی (متن منحنی SVG در دسکتاپ / h2 در موبایل)
+  // randomText  -> زیرعنوان (title1 قبلی)
+  // هر دو مستقل از هم و از یک آرایه انتخاب می‌شن، ولی با هم یکسان نمی‌شن
+  // ---------------------------------------------------------
+  const randomTitle = ref('');
+  const randomText = ref('');
+
+  function getRandomIndex(excludeValues = []) {
+    if (!promoTexts?.length) return -1;
+    let idx = Math.floor(Math.random() * promoTexts.length);
+    if (promoTexts.length > excludeValues.length) {
+      while (excludeValues.includes(promoTexts[idx])) {
+        idx = Math.floor(Math.random() * promoTexts.length);
+      }
+    }
+    return idx;
+  }
+
+  function pickRandomText() {
+    if (!promoTexts?.length) return;
+
+    const titleIdx = getRandomIndex([randomTitle.value]);
+    randomTitle.value = promoTexts[titleIdx];
+
+    const subtitleIdx = getRandomIndex([randomTitle.value, randomText.value]);
+    randomText.value = promoTexts[subtitleIdx];
+  }
+
+  // انتخاب متن رندوم فقط سمت کلاینت (جلوگیری از hydration mismatch)
+  onMounted(() => {
+    pickRandomText();
+  });
+
+  // هر بار مسیر عوض شد یک متن رندوم جدید نشون بده
+  watch(() => route.path, () => {
+    pickRandomText();
+  });
 
   const lotteryRoutes = [
     '/events/lottery/register',
@@ -239,35 +264,10 @@
     width: 195px;
     height: 40px;
   }
-}.shape-pill-mobile {
-  width: 150px;
-  height: 40px;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-}
-
-.btn-cooperate-mobile {
-  width: 130px;
-  height: 30px;
-}
-
-@media (min-width: 640px) {
-  .shape-pill-mobile {
-    width: 220px;
-    height: 52px;
-  }
-  .btn-cooperate-mobile {
-    width: 195px;
-    height: 40px;
-  }
 }
 
 .btn-cooperate {
   transform: scaleY(-1);
 }
 
- 
 </style>

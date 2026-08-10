@@ -9,10 +9,12 @@
     </div>
 
     <!-- متن سمت چپ -->
-    <div class="flex-1 mr-0 xl:-mr-[40px] min-[1920px]:-mr-[46px] text-right px-3 sm:px-4 md:px-5 xl:px-0 py-2 sm:py-3 md:py-3 xl:py-0 min-w-0">
-        <h3 class="text-[13px] sm:text-[18px] md:text-[19px] xl:text-[24px] min-[1920px]:text-[27px] font-bold text-[#606792] dark:text-white mb-1 sm:mb-2 line-clamp-2 xl:line-clamp-none leading-tight sm:leading-normal">{{ service.title }}</h3>
-      <p class="text-[10px] sm:text-[13px] md:text-[13px] xl:text-[16px] min-[1920px]:text-[18px] font-roboto text-[#606792] dark:text-white leading-[15px] sm:leading-relaxed md:leading-relaxed mt-1 sm:mt-2 md:mt-2 xl:mt-[20px] min-[1920px]:mt-[24px] line-clamp-3 sm:line-clamp-4 md:line-clamp-4 xl:line-clamp-none">{{ service.description }}</p>
-    </div>
+    <div class="flex-1 flex items-center xl:-mr-[25px] pl-3 sm:pl-4 md:pl-5 xl:pl-[16px] min-[1920px]:pl-[20px] py-2 sm:py-3 md:py-3 xl:py-0 min-w-0 h-full">
+        <div class="text-right w-full">
+    <h3 class="text-[13px] sm:text-[18px] md:text-[19px] xl:text-[24px] min-[1920px]:text-[27px] font-bold text-[#606792] dark:text-white mb-1 sm:mb-2 line-clamp-2 xl:line-clamp-none leading-tight sm:leading-normal">{{ service.title }}</h3>
+    <p class="text-[10px] sm:text-[13px] md:text-[13px] xl:text-[16px] min-[1920px]:text-[18px] font-roboto text-[#606792] dark:text-white leading-[15px] sm:leading-relaxed md:leading-relaxed mt-1 sm:mt-2 md:mt-2 xl:mt-[20px] min-[1920px]:mt-[24px] line-clamp-3 sm:line-clamp-4 md:line-clamp-4 xl:line-clamp-none">{{ service.description }}</p>
+  </div>
+</div>
   </div>
 </template>
 

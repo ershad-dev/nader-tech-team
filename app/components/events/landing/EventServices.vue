@@ -10,7 +10,7 @@
     <!-- بخش توضیحات -->
     <div class="mb-8 md:mb-9 xl:mb-10 relative z-10 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px]">
 
-      <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
+      <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#A36C53] dark:text-[#A36C53] text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
         {{ pageData.description_1 }}
 
         <br>
@@ -33,7 +33,7 @@
 <div v-if="questions.length" class="relative z-10 mb-10 md:mb-11 xl:mb-12 pr-0 sm:pr-[40px] md:pr-[60px] xl:pr-[90px] min-[1920px]:pr-[120px]">
   <h3
     v-if="questionsTitle"
-    class="text-center sm:text-right text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#A36C53] dark:text-dark-gold mb-4 md:mb-5 xl:mb-6"
+    class="text-center sm:text-right text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#A36C53] dark:text-[#A36C53] mb-4 md:mb-5 xl:mb-6"
   >
     {{ questionsTitle }}
   </h3>
@@ -54,10 +54,10 @@
     <div class="relative z-10 flex flex-col xl:flex-row items-center xl:justify-between mt-6 md:mt-8 xl:mt-10 px-2 md:px-4 gap-6 md:gap-7 xl:gap-0">
 
       <!-- متن (سمت راست) -->
-      <div class="text-center xl:text-right mr-0 xl:mr-[20px] min-[1920px]:mr-[35px] mt-0 xl:-mt-[100px] min-[1920px]:-mt-[115px] order-1 lg:mt-0.5">
-        <span class="text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">رویداد بعدی خود را</span>
-        <span class="text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">حرفه‌ای برگزار کنید</span>
-      </div>
+      <div class="text-center mr-0 xl:mr-[20px] min-[1920px]:mr-[35px] mt-0 xl:-mt-[100px] min-[1920px]:-mt-[115px] order-1 lg:mt-0.5">
+  <span class="whitespace-nowrap text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">آماده برگزاری یک</span>
+  <span class="whitespace-nowrap text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">رویداد حرفه ای هستید؟</span>
+</div>
 
       <!-- فلش (وسط) - فقط در دسکتاپ واقعی نمایش داده می‌شود -->
       <div class="hidden xl:flex flex-1 justify-center px-4 order-2">

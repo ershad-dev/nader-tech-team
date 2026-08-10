@@ -2,45 +2,53 @@
   <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto py-16 px-4 2xl:px-12 overflow-x-hidden" dir="rtl">
     
     <!-- Hero Section -->
-<section class="flex flex-col lg:flex-row items-center gap-12 2xl:gap-20 mb-20 2xl:mb-28 mt-8">
+<!-- Hero Section -->
+<section class="flex flex-col items-center gap-6 mb-20 2xl:mb-28 -mt-[20px]">
 
-  <div class="flex-1 w-full text-center lg:text-right relative pt-[70px] sm:pt-[90px] lg:pt-0">
-    <div class="lg:block">
-      <!-- محتوا: عنوان، متن، فلش، دکمه -->
-      <div class="lg:w-full md:mt-[100px] lg:-mt-[20px]">
-        <h1 class="relative z-10 text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] lg:text-[36px] 2xl:text-[42px] mb-6 leading-tight mt-12 sm:mt-14  lg:mt-0 " v-html="pageData.title">
-        </h1>
-<p class="relative z-10 text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] lg:mt-0 lg:max-w-[600px] xl:max-w-[700px] 2xl:max-w-4xl lg:text-[28px] 2xl:text-[30px] rokh-light mb-8 max-w-2xl mx-auto lg:mx-0">
-          {{ pageData.intro_text }}
-        </p>
-        <div class="hidden lg:flex justify-center px-4">
-          <img src="/images/curved-arrow.png" alt="فلش" class="w-[750px] 2xl:w-[850px] object-contain mt-10 lg:-mt-1 lg:ml-[150px]" />
-        </div>
-        <!-- دکمه -->
-        <div class="flex justify-center mt-10 lg:justify-end lg:mt-0 lg:-mt-10">
-          <NuxtLink
-            to="/order/requestProject"
-            class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] xl:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg lg:ml-[80px] flex items-center justify-center"
-          >
-            ارتباط با ما
-          </NuxtLink>
-        </div>
-      </div>
-      <!-- دایره -->
-      <div class="absolute -top-[10px] sm:-top-[15px] left-1/2 -translate-x-1/2 z-0
-                  lg:left-0 lg:translate-x-0 lg:top-0 lg:-translate-y-1/3 lg:mt-[120px] 2xl:mt-[140px]">
-        <p class="bg-black rounded-full
-                  w-[160px] h-[160px]
-                  sm:w-[220px] sm:h-[220px]
-                  lg:w-[360px] lg:h-[360px]
-                  2xl:w-[360px] 2xl:h-[360px]
-                  -mt-12
-                  sm:mt-[50px]
-                  md:-mt-[40px]
-                  lg:mt-[134px]">
-        </p>
-      </div>
-    </div>
+  <div class="w-full text-center">
+
+<!-- لوگو -->
+<div class="flex justify-center">
+  <img
+    src="/images/ntt-logo.png"
+    alt="لوگو"
+    class="rounded-full object-cover
+           w-[160px] h-[160px]
+           sm:w-[220px] sm:h-[220px]
+           lg:w-[260px] lg:h-[260px]
+           2xl:w-[300px] 2xl:h-[300px]"
+  />
+</div>
+    <!-- عنوان -->
+    <h1
+      class="text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] lg:text-[34px] 2xl:text-[40px] mb-6 leading-tight mt-8 font-roboto"
+      v-html="pageData.title"
+    ></h1>
+
+<!-- متن مقدماتی -->
+<p
+  class="text-[#0F184B] dark:text-dark-text font-bold leading-relaxed text-[18px] sm:text-[20px] lg:text-[24px] 2xl:text-[28px] rokh-light mb-8 max-w-[600px] sm:max-w-[750px] lg:max-w-[1100px] 2xl:max-w-[1450px] mx-auto font-roboto"
+>
+  {{ pageData.intro_text }}
+</p>
+<!-- فلش (فقط از lg به بالا) -->
+<div class="hidden lg:flex justify-center px-4">
+  <img
+    src="/images/curved-arrow.png"
+    alt="فلش"
+    class="w-[750px] 2xl:w-[850px] object-contain mt-10 lg:mt-8 2xl:mt-10"
+  />
+</div>
+
+<!-- دکمه -->
+<div class="flex justify-center mt-10 lg:justify-end lg:-mt-10 2xl:-mt-16">
+  <NuxtLink
+    to="/order/requestProject"
+    class="bg-[#ECD0A0] dark:bg-dark-gold border border-white dark:border-dark-border w-full sm:w-[220px] xl:w-[241px] 2xl:w-[280px] h-[57px] 2xl:h-[64px] px-8 py-3 text-[20px] 2xl:text-[22px] rounded-[16px] font-bold text-[#000000] dark:text-dark-text-deep shadow-lg flex items-center justify-center"
+  >
+    ارتباط با ما
+  </NuxtLink>
+</div>
   </div>
 </section>
 
@@ -65,9 +73,9 @@
 
     <!-- Team Section -->
     <section class="mb-20 2xl:mb-28">
-      <h2 class="text-[32px] 2xl:text-[38px] font-bold mb-12 text-[#877048] dark:text-dark-gold text-center">
-        +۱۵ سال تجربه در ساخت <br> محصولات دیجیتال موفق
-      </h2>
+<h2 class="text-[20px] sm:text-[22px] md:text-[28px] lg:text-[32px] 2xl:text-[38px] font-bold mb-12 text-[#877048] dark:text-dark-gold text-center lg:whitespace-nowrap">
+  +۱۵ سال تجربه در ساخت  محصولات دیجیتال موفق
+</h2>
 
 <!-- کانتینر اسلایدر: اضافه شدن snap-x snap-mandatory فقط برای موبایل -->
 <div 
@@ -92,11 +100,11 @@
     </div>
   </div>
 </div>
-            <div>
+            <!-- <div>
       <p class="font-roboto text-[14px] 2xl:text-[16px] font-normal text-[#0F184B] dark:text-dark-text leading-[40px] 2xl:leading-[44px] mt-[20px]">
         تیم ما با بیش از ۱۵ سال تجربه حرفه‌ای، پروژه‌ها را از مرحله ایده تا اجرا و توسعه همراهی می‌کند. از طراحی و توسعه وب‌سایت‌های اختصاصی، فروشگاه‌های اینترنتی و سیستم‌های تحت وب گرفته تا تولید محتوای حرفه‌ای، هویت بصری و راهکارهای رسانه‌ای؛ تمرکز ما تنها روی اجرا نیست، بلکه روی ساخت درست است؛ جایی که عملکرد، تجربه کاربری، امنیت و رشد بلندمدت در کنار یکدیگر معنا پیدا می‌کنند.
       </p>
-    </div>
+    </div> -->
     </section>
 
     <!-- Services Section -->

@@ -52,41 +52,39 @@
 </div>
 
       <!-- تبلت و دسکتاپ: گرید کارت‌ها (absolute روی همون کانتینر عکس، دیگه با margin منفی حدسی جدا نمی‌افته) -->
-      <div class="hidden md:flex absolute inset-0 justify-center items-end pb-6 lg:pb-7 xl:pb-8 2xl:pb-10 px-4">
+<!-- تبلت و دسکتاپ: تغییر از grid به flex -->
+<div class="hidden md:flex absolute inset-0 justify-center items-end pb-6 lg:pb-7 xl:pb-8 2xl:pb-10 px-4">
 
-        <div class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-4 2xl:gap-5 w-[600px] lg:w-[730px] xl:w-[853px] 2xl:w-[1300px]">
+<div class="flex justify-center items-end gap-2 sm:gap-3 md:gap-4 lg:gap-4 2xl:gap-5 w-[600px] lg:w-[730px] xl:w-[853px] 2xl:w-[1300px]">
 
-<div
-  v-for="(member, index) in teamMembers"
-  :key="member.id"
-  :ref="el => { cardRefs[index] = el }"
-  @click="selectMember(index)"
-  :class="[
-    'relative bg-white dark:bg-dark-input rounded-[14px] sm:rounded-[20px] md:rounded-[28px] lg:rounded-[34px] xl:rounded-[40px] 2xl:rounded-[48px] h-[74px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[140px] md:w-[140px] lg:h-[170px] lg:w-[170px] xl:h-[195px] xl:w-[200px] 2xl:h-[290px] 2xl:w-[305px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 ease-out cursor-pointer flex flex-col overflow-hidden hover:scale-110 hover:z-20',
-    selectedIndex === index
-      ? 'border-[1.5px] border-white/60 dark:border-white/30 scale-110 z-10 shadow-[0_0_20px_rgba(255,255,255,0.3)]'
-      : ''
-  ]"
->
-  <!-- عکس پس‌زمینه که کل کارت رو می‌گیره -->
-  <img
-    :src="member.image"
-    :alt="member.name"
-    class="absolute inset-0 w-full h-full object-cover"
-  />
-
-  <!-- نوار اسم شیشه‌ای -->
   <div
-    class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 lg:py-3 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative z-10 backdrop-blur-md"
-    style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+    v-for="(member, index) in teamMembers"
+    :key="member.id"
+    :ref="el => { cardRefs[index] = el }"
+    @click="selectMember(index)"
+    :class="[
+      'relative bg-white dark:bg-dark-input rounded-[14px] sm:rounded-[20px] md:rounded-[28px] lg:rounded-[34px] xl:rounded-[40px] 2xl:rounded-[48px] h-[74px] w-[68px] sm:h-[85px] sm:w-[90px] md:h-[140px] md:w-[140px] lg:h-[170px] lg:w-[170px] xl:h-[195px] xl:w-[200px] 2xl:h-[290px] 2xl:w-[305px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-300 ease-out cursor-pointer flex flex-col overflow-hidden hover:scale-110 hover:z-20 hover:mx-2 sm:hover:mx-2.5 md:hover:mx-3 xl:hover:mx-4 2xl:hover:mx-5',
+      selectedIndex === index
+        ? 'border-[1.5px] border-white/60 dark:border-white/30 scale-105 z-10 shadow-[0_0_20px_rgba(255,255,255,0.3)]'
+        : ''
+    ]"
   >
-<p class="text-[#ffffff] dark:text-[#ffffff] font-bold text-[8px] sm:text-[10px] md:text-[13px] lg:text-[14px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
-    <div v-if="selectedIndex === index" class="absolute -top-3 left-1/2 -translate-x-1/2"></div>
-  </div>
-</div>
+    <img
+      :src="member.image"
+      :alt="member.name"
+      class="absolute inset-0 w-full h-full object-cover"
+    />
 
-        </div>
-      </div>
+    <div
+      class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 lg:py-3 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative z-10 backdrop-blur-md"
+      style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
+    >
+      <p class="text-[#ffffff] dark:text-[#ffffff] font-bold text-[8px] sm:text-[10px] md:text-[13px] lg:text-[14px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
+    </div>
+  </div>
+
+</div>
+</div>
     </div>
 
     <div v-if="selectedIndex !== null" class="mt-[40px] sm:mt-[60px] md:mt-24 md:mt-28 xl:mt-32 2xl:mt-36 relative text-center px-2 sm:px-4 md:px-8 xl:px-16 2xl:px-20 animate-fade-in">
@@ -111,13 +109,13 @@
     !isMobile && selectedIndex >= 1
       ? 'mr-[5px] sm:mr-[45px] md:mr-[20px] xl:mr-[60px] 2xl:mr-[70px]'
       : !isMobile
-        ? 'mr-[80px] sm:mr-[130px] md:mr-[150px] xl:mr-[135px] 2xl:mr-[200px]'
+        ? 'mr-[80px] sm:mr-[130px] md:mr-[150px] xl:mr-[155px] 2xl:mr-[230px]'
         : ''
   ]"
 >
   {{ teamMembers[selectedIndex].roal }}
 </h3>
-<p class="text-slate-700 dark:text-dark-text-deep/90 text-[12px] sm:text-[13px] md:text-[14px] xl:text-base 2xl:text-[22px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px] xl:leading-loose md:leading-loose 2xl:leading-loose">
+<p class="text-slate-700 dark:text-dark-text-deep/90 text-[13px] sm:text-[14px] md:text-[15px] xl:text-base 2xl:text-[23px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px] xl:leading-loose md:leading-loose 2xl:leading-loose">
   {{ teamMembers[selectedIndex].bio }}
 </p>
       </div>
