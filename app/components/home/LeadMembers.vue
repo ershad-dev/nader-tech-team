@@ -110,7 +110,7 @@
 
 <h3
   :class="[
-    'text-[12px] sm:text-[14px] md:text-[16px] xl:text-[17px] 2xl:text-[25px] font-normal text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium transition-all duration-300',
+    'text-[13px] sm:text-[15px] md:text-[17px] xl:text-[18px] 2xl:text-[27px] font-bold text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium transition-all duration-300',
     isMobile ? 'mt-[5px]' : '-mt-[10px]',
     !isMobile && selectedIndex >= 1
       ? (isRtl ? 'mr-[5px] sm:mr-[45px] md:mr-[20px] xl:mr-[60px] 2xl:mr-[70px]' : 'ml-[5px] sm:ml-[45px] md:ml-[20px] xl:ml-[60px] 2xl:ml-[70px]')

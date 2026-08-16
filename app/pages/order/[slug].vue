@@ -108,10 +108,10 @@ onBeforeUnmount(() => {
       </p>
     </div>
 
-    <div class="w-full sm:w-3/4 mx-auto mb-8 lg:mb-10 h-[1.5px] bg-gradient-to-r from-white/75 dark:from-dark-highlight/20 to-gray-400 dark:to-dark-border"></div>
+    <!-- <div class="w-full sm:w-3/4 mx-auto mb-8 lg:mb-10 h-[1.5px] bg-gradient-to-r from-white/75 dark:from-dark-highlight/20 to-gray-400 dark:to-dark-border"></div> -->
 
     <!-- بخش نظر مشتری - فقط وقتی review.description وجود داره نمایش داده می‌شه -->
-    <div v-if="hasReview" class="mt-10 lg:mt-16 max-w-[900px] mx-auto -mb-[100px] lg:-mb-[200px]">
+    <!-- <div v-if="hasReview" class="mt-10 lg:mt-16 max-w-[900px] mx-auto -mb-[100px] lg:-mb-[200px]">
       <h3 class="text-[#2C7379] dark:text-dark-highlight font-bold text-[22px] sm:text-[26px] lg:text-[32px] mb-6 lg:mb-8 flex flex-col items-center">اعتماد مشتریان</h3>
       <div class="w-full shadow-sm">
         <div class="flex items-center gap-3 lg:gap-4 mb-6 flex-wrap">
@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
   </p>
 </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- مودال نمایش عکس تمام‌صفحه -->
     <Teleport to="body">

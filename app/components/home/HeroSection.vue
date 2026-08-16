@@ -4,7 +4,7 @@
     :dir="isRtl ? 'rtl' : 'ltr'"
   >
     <h1
-      class="text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B] mb-8 leading-relaxed lg:mb-10 2xl:mb-12"
+    class="text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B]dark:text-white mb-4 leading-relaxed lg:mb-1 2xl:mb-3"
     >
       {{ $t('home.hero.titlePart1') }}
       <span class="text-[#B18F55]">{{ $t('home.hero.titleHighlight') }}</span>
@@ -78,7 +78,7 @@ const startAutoplay = () => {
   if (slides.value.length <= 1) return;
   autoplayTimer = setInterval(() => {
     nextSlide();
-  }, 4000);
+  }, 8000);
 };
 
 const stopAutoplay = () => {

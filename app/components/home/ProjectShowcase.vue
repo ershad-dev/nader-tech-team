@@ -101,11 +101,13 @@
           isRtl ? 'lg:mr-0 xl:mr-[50px] lg:text-right' : 'lg:ml-0 xl:ml-[50px] lg:text-left'
         ]"
       >
-        <h2 class="text-[20px] lg:text-[22px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 lg:mb-5 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
-        <p class="leading-[26px] lg:leading-[32px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 lg:mb-7 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[13px] lg:text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
+<h2 class="text-[26px] lg:text-[30px] xl:text-[34px] min-[1920px]:text-[40px] font-bold mb-4 lg:mb-5 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
+
+<p class="leading-[30px] lg:leading-[36px] xl:leading-[44px] min-[1920px]:leading-[48px] mb-6 lg:mb-7 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[16px] lg:text-[17px] xl:text-[18px] min-[1920px]:text-[24px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
+
 <NuxtLink :to="localePath(currentContent.buttonLink)">
   <button
-    class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto lg:mx-0 lg:w-full lg:max-w-[240px] xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-all shadow-lg text-[18px] lg:text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 lg:mt-8 xl:mt-[50px] flex items-center justify-center whitespace-nowrap"
+    class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto lg:mx-0 lg:w-full lg:max-w-[240px] xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-all shadow-lg text-[20px] lg:text-[21px] xl:text-[22px] min-[1920px]:text-[24px] mt-6 lg:mt-8 xl:mt-[50px] flex items-center justify-center whitespace-nowrap"
   >
     {{ currentContent.buttonText }}
   </button>

@@ -206,17 +206,18 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
   >
       <div class="absolute -right-1 top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[30px] xxl:h-[36px] bg-[#EAAA3C] dark:bg-dark-gold rounded-full -mt-[6px] md:-mt-[6px] xxl:-mt-[8px]"></div>
 
-      <div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
-        <div class="flex items-center h-full gap-1">
-          <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[10px] xxl:ml-[14px] text-[#EAAA3C] dark:text-dark-gold rokh-bold-num mt-2">
-            {{ formatStepNumber(index + 1) }}
-          </span>
-          <h3 class="text-[#EAAA3C] dark:text-dark-gold font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] truncate rokh-bold-num">{{ step.title }}</h3>
-        </div>
-      </div>
+
+<div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
+  <div class="flex items-center h-full gap-1">
+    <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[2px] sm:ml-[4px] md:-ml-[10px] xxl:ml-[5px] text-[#EAAA3C] dark:text-dark-gold rokh-bold-num mt-2">
+      {{ formatStepNumber(index + 1) }}
+    </span>
+    <h3 class="flex-1 text-center text-[#EAAA3C] dark:text-dark-gold font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] truncate rokh-bold-num">{{ step.title }}</h3>
+  </div>
+</div>
 
 <div
-  class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 [&_p]:m-0"
+  class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow flex items-center justify-center text-center text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 [&_p]:m-0 [&_p]:text-center"
   v-html="step.desc"
 ></div>
     </div>

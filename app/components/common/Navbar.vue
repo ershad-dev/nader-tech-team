@@ -36,9 +36,12 @@
       </div>
 
       <!-- لوگو (سمت راست در موبایل / یک باکس مجزا در دسکتاپ) -->
-      <div class="flex items-center">
-        <img src="/images/ntt-logo.png" alt="Logo" class="w-9 h-9 sm:w-10 sm:h-10 min-[1920px]:w-11 min-[1920px]:h-11 object-contain" />
-      </div>
+<!-- لوگو (سمت راست در موبایل / یک باکس مجزا در دسکتاپ) -->
+<div class="flex items-center">
+  <NuxtLink :to="localePath('/')" @click="isOpen = false">
+    <img src="/images/ntt-logo.png" alt="Logo" class="w-9 h-9 sm:w-10 sm:h-10 min-[1920px]:w-11 min-[1920px]:h-11 object-contain" />
+  </NuxtLink>
+</div>
 
     </div>
 

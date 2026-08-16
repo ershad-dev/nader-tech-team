@@ -105,9 +105,9 @@
     <transition name="fade" mode="out-in">
       <div :key="currentCategory.title">
         
-        <h3 class="flex items-center justify-center text-center text-[14px] md:text-[15px] 2xl:text-[16px] font-bold text-white dark:text-white mb-8 bg-[#67A9A8] dark:bg-dark-accent py-2 rounded-[17px] w-[180px] 2xl:w-[200px] h-[43px] 2xl:h-[46px] mx-auto px-4">
-          {{ currentCategory.title }}
-        </h3>
+        <h3 class="flex items-center justify-center text-center text-[17px] md:text-[19px] lg:text-[20px] 2xl:text-[24px] font-extrabold text-white dark:text-white mb-8 bg-[#67A9A8] dark:bg-dark-accent py-3 rounded-[17px] w-[260px] md:w-[300px] 2xl:w-[340px] h-[44px] md:h-[48px] 2xl:h-[56px] mx-auto px-4">
+  {{ currentCategory.title }}
+</h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-[20px] 2xl:gap-x-16 2xl:gap-y-[24px] max-w-[662px] 2xl:max-w-[820px] mx-auto">
           <div
