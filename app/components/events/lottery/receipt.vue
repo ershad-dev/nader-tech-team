@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#F9F7F2] dark:bg-dark-bg flex justify-center items-center p-4" dir="rtl">
+  <div class="min-h-screen bg-[#F9F7F2] dark:bg-dark-bg flex justify-center items-center p-4" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <div ref="pdfTarget" class="w-full max-w-lg bg-white dark:bg-dark-surface rounded-3xl shadow-xl overflow-hidden relative pb-8">
 
@@ -9,67 +9,67 @@
 
       <div class="px-6 md:px-10">
 
-        <h2 class="text-green-600 dark:text-green-400 font-bold text-lg md:text-xl text-center my-6">ثبت‌نام با موفقیت انجام شد</h2>
+        <h2 class="text-green-600 dark:text-green-400 font-bold text-lg md:text-xl text-center my-6">{{ $t('events.lottery.register.successTitle') }}</h2>
 
         <div v-if="!registration" class="text-center text-gray-400 dark:text-dark-text/60 text-sm py-6">
-          اطلاعات ثبت‌نامی یافت نشد. لطفاً دوباره از صفحه ثبت‌نام اقدام کنید.
+          {{ $t('events.lottery.register.notFound') }}
         </div>
 
         <template v-else>
           <!-- کد قرعه‌کشی: طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره
                که همون کد قرعه‌کشی/بلیط کاربره؛ دیگه نیازی به حدس زدن اسم فیلد نیست -->
           <div class="text-center mb-8">
-            <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">کد قرعه‌کشی</div>
+            <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">{{ $t('events.lottery.register.lotteryCode') }}</div>
             <p v-if="registration.code" class="text-2xl font-bold text-[#2C7379] dark:text-dark-highlight font-roboto">{{ registration.code }}</p>
-            <p v-else class="text-sm text-red-400 dark:text-red-300 font-roboto">این فیلد در پاسخ API موجود نیست</p>
+            <p v-else class="text-sm text-red-400 dark:text-red-300 font-roboto">{{ $t('events.lottery.register.fieldMissing') }}</p>
           </div>
 
           <p class="text-amber-600 dark:text-amber-400 text-xs text-center mb-4 leading-relaxed font-roboto">
-            این کد رو به همراه شماره موبایل‌تون یادداشت کنید.
+            {{ $t('events.lottery.register.saveCodeHint') }}
           </p>
 
           <div class="bg-[#BFD1D580]/50 dark:bg-dark-input/40 border border-[#6F78B780] dark:border-dark-border rounded-2xl p-4 md:p-6 mb-8 w-full">
             <div class="space-y-4 text-gray-600 dark:text-dark-text-deep text-sm md:text-base">
               <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
-                <span>نام و نام خانوادگی</span>
+                <span>{{ $t('events.lottery.register.fields.fullName') }}</span>
                 <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.full_name }}</span>
               </div>
 
               <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
-                <span>نام کاربری</span>
+                <span>{{ $t('events.lottery.register.fields.username') }}</span>
                 <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.username }}</span>
               </div>
 
               <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
-                <span>شماره موبایل</span>
+                <span>{{ $t('events.lottery.register.fields.mobile') }}</span>
                 <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.mobile }}</span>
               </div>
 
               <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
-                <span>ایمیل</span>
+                <span>{{ $t('events.lottery.register.fields.email') }}</span>
                 <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.email }}</span>
               </div>
 
               <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
-                <span>استان</span>
+                <span>{{ $t('events.lottery.register.fields.province') }}</span>
                 <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ registration.user.province }}</span>
               </div>
 
               <div class="flex justify-between font-roboto">
-                <span>مبلغ پرداختی</span>
-                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ formatPrice(registration.lottery.price) }} تومان</span>
+                <span>{{ $t('events.lottery.register.fields.amountPaid') }}</span>
+                <span class="font-medium text-gray-800 dark:text-dark-text-deep font-roboto">{{ formatPrice(registration.lottery.price) }} {{ $t('events.lottery.register.currency') }}</span>
               </div>
             </div>
           </div>
 
           <div class="text-center mb-8">
-            <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">قرعه‌کشی</div>
+            <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">{{ $t('events.lottery.register.lotteryLabel') }}</div>
             <p class="text-lg md:text-xl font-bold text-[#2C7379] dark:text-dark-highlight">{{ registration.lottery.title }}</p>
-            <p class="text-gray-400 dark:text-dark-text/60 text-xs mt-2 font-roboto">تاریخ ثبت‌نام: {{ formatDate(registration.registered_at) }}</p>
+            <p class="text-gray-400 dark:text-dark-text/60 text-xs mt-2 font-roboto">{{ $t('events.lottery.register.registeredAt') }}: {{ formatDate(registration.registered_at) }}</p>
           </div>
 
           <p class="text-red-400 dark:text-red-300 text-xs text-center mb-8 leading-relaxed font-roboto">
-            لطفاً از این صفحه اسکرین‌شات تهیه کنید؛ هنگام ورود، بلیط شما بر اساس این اطلاعات بررسی خواهد شد.
+            {{ $t('events.lottery.register.screenshotHint') }}
           </p>
 
           <div class="flex flex-col items-center w-full px-6 md:px-10 mb-8 gap-4">
@@ -83,8 +83,8 @@
               </svg>
             </button>
 
-            <NuxtLink to="/events" class="w-full max-w-[375px] h-[47px] bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep flex justify-center items-center rounded-2xl font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-lg">
-              بازگشت به خانه
+            <NuxtLink :to="localePath('/events')" class="w-full max-w-[375px] h-[47px] bg-[#2D7A6F] dark:bg-dark-accent text-white dark:text-dark-text-deep flex justify-center items-center rounded-2xl font-bold hover:bg-teal-800 dark:hover:bg-dark-accent-hover transition shadow-lg">
+              {{ $t('events.lottery.register.backHome') }}
             </NuxtLink>
 
           </div>
@@ -99,6 +99,11 @@ import { ref } from 'vue'
 
 const pdfTarget = ref(null)
 
+// --- i18n ---
+const { locale, localeProperties } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 // این مقدار در pages/register.vue بعد از موفقیت‌آمیز بودن
 // POST /api/lotteris/{lottery}/register داخل useState('lottery-registration', ...) ذخیره شده
 // طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره که همون کد قرعه‌کشی/بلیط کاربره
@@ -106,12 +111,14 @@ const registration = useState('lottery-registration', () => null)
 
 function formatDate(value) {
   if (!value) return '-'
-  return new Date(value).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' })
+  const localeCode = locale.value === 'fa' ? 'fa-IR' : 'en-US'
+  return new Date(value).toLocaleDateString(localeCode, { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 function formatPrice(value) {
   if (value == null) return '-'
-  return new Intl.NumberFormat('fa-IR').format(value)
+  const localeCode = locale.value === 'fa' ? 'fa-IR' : 'en-US'
+  return new Intl.NumberFormat(localeCode).format(value)
 }
 
 const downloadPDF = async () => {
@@ -121,6 +128,11 @@ const downloadPDF = async () => {
   const el = pdfTarget.value
   if (!el) return
 
+  // جهت و زبان سند خروجی PDF باید مطابق زبان فعلی کاربر باشه، نه همیشه فارسی،
+  // چون این عکس/PDF دقیقاً نمای همون صفحه‌ایه که کاربر می‌بینه
+  const pdfDir = isRtl.value ? 'rtl' : 'ltr'
+  const pdfLang = locale.value
+
   const canvas = await html2canvas(el, {
     scale: 2,
     useCORS: true,
@@ -128,9 +140,9 @@ const downloadPDF = async () => {
     windowWidth: el.scrollWidth,
     windowHeight: el.scrollHeight,
     onclone: (clonedDoc) => {
-      clonedDoc.documentElement.setAttribute('dir', 'rtl')
-      clonedDoc.documentElement.setAttribute('lang', 'fa')
-      clonedDoc.body.setAttribute('dir', 'rtl')
+      clonedDoc.documentElement.setAttribute('dir', pdfDir)
+      clonedDoc.documentElement.setAttribute('lang', pdfLang)
+      clonedDoc.body.setAttribute('dir', pdfDir)
       clonedDoc.body.classList.remove('dark')
     }
   })

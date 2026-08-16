@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "loginRegister": "Login / Register",
+    "faq": "FAQ",
+    "about": "About Us",
+    "articles": "Articles",
+    "events": "Events",
+    "order": "Order Project",
+    "home": "Home",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile",
+    "moreProjects": "Sample Projects",
+    "terms": "Terms & Conditions"
+  },
+  "common": {
+    "welcome": "Welcome"
+  }
+}

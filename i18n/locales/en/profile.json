@@ -1,0 +1,58 @@
+{
+  "profile": {
+    "avatar": {
+      "title": "Profile Picture",
+      "selectNew": "Choose New Image",
+      "delete": "Delete Picture"
+    },
+    "fields": {
+      "username": "Username",
+      "fullName": "Full Name",
+      "mobile": "Mobile Number",
+      "email": "Email",
+      "birthDate": "Birth Date",
+      "nationalCode": "National Code",
+      "province": "Province",
+      "postalCode": "Postal Code",
+      "address": "Address"
+    },
+    "security": {
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password",
+      "changing": "Changing password...",
+      "changeButton": "Change Password"
+    },
+    "changeMobile": {
+      "label": "Mobile Number",
+      "saving": "Saving...",
+      "submit": "Change Mobile Number",
+      "enterNewMobile": "Please enter your new mobile number"
+    },
+    "menu": {
+      "security": "Account Security",
+      "profile": "User Profile",
+      "changeMobile": "Change Mobile Number",
+      "logout": "Sign Out"
+    },
+    "actions": {
+      "edit": "Edit Information",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "save": "Save Information"
+    },
+    "messages": {
+      "profileSaved": "Information saved successfully",
+      "profileSaveError": "Error saving information",
+      "mobileChanged": "Mobile number changed successfully",
+      "mobileChangeError": "Error changing mobile number",
+      "fillAllFields": "Please fill in all fields",
+      "passwordChanged": "Password changed successfully",
+      "passwordChangeError": "Error changing password",
+      "uploadSuccess": "Upload successful",
+      "uploadError": "Error uploading image",
+      "avatarDeleted": "Profile picture deleted",
+      "avatarDeleteError": "Error deleting picture"
+    }
+  }
+}

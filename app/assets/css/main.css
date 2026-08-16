@@ -45,6 +45,11 @@
 }
 .font-roboto { font-family: 'NotoSans', sans-serif; }
 
+/* فونت لاتین برای حالت انگلیسی - این خط رو اضافه کنید */
+html[lang="en"] .font-roboto {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
 @font-face {
   font-family: 'Noto-Light';
   src: url('/fonts/NotoSansArabic-Light.ttf') format('truetype');

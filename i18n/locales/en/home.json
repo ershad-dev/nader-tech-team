@@ -1,0 +1,68 @@
+{
+  "home": {
+    "hero": {
+      "titlePart1": "We think with care, we build with quality, and with courage we",
+      "titleHighlight": "conquer",
+      "titlePart2": "the market"
+    },
+    "team": {
+      "members": {
+        "1": {
+          "name": "Ali Edrisi",
+          "role": "CEO & Founder of NaderTech",
+          "bio": "With over 9 years of experience in programming, web and app design/development, cybersecurity, and digital marketing, Ali Edrisi leads and manages the NaderTech team. He is the founder of Kadotambel, the first specialized online fruit store in North Khorasan, and Edris Coding, a programming education group. He has also collaborated with the content production team at Sharif University of Technology and has delivered a wide range of technology projects. His focus is on delivering innovative solutions and developing digital projects that help businesses grow."
+        },
+        "2": {
+          "name": "Amir Sahami",
+          "role": "Head of Content Production",
+          "bio": "With over 10 years of professional experience in theater as a writer, director, actor, and artistic consultant, Amir Sahami has also won the titles of Best Director and Best Actor in North Khorasan Province. Drawing on his experience in storytelling, screenwriting, and creative content production, he leads NaderTech's content production unit. His expertise in crafting purposeful, impactful content helps brands connect effectively with their audience and build a stronger digital presence."
+        },
+        "3": {
+          "name": "Ali Naviani",
+          "role": "Head of Development",
+          "bio": "With over 3 years of specialized experience in UI/UX design, interface design with Figma, web development, and programming, Ali Naviani leads NaderTech's development unit. He plays a key role in designing modern user experiences, building professional websites, developing web applications, and delivering fast, secure, and responsive digital products. His focus is on providing technical solutions and creative design tailored to business needs, crafting efficient digital experiences."
+        },
+        "4": {
+          "name": "Mehdi Mohammadi",
+          "role": "Head of Artificial Intelligence",
+          "bio": "Mehdi Mohammadi leads the company's AI and technology unit. With over 5 years of experience in artificial intelligence, data analysis, financial markets, and emerging technologies, he is responsible for technical leadership, R&D, and the development of smart solutions. He also plays an active role in creative content and animation production using cutting-edge technology. His focus is on delivering innovative solutions, automating processes, and developing digital products that help businesses grow faster and smarter through technology."
+        }
+      }
+    },
+    "services": {
+      "categories": {
+        "web": "Web Design",
+        "content": "Content Production",
+        "event": "Event Hosting"
+      },
+      "web": {
+        "title": "Web Design",
+        "description": "Your website is the digital storefront of your business. At NaderTech, we build corporate, e-commerce, and custom websites using the latest programming technologies, with modern design, high speed, and SEO best practices. Our goal is to build a site that, beyond looking professional, turns visitors into loyal customers and paves the way for your business growth.",
+        "buttonText": "Request Web Design"
+      },
+      "content": {
+        "title": "Content Production",
+        "description": "Professional content is the most important tool for attracting an audience and boosting sales. NaderTech's content production team creates text, image, and video content to help your business rank higher on Google, increase engagement on social media, and build audience trust. All content is produced with an SEO approach tailored to your brand identity.",
+        "buttonText": "Request Content Production"
+      },
+      "event": {
+        "title": "Event Hosting",
+        "description": "Hosting a successful event requires careful planning, creativity, and professional execution. From ideation and scenario design to coordination, management, and full execution of conferences, seminars, workshops, and corporate events, the NaderTech team is with you every step of the way. Our goal is to create a memorable experience for attendees and boost your brand's credibility through professional events.",
+        "buttonText": "Request Event Hosting"
+      }
+    },
+    "projects": {
+      "previewTitle": "Project Preview",
+      "viewMore": "View More"
+    },
+"feedback": {
+  "title": "What Our Clients Say",
+  "loading": "Loading customer feedback...",
+  "error": "Failed to load customer feedback",
+  "goToSlide": "Go to slide {number}",
+  "translating": "Translating...",
+  "machineTranslated": "Machine translated"
+}
+  }
+  
+}

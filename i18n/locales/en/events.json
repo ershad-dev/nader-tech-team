@@ -1,0 +1,61 @@
+{
+  "events": {
+    "hero": {
+      "subtitle": "From ideation to final execution, we professionally manage every stage of your event."
+    },
+    "landing": {
+      "servicesTitle": "Event Services",
+      "ctaLine1": "Ready to host a",
+      "ctaLine2": "professional event?",
+      "cooperateButton": "Request Collaboration",
+      "arrowAlt": "Arrow",
+      "testimonialsTitle": "Client Satisfaction from Our Events",
+      "testimonialsSubtitle": "Client Experience in Their Own Words",
+      "testimonials": {
+        "0": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
+        "1": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
+        "2": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
+        "3": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
+        "4": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" }
+      }
+    },
+    "lottery": {
+      "landing": {
+        "bgAlt": "Lottery",
+        "line1": "Try your luck",
+        "line2": "and win exciting prizes",
+        "registerButton": "Register for the Lottery"
+      },
+      "register": {
+        "successTitle": "Registration Successful",
+        "notFound": "Registration information not found. Please register again.",
+        "lotteryCode": "Lottery Code",
+        "fieldMissing": "This field is not present in the API response",
+        "saveCodeHint": "Please save this code along with your phone number.",
+        "fields": {
+          "fullName": "Full Name",
+          "username": "Username",
+          "mobile": "Phone Number",
+          "email": "Email",
+          "province": "Province",
+          "amountPaid": "Amount Paid"
+        },
+        "currency": "Toman",
+        "lotteryLabel": "Lottery",
+        "registeredAt": "Registration Date",
+        "screenshotHint": "Please take a screenshot of this page; your ticket will be verified based on this information upon entry.",
+        "backHome": "Back to Home"
+      }
+    },
+    "registerForm": {
+        "loading": "Loading lottery details...",
+        "starts": "Starts",
+        "ends": "Ends",
+        "capacity": "Capacity",
+        "people": "people",
+        "price": "Price",
+        "submit": "Register for the Lottery",
+        "submitting": "Registering..."
+      }
+  }
+}

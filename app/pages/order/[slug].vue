@@ -11,6 +11,39 @@ const galleryImages = computed(() => {
 });
 
 const hasReview = computed(() => !!project.value?.review?.description);
+
+// --- مودال نمایش عکس ---
+const isModalOpen = ref(false);
+const activeImage = ref(null);
+
+function openImageModal(src) {
+  activeImage.value = src;
+  isModalOpen.value = true;
+}
+
+function closeImageModal() {
+  isModalOpen.value = false;
+  activeImage.value = null;
+}
+
+// وقتی مودال بازه، اسکرول صفحه پشت رو قفل می‌کنیم
+watch(isModalOpen, (open) => {
+  if (import.meta.client) {
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+});
+
+// بستن مودال با کلید Esc
+function handleKeydown(e) {
+  if (e.key === 'Escape') closeImageModal();
+}
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+  if (import.meta.client) document.body.style.overflow = '';
+});
 </script>
 
 <template>
@@ -46,13 +79,22 @@ const hasReview = computed(() => !!project.value?.review?.description);
       <div class="absolute top-0 right-0 w-[40%] h-full bg-[#a8c1c3]/20 rounded-l-full -z-20"></div>
 
       <div v-if="galleryImages.length" class="flex justify-center items-center gap-3 sm:gap-6 lg:gap-14 mb-10 lg:mb-16 px-4 mt-[20px] lg:mt-[30px] z-10">
-        <div class="w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] rounded-[14px] lg:rounded-[25px] overflow-hidden -mt-16 sm:-mt-28 lg:-mt-40 shadow-xl z-20">
+        <div
+          class="w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] rounded-[14px] lg:rounded-[25px] overflow-hidden -mt-16 sm:-mt-28 lg:-mt-40 shadow-xl z-20 cursor-pointer"
+          @click="openImageModal(galleryImages[0])"
+        >
           <img :src="galleryImages[0]" class="w-full h-full object-cover" :alt="project.title" />
         </div>
-        <div class="w-[95px] h-[220px] sm:w-[210px] sm:h-[440px] lg:w-[321px] lg:h-[640px] shadow-2xl rounded-[14px] lg:rounded-[25px] overflow-hidden z-20">
+        <div
+          class="w-[95px] h-[220px] sm:w-[210px] sm:h-[440px] lg:w-[321px] lg:h-[640px] shadow-2xl rounded-[14px] lg:rounded-[25px] overflow-hidden z-20 cursor-pointer"
+          @click="openImageModal(galleryImages[1])"
+        >
           <img :src="galleryImages[1]" class="w-full h-full object-cover" :alt="project.title" />
         </div>
-        <div class="w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] shadow-2xl rounded-[14px] lg:rounded-[25px] overflow-hidden mt-16 sm:mt-28 lg:mt-40 z-20">
+        <div
+          class="w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] shadow-2xl rounded-[14px] lg:rounded-[25px] overflow-hidden mt-16 sm:mt-28 lg:mt-40 z-20 cursor-pointer"
+          @click="openImageModal(galleryImages[2])"
+        >
           <img :src="galleryImages[2]" class="w-full h-full object-cover" :alt="project.title" />
         </div>
       </div>
@@ -76,7 +118,8 @@ const hasReview = computed(() => !!project.value?.review?.description);
           <img
             :src="project.review.avatar || '/images/avater-man.jpg'"
             alt="Customer"
-            class="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] lg:w-[131px] lg:h-[131px] rounded-[14px] lg:rounded-[17px] border-4 border-white dark:border-dark-border shadow-md object-cover"
+            class="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] lg:w-[131px] lg:h-[131px] rounded-[14px] lg:rounded-[17px] border-4 border-white dark:border-dark-border shadow-md object-cover cursor-pointer"
+            @click="openImageModal(project.review.avatar || '/images/avater-man.jpg')"
           />
           <div class="text-right mr-[6px] lg:mr-[10px]">
             <p class="text-[#747893] dark:text-dark-text text-[13px] lg:text-[14px] font-medium">{{ project.review.name }}</p>
@@ -95,5 +138,48 @@ const hasReview = computed(() => !!project.value?.review?.description);
 </div>
       </div>
     </div>
+
+    <!-- مودال نمایش عکس تمام‌صفحه -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          v-if="isModalOpen"
+          class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          @click.self="closeImageModal"
+        >
+          <!-- دکمه بستن -->
+          <button
+            @click="closeImageModal"
+            class="absolute top-4 left-4 sm:top-6 sm:left-6 z-[10000] w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white text-2xl transition-colors"
+            aria-label="بستن"
+          >
+            &times;
+          </button>
+
+          <!-- کانتینر عکس با قابلیت اسکرول عمودی برای عکس‌های بزرگ -->
+          <div
+            class="w-full max-w-[95vw] sm:max-w-[85vw] lg:max-w-[75vw] max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-lg"
+            @click.self="closeImageModal"
+          >
+            <img
+              :src="activeImage"
+              class="block w-full h-auto mx-auto rounded-lg"
+              alt="نمایش کامل تصویر"
+            />
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

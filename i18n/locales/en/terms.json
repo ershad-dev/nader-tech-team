@@ -1,0 +1,13 @@
+{
+  "terms": {
+    "modal": {
+      "title": "Terms & Conditions",
+      "close": "Close",
+      "loading": "Loading terms and conditions...",
+      "error": "Failed to load terms and conditions. Please try again.",
+      "retry": "Try Again",
+      "empty": "No content to display.",
+      "gotIt": "Got It"
+    }
+  }
+}

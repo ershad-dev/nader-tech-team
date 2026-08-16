@@ -1,0 +1,58 @@
+{
+  "profile": {
+    "avatar": {
+      "title": "عکس پروفایل",
+      "selectNew": "انتخاب تصویر جدید",
+      "delete": "حذف عکس"
+    },
+    "fields": {
+      "username": "نام کاربری",
+      "fullName": "نام و نام خانوادگی",
+      "mobile": "شماره موبایل",
+      "email": "ایمیل",
+      "birthDate": "تاریخ تولد",
+      "nationalCode": "کد ملی",
+      "province": "استان",
+      "postalCode": "کد پستی",
+      "address": "آدرس و نشانی"
+    },
+    "security": {
+      "currentPassword": "رمز عبور فعلی",
+      "newPassword": "رمز عبور جدید",
+      "confirmNewPassword": "تکرار رمز عبور جدید",
+      "changing": "در حال تغییر رمز عبور...",
+      "changeButton": "تغییر رمز عبور"
+    },
+    "changeMobile": {
+      "label": "شماره تلفن همراه",
+      "saving": "در حال ذخیره...",
+      "submit": "تغییر شماره موبایل",
+      "enterNewMobile": "شماره موبایل جدید را وارد کنید"
+    },
+    "menu": {
+      "security": "امنیت حساب کاربری",
+      "profile": "پروفایل کاربری",
+      "changeMobile": "تغییر شماره موبایل",
+      "logout": "خروج از حساب کاربری"
+    },
+    "actions": {
+      "edit": "ویرایش اطلاعات",
+      "cancel": "انصراف",
+      "saving": "در حال ذخیره...",
+      "save": "ذخیره اطلاعات"
+    },
+    "messages": {
+      "profileSaved": "اطلاعات با موفقیت ذخیره شد",
+      "profileSaveError": "خطا در ذخیره اطلاعات",
+      "mobileChanged": "شماره موبایل با موفقیت تغییر کرد",
+      "mobileChangeError": "خطا در تغییر شماره موبایل",
+      "fillAllFields": "تمام فیلدها را تکمیل کنید",
+      "passwordChanged": "رمز عبور با موفقیت تغییر کرد",
+      "passwordChangeError": "خطا در تغییر رمز عبور",
+      "uploadSuccess": "آپلود موفق",
+      "uploadError": "خطا در آپلود عکس",
+      "avatarDeleted": "عکس پروفایل حذف شد",
+      "avatarDeleteError": "خطا در حذف عکس"
+    }
+  }
+}

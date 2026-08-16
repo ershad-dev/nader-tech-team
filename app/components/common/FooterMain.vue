@@ -1,6 +1,6 @@
 <template>
 
-  <footer v-if="!isLotteryPage" class="w-full" dir="rtl">
+  <footer v-if="!isLotteryPage" class="w-full" :dir="isRtl ? 'rtl' : 'ltr'">
 
   <div v-if="showGreenSection" class="relative w-full">
 
@@ -19,11 +19,11 @@
 
       <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-  <div class="shape bg-[#2C7379] dark:bg-[#407B80]">
-    <NuxtLink to="/order/requestProject">
-      <button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] text-[20px] font-bold px-12 py-4 rounded-[16px] shadow-lg relative z-30 transition-all h-[48px] w-[263px] flex items-center justify-center inline-block mr-[55px] mt-[10px]">
-  درخواست همکاری
-</button>
+  <div class="shape bg-[#2C7379] dark:bg-[#407B80] flex items-center justify-center">
+    <NuxtLink :to="localePath('/order/requestProject')">
+<button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] text-[20px] font-bold px-12 py-2 rounded-[16px] shadow-lg relative z-30 transition-all whitespace-nowrap flex items-center justify-center min-w-[270px]">
+        {{ $t('footer.cooperateButton') }}
+      </button>
     </NuxtLink>
   </div>
 
@@ -31,28 +31,28 @@
 
     </div>
 
-    <!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
-    <div class="lg:hidden relative w-full">
+<!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
+<div class="lg:hidden relative w-full">
 
-      <div class="bg-[#2C7379] dark:bg-[#407B80] w-full py-6 sm:py-8 px-4 flex flex-col items-center justify-center gap-1.5 sm:gap-2">
+  <div class="bg-[#2C7379] dark:bg-[#407B80] w-full min-h-[140px] sm:min-h-[170px] py-10 sm:py-12 px-4 flex flex-col items-center justify-center gap-2 sm:gap-3">
 
-        <div v-html="randomText" class="text-white dark:text-dark-text text-[16px] sm:text-[22px] font-bold text-center leading-snug"></div>
+    <div v-html="randomText" class="text-white dark:text-dark-text text-[16px] sm:text-[22px] font-bold text-center leading-snug"></div>
 
-      </div>
+  </div>
 
-      <div class="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
+  <div class="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
-        <div class=" shape-pill-mobile bg-[#2C7379] dark:bg-[#407B80]">
-          <NuxtLink to="/order/requestProject">
-            <button class="btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all flex items-center justify-center">
-            درخواست همکاری
-          </button> 
-          </NuxtLink>
-        </div>
-
-      </div>
-
+    <div class=" shape-pill-mobile bg-[#2C7379] dark:bg-[#407B80]">
+      <NuxtLink :to="localePath('/order/requestProject')">
+        <button class="btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all flex items-center justify-center">
+        {{ $t('footer.cooperateButton') }}
+      </button> 
+      </NuxtLink>
     </div>
+
+  </div>
+
+</div>
 
   </div>
 
@@ -62,13 +62,13 @@
 
   <div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[40px] font-roboto">
 
-  <h3 class="text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">لینک های مهم</h3>
+  <h3 class="text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">{{ $t('footer.linksTitle') }}</h3>
 
   <ul class="space-y-2 sm:space-y-3">
   <li v-for="link in links" :key="link.path" class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
     <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
-    <NuxtLink :to="link.path" class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors">
-      {{ link.name }}
+    <NuxtLink :to="localePath(link.path)" class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors">
+      {{ $t(link.nameKey) }}
     </NuxtLink>
   </li>
 
@@ -80,7 +80,7 @@
       @click="showTermsModal = true"
       class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors cursor-pointer"
     >
-      قوانین و مقررات
+      {{ $t('footer.terms') }}
     </button>
   </li>
 </ul>
@@ -90,7 +90,7 @@
   <div class="flex flex-col items-center gap-4 sm:gap-5 lg:gap-6">
 
   <p class="text-[#0F184B] dark:text-dark-text font-bold text-[13px] sm:text-[15px] lg:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
-  نادر تکنولوژی، ارائه دهنده راهکارهای نوین فناوری، توسعه نرم‌افزار و خدمات دیجیتال
+  {{ $t('footer.tagline') }}
   </p>
 
   <a
@@ -135,13 +135,18 @@ nadertechteam@protonmail.com
 
   const route = useRoute();
   const footerConfig = useState('footerConfig');
-  const links = [
-  // { name: 'خانه', path: '/' },
-  { name: 'سفارش گیری پروژه', path: '/order' },
-  { name: 'برگزاری ایونت', path: '/events' },
-  { name: 'درباره ما', path: '/about' },
-  { name: 'نمونه پروژه ها', path: '/order/moreProject' },
 
+  const { locale, localeProperties } = useI18n()
+  const localePath = useLocalePath()
+  const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
+  // به‌جای متن ثابت، کلید ترجمه ذخیره می‌شود؛ اسم واقعی با $t(link.nameKey) نمایش داده می‌شود
+  const links = [
+  // { nameKey: 'footer.links.home', path: '/' },
+  { nameKey: 'footer.links.order', path: '/order' },
+  { nameKey: 'footer.links.events', path: '/events' },
+  { nameKey: 'footer.links.about', path: '/about' },
+  { nameKey: 'footer.links.moreProjects', path: '/order/moreProject' },
 ];
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 
@@ -149,32 +154,34 @@ nadertechteam@protonmail.com
 
   // ---------------------------------------------------------
   // متن‌های رندوم بخش سبز فوتر
-  // randomTitle -> عنوان اصلی (متن منحنی SVG در دسکتاپ / h2 در موبایل)
-  // randomText  -> زیرعنوان (title1 قبلی)
-  // هر دو مستقل از هم و از یک آرایه انتخاب می‌شن، ولی با هم یکسان نمی‌شن
+  // promoTexts.json الان به‌ازای هر زبان یک آرایه دارد: { "fa": [...], "en": [...] }
+  // اگر زبان فعلی در فایل نبود، به فارسی برمی‌گردد (fallback)
   // ---------------------------------------------------------
   const randomTitle = ref('');
   const randomText = ref('');
 
-  function getRandomIndex(excludeValues = []) {
-    if (!promoTexts?.length) return -1;
-    let idx = Math.floor(Math.random() * promoTexts.length);
-    if (promoTexts.length > excludeValues.length) {
-      while (excludeValues.includes(promoTexts[idx])) {
-        idx = Math.floor(Math.random() * promoTexts.length);
+  const currentPromoTexts = computed(() => promoTexts?.[locale.value] || promoTexts?.fa || []);
+
+  function getRandomIndex(pool, excludeValues = []) {
+    if (!pool?.length) return -1;
+    let idx = Math.floor(Math.random() * pool.length);
+    if (pool.length > excludeValues.length) {
+      while (excludeValues.includes(pool[idx])) {
+        idx = Math.floor(Math.random() * pool.length);
       }
     }
     return idx;
   }
 
   function pickRandomText() {
-    if (!promoTexts?.length) return;
+    const pool = currentPromoTexts.value;
+    if (!pool?.length) return;
 
-    const titleIdx = getRandomIndex([randomTitle.value]);
-    randomTitle.value = promoTexts[titleIdx];
+    const titleIdx = getRandomIndex(pool, [randomTitle.value]);
+    randomTitle.value = pool[titleIdx];
 
-    const subtitleIdx = getRandomIndex([randomTitle.value, randomText.value]);
-    randomText.value = promoTexts[subtitleIdx];
+    const subtitleIdx = getRandomIndex(pool, [randomTitle.value, randomText.value]);
+    randomText.value = pool[subtitleIdx];
   }
 
   // انتخاب متن رندوم فقط سمت کلاینت (جلوگیری از hydration mismatch)
@@ -182,28 +189,35 @@ nadertechteam@protonmail.com
     pickRandomText();
   });
 
-  // هر بار مسیر عوض شد یک متن رندوم جدید نشون بده
+  // هر بار مسیر یا زبان عوض شد یک متن رندوم جدید نشون بده
   watch(() => route.path, () => {
     pickRandomText();
   });
+  watch(locale, () => {
+    pickRandomText();
+  });
 
-  const lotteryRoutes = [
-    '/events/lottery/register',
-    '/events/lottery/login',
-    '/events/lottery/success',
-    '/events/lottery/waiting',
-    '/events/lottery/winner',
-    '/events/lottery/loser'
+  // چون با strategy: prefix_except_default مسیر انگلیسی پیشوند /en می‌گیرد،
+  // بررسی روی route.name (که مستقل از زبان است) انجام می‌شود، نه route.path
+  const routeBaseName = computed(() => route.name?.toString().split('___')[0]);
+
+  const lotteryRouteNames = [
+    'events-lottery-register',
+    'events-lottery-login',
+    'events-lottery-success',
+    'events-lottery-waiting',
+    'events-lottery-winner',
+    'events-lottery-loser'
   ];
 
-  const hiddenGreenSectionRoutes = [
-    '/order/request'
+  const hiddenGreenSectionBaseNames = [
+    'order-request'
   ];
 
-  const isLotteryPage = computed(() => lotteryRoutes.includes(route.path));
+  const isLotteryPage = computed(() => lotteryRouteNames.includes(routeBaseName.value));
 
   const showGreenSection = computed(() => {
-    return !hiddenGreenSectionRoutes.some(path => route.path.startsWith(path));
+    return !hiddenGreenSectionBaseNames.some(name => routeBaseName.value?.startsWith(name));
   });
 
   // توجه: رنگ shape دیگر با JS ref (colorMode.value) کنترل نمی‌شود.

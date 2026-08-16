@@ -10,16 +10,55 @@ export default defineNuxtConfig({
     '@nuxt/icon'
   ],
 
-  i18n: {
-    locales: [
-      { code: 'fa', iso: 'fa-IR', name: 'Persian', dir: 'rtl', file: 'fa.json' },
-      { code: 'en', iso: 'en-US', name: 'English', dir: 'ltr', file: 'en.json' }
-    ],
-    lazy: true,
-    langDir: 'locales/', 
-    defaultLocale: 'fa',
-    strategy: 'prefix_except_default',
-  },
+i18n: {
+  locales: [
+    {
+      code: 'fa',
+      iso: 'fa-IR',
+      name: 'Persian',
+      dir: 'rtl',
+      files: [
+        'fa/common.json',
+        'fa/footer.json',
+        'fa/home.json',
+        'fa/order.json',
+        'fa/about.json',
+        'fa/faq.json',
+        'fa/articles.json',
+        'fa/auth.json',
+        'fa/events.json',
+        'fa/profile.json',
+        'fa/portfolio.json',
+        'fa/terms.json',
+        'fa/reviews.json'
+      ]
+    },
+    {
+      code: 'en',
+      iso: 'en-US',
+      name: 'English',
+      dir: 'ltr',
+      files: [
+        'en/common.json',
+        'en/footer.json',
+        'en/home.json',
+        'en/order.json',
+        'en/about.json',
+        'en/faq.json',
+        'en/articles.json',
+        'en/auth.json',
+        'en/events.json',
+        'en/profile.json',
+        'en/portfolio.json',
+        'en/terms.json',
+        'en/reviews.json',
+      ]
+    }
+  ],
+  lazy: true,
+  defaultLocale: 'fa',
+  strategy: 'prefix_except_default',
+},
 
   colorMode: {
     preference: 'system',
@@ -28,6 +67,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    azureTranslatorKey: process.env.AZURE_TRANSLATOR_KEY,
+    azureTranslatorRegion: process.env.AZURE_TRANSLATOR_REGION,
     public: {
       apiBase: 'https://nadertechnologyteam.ir/api'
     }

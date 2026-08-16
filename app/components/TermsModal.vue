@@ -4,7 +4,7 @@
       <div
         v-if="modelValue"
         class="fixed inset-0 z-[9999] flex items-center justify-center px-4"
-        dir="rtl"
+        :dir="isRtl ? 'rtl' : 'ltr'"
       >
         <!-- پس‌زمینه بلور شده -->
         <div
@@ -20,13 +20,13 @@
           <!-- هدر -->
           <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 class="text-[18px] sm:text-[20px] font-bold">
-              قوانین و مقررات سایت
+              {{ $t('terms.modal.title') }}
             </h2>
 
             <button
               type="button"
               @click="close"
-              aria-label="بستن"
+              :aria-label="$t('terms.modal.close')"
               class="w-9 h-9 flex items-center justify-center rounded-full text-[#0F184B] dark:text-dark-text hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
             >
               <svg
@@ -54,20 +54,20 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
               </svg>
-              <span class="text-[13px] text-[#2D4745] dark:text-dark-text/70">در حال دریافت قوانین و مقررات...</span>
+              <span class="text-[13px] text-[#2D4745] dark:text-dark-text/70">{{ $t('terms.modal.loading') }}</span>
             </div>
 
             <!-- حالت خطا -->
             <div v-else-if="error" class="flex flex-col items-center justify-center py-16 gap-3 text-center">
               <span class="text-[13px] sm:text-[14px] text-red-500 dark:text-red-400">
-                خطا در دریافت قوانین و مقررات. لطفاً دوباره تلاش کنید.
+                {{ $t('terms.modal.error') }}
               </span>
               <button
                 type="button"
                 @click="fetchTerms"
                 class="text-[13px] font-bold text-[#0F184B] dark:text-dark-accent underline"
               >
-                تلاش مجدد
+                {{ $t('terms.modal.retry') }}
               </button>
             </div>
 
@@ -102,7 +102,7 @@
 
             <!-- حالت خالی -->
             <div v-else class="text-center py-16 text-[13px] text-[#2D4745] dark:text-dark-text/70">
-              محتوایی برای نمایش وجود ندارد.
+              {{ $t('terms.modal.empty') }}
             </div>
           </div>
 
@@ -113,7 +113,7 @@
               @click="close"
               class="bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] font-bold px-8 py-2.5 rounded-[12px] transition-all hover:opacity-90"
             >
-              متوجه شدم
+              {{ $t('terms.modal.gotIt') }}
             </button>
           </div>
         </div>
@@ -132,6 +132,10 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
+// --- i18n ---
+const { localeProperties } = useI18n()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 function close() {
   emit('update:modelValue', false);
 }
@@ -139,6 +143,9 @@ function close() {
 const config = useRuntimeConfig();
 
 // ==================== دریافت قوانین از بک‌اند ====================
+// نکته: محتوای واقعی قوانین (termsSections) مستقیم از API میاد و فعلاً
+// دوزبانه نیست چون endpoint پارامتر زبان نداره. فقط UI اطراف (عنوان،
+// حالت‌های loading/error/empty، دکمه‌ها) ترجمه شده.
 const loading = ref(false);
 const error = ref(false);
 const termsSections = ref([]); // آرایه‌ای از { category, items: [{ id, title, description }] }

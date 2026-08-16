@@ -1,5 +1,5 @@
 <template>
-  <div class=" min-h-screen py-10 " dir="rtl">
+  <div class="min-h-screen py-10" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <!-- ۲. بخش تب‌ها و پروژه‌ها با منطق اسلایدر -->
     <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-8 lg:py-16 px-4">
@@ -7,35 +7,38 @@
   <div class="w-full max-w-[846px] lg:w-[846px] min-[1920px]:w-[1000px] h-auto lg:h-[59px] min-[1920px]:h-[72px] bg-white dark:bg-dark-input rounded-[30px] lg:rounded-[48px] p-1 shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border border border-gray-100 dark:border-transparent flex flex-nowrap items-center justify-center gap-1 sm:gap-2 overflow-hidden">
 
     <button 
-      v-for="category in categories" :key="category"
-      @click="activeCategory = category; currentIndex = 0"
+      v-for="category in categories" :key="category.key"
+      @click="activeCategory = category.key; currentIndex = 0"
       :class="[
         'flex-1 min-w-0 px-1 sm:px-4 lg:px-8 py-1.5 lg:py-3 lg:w-[178px] min-[1920px]:w-[210px] h-auto lg:h-[43px] min-[1920px]:h-[54px] rounded-[14px] lg:rounded-[19px] text-[10px] xs:text-[11px] sm:text-[15px] lg:text-[18px] min-[1920px]:text-[20px] font-bold transition-all duration-300 truncate whitespace-nowrap',
-        activeCategory === category 
+        activeCategory === category.key
           ? 'bg-[#2C7379] dark:bg-[#407B80] text-white dark:text-white shadow-md'
           : ' text-[#0F184B] dark:text-white hover:bg-slate-200 dark:hover:bg-dark-accent/70'
       ]"
     >
-      {{ category }}
+      {{ $t(category.labelKey) }}
     </button>
 
   </div>
 </div>
 
-<div class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 py-4 lg:py-8 -mt-[20px]" dir="rtl">
+<div class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 py-4 lg:py-8 -mt-[20px]" :dir="isRtl ? 'rtl' : 'ltr'">
   <div class="flex flex-row items-center justify-between gap-2">
 
     <h2 class="text-[15px] sm:text-[20px] lg:text-[28px] min-[1920px]:text-[32px] font-roboto text-[#0F184B] dark:text-dark-text font-normal">
-      پیش نمایش از پروژه ها
+      {{ $t('home.projects.previewTitle') }}
     </h2>
 
 <NuxtLink
-  to="/order/moreProject"
+  :to="localePath('/order/moreProject')"
   class="bg-[#2C7379] dark:bg-dark-accent px-4 sm:w-[147px] min-[1920px]:w-[170px] h-[30px] sm:h-[45px] min-[1920px]:h-[52px] text-white dark:text-white rounded-[14px] sm:rounded-[19px] text-[11px] sm:text-[17px] min-[1920px]:text-[19px] font-medium transition-all hover:bg-[#2C7379] dark:hover:bg-dark-accent-hover flex items-center justify-center gap-2 shadow-md font-roboto whitespace-nowrap overflow-hidden"
 >
-  <span>مشاهده بیشتر</span>
+  <span>{{ $t('home.projects.viewMore') }}</span>
 
-  <div class="w-4 h-4 flex items-center justify-center flex-shrink-0">
+  <div
+    class="w-4 h-4 flex items-center justify-center flex-shrink-0"
+    :class="isRtl ? '' : 'scale-x-[-1]'"
+  >
     <HomeIconsMoreArrow class="w-full h-full" />
   </div>
 </NuxtLink>
@@ -47,7 +50,7 @@
   <div v-for="project in visibleProjects" :key="project.id" 
        class="relative w-full lg:w-[250px] min-[1920px]:w-[300px] h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white dark:bg-dark-input rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 dark:border-dark-border shadow-lg dark:shadow-none hover:shadow-2xl dark:hover:ring-1 dark:hover:ring-dark-accent transition-all duration-300 overflow-hidden group">
 
-      <NuxtLink :to="`/order/${project.slug}`">
+      <NuxtLink :to="localePath(`/order/${project.slug}`)">
       <img :src="resumeCover(project)" class="w-full h-[214px] sm:h-[274px] lg:w-[250px] lg:h-[344px] min-[1920px]:w-[300px] min-[1920px]:h-[414px] object-cover" />
       
       <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 dark:bg-black/30 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 dark:border-dark-border/30 text-center">
@@ -61,8 +64,8 @@
       <!-- کنترل‌های اسلایدر -->
       <div class="flex items-center justify-between mt-8 lg:mt-12 px-2">
 <div  class="flex justify-center gap-3 lg:gap-4 z-20">
-  <SliderButton direction="left" @click="prevSlide" />
-  <SliderButton direction="right" @click="nextSlide" />
+  <SliderButton :direction="isRtl ? 'left' : 'right'" @click="nextSlide" />
+  <SliderButton :direction="isRtl ? 'right' : 'left'" @click="prevSlide" />
 </div>
 
         <div class="flex gap-2">
@@ -74,13 +77,10 @@
     </section>
 
     <!-- ۱. بخش شوکیس (Showcase) داینامیک -->
-<!-- ۱. بخش شوکیس (Showcase) داینامیک -->
-<!-- ۱. بخش شوکیس (Showcase) داینامیک -->
 <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 lg:mb-20">
   <div class="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden p-6 lg:p-8 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8] lg:bg-white/20 dark:lg:bg-dark-bg">
 
-    <!-- عکس پس‌زمینه فقط در دسکتاپ - حالا کاملا فلوئید -->
-<!-- عکس پس‌زمینه از ۱۰۲۴ به بعد نمایش داده می‌شه، ولی کاملاً ریسپانسیو -->
+    <!-- عکس پس‌زمینه از ۱۰۲۴ به بعد نمایش داده می‌شه، ولی کاملاً ریسپانسیو -->
 <img 
   src="/images/bg-services.png" 
   class="hidden min-[1024px]:block absolute inset-0 w-full h-full object-cover z-0" 
@@ -95,10 +95,15 @@
           />
       </div>
       
-      <div class="flex-1 min-w-0 lg:max-w-[50%] xl:max-w-none min-[1920px]:max-w-[620px] text-black dark:text-black lg:mr-0 xl:mr-[50px] text-center lg:text-right">
+      <div
+        :class="[
+          'flex-1 min-w-0 lg:max-w-[50%] xl:max-w-none min-[1920px]:max-w-[620px] text-black dark:text-black text-center lg:mt-0',
+          isRtl ? 'lg:mr-0 xl:mr-[50px] lg:text-right' : 'lg:ml-0 xl:ml-[50px] lg:text-left'
+        ]"
+      >
         <h2 class="text-[20px] lg:text-[22px] xl:text-[26px] min-[1920px]:text-[32px] font-bold mb-4 lg:mb-5 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
         <p class="leading-[26px] lg:leading-[32px] xl:leading-[40px] min-[1920px]:leading-[42px] mb-6 lg:mb-7 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[13px] lg:text-[13px] xl:text-[14px] min-[1920px]:text-[20px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
-<NuxtLink :to="currentContent.buttonLink">
+<NuxtLink :to="localePath(currentContent.buttonLink)">
   <button
     class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto lg:mx-0 lg:w-full lg:max-w-[240px] xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-all shadow-lg text-[18px] lg:text-[18px] xl:text-[20px] min-[1920px]:text-[22px] mt-6 lg:mt-8 xl:mt-[50px] flex items-center justify-center whitespace-nowrap"
   >
@@ -116,16 +121,32 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
-// نگاشت عنوان تب (برای نمایش و برای contentMap) به شناسه‌ی واقعی دسته‌بندی
-// که به API فرستاده می‌شه (category_id)
-const categoryMap = {
-  'طراحی سایت': RESUME_CATEGORY_IDS.web,
-  'تولید محتوا': RESUME_CATEGORY_IDS.content,
-  'برگزاری ایونت': RESUME_CATEGORY_IDS.event,
-}
-const categories = Object.keys(categoryMap)
+// --- i18n ---
+const { locale, localeProperties, t } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-const activeCategory = ref('طراحی سایت')
+// نکته‌ی مهم: قبلاً activeCategory مستقیم برابر متن فارسی تب بود (مثل 'طراحی سایت')
+// و از همون متن هم برای نگاشت به category_id و هم برای نگاشت به محتوای شوکیس استفاده می‌شد.
+// این با دوزبانه‌سازی جفت نمی‌شد، چون متن نمایشی باید بر اساس زبان عوض بشه ولی
+// «کلید» انتخاب‌شده باید همیشه ثابت و مستقل از زبان بمونه.
+// پس الان یک کلید پایدار (web/content/event) داریم که:
+// - به category_id واقعی نگاشت می‌شه (categoryMap)
+// - به محتوای شوکیس نگاشت می‌شه (contentMap)
+// - عنوان نمایشی‌اش از i18n با labelKey خونده می‌شه
+const categoryMap = {
+  web: RESUME_CATEGORY_IDS.web,
+  content: RESUME_CATEGORY_IDS.content,
+  event: RESUME_CATEGORY_IDS.event,
+}
+
+const categories = [
+  { key: 'web', labelKey: 'home.services.categories.web' },
+  { key: 'content', labelKey: 'home.services.categories.content' },
+  { key: 'event', labelKey: 'home.services.categories.event' },
+]
+
+const activeCategory = ref('web')
 // این computed یه رفرنس واکنشی از category_id واقعیه که به useResumes پاس داده می‌شه
 const activeCategoryId = computed(() => categoryMap[activeCategory.value])
 const { items, pending } = useResumes(activeCategoryId)
@@ -145,31 +166,32 @@ onUnmounted(() => {
 })
 
 // محتوای متنی شوکیس - استاتیک، بخشی از UI نه دیتای رزومه
-const contentMap = {
-  'طراحی سایت': {
-    title: 'طراحی سایت',
-    description: 'وب‌سایت، ویترین دیجیتال کسب‌وکار شماست. در نادرتک با استفاده از جدیدترین فناوری‌های برنامه‌نویسی، وب‌سایت‌های شرکتی، فروشگاهی و اختصاصی را با طراحی مدرن، سرعت بالا و استانداردهای سئو پیاده‌سازی می‌کنیم. هدف ما ساخت سایتی است که علاوه بر ظاهر حرفه‌ای، بازدیدکنندگان را به مشتریان وفادار تبدیل کند و مسیر رشد کسب‌وکار شما را هموار سازد',
+// حالا از i18n خونده می‌شه (کلید پایدار → کلید ترجمه)
+const contentMap = computed(() => ({
+  web: {
+    title: t('home.services.web.title'),
+    description: t('home.services.web.description'),
     image: '/images/img-services.png',
-    buttonText: 'درخواست طراحی سایت',
+    buttonText: t('home.services.web.buttonText'),
     buttonLink: '/order/requestProject',
   },
-  'تولید محتوا': {
-    title: 'تولید محتوا',
-    description: 'محتوای حرفه‌ای، مهم‌ترین ابزار برای جذب مخاطب و افزایش فروش است. تیم تولید محتوای نادرتک با تولید محتوای متنی، تصویری و ویدیویی، به کسب‌وکار شما کمک می‌کند تا در گوگل رتبه بهتری کسب کرده، تعامل بیشتری در شبکه‌های اجتماعی داشته باشد و اعتماد مخاطبان را جلب کند. تمامی محتواها با رویکرد سئو و متناسب با هویت برند شما تولید می‌شوند',
+  content: {
+    title: t('home.services.content.title'),
+    description: t('home.services.content.description'),
     image: '/images/img-services.png',
-    buttonText: 'درخواست تولید محتوا',
+    buttonText: t('home.services.content.buttonText'),
     buttonLink: '/order/requestProject',
   },
-  'برگزاری ایونت': { 
-    title: 'برگزاری ایونت',
-    description: 'برگزاری یک رویداد موفق نیازمند برنامه‌ریزی دقیق، خلاقیت و اجرای حرفه‌ای است. تیم نادرتک از ایده‌پردازی و طراحی سناریو تا هماهنگی، مدیریت و اجرای کامل همایش‌ها، سمینارها، ورکشاپ‌ها و رویدادهای سازمانی در کنار شماست. هدف ما خلق تجربه‌ای ماندگار برای شرکت‌کنندگان و افزایش اعتبار برند شما از طریق برگزاری ایونت‌های حرفه‌ای است',
+  event: {
+    title: t('home.services.event.title'),
+    description: t('home.services.event.description'),
     image: '/images/img-services.png',
-    buttonText: 'درخواست برگزاری ایونت',
+    buttonText: t('home.services.event.buttonText'),
     buttonLink: '/order/requestProject',
   },
-}
+}))
 
-const currentContent = computed(() => contentMap[activeCategory.value])
+const currentContent = computed(() => contentMap.value[activeCategory.value])
 
 const totalSlides = computed(() => Math.ceil(items.value.length / itemsPerPage.value))
 
@@ -181,20 +203,13 @@ const visibleProjects = computed(() => {
   return all.slice(start, start + itemsPerPage.value)
 })
 
-// --- نسخه دیباگ: totalSlides رو تازه و مستقیم داخل خود تابع محاسبه می‌کنیم
-// تا مطمئن بشیم به مقدار stale computed وابسته نیست. لاگ‌ها موقتی‌ان،
-// بعد از پیدا کردن علت باگ می‌تونی حذفشون کنی.
 const nextSlide = () => {
   const total = Math.ceil(items.value.length / itemsPerPage.value)
-  console.log('[nextSlide] before:', currentIndex.value, 'total:', total, 'items:', items.value.length, 'perPage:', itemsPerPage.value)
   if (total > 0) currentIndex.value = (currentIndex.value + 1) % total
-  console.log('[nextSlide] after:', currentIndex.value)
 }
 const prevSlide = () => {
   const total = Math.ceil(items.value.length / itemsPerPage.value)
-  console.log('[prevSlide] before:', currentIndex.value, 'total:', total, 'items:', items.value.length, 'perPage:', itemsPerPage.value)
   if (total > 0) currentIndex.value = (currentIndex.value - 1 + total) % total
-  console.log('[prevSlide] after:', currentIndex.value)
 }
 
 watch(activeCategory, () => {

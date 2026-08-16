@@ -3,6 +3,10 @@ import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 
 definePageMeta({ layout: 'auth' })
 
+const { t, localeProperties } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 const config = useRuntimeConfig()
 
 const otp = ref(['', '', '', '', '', ''])
@@ -16,7 +20,7 @@ onMounted(() => {
   const storedToken = localStorage.getItem('login_token')
 
   if (!storedToken) {
-    navigateTo('/auth/login')
+    navigateTo(localePath('/auth/login'))
     return
   }
 
@@ -63,13 +67,13 @@ const verifyCode = async () => {
   const code = otp.value.join('')
 
   if (code.length !== 6) {
-    alert('کد ۶ رقمی را کامل وارد کنید')
+    alert(t('auth.verify.errors.incompleteCode'))
     return
   }
 
   if (!loginToken.value) {
-    alert('توکن ورود پیدا نشد')
-    await navigateTo('/auth/login')
+    alert(t('auth.verify.errors.tokenNotFound'))
+    await navigateTo(localePath('/auth/login'))
     return
   }
 
@@ -92,7 +96,7 @@ const verifyCode = async () => {
     const user = response?.data?.user
 
     if (!accessToken) {
-      alert('توکن دریافت نشد')
+      alert(t('auth.verify.errors.noAccessToken'))
       return
     }
 
@@ -107,27 +111,28 @@ const verifyCode = async () => {
 
     localStorage.removeItem('login_token')
 
-    await navigateTo('/profile')
+    await navigateTo(localePath('/profile'))
   } catch (error) {
     console.error('VERIFY OTP ERROR =>', error)
 
     alert(
       error?.data?.message ||
       error?.response?._data?.message ||
-      'کد وارد شده نامعتبر یا منقضی شده است'
+      t('auth.verify.errors.invalidOrExpired')
     )
   }
 }
 </script>
 
 <template>
-  <div class="text-center" dir="ltr">
+  <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
     <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-10">
-      کد تأیید را وارد کنید
+      {{ $t('auth.verify.title') }}
     </h1>
 
     <form @submit.prevent="verifyCode">
-      <div class="flex justify-center gap-2 mb-6">
+      <!-- جعبه‌های OTP همیشه چپ‌به‌راست می‌مونن (ترتیب رقم‌ها نباید با تغییر زبان برعکس بشه) -->
+      <div class="flex justify-center gap-2 mb-6" dir="ltr">
         <input
           v-for="i in 6"
           :key="i"
@@ -146,13 +151,13 @@ const verifyCode = async () => {
       </div>
 
       <AuthButton type="submit">
-        تایید کد
+        {{ $t('auth.verify.submit') }}
       </AuthButton>
     </form>
 
     <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer">
-      <NuxtLink to="/auth/login">
-        بازگشت به صفحه ورود
+      <NuxtLink :to="localePath('/auth/login')">
+        {{ $t('auth.verify.backToLogin') }}
       </NuxtLink>
     </div>
   </div>

@@ -8,7 +8,7 @@
         <EventsLandingEventServices />
         <EventsLandingLotterySection />
         
-        <EventsLandingEventFeedback />
+        <!-- <EventsLandingEventFeedback /> -->
 
 
 

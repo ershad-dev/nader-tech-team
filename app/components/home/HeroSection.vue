@@ -1,13 +1,14 @@
 <template>
   <div
     class="max-w-6xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-[1700px] mx-auto mt-12 text-center px-4"
-    dir="rtl"
+    :dir="isRtl ? 'rtl' : 'ltr'"
   >
     <h1
       class="text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B] mb-8 leading-relaxed lg:mb-10 2xl:mb-12"
     >
-      با دقت می اندیشیم ،با کیفیت میسازیم، با جسارت
-      <span class="text-[#B18F55]">فتح </span> میکنیم
+      {{ $t('home.hero.titlePart1') }}
+      <span class="text-[#B18F55]">{{ $t('home.hero.titleHighlight') }}</span>
+      {{ $t('home.hero.titlePart2') }}
     </h1>
 
     <div
@@ -16,7 +17,7 @@
     >
       <Transition name="slide-fade">
         <div :key="currentSlide" class="absolute inset-0 w-full h-full">
-          <NuxtLink to="/auth/login" class="block w-full h-full">
+          <NuxtLink :to="localePath('/auth/login')" class="block w-full h-full">
             <img
               :src="slides[currentSlide].image"
               :alt="slides[currentSlide].alt || slides[currentSlide].title"
@@ -27,12 +28,12 @@
       </Transition>
     </div>
 
-    <div
+<div
       v-if="slides.length > 1"
       class="flex justify-center gap-4 mt-6 lg:mt-8 2xl:mt-10 lg:gap-5 2xl:gap-6"
     >
-      <SliderButton direction="left" @click="handleNext" />
-      <SliderButton direction="right" @click="handlePrev" />
+      <SliderButton :direction="isRtl ? 'left' : 'right'" @click="handleNext" />
+      <SliderButton :direction="isRtl ? 'right' : 'left'" @click="handlePrev" />
     </div>
   </div>
 </template>
@@ -44,6 +45,11 @@ const currentSlide = ref(0);
 const slides = ref([]);
 
 const config = useRuntimeConfig();
+
+// --- i18n ---
+const { localeProperties } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const { data, error } = await useFetch('https://nadertechnologyteam.ir/api/banners', {
   baseURL: config.public.apiBase,
@@ -129,4 +135,4 @@ watch(
   opacity: 0;
   transform: scale(0.98);
 }
-</style>  
+</style>

@@ -5,6 +5,11 @@ definePageMeta({ layout: 'auth' })
 
 const config = useRuntimeConfig()
 
+// --- i18n ---
+const { t, localeProperties } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 const otp = ref(new Array(6).fill(''))
 const inputRefs = ref([])
 const loading = ref(false)
@@ -43,7 +48,7 @@ const resendCode = async () => {
     })
     startTimer()
   } catch (error) {
-    errorMessage.value = 'خطا در ارسال مجدد کد'
+    errorMessage.value = t('auth.verifyForgotPassword.resendError')
   }
 }
 
@@ -65,7 +70,7 @@ const verifyCode = async () => {
   const codeValue = otp.value.join('')
 
   if (codeValue.length !== 6) {
-    errorMessage.value = 'کد باید ۶ رقمی باشد'
+    errorMessage.value = t('auth.verifyForgotPassword.incompleteCode')
     return
   }
 
@@ -77,9 +82,9 @@ const verifyCode = async () => {
       body: { login, code: codeValue }
     })
     localStorage.setItem('reset_token', response.reset_token)
-    navigateTo('/auth/reset-password')
+    navigateTo(localePath('/auth/reset-password'))
   } catch (error) {
-    errorMessage.value =  'کد نامعتبر یا منقضی شده است'
+    errorMessage.value = t('auth.verifyForgotPassword.invalidOrExpired')
   } finally {
     loading.value = false
   }
@@ -87,12 +92,15 @@ const verifyCode = async () => {
 </script>
 
 <template>
-  <div class="text-center" dir="rtl">
-    <h1 class="text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-20 font-roboto">کد تایید را وارد کنید.</h1>
+  <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
+    <h1 class="text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-20 font-roboto">{{ $t('auth.verifyForgotPassword.title') }}</h1>
 
     <!-- اینپوت‌های کد -->
    <form @submit.prevent="verifyCode">
   <!-- اینپوت‌های کد -->
+  <!-- توجه: dir="ltr" اینجا عمداً ثابت نگه داشته شده، چون ترتیب ورود ارقام
+       کد تایید طبق قرارداد رایج فرم‌های OTP همیشه چپ‌به‌راست است، مستقل
+       از جهت رابط کاربری -->
   <div class="flex justify-center gap-3 mb-4" dir="ltr">
     <input
       v-for="(_, index) in otp"
@@ -120,7 +128,7 @@ const verifyCode = async () => {
 
   <!-- باکس خاکستری تایمر -->
   <div class="bg-[#ebebeb] dark:bg-dark-input w-fit mx-auto px-4 py-2 rounded-lg mb-6 text-[#2d6a66] dark:text-dark-text-deep font-bold text-sm">
-    زمان باقی مانده: {{ formattedTimer }}
+    {{ $t('auth.verifyForgotPassword.timeRemaining') }}: {{ formattedTimer }}
   </div>
 
   <!-- دکمه تایید -->
@@ -129,7 +137,7 @@ const verifyCode = async () => {
     :disabled="loading"
     class="mb-4"
   >
-    {{ loading ? 'در حال بررسی...' : 'تایید کد' }}
+    {{ loading ? $t('auth.verifyForgotPassword.verifying') : $t('auth.verifyForgotPassword.submit') }}
   </AuthButton>
 </form>
   </div>

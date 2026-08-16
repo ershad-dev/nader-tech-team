@@ -2,6 +2,11 @@
 import { useMobileSlider } from "@/composables/useMobileSlider";
 import { RESUME_CATEGORY_IDS } from "@/composables/useResumes";
 
+// --- i18n ---
+const { localeProperties } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 // این بخش فقط پروژه‌های دسته‌بندی «تولید محتوا» رو نشون می‌ده،
 // پس category_id واقعی (8) مستقیم پاس داده می‌شه.
 const { items: projects, pending, error } = useResumes(RESUME_CATEGORY_IDS.content);
@@ -22,26 +27,27 @@ const visibleProjects = visibleItems(4);
 <template>
   <div
     class="bg-center py-10 md:py-14 xl:py-16 xl:-mt-[70px] min-[1920px]:py-20 min-[1920px]:-mt-[90px]"
+    :dir="isRtl ? 'rtl' : 'ltr'"
   >
     <div class="max-w-6xl mx-auto px-4 xl:px-0 min-[1920px]:max-w-[1600px]">
       <h1
         class="ml-auto bg-[#BFD1D5] dark:bg-[#5C9E9E] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] text-[#0F184B] dark:text-[#E9F1F2] rounded-[19px] shadow-sm flex items-center justify-center mt-[50px] md:mt-[70px] xl:mt-[100px] min-[1920px]:w-[200px] min-[1920px]:h-[48px] min-[1920px]:text-[20px] min-[1920px]:mt-[130px]"
       >
-        تولید محتوا
+        {{ $t('order.contentOrder.badge') }}
       </h1>
 
       <!-- حالت لودینگ / خطا / خالی -->
       <div v-if="pending" class="text-center text-[#747893] mt-10">
-        در حال بارگذاری...
+        {{ $t('order.contentOrder.loading') }}
       </div>
       <div v-else-if="error" class="text-center text-red-500 mt-10">
-        خطا در دریافت پروژه‌ها
+        {{ $t('order.contentOrder.error') }}
       </div>
       <div
         v-else-if="projects.length === 0"
         class="text-center text-[#747893] mt-10"
       >
-        پروژه‌ای یافت نشد
+        {{ $t('order.contentOrder.empty') }}
       </div>
 
       <template v-else>
@@ -63,7 +69,7 @@ const visibleProjects = visibleItems(4);
                   : 'z-10 scale-75 opacity-40 translate-x-[105px]',
             ]"
           >
-            <NuxtLink :to="`/order/${item.data.slug}`">
+            <NuxtLink :to="localePath(`/order/${item.data.slug}`)">
               <img
                 :src="resumeCover(item.data)"
                 class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg select-none pointer-events-none"
@@ -93,7 +99,7 @@ const visibleProjects = visibleItems(4);
         : 'md:translate-y-4 xl:translate-y-6 min-[1920px]:translate-y-8',
     ]"
   >
-    <NuxtLink :to="`/order/${item.data.slug}`">
+    <NuxtLink :to="localePath(`/order/${item.data.slug}`)">
       <img
         :src="resumeCover(item.data)"
         class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
@@ -108,8 +114,8 @@ const visibleProjects = visibleItems(4);
       <div
         class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6"
       >
-        <SliderButton direction="left" @click="prevSlide" />
-        <SliderButton direction="right" @click="nextSlide" />
+        <SliderButton :direction="isRtl ? 'left' : 'right'" @click="nextSlide" />
+        <SliderButton :direction="isRtl ? 'right' : 'left'" @click="prevSlide" />
       </div>
     </div>
   </div>

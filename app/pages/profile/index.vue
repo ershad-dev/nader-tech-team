@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import {
   LockClosedIcon,
   ShieldCheckIcon,
@@ -14,6 +14,9 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
+const { t, locale, localeProperties } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const activeTab = ref('profile') // 'profile' | 'security' | 'changeMobile'
 const loading = ref(false)
@@ -74,7 +77,7 @@ const getAvatarUrl = (path) => {
 
 onMounted(async () => {
   if (!token()) {
-    navigateTo('/auth/login')
+    navigateTo(localePath('/auth/login'))
     return
   }
 
@@ -97,7 +100,7 @@ const getProfile = async () => {
 
     if (error?.response?.status === 401) {
       localStorage.removeItem('access_token')
-      navigateTo('/auth/login')
+      navigateTo(localePath('/auth/login'))
     }
   } finally {
     isEditing.value = false
@@ -132,7 +135,7 @@ const updateProfile = async () => {
 
     showToast(
       response.message ||
-      'اطلاعات با موفقیت ذخیره شد',
+      t('profile.messages.profileSaved'),
       'success'
     )
 
@@ -142,7 +145,7 @@ const updateProfile = async () => {
 
     showToast(
       error?.response?._data?.message ||
-      'خطا در ذخیره اطلاعات'
+      t('profile.messages.profileSaveError')
     )
   } finally {
     loading.value = false
@@ -159,7 +162,7 @@ const cancelEdit = async () => {
 // فعلی userData پر می‌شوند و فقط mobile عوض می‌شود.
 const changeMobile = async () => {
   if (!newMobile.value.trim()) {
-    showToast('شماره موبایل جدید را وارد کنید')
+    showToast(t('profile.changeMobile.enterNewMobile'))
     return
   }
 
@@ -185,7 +188,7 @@ const changeMobile = async () => {
 
     showToast(
       response.message ||
-      'شماره موبایل با موفقیت تغییر کرد',
+      t('profile.messages.mobileChanged'),
       'success'
     )
 
@@ -200,7 +203,7 @@ const changeMobile = async () => {
     showToast(
       mobileError ||
       error?.response?._data?.message ||
-      'خطا در تغییر شماره موبایل'
+      t('profile.messages.mobileChangeError')
     )
   } finally {
     loading.value = false
@@ -218,7 +221,7 @@ const changePassword = async () => {
     !passwordData.value.new_password ||
     !passwordData.value.new_password_confirmation
   ) {
-    showToast('تمام فیلدها را تکمیل کنید')
+    showToast(t('profile.messages.fillAllFields'))
     return
   }
 
@@ -256,7 +259,7 @@ const changePassword = async () => {
 
     showToast(
       response.message ||
-      'رمز عبور با موفقیت تغییر کرد',
+      t('profile.messages.passwordChanged'),
       'success'
     )
   } catch (error) {
@@ -271,7 +274,7 @@ const changePassword = async () => {
     showToast(
       fieldError ||
       error?.response?._data?.message ||
-      'خطا در تغییر رمز عبور'
+      t('profile.messages.passwordChangeError')
     )
   } finally {
     loading.value = false
@@ -283,7 +286,7 @@ const uploadAvatar = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
 
-  if (!token()) return navigateTo('/auth/login')
+  if (!token()) return navigateTo(localePath('/auth/login'))
 
   const formData = new FormData()
   formData.append('avatar', file)
@@ -303,7 +306,7 @@ const uploadAvatar = async (event) => {
 
     userData.value.avatar = res.data.avatar_url
 
-    showToast(res.message || 'آپلود موفق', 'success')
+    showToast(res.message || t('profile.messages.uploadSuccess'), 'success')
 
   } catch (err) {
     console.error('UPLOAD ERROR:', err)
@@ -314,7 +317,7 @@ const uploadAvatar = async (event) => {
       avatarError ||
       err?.response?._data?.message ||
       err?.data?.message ||
-      'خطا در آپلود عکس'
+      t('profile.messages.uploadError')
     )
   } finally {
     loadingAvatar.value = false
@@ -322,7 +325,7 @@ const uploadAvatar = async (event) => {
 }
 
 const deleteAvatar = async () => {
-  if (!token()) return navigateTo('/auth/login')
+  if (!token()) return navigateTo(localePath('/auth/login'))
 
   loadingAvatar.value = true
 
@@ -338,12 +341,12 @@ const deleteAvatar = async () => {
 
     userData.value.avatar = ''
 
-    showToast(res.message || 'عکس پروفایل حذف شد', 'success')
+    showToast(res.message || t('profile.messages.avatarDeleted'), 'success')
 
   } catch (err) {
     console.error(err)
     showToast(
-      err?.response?._data?.message || 'خطا در حذف عکس'
+      err?.response?._data?.message || t('profile.messages.avatarDeleteError')
     )
   } finally {
     loadingAvatar.value = false
@@ -352,7 +355,7 @@ const deleteAvatar = async () => {
 
 const logout = () => {
   localStorage.removeItem('access_token')
-  navigateTo('/auth/login')
+  navigateTo(localePath('/auth/login'))
 }
 </script>
 
@@ -372,7 +375,7 @@ const logout = () => {
     <div class="bg-[#2C73792B] p-4 sm:p-6 md:p-10 2xl:p-14 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] 2xl:rounded-[48px] shadow-sm mt-[50px]">
 
       <div class="flex justify-center w-full">
-        <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 2xl:p-8 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] 2xl:rounded-[32px] mb-6 sm:mb-8 2xl:mb-10 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 2xl:gap-8 w-full max-w-[652px] 2xl:max-w-[760px] h-auto sm:h-[187px] 2xl:h-[210px] shadow-xl" dir="rtl">
+        <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 2xl:p-8 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] 2xl:rounded-[32px] mb-6 sm:mb-8 2xl:mb-10 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 2xl:gap-8 w-full max-w-[652px] 2xl:max-w-[760px] h-auto sm:h-[187px] 2xl:h-[210px] shadow-xl" :dir="isRtl ? 'rtl' : 'ltr'">
 
           <img
             :src="getAvatarUrl(userData.avatar)"
@@ -381,7 +384,7 @@ const logout = () => {
 
           <div class="flex flex-col items-start sm:items-center gap-2 2xl:gap-3">
             <span class="text-[#0F184B] font-bold text-[13px] sm:text-[15px] md:text-[16px] 2xl:text-[18px] mb-1">
-              عکس پروفایل
+              {{ $t('profile.avatar.title') }}
             </span>
 
             <input
@@ -397,15 +400,15 @@ const logout = () => {
               @click="fileInput?.click()"
               :disabled="loadingAvatar"
             >
-              انتخاب تصویر جدید
+              {{ $t('profile.avatar.selectNew') }}
             </button>
 
             <button
-              class="text-[#747893] text-[11px] sm:text-[15px] 2xl:text-[17px] font-normal mt-[6px] sm:mt-[10px] font-roboto"
+              class="text-[#747893] text-[11px] sm:text-[15px] 2xl:text-[17px] font-normal mt-[6px] sm:mt-[10px] font-roboto whitespace-nowrap"
               @click="deleteAvatar"
               :disabled="loadingAvatar || !userData.avatar"
             >
-              حذف عکس
+              {{ $t('profile.avatar.delete') }}
             </button>
           </div>
 
@@ -417,10 +420,10 @@ const logout = () => {
 <!-- Profile Tab -->
 <div v-if="activeTab === 'profile'"
      class="flex flex-col lg:grid lg:grid-cols-2 2xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-x-6 2xl:gap-x-10 lg:gap-y-5 2xl:gap-y-8 font-roboto items-center lg:justify-items-center w-full"
-     dir="rtl">
+     :dir="isRtl ? 'rtl' : 'ltr'">
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">نام کاربری</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.username') }}</label>
     <input
       v-model="userData.username"
       :readonly="!isEditing"
@@ -432,7 +435,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">نام و نام خانوادگی</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.fullName') }}</label>
     <input
       v-model="userData.full_name"
       :readonly="!isEditing"
@@ -446,7 +449,7 @@ const logout = () => {
   <!-- شماره موبایل همیشه readonly است؛ تغییرش فقط از تب
        «تغییر شماره موبایل» ممکن است -->
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">شماره موبایل</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.mobile') }}</label>
     <input
       v-model="userData.mobile"
       readonly
@@ -455,7 +458,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">ایمیل</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.email') }}</label>
     <input
       v-model="userData.email"
       :readonly="!isEditing"
@@ -467,7 +470,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">تاریخ تولد</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.birthDate') }}</label>
     <input
       v-model="userData.birth_date"
       placeholder="1370/01/01"
@@ -480,7 +483,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">کد ملی</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.nationalCode') }}</label>
     <input
       v-model="userData.national_code"
       :readonly="!isEditing"
@@ -492,7 +495,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">استان</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.province') }}</label>
     <input
       v-model="userData.province"
       :readonly="!isEditing"
@@ -504,7 +507,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">کد پستی</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.postalCode') }}</label>
     <input
       v-model="userData.postal_code"
       :readonly="!isEditing"
@@ -516,7 +519,7 @@ const logout = () => {
   </div>
 
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:col-span-2 2xl:col-span-1 lg:w-[604px] 2xl:w-[340px]">
-    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">آدرس و نشانی</label>
+    <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.address') }}</label>
     <textarea
       v-model="userData.address"
       :readonly="!isEditing"
@@ -532,69 +535,75 @@ const logout = () => {
         <!-- Security Tab -->
         <div v-else-if="activeTab === 'security'" class="space-y-5 sm:space-y-6 2xl:space-y-8 max-w-[500px] 2xl:max-w-[600px] mx-auto">
           <AuthInput
-            label="رمز عبور فعلی"
+            :label="$t('profile.security.currentPassword')"
             type="password"
             v-model="passwordData.current_password"
             class="[&>div>input]:h-[44px] 2xl:[&>div>input]:h-[54px] [&>div>input]:py-4 2xl:[&>label]:text-[17px]"
           />
 
           <AuthInput
-            label="رمز عبور جدید"
+            :label="$t('profile.security.newPassword')"
             type="password"
             v-model="passwordData.new_password"
             class="[&>div>input]:h-[44px] 2xl:[&>div>input]:h-[54px] [&>div>input]:py-4 2xl:[&>label]:text-[17px]"
           />
 
           <AuthInput
-            label="تکرار رمز عبور جدید"
+            :label="$t('profile.security.confirmNewPassword')"
             type="password"
             v-model="passwordData.new_password_confirmation"
             class="[&>div>input]:h-[44px] 2xl:[&>div>input]:h-[54px] [&>div>input]:py-4 2xl:[&>label]:text-[17px]"
           />
 
           <AuthButton
-            class="h-12 2xl:h-14 !rounded-[15px] 2xl:text-[17px]"
+            class="h-12 2xl:h-14 !rounded-[15px] 2xl:text-[17px] whitespace-nowrap"
             @click="changePassword"
             :disabled="loading"
           >
             {{
               loading
-                ? 'در حال تغییر رمز عبور...'
-                : 'تغییر رمز عبور'
+                ? $t('profile.security.changing')
+                : $t('profile.security.changeButton')
             }}
           </AuthButton>
         </div>
 
 <!-- Change Mobile Tab -->
-<div v-else-if="activeTab === 'changeMobile'" class="space-y-6 sm:space-y-10 2xl:space-y-12 mt-10 mb-16 sm:mt-[100px] sm:mb-[100px] px-4 sm:px-0" dir="rtl">
+<div v-else-if="activeTab === 'changeMobile'" class="space-y-6 sm:space-y-10 2xl:space-y-12 mt-10 mb-16 sm:mt-[100px] sm:mb-[100px] px-4 sm:px-0" :dir="isRtl ? 'rtl' : 'ltr'">
   <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 2xl:gap-6 w-full">
     <label class="text-[13px] sm:text-[15px] 2xl:text-[17px] font-normal text-black whitespace-nowrap font-roboto">
-      شماره تلفن همراه
+      {{ $t('profile.changeMobile.label') }}
     </label>
 
     <div class="relative w-full sm:w-[570px] 2xl:w-[650px]">
       <input
         v-model="newMobile"
         placeholder="09xxxxxxxxx"
-        class="w-full h-11 sm:h-14 2xl:h-16 bg-white rounded-[17px] 2xl:rounded-[20px] px-4 2xl:px-5 pr-11 2xl:pr-12 text-[13px] sm:text-[15px] 2xl:text-[17px] shadow-sm text-black"
+        :class="[
+          'w-full h-11 sm:h-14 2xl:h-16 bg-white rounded-[17px] 2xl:rounded-[20px] px-4 2xl:px-5 text-[13px] sm:text-[15px] 2xl:text-[17px] shadow-sm text-black',
+          isRtl ? 'pr-11 2xl:pr-12' : 'pl-11 2xl:pl-12'
+        ]"
       />
-      <PhoneIcon class="w-5 h-5 2xl:w-6 2xl:h-6 text-[#1a2333] absolute right-4 top-1/2 -translate-y-1/2" />
+      <PhoneIcon
+        class="w-5 h-5 2xl:w-6 2xl:h-6 text-[#1a2333] absolute top-1/2 -translate-y-1/2"
+        :class="isRtl ? 'right-4' : 'left-4'"
+      />
     </div>
 
     <span class="hidden sm:inline-block text-[15px] 2xl:text-[17px] invisible whitespace-nowrap" aria-hidden="true">
-      شماره تلفن همراه
+      {{ $t('profile.changeMobile.label') }}
     </span>
   </div>
 
   <AuthButton
-    class="h-12 2xl:h-14 !rounded-full w-full sm:w-[420px] 2xl:w-[480px] 2xl:text-[17px] mx-auto block"
+    class="h-12 2xl:h-14 !rounded-full w-full sm:w-[420px] 2xl:w-[480px] 2xl:text-[17px] mx-auto block whitespace-nowrap"
     @click="changeMobile"
     :disabled="loading"
   >
     {{
       loading
-        ? 'در حال ذخیره...'
-        : 'تغییر شماره موبایل'
+        ? $t('profile.changeMobile.saving')
+        : $t('profile.changeMobile.submit')
     }}
   </AuthButton>
 </div>
@@ -605,12 +614,12 @@ const logout = () => {
 >
   <button
     @click="activeTab = activeTab === 'profile' ? 'security' : 'profile'"
-    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
+    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition whitespace-nowrap"
   >
     {{
       activeTab === 'profile'
-        ? 'امنیت حساب کاربری'
-        : 'پروفایل کاربری'
+        ? $t('profile.menu.security')
+        : $t('profile.menu.profile')
     }}
 
     <ShieldCheckIcon
@@ -626,18 +635,18 @@ const logout = () => {
 
   <button
     @click="activeTab = 'changeMobile'; newMobile = ''"
-    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
+    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition whitespace-nowrap"
   >
-    تغییر شماره موبایل
+    {{ $t('profile.menu.changeMobile') }}
 
     <DevicePhoneMobileIcon class="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
   </button>
 
   <button
     @click="logout"
-    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition"
+    class="flex items-center gap-2 2xl:gap-3 hover:text-[#2d6a66] dark:hover:text-[#7fd1c9] transition whitespace-nowrap"
   >
-    خروج از حساب کاربری
+    {{ $t('profile.menu.logout') }}
 
     <ArrowRightOnRectangleIcon class="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
   </button>
@@ -650,31 +659,31 @@ const logout = () => {
         >
           <template v-if="!isEditing">
             <button
-              class="bg-[#2C7379] text-white py-2 rounded-[15px] 2xl:rounded-[18px] font-bold h-12 2xl:h-14 text-[14px] sm:text-[16px] 2xl:text-[18px] col-span-1 md:col-span-2 hover:bg-[#235652] transition"
+              class="bg-[#2C7379] text-white py-2 rounded-[15px] 2xl:rounded-[18px] font-bold h-12 2xl:h-14 text-[14px] sm:text-[16px] 2xl:text-[18px] col-span-1 md:col-span-2 hover:bg-[#235652] transition whitespace-nowrap"
               @click="isEditing = true"
             >
-              ویرایش اطلاعات
+              {{ $t('profile.actions.edit') }}
             </button>
           </template>
 
           <template v-else>
             <button
-              class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] 2xl:rounded-[18px] font-bold h-12 2xl:h-14 text-[14px] sm:text-[16px] 2xl:text-[18px]"
+              class="bg-[#BFD1D5] border-2 border-[#1a2333] text-[#1a2333] py-2 rounded-[15px] 2xl:rounded-[18px] font-bold h-12 2xl:h-14 text-[14px] sm:text-[16px] 2xl:text-[18px] whitespace-nowrap"
               @click="cancelEdit"
               :disabled="loading"
             >
-              انصراف
+              {{ $t('profile.actions.cancel') }}
             </button>
 
             <AuthButton
-              class="h-12 2xl:h-14 !rounded-[15px] 2xl:text-[18px]"
+              class="h-12 2xl:h-14 !rounded-[15px] 2xl:text-[18px] whitespace-nowrap"
               @click="updateProfile"
               :disabled="loading"
             >
               {{
                 loading
-                  ? 'در حال ذخیره...'
-                  : 'ذخیره اطلاعات'
+                  ? $t('profile.actions.saving')
+                  : $t('profile.actions.save')
               }}
             </AuthButton>
           </template>

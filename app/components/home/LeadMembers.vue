@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto px-4 mt-2 sm:mt-14 md:mt-10 xl:mt-2 2xl:mt-2 relative">
+  <div class="max-w-6xl 2xl:max-w-[1600px] mx-auto px-4 mt-2 sm:mt-14 md:mt-10 xl:mt-2 2xl:mt-2 relative" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <div class="relative w-full">
 <!-- موبایل -->
@@ -36,7 +36,7 @@
     >
       <img
         :src="item.data.image"
-        :alt="item.data.name"
+        :alt="$t(`home.team.members.${item.data.id}.name`)"
         class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         draggable="false"
       />
@@ -45,7 +45,7 @@
         class="mt-auto py-2 px-1.5 text-center relative z-10 backdrop-blur-md"
         style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
       >
-        <p class="text-white dark:text-white font-bold text-[10px] font-roboto truncate">{{ item.data.name }}</p>
+        <p class="text-white dark:text-white font-bold text-[10px] font-roboto truncate">{{ $t(`home.team.members.${item.data.id}.name`) }}</p>
       </div>
     </div>
   </div>
@@ -71,7 +71,7 @@
   >
     <img
       :src="member.image"
-      :alt="member.name"
+      :alt="$t(`home.team.members.${member.id}.name`)"
       class="absolute inset-0 w-full h-full object-cover"
     />
 
@@ -79,7 +79,7 @@
       class="mt-auto py-1.5 sm:py-1.5 md:py-2.5 lg:py-3 xl:py-4 2xl:py-5 px-1 md:px-1.5 xl:px-2 2xl:px-2.5 text-center relative z-10 backdrop-blur-md"
       style="background: linear-gradient(90deg, rgba(44, 115, 121, 0) 0%, rgba(44, 115, 121, 0.22) 100%);"
     >
-      <p class="text-[#ffffff] dark:text-[#ffffff] font-bold text-[8px] sm:text-[10px] md:text-[13px] lg:text-[14px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ member.name }}</p>
+      <p class="text-[#ffffff] dark:text-[#ffffff] font-bold text-[8px] sm:text-[10px] md:text-[13px] lg:text-[14px] xl:text-[16px] 2xl:text-[19px] font-roboto truncate">{{ $t(`home.team.members.${member.id}.name`) }}</p>
     </div>
   </div>
 
@@ -101,25 +101,32 @@
   <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[8px] sm:mt-[24px] md:mt-[17px] xl:mt-[15px] 2xl:mt-[10px] h-[30px] sm:h-[40px] md:h-[45px] xl:h-[50px] 2xl:h-[56px]">
 </div>
 
-        <div class="w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 dark:bg-[#D9D9D9]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 dark:border-dark-border/40 text-right mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]">
+        <div
+          :class="[
+            'w-full sm:w-[600px] md:w-[700px] xl:w-[875px] 2xl:w-[1300px] mx-auto bg-[#ABD7D8]/25 dark:bg-[#D9D9D9]/25 p-4 sm:p-6 md:p-7 xl:p-8 2xl:p-9 rounded-b-[28px] rounded-t-[10px] sm:rounded-b-[38px] sm:rounded-t-[14px] md:rounded-b-[44px] md:rounded-t-[15px] xl:rounded-b-[50px] xl:rounded-t-[17px] 2xl:rounded-b-[56px] 2xl:rounded-t-[19px] border border-[#ABD7D8]/30 dark:border-dark-border/40 mt-[40px] sm:-mt-[75px] md:-mt-[88px] xl:-mt-[100px] 2xl:-mt-[112px] shadow-[0px_3px_2px_0px_rgba(0,0,0,0.5)]',
+            isRtl ? 'text-right' : 'text-left'
+          ]"
+        >
 
 <h3
   :class="[
-    'text-[10px] sm:text-[13px] md:text-[15px] xl:text-[16px] 2xl:text-[24px] font-normal text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium  transition-all duration-300  -mt-[10px]',
+    'text-[12px] sm:text-[14px] md:text-[16px] xl:text-[17px] 2xl:text-[25px] font-normal text-[#0F184B] dark:text-dark-text-deep mb-2 sm:mb-3 font-medium transition-all duration-300',
+    isMobile ? 'mt-[5px]' : '-mt-[10px]',
     !isMobile && selectedIndex >= 1
-      ? 'mr-[5px] sm:mr-[45px] md:mr-[20px] xl:mr-[60px] 2xl:mr-[70px]'
+      ? (isRtl ? 'mr-[5px] sm:mr-[45px] md:mr-[20px] xl:mr-[60px] 2xl:mr-[70px]' : 'ml-[5px] sm:ml-[45px] md:ml-[20px] xl:ml-[60px] 2xl:ml-[70px]')
       : !isMobile
-        ? 'mr-[80px] sm:mr-[130px] md:mr-[150px] xl:mr-[155px] 2xl:mr-[230px]'
+        ? (isRtl ? 'mr-[80px] sm:mr-[130px] md:mr-[150px] xl:mr-[155px] 2xl:mr-[230px]' : 'ml-[80px] sm:ml-[130px] md:ml-[150px] xl:ml-[155px] 2xl:ml-[230px]')
         : ''
   ]"
 >
-  {{ teamMembers[selectedIndex].roal }}
+  {{ $t(`home.team.members.${teamMembers[selectedIndex].id}.role`) }}
 </h3>
-<p class="text-slate-700 dark:text-dark-text-deep/90 text-[13px] sm:text-[14px] md:text-[15px] xl:text-base 2xl:text-[23px] text-rught mx-auto font-roboto mt-2 sm:mt-[10px] xl:leading-loose md:leading-loose 2xl:leading-loose">
-  {{ teamMembers[selectedIndex].bio }}
+<p class="text-slate-700 dark:text-dark-text-deep/90 text-[14px] sm:text-[15px] md:text-[16px] xl:text-base 2xl:text-[24px] mx-auto font-roboto mt-2 sm:mt-[10px] xl:leading-loose md:leading-loose 2xl:leading-loose">
+  {{ $t(`home.team.members.${teamMembers[selectedIndex].id}.bio`) }}
 </p>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -131,38 +138,44 @@ const colorMode = useColorMode();
 // notch باید هم‌رنگ پس‌زمینه‌ی اصلی سایت باشه: dark-bg در دارک، #F7F3EB در روشن
 const notchColor = computed(() => (colorMode.value === 'dark' ? '#435056' : '#F7F3EB'));
 
+// --- i18n ---
+const { localeProperties } = useI18n()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 const selectedIndex = ref(null);
 const cardRefs = ref([]);
 const indicatorLeft = ref(0);
 const notchWidth = ref(100);
 const isMobile = ref(false);
 
+// نکته: name/roal/bio دیگه اینجا هاردکد نیستن؛ فقط id و image نگه داشته میشه
+// و متن واقعی هرکدوم از i18n با کلید home.team.members.<id>.<field> خونده میشه
 const teamMembers = [
-  { id: 1, roal:"مدیر ارشد و بنیان‌گذار نادرتک" , name: 'علی ادریسی', bio:  'علی ادریسی با بیش از ۹ سال تجربه در حوزه برنامه‌نویسی، طراحی و توسعه وب و اپلیکیشن، امنیت سایبری و دیجیتال مارکتینگ، مدیریت و راهبری تیم نادرتک را بر عهده دارد. او بنیان‌گذار کدوتمبل، نخستین فروشگاه اینترنتی تخصصی میوه در خراسان شمالی، و ادریس کدینگ، مجموعه آموزشی برنامه‌نویسی، است. همچنین سابقه همکاری با تیم تولید محتوای دانشگاه صنعتی شریف و اجرای پروژه‌های متنوع فناوری را در کارنامه خود دارد. تمرکز او بر ارائه راهکارهای نوآورانه و توسعه پروژه‌های دیجیتال برای رشد کسب‌وکارها است', image: '/images/Idrisipourr.png' },
-  { id: 2, roal:"سرپرست واحد تولید محتوا", name: 'امیر سهامی', bio: 'امیر سهامی با بیش از ۱۰ سال تجربه حرفه‌ای در حوزه تئاتر، به‌عنوان نویسنده، کارگردان، بازیگر و مشاور هنری فعالیت داشته است. او همچنین برنده عنوان بهترین کارگردان و بهترین بازیگر استان خراسان شمالی بوده و با بهره‌گیری از تجربه خود در روایت‌پردازی، سناریونویسی و تولید محتوای خلاق، مدیریت واحد تولید محتوای نادرتک را بر عهده دارد. تخصص او در خلق محتوای هدفمند و تأثیرگذار، به برندها کمک می‌کند ارتباطی مؤثر با مخاطبان خود برقرار کرده و حضوری قدرتمندتر در فضای دیجیتال داشته باشند', image: '/images/sahami.png' },
-  { id: 3, roal:"سرپرست واحد برنامه‌نویسی" , name: 'علی ناویانی', bio: 'علی ناویانی با بیش از ۳ سال تجربه تخصصی در حوزه طراحی UI/UX، طراحی رابط کاربری با Figma، توسعه وب و برنامه‌نویسی، سرپرستی واحد برنامه‌نویسی نادرتک را بر عهده دارد. او در طراحی تجربه‌های کاربری مدرن، طراحی وب‌سایت‌های حرفه‌ای، توسعه وب‌اپلیکیشن‌ها و پیاده‌سازی محصولات دیجیتال سریع، امن و واکنش‌گرا نقش مؤثری ایفا می‌کند. تمرکز او ارائه راهکارهای فنی و طراحی خلاقانه متناسب با نیاز کسب‌وکارها و خلق تجربه‌های دیجیتال کارآمد است', image: '/images/naviani.png' },
-  { id: 4, roal:"سرپرست واحد هوش مصنوعی" , name: 'مهدی محمدی', bio: 'مهدی محمدی سرپرست واحد هوش مصنوعی و فناوری این مجموعه است. او با بیش از ۵ سال تجربه در حوزه هوش مصنوعی، تحلیل داده، بازارهای مالی و فناوری‌های نوین، مسئولیت راهبری فنی، تحقیق و توسعه (R&D) و توسعه راهکارهای هوشمند را بر عهده دارد. همچنین با بهره‌گیری از فناوری‌های نوین تولید محتوا و انیمیشن، در طراحی و اجرای پروژه‌های خلاقانه و تولید محتوای دیجیتال نقش مؤثری ایفا می‌کند. تمرکز او بر ارائه راهکارهای نوآورانه، اتوماسیون فرآیندها و توسعه محصولات دیجیتال است تا کسب‌وکارها با استفاده از فناوری، سریع‌تر و هوشمندانه‌تر رشد کنند', image: '/images/mohammadi.png' }
+  { id: 1, image: '/images/Idrisipourr.png' },
+  { id: 2, image: '/images/sahami.png' },
+  { id: 3, image: '/images/naviani.png' },
+  { id: 4, image: '/images/mohammadi.png' }
 ];
 
 const updateNotchWidth = () => {
   const w = window.innerWidth;
   if (w < 640) {
-    notchWidth.value = 60;   // قبلاً 45
+    notchWidth.value = 60;
     isMobile.value = true;
   } else if (w < 768) {
-    notchWidth.value = 100;  // قبلاً 60
+    notchWidth.value = 100;
     isMobile.value = true;
   } else if (w < 1024) {
-    notchWidth.value = 90;   // قبلاً 85
+    notchWidth.value = 90;
     isMobile.value = false;
   } else if (w < 1280) {
-    notchWidth.value = 110;  // پله جدید بین lg و xl
+    notchWidth.value = 110;
     isMobile.value = false;
   } else if (w < 1536) {
-    notchWidth.value = 150;  // قبلاً 100
+    notchWidth.value = 150;
     isMobile.value = false;
   } else {
-    notchWidth.value = 200;  // قبلاً 120
+    notchWidth.value = 200;
     isMobile.value = false;
   }
 };

@@ -1,0 +1,14 @@
+{
+  "footer": {
+    "cooperateButton": "Request Collaboration",
+    "linksTitle": "Important Links",
+    "links": {
+      "order": "Project Order",
+      "events": "Event Hosting",
+      "about": "About Us",
+      "moreProjects": "Our Projects"
+    },
+    "terms": "Terms & Conditions",
+    "tagline": "Nader Technology — providing modern technology solutions, software development, and digital services"
+  }
+}

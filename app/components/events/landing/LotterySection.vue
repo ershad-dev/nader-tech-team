@@ -7,22 +7,25 @@ onMounted(() => {
 })
 
 const router = useRouter()
+const localePath = useLocalePath()
+const { localeProperties } = useI18n()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 function goToRegister() {
   router.push(isLoggedIn.value
-    ? '/events/lottery/register'
-    : '/auth/login?redirect=/events/lottery/register')
+    ? localePath('/events/lottery/register')
+    : localePath(`/auth/login?redirect=/events/lottery/register`))
 }
 
 function goToLoginPage() {
   router.push(isLoggedIn.value
-    ? '/events/lottery/login'
-    : '/auth/login?redirect=/events/lottery/login')
+    ? localePath('/events/lottery/login')
+    : localePath(`/auth/login?redirect=/events/lottery/login`))
 }
 </script>
 
 <template>
-  <div class="w-full px-4 sm:px-5 md:px-8 lg:px-10 xl:px-14 min-[1920px]:px-32">
+  <div class="w-full px-4 sm:px-5 md:px-8 lg:px-10 xl:px-14 min-[1920px]:px-32 mb-[50px]">
     <section
       class="relative w-full max-w-[1400px] mx-auto
              aspect-[1110/629] rounded-2xl overflow-hidden
@@ -31,17 +34,18 @@ function goToLoginPage() {
       <!-- بک‌گراند -->
       <img
         src="/images/bglottery.png"
-        alt="قرعه کشی"
+        :alt="$t('events.lottery.landing.bgAlt')"
         class="absolute inset-0 w-full h-full object-cover object-center"
       />
 
       <!-- کانتینر بیرونی -->
 <div
-  dir="rtl"
-  class="absolute inset-0 z-10 flex items-center justify-start
-         px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white -mr-[50px]"
+  :dir="isRtl ? 'rtl' : 'ltr'"
+  :class="[
+    'absolute inset-0 z-10 flex items-center px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white',
+    isRtl ? 'justify-start -mr-[50px]' : 'justify-end -ml-[50px]'
+  ]"
 >
-      >
         <!-- بلوک محتوا -->
         <div class="flex flex-col items-center text-center">
 <img
@@ -62,8 +66,8 @@ function goToLoginPage() {
             class="text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[26px] min-[1920px]:text-[28px]
                    text-[#0F184B] font-roboto leading-snug"
           >
-            شانس خود را امتحان کنید<br />
-            و برنده جوایز هیجان انگیز شوید
+            {{ $t('events.lottery.landing.line1') }}<br />
+            {{ $t('events.lottery.landing.line2') }}
           </p>
 <button
   @click="goToRegister"
@@ -79,7 +83,7 @@ function goToLoginPage() {
          text-[9px] sm:text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]
          font-bold hover:bg-white transition whitespace-nowrap leading-none"
 >
-  ثبت‌نام در قرعه‌کشی
+  {{ $t('events.lottery.landing.registerButton') }}
 </button>
         </div>
       </div>

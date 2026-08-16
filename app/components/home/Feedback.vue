@@ -2,82 +2,84 @@
   <section
     ref="sectionRef"
     class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-12 lg:py-20 min-[1920px]:py-24 px-4 -mt-[110px]"
-    dir="rtl"
+    :dir="isRtl ? 'rtl' : 'ltr'"
   >
-     
-     <div class="mb-8 lg:mb-12">
-       <h2 class="text-xl sm:text-2xl lg:text-3xl min-[1920px]:text-4xl font-bold text-[#0F184B] dark:text-dark-text mb-4">تجربه همکاری از زبان مشتری </h2>
-     </div>
- 
-     <!-- حالت لودینگ -->
-     <div v-if="loading" class="text-center py-10 text-[#0F184B] dark:text-dark-text">در حال بارگذاری نظرات مشتریان...</div>
- 
-     <!-- حالت خطا -->
-     <div v-else-if="error" class="text-center py-10 text-red-500 dark:text-red-400">خطا در دریافت نظرات مشتریان</div>
- 
-     <div 
-       v-else
-       ref="scrollContainer" 
-       class="flex gap-3 lg:gap-6 min-[1920px]:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-8"
-       style="scrollbar-width: none; -ms-overflow-style: none;" 
-       @pointerdown="pauseAutoplayTemporarily"
-       @touchstart.passive="pauseAutoplayTemporarily"
-     >
-         <div 
-           v-for="customer in customers"
-           :key="customer.id"
-           ref="cardRefs"
-           class="min-w-[200px] sm:min-w-[260px] lg:min-w-[320px] min-[1920px]:min-w-[380px] h-[260px] sm:h-[300px] lg:h-[340px] min-[1920px]:h-[400px] border border-slate-300 dark:border-dark-border rounded-[17px] overflow-hidden shadow-xl dark:shadow-none transition-all hover:shadow-xl dark:hover:ring-1 dark:hover:ring-dark-accent snap-center flex flex-col"
-           dir="rtl"
-         >
-         <!-- بخش پروفایل -->
-         <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] px-4 lg:px-6 min-[1920px]:px-8 pt-4 lg:pt-6 min-[1920px]:pt-8 pb-3 lg:pb-4 min-[1920px]:pb-6 shadow-xl dark:shadow-none -mt-[5px] shrink-0">
-           <img
-             :src="customer.image"
-             :alt="customer.name"
-             class="w-[120px] h-[100px] sm:w-[170px] sm:h-[145px] lg:w-[200px] lg:h-[170px] min-[1920px]:w-[230px] min-[1920px]:h-[195px] rounded-[14px] mx-auto mb-2 lg:mb-4 min-[1920px]:mb-6 object-cover object-top"
-           />
- 
-           <h3 class="text-[12px] lg:text-[13px] min-[1920px]:text-[15px] font-extrabold text-[#0F184B] dark:text-dark-text mb-1 rokh-bold text-center">
-             {{ customer.name }}
-           </h3>
- 
-           <p class="text-[#0F184B] dark:text-dark-text/80 font-roboto font-medium text-[11px] lg:text-[13px] min-[1920px]:text-[14px] text-center">
-             {{ customer.role }}
-           </p>
-         </div>
- 
-        <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
-        <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-6 min-[1920px]:p-8 flex-1 min-h-0 flex flex-col">
-          <p
-            class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[13px] min-[1920px]:text-[14px] leading-relaxed font-roboto text-right -mt-[20px] flex-1"
-          >
-            {{ customer.comment }}
+
+    <div class="mb-8 lg:mb-12">
+      <h2 class="text-xl sm:text-2xl lg:text-3xl min-[1920px]:text-4xl font-bold text-[#0F184B] dark:text-dark-text mb-4">{{ $t('home.feedback.title') }}</h2>
+    </div>
+
+    <!-- حالت لودینگ -->
+    <div v-if="loading" class="text-center py-10 text-[#0F184B] dark:text-dark-text">{{ $t('home.feedback.loading') }}</div>
+
+    <!-- حالت خطا -->
+    <div v-else-if="error" class="text-center py-10 text-red-500 dark:text-red-400">{{ $t('home.feedback.error') }}</div>
+
+    <div
+      v-else
+      ref="scrollContainer"
+      class="flex gap-3 lg:gap-6 min-[1920px]:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-8"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+      @pointerdown="pauseAutoplayTemporarily"
+      @touchstart.passive="pauseAutoplayTemporarily"
+    >
+        <div
+          v-for="customer in customers"
+          :key="customer.id"
+          ref="cardRefs"
+          class="min-w-[200px] sm:min-w-[260px] lg:min-w-[320px] min-[1920px]:min-w-[380px] h-[260px] sm:h-[300px] lg:h-[340px] min-[1920px]:h-[400px] border border-slate-300 dark:border-dark-border rounded-[17px] overflow-hidden shadow-xl dark:shadow-none transition-all hover:shadow-xl dark:hover:ring-1 dark:hover:ring-dark-accent snap-center flex flex-col"
+          :dir="isRtl ? 'rtl' : 'ltr'"
+        >
+        <!-- بخش پروفایل -->
+        <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] px-4 lg:px-6 min-[1920px]:px-8 pt-4 lg:pt-6 min-[1920px]:pt-8 pb-3 lg:pb-4 min-[1920px]:pb-6 shadow-xl dark:shadow-none -mt-[5px] shrink-0">
+          <img
+            :src="customer.image"
+            :alt="customer.name"
+            class="w-[120px] h-[100px] sm:w-[170px] sm:h-[145px] lg:w-[200px] lg:h-[170px] min-[1920px]:w-[230px] min-[1920px]:h-[195px] rounded-[14px] mx-auto mb-2 lg:mb-4 min-[1920px]:mb-6 object-cover object-top"
+          />
+
+          <!-- نکته: اسم مشتری همیشه فارسی می‌مونه (اسامی معمولاً ترجمه نمی‌شن) -->
+          <h3 class="text-[12px] lg:text-[13px] min-[1920px]:text-[15px] font-extrabold text-[#0F184B] dark:text-dark-text mb-1 rokh-bold text-center">
+            {{ customer.name }}
+          </h3>
+
+          <p class="text-[#0F184B] dark:text-dark-text/80 font-roboto font-medium text-[11px] lg:text-[13px] min-[1920px]:text-[14px] text-center">
+            {{ displayRole(customer) }}
           </p>
         </div>
+
+       <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
+       <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-6 min-[1920px]:p-8 flex-1 min-h-0 flex flex-col">
+         <p
+           class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[13px] min-[1920px]:text-[14px] leading-relaxed font-roboto -mt-[20px] flex-1"
+           :dir="commentDir(customer)"
+         >
+           {{ displayComment(customer) }}
+         </p>
        </div>
-     </div>
- 
-     <div class="flex items-center justify-center sm:justify-between mt-4 gap-5">
- 
- <div class="hidden sm:flex gap-2">
-         <SliderButton 
-           direction="left" 
-           @click="scroll('right')" 
-           class=" hover:text-gray transition" 
-         />
-         <SliderButton 
-           direction="right" 
-           @click="scroll('left')" 
-           class=" hover:text-gray transition" 
-         />
-       </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-center sm:justify-between mt-4 gap-5">
+
+<div class="hidden sm:flex gap-2">
+        <SliderButton
+          :direction="isRtl ? 'left' : 'right'"
+          @click="scroll('right')"
+          class=" hover:text-gray transition"
+        />
+        <SliderButton
+          :direction="isRtl ? 'right' : 'left'"
+          @click="scroll('left')"
+          class=" hover:text-gray transition"
+        />
+      </div>
 <div class="flex gap-2">
   <button
     v-for="(dot, index) in dotsArray"
     :key="index"
     type="button"
-    :aria-label="`رفتن به اسلاید ${index + 1}`"
+    :aria-label="$t('home.feedback.goToSlide', { number: index + 1 })"
     @click="goToSlide(index)"
     :class="[
       'h-2 rounded-full transition-all duration-300 cursor-pointer',
@@ -85,12 +87,17 @@
     ]"
   ></button>
 </div>
-     </div>
-   </section>
- </template>
+    </div>
+  </section>
+</template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+
+const { locale, localeProperties } = useI18n()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
+const { getTranslated, logMissingTranslation } = useManualTranslation('reviews')
 
 const sectionRef = ref(null);
 const scrollContainer = ref(null);
@@ -110,6 +117,29 @@ const MAX_FEEDBACK_COUNT = 6;
 const AUTOPLAY_INTERVAL_MS = 5000;
 const AUTOPLAY_RESUME_DELAY_MS = 4000;
 const MAX_DOTS = 3;
+
+/* ----------------- ترجمه‌ی دستی نظرات ----------------- */
+const displayRole = (customer) => {
+  if (isRtl.value) return customer.role
+  return getTranslated(customer.id, 'role', customer.role)
+}
+
+const displayComment = (customer) => {
+  if (isRtl.value) return customer.comment
+  return getTranslated(customer.id, 'comment', customer.comment)
+}
+
+// جهت پاراگراف نظر: اگه ترجمه‌ی دستی موجود بود انگلیسیه (ltr)، وگرنه فارسیه (rtl)
+const commentDir = (customer) => {
+  if (isRtl.value) return 'rtl'
+  return getTranslated(customer.id, 'comment', null) ? 'ltr' : 'rtl'
+}
+
+// وقتی صفحه انگلیسیه، هر مشتری‌ای که ترجمه‌ی دستی نداره رو تو localStorage ثبت می‌کنیم
+watch([customers, locale], () => {
+  if (isRtl.value) return
+  customers.value.forEach((c) => logMissingTranslation(c, ['role', 'comment']))
+})
 
 /* ----------------- Dots (حداکثر 3 تا) ----------------- */
 const dotsCount = computed(() => Math.min(customers.value.length, MAX_DOTS));

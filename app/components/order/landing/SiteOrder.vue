@@ -3,6 +3,11 @@ import { computed } from 'vue'
 import { useMobileSlider } from '@/composables/useMobileSlider'
 import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
+// --- i18n ---
+const { locale, localeProperties, t } = useI18n()
+const localePath = useLocalePath()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 // این بخش فقط پروژه‌های دسته‌بندی «طراحی سایت» رو نشون می‌ده،
 // پس category_id واقعی (1) مستقیم پاس داده می‌شه.
 const { items: webProjects } = useResumes(RESUME_CATEGORY_IDS.web)
@@ -28,25 +33,32 @@ const visibleProjects = visibleItems(3)
 // content هر مرحله از طریق ادیتور Tiptap در پنل ادمین ساخته می‌شه، یعنی
 // HTML است (نه متن ساده) — پس در تمپلیت با v-html رندر می‌شه.
 //
+// نکته‌ی مهم درباره‌ی دوزبانگی: محتوای workflow از پنل ادمین میاد و فعلاً
+// endpoint فقط یک نسخه (فارسی) برمی‌گردونه، بدون پارامتر زبان. یعنی این
+// بخش فعلاً حتی در حالت en هم محتوای فارسی رو نشون می‌ده، مگر اینکه بک‌اند
+// در آینده از این endpoint نسخه‌ی دوزبانه ارائه بده. این خارج از اسکوپ
+// فرانت‌اند فعلیه. فقط fallbackSteps (که کاملاً سمت فرانت‌انده) رو
+// دوزبانه کردیم.
+//
 // اگر fetch با خطا مواجه بشه یا آیتم workflow خالی/نامعتبر باشه، به یک
 // آرایه‌ی ثابت (fallbackSteps) برمی‌گردیم تا این بخش از صفحه هیچ‌وقت
 // خالی نمونه.
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 
-const fallbackSteps = [
-  { title: 'سفارش', desc: 'سفارش نیازهای خود را با ما در میان بگذارید و سفارش پروژه را ثبت کنید.' },
-  { title: 'تحلیل', desc: 'تحلیل نیازها و اهداف شما به دقت بررسی و تحلیل می‌شود.' },
-  { title: 'اجرا', desc: 'اجرا تیم ما بر اساس برنامه‌ریزی انجام شده پروژه را با کیفیت اجرا می‌کند.' },
-  { title: 'تحویل', desc: 'تحویل پروژه در موعد مقرر با کیفیت نهایی به شما تحویل داده می‌شود.' },
-  { title: 'پشتیبانی', desc: 'پشتیبانی پس از تحویل، همراهی و پشتیبانی ما ادامه خواهد داشت.' },
-]
+const fallbackSteps = computed(() => ([
+  { title: t('order.workflow.fallback.order.title'), desc: t('order.workflow.fallback.order.desc') },
+  { title: t('order.workflow.fallback.analysis.title'), desc: t('order.workflow.fallback.analysis.desc') },
+  { title: t('order.workflow.fallback.execution.title'), desc: t('order.workflow.fallback.execution.desc') },
+  { title: t('order.workflow.fallback.delivery.title'), desc: t('order.workflow.fallback.delivery.desc') },
+  { title: t('order.workflow.fallback.support.title'), desc: t('order.workflow.fallback.support.desc') },
+]))
 
 const { data: orderPageRes } = await useFetch(`${API_BASE}/page/order`)
 
 const steps = computed(() => {
   const list = orderPageRes.value?.data ?? []
   const workflowItem = list.find(i => i.key === 'workflow')
-  if (!workflowItem?.value) return fallbackSteps
+  if (!workflowItem?.value) return fallbackSteps.value
 
   try {
     const parsed = JSON.parse(workflowItem.value)
@@ -56,12 +68,15 @@ const steps = computed(() => {
   } catch {
     // مقدار JSON نامعتبر بود — سکوت و بازگشت به fallback
   }
-  return fallbackSteps
+  return fallbackSteps.value
 })
+
+// شماره‌ی مراحل بر اساس زبان فعلی با فرمت اعداد فارسی یا انگلیسی نمایش داده بشه
+const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR' : 'en-US')
 </script>
 
 <template>
-<div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] xxl:h-[1024px] py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px] xxl:-mt-[90px] dark:bg-dark-bg">
+<div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] xxl:h-[1024px] py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px] xxl:-mt-[90px] dark:bg-dark-bg" :dir="isRtl ? 'rtl' : 'ltr'">
     <!-- لایه‌ی پس‌زمینه، جدا از محتوا -->
     <div
       class="absolute inset-0 -z-10
@@ -76,7 +91,7 @@ const steps = computed(() => {
 <h1
   class="ml-auto bg-[#fcfaf4] dark:bg-[#ADE9EA] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] xxl:w-[200px] xxl:h-[48px] xxl:text-[20px] text-[#2d6a66] dark:text-[#407B80] flex items-center justify-center rounded-[19px] shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border mt-[80px] md:mt-[70px] xl:mt-[100px] xxl:mt-[120px]"
 >
-  طراحی سایت
+  {{ $t('order.siteOrder.badge') }}
 </h1>
 
       <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + پشتیبانی از سواپ انگشت -->
@@ -97,7 +112,7 @@ const steps = computed(() => {
                 : 'z-10 scale-75 opacity-40 translate-x-[105px]'
           ]"
         >
-          <NuxtLink :to="`/order/${item.data.slug}`">
+          <NuxtLink :to="localePath(`/order/${item.data.slug}`)">
             <img
               :src="resumeCover(item.data)"
               class="w-[220px] h-[252px] object-cover rounded-[30px] shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border select-none pointer-events-none"
@@ -120,7 +135,7 @@ const steps = computed(() => {
       index % 2 !== 0 ? 'xl:mt-12 xxl:mt-14' : '',
     ]"
   >
-<NuxtLink :to="`/order/${item.data.slug}`">
+<NuxtLink :to="localePath(`/order/${item.data.slug}`)">
         <img
         :src="resumeCover(item.data)"
         class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px] xxl:rounded-[45px]"
@@ -133,13 +148,13 @@ const steps = computed(() => {
       <!-- دکمه‌های اسلایدر: فقط از md به بالا نمایش داده می‌شن -->
       <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[100px]">
         <SliderButton
-          direction="left"
-          @click="prevSlide"
+          :direction="isRtl ? 'left' : 'right'"
+          @click="nextSlide"
         />
 
         <SliderButton
-          direction="right"
-          @click="nextSlide"
+          :direction="isRtl ? 'right' : 'left'"
+          @click="prevSlide"
         />
       </div>
     </div>
@@ -148,7 +163,7 @@ const steps = computed(() => {
   <div
   class="relative z-20 -mt-20 md:-mt-20 xl:-mt-[150px] xxl:-mt-[190px] py-14 md:py-16 xl:py-20 xxl:py-24 px-4 w-full max-w-[1200px] xxl:max-w-[1600px] min-h-[420px] xxl:min-h-[480px]
   rounded-[50px] xxl:rounded-[60px] overflow-visible text-center mx-auto flex flex-col items-center"
-  dir="rtl"
+  :dir="isRtl ? 'rtl' : 'ltr'"
 >
   <!-- لایه‌ی پس‌زمینه‌ی جدا -->
 <div
@@ -176,8 +191,8 @@ const steps = computed(() => {
 
 <div class="relative z-10 max-w-6xl xxl:max-w-[1300px] mx-auto">
   <div class="flex flex-col items-center text-center mb-8 md:mb-10 xxl:mb-14">
-    <h3 class="text-[#2d6a66] md:text-white dark:text-dark-text text-[18px] md:text-[22px] xl:text-[26px] xxl:text-[30px] xxl:mt-[50px] font-medium mb-2">فرایند همکاری</h3>
-    <h1 class="text-[#0F184B] dark:text-dark-text text-[22px] md:text-[29px] xl:text-[32px] xxl:text-[38px] font-bold">از ایده تا نتیجه، در کنار شما هستیم</h1>
+    <h3 class="text-[#2d6a66] md:text-white dark:text-dark-text text-[18px] md:text-[22px] xl:text-[26px] xxl:text-[30px] xxl:mt-[50px] font-medium mb-2">{{ $t('order.workflow.smallTitle') }}</h3>
+    <h1 class="text-[#0F184B] dark:text-dark-text text-[22px] md:text-[29px] xl:text-[32px] xxl:text-[38px] font-bold">{{ $t('order.workflow.title') }}</h1>
   </div>
 
 <div class="flex flex-wrap xxl:flex-nowrap justify-center gap-3 sm:gap-4 md:gap-3 xl:gap-12 xxl:gap-10 items-start md:items-center xl:items-start">
@@ -194,7 +209,7 @@ const steps = computed(() => {
       <div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
         <div class="flex items-center h-full gap-1">
           <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[8px] sm:ml-[12px] md:ml-[10px] xxl:ml-[14px] text-[#EAAA3C] dark:text-dark-gold rokh-bold-num mt-2">
-            {{ (index + 1).toLocaleString('fa-IR') }}
+            {{ formatStepNumber(index + 1) }}
           </span>
           <h3 class="text-[#EAAA3C] dark:text-dark-gold font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] truncate rokh-bold-num">{{ step.title }}</h3>
         </div>

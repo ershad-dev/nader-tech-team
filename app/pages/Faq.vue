@@ -1,26 +1,26 @@
 <template>
-  <section class="max-w-6xl 2xl:max-w-[1400px] mx-auto py-20 2xl:py-28 px-4 md:px-6 2xl:px-8" dir="rtl">
+  <section class="max-w-6xl 2xl:max-w-[1400px] mx-auto py-20 2xl:py-28 px-4 md:px-6 2xl:px-8" :dir="isRtl ? 'rtl' : 'ltr'">
     
     <div class="flex flex-col items-center mb-20 2xl:mb-24">
       <div class="bg-[#ABD7D887] dark:bg-dark-surface w-16 h-16 2xl:w-20 2xl:h-20 rounded-full border border-gray-300 dark:border-dark-border flex items-center justify-center mb-6 2xl:mb-8 ">
-        <img src="/images/faq.png" alt="FAQ" class="w-8 h-8 2xl:w-10 2xl:h-10 object-contain" />
+        <img src="/images/faq.png" :alt="$t('faq.iconAlt')" class="w-8 h-8 2xl:w-10 2xl:h-10 object-contain" />
       </div>
-      <h2 class="text-3xl 2xl:text-[42px] font-bold text-[#0F184B] dark:text-dark-text">پرسش‌های متداول</h2>
+      <h2 class="text-3xl 2xl:text-[42px] font-bold text-[#0F184B] dark:text-dark-text">{{ $t('faq.heading') }}</h2>
     </div>
 
     <!-- حالت لودینگ -->
     <div v-if="pending" class="text-center text-[#616474] dark:text-dark-text/70 py-10">
-      در حال بارگذاری...
+      {{ $t('faq.loading') }}
     </div>
 
     <!-- حالت خطا -->
     <div v-else-if="error" class="text-center text-red-500 py-10">
-      خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید.
+      {{ $t('faq.error') }}
     </div>
 
     <!-- حالت خالی بودن لیست -->
     <div v-else-if="!faqs || faqs.length === 0" class="text-center text-[#616474] dark:text-dark-text/70 py-10">
-      در حال حاضر سوالی ثبت نشده است.
+      {{ $t('faq.empty') }}
     </div>
 
     <!-- لیست FAQ ها -->
@@ -34,7 +34,8 @@
         
         <button 
             @click="toggle(index)" 
-            class="w-full py-6 2xl:py-7 px-4 md:px-6 2xl:px-8 flex justify-between items-center text-right hover:bg-[#2C7379]/5 dark:hover:bg-dark-surface/40 transition-colors duration-300"
+            class="w-full py-6 2xl:py-7 px-4 md:px-6 2xl:px-8 flex justify-between items-center hover:bg-[#2C7379]/5 dark:hover:bg-dark-surface/40 transition-colors duration-300"
+            :class="isRtl ? 'text-right' : 'text-left'"
             >
             <!-- تغییر سایز فونت فقط برای موبایل -->
             <p 
@@ -81,6 +82,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+const { locale, localeProperties, t } = useI18n();
+const isRtl = computed(() => localeProperties.value.dir === 'rtl');
+
 const isOpen = ref(null);
 const toggle = (index) => { isOpen.value = isOpen.value === index ? null : index; };
 
@@ -88,6 +92,7 @@ const toggle = (index) => { isOpen.value = isOpen.value === index ? null : index
 const API_BASE = 'https://nadertechnologyteam.ir';
 
 // دریافت لیست FAQ های فعال از API
+// نکته: سوال/جواب‌ها از سرور میان و فعلاً فقط فارسی هستن (مثل بقیه‌ی محتوای API در پروژه)
 const { data, pending, error } = await useFetch(`${API_BASE}/api/faqs`, {
   key: 'faqs-list',
 });
@@ -100,7 +105,7 @@ const faqs = computed(() => {
 
 const footerConfig = useState('footerConfig');
 footerConfig.value = {
-  title: ' شروع یک تجربه متفاوت ',
+  title: t('faq.footerTitle'),
   bgColor: 'bg-purple-800'
 };
 

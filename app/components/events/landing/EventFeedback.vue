@@ -1,11 +1,11 @@
 <template>
   <!-- کانتینر اصلی بخش رضایت‌مندی -->
-  <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-8 sm:py-10 md:py-12 min-[1920px]:py-16 px-4 min-[1920px]:px-8">
+  <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-8 sm:py-10 md:py-12 min-[1920px]:py-16 px-4 min-[1920px]:px-8" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <!-- عنوان بخش -->
     <div class="mb-8 sm:mb-10 md:mb-12 min-[1920px]:mb-14 flex flex-col items-center">
       <h2 class="bg-white dark:bg-[#93BFBF52] px-4 sm:px-6 md:px-8 min-[1920px]:px-10 py-3 sm:py-4 min-[1920px]:py-5 rounded-t-[16px] sm:rounded-t-[20px] rounded-b-[4px] shadow-xl border-[0.5px] dark:border-dark-border font-bold text-[#0F184B] dark:text-white border w-[220px] sm:w-[250px] md:w-[266px] min-[1920px]:w-[300px] h-[64px] sm:h-[72px] md:h-[78px] min-[1920px]:h-[90px] text-[15px] sm:text-[18px] md:text-[20px] min-[1920px]:text-[22px] flex items-center justify-center text-center whitespace-normal sm:whitespace-nowrap leading-snug">
-        رضایت از ایونت‌های برگزار شده
+        {{ $t('events.landing.testimonialsTitle') }}
       </h2>
     </div>
 
@@ -30,7 +30,7 @@
   >
     <img
       :src="item.data.image"
-      :alt="'testimonial-' + item.realIndex"
+      :alt="`testimonial-${item.realIndex}`"
       :class="[
         'w-[190px] h-[224px] object-cover rounded-[32px] transition-all duration-300 select-none pointer-events-none',
         selectedIndex === item.realIndex && item.pos === 0
@@ -54,7 +54,7 @@
         >
           <img
             :src="item.data.image"
-            :alt="'testimonial-' + item.realIndex"
+            :alt="`testimonial-${item.realIndex}`"
             :class="[
               'cursor-pointer w-[230px] h-[271px] sm:w-[220px] sm:h-[259px] md:w-[266px] md:h-[313px] min-[1920px]:w-[320px] min-[1920px]:h-[376px] object-cover rounded-[32px] sm:rounded-[38px] md:rounded-[49px] min-[1920px]:rounded-[56px] transition-all duration-300',
               selectedIndex === item.realIndex
@@ -69,13 +69,13 @@
     <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
     <div class="hidden md:flex justify-center items-center gap-2 mt-6 sm:mt-8 min-[1920px]:mt-10">
       <SliderButton
-        direction="left"
-        @click="prevSlide"
+        :direction="isRtl ? 'left' : 'right'"
+        @click="nextSlide"
       />
 
       <SliderButton
-        direction="right"
-        @click="nextSlide"
+        :direction="isRtl ? 'right' : 'left'"
+        @click="prevSlide"
       />
     </div>
 
@@ -99,11 +99,16 @@
 </div>
 
       <!-- متن نظرات -->
-      <h1 class="font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[40px] min-[1920px]:mt-[56px] text-start">
-        تجربه همکاری از زبان مشتری 
+      <h1
+        :class="[
+          'font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[40px] min-[1920px]:mt-[56px]',
+          isRtl ? 'text-right' : 'text-left'
+        ]"
+      >
+        {{ $t('events.landing.testimonialsSubtitle') }}
       </h1>
-      <p class="text-[#616474] dark:text-dark-text/70 text-right text-[12px] sm:text-[13px] md:text-[14px] min-[1920px]:text-[16px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] min-[1920px]:leading-[56px] pt-4 text-center font-roboto">
-        {{ testimonials[selectedIndex].text }}
+      <p class="text-[#616474] dark:text-dark-text/70 text-[12px] sm:text-[13px] md:text-[14px] min-[1920px]:text-[16px] font-light leading-[26px] sm:leading-[36px] md:leading-[50px] min-[1920px]:leading-[56px] pt-4 text-center font-roboto">
+        {{ $t(`events.landing.testimonials.${selectedIndex}.text`) }}
       </p>
     </div>
   </section>
@@ -112,6 +117,10 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useMobileSlider } from '@/composables/useMobileSlider'
+
+// --- i18n ---
+const { localeProperties } = useI18n()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 // رنگ notch وابسته به حالت دارک/لایت — دقیقاً همون الگویی که تو LeadMembers.vue استفاده شد
 const colorMode = useColorMode()
@@ -124,12 +133,14 @@ const notchWidth = ref(140);
 const isMobile = ref(false);
 const visibleCount = ref(3);
 
+// نکته: متن نظرات (text) دیگه اینجا هاردکد نیست؛ فقط تصویر نگه داشته می‌شه
+// و متن واقعی هرکدوم از i18n با کلید events.landing.testimonials.<index>.text خونده می‌شه
 const testimonials = [
-  { image: '/images/img-services.png', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' },
-  { image: '/images/eventheader.jpg', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' },
-  { image: '/images/img-services.png', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' },
-  { image: '/images/eventheader.jpg', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' },
-  { image: '/images/eventheader.jpg', text: '«همکاری با این مجموعه یکی از بهترین تجربه‌های کاری ما بود. از همان جلسات اولیه، نیازها و اهداف ما به‌خوبی درک شد و تمام مراحل پروژه با برنامه‌ریزی دقیق پیش رفت. کیفیت اجرای کار، سرعت پاسخگویی و توجه به جزئیات باعث شد نتیجه نهایی حتی بهتر از انتظارات ما باشد. از همکاری با این تیم بسیار رضایت داریم و قطعاً در پروژه‌های آینده نیز از خدمات آن‌ها استفاده خواهیم کرد.»' }
+  { image: '/images/img-services.png' },
+  { image: '/images/eventheader.jpg' },
+  { image: '/images/img-services.png' },
+  { image: '/images/eventheader.jpg' },
+  { image: '/images/eventheader.jpg' }
 ];
 
 // تابع محاسبه موقعیت نشانگر (فقط برای تبلت/دسکتاپ استفاده می‌شود)

@@ -1,0 +1,19 @@
+{
+  "about": {
+    "logoAlt": "Logo",
+    "arrowAlt": "Arrow",
+    "contactButton": "Contact Us",
+    "teamHeading": "15+ years of experience building successful digital products",
+    "footerTitle": {
+      "part1": "At",
+      "highlight": "Nader Technology",
+      "part2": ", quality isn't a choice — it's a principle."
+    },
+    "team": [
+      { "name": "Ali Rezaei", "role": "Project Manager", "desc": "Leading and coordinating the team. Overseeing execution and ensuring the project's goals are achieved" },
+      { "name": "Ali Rezaei", "role": "Project Manager", "desc": "Leading and coordinating the team. Overseeing execution and ensuring the project's goals are achieved" },
+      { "name": "Ali Rezaei", "role": "Project Manager", "desc": "Leading and coordinating the team. Overseeing execution and ensuring the project's goals are achieved" },
+      { "name": "Ali Rezaei", "role": "Project Manager", "desc": "Leading and coordinating the team. Overseeing execution and ensuring the project's goals are achieved" }
+    ]
+  }
+}

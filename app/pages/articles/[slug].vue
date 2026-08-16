@@ -1,13 +1,13 @@
 <template>
-  <div class="max-w-[1100px] mx-auto py-8 sm:py-12 md:py-16 px-4 sm:px-5 md:px-6 bg-[#ABD7D8]/25 dark:bg-[#ABD7D857] rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[3rem] mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8 md:mb-10 shadow-xl" dir="rtl">
+  <div class="max-w-[1100px] mx-auto py-8 sm:py-12 md:py-16 px-4 sm:px-5 md:px-6 bg-[#ABD7D8]/25 dark:bg-[#ABD7D857] rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[3rem] mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8 md:mb-10 shadow-xl" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <!-- لودینگ -->
-    <div v-if="pending" class="text-center py-16 text-slate-500 dark:text-dark-text/70">در حال بارگذاری مقاله...</div>
+    <div v-if="pending" class="text-center py-16 text-slate-500 dark:text-dark-text/70">{{ $t('articles.loading') }}</div>
 
     <!-- خطا / 404 -->
     <div v-else-if="error" class="text-center py-16">
-      <p class="text-red-500 text-lg mb-2">مقاله پیدا نشد</p>
-      <NuxtLink to="/articles" class="text-[#2D7A6F] dark:text-dark-highlight underline">بازگشت به مقالات</NuxtLink>
+      <p class="text-red-500 text-lg mb-2">{{ $t('articles.notFound') }}</p>
+      <NuxtLink :to="localePath('/articles')" class="text-[#2D7A6F] dark:text-dark-highlight underline">{{ $t('articles.backToArticles') }}</NuxtLink>
     </div>
 
     <template v-else-if="article">
@@ -44,6 +44,10 @@
 const route = useRoute();
 const apiBase = 'https://nadertechnologyteam.ir'; // یا از config.public.apiBase استفاده کن
 
+const localePath = useLocalePath();
+const { locale, localeProperties } = useI18n();
+const isRtl = computed(() => localeProperties.value.dir === 'rtl');
+
 const slug = computed(() => route.params.slug);
 
 const { data, pending, error } = await useFetch(
@@ -58,7 +62,7 @@ const dateIconFill = computed(() => (colorMode.value === 'dark' ? '#E9F1F2' : '#
 function formatDate(dateStr) {
   if (!dateStr) return '';
   try {
-    return new Date(dateStr).toLocaleDateString('fa-IR');
+    return new Date(dateStr).toLocaleDateString(locale.value === 'fa' ? 'fa-IR' : 'en-US');
   } catch {
     return dateStr;
   }

@@ -1,0 +1,98 @@
+{
+  "order": {
+    "siteOrder": {
+      "badge": "Web Design"
+    },
+    "workflow": {
+      "smallTitle": "Our Workflow",
+      "title": "From Idea to Result, We're With You",
+      "fallback": {
+        "order": {
+          "title": "Order",
+          "desc": "Share your requirements with us and submit your project order."
+        },
+        "analysis": {
+          "title": "Analysis",
+          "desc": "Your needs and goals are carefully reviewed and analyzed."
+        },
+        "execution": {
+          "title": "Execution",
+          "desc": "Our team executes the project with quality, based on the planned schedule."
+        },
+        "delivery": {
+          "title": "Delivery",
+          "desc": "The project is delivered to you on time with final quality."
+        },
+        "support": {
+          "title": "Support",
+          "desc": "After delivery, our support and assistance continue."
+        }
+      }
+    },
+    "contentOrder": {
+      "badge": "Content Production",
+      "loading": "Loading...",
+      "error": "Failed to load projects",
+      "empty": "No projects found"
+    },
+    "serviceSection": {
+      "title": "Our Services",
+      "orderProject": "Order Project",
+      "contentLabel": "Content Production",
+      "webLabel": "Web Design",
+      "contentServices": [
+        "Professional social media video production",
+        "View-focused reels production",
+        "Filming and editing",
+        "Scriptwriting and ideation"
+      ],
+      "webServices": [
+        "Modern, user-centered UI/UX design",
+        "Front-end and back-end development",
+        "Online store development",
+        "Website performance optimization"
+      ]
+    },
+    "requestForm": {
+      "titlePart1": "Your path to",
+      "titleHighlight": "growth",
+      "titlePart2": " starts right here",
+      "pageTitle": "Project Request",
+      "subtitle": "To start working together, fill out the form below and our experts will contact you as soon as possible.",
+      "whyUs": "Why work with us",
+      "perks": {
+        "fast": {
+          "title": "Quick Response",
+          "desc": "Our experts will contact you in less than 24 hours."
+        },
+        "custom": {
+          "title": "Custom Solutions",
+          "desc": "We provide a tailored solution for each project based on your needs."
+        },
+        "experience": {
+          "title": "Experience & Expertise",
+          "desc": "Our team, with years of experience, guarantees you the best result."
+        }
+      },
+      "fields": {
+        "name": "Full Name",
+        "mobile": "Phone Number",
+        "email": "Email",
+        "requestFor": "Request For",
+        "description": "Description"
+      },
+      "loadingServices": "Loading...",
+      "selectPlaceholder": "Select an option",
+      "submit": "Submit Request",
+      "submitting": "Submitting...",
+      "successDefault": "Your request has been submitted successfully.",
+      "errorDefault": "Something went wrong. Please try again.",
+      "validation": {
+        "nameRequired": "Full name is required",
+        "mobileRequired": "Phone number is required",
+        "typeRequired": "Selecting a request type is required",
+        "descriptionRequired": "Description is required"
+      }
+    }
+  }
+}

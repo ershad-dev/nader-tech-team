@@ -1,0 +1,18 @@
+{
+  "articles": {
+    "heroTitle": {
+      "part1": "Stay up to date with your knowledge —",
+      "highlight": "every week",
+      "part2": "we publish new articles on web design and content creation."
+    },
+    "loading": "Loading articles...",
+    "error": "Failed to load articles",
+    "empty": "No articles found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "notFound": "Article not found",
+    "backToArticles": "Back to Articles"
+  }
+}

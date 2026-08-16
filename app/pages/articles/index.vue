@@ -1,23 +1,25 @@
 <template>
-  <div class="max-w-[1106px] 2xl:max-w-[1600px] mx-auto py-12 md:py-20 px-4 2xl:px-12" dir="rtl">
+  <div class="max-w-[1106px] 2xl:max-w-[1600px] mx-auto py-12 md:py-20 px-4 2xl:px-12" :dir="isRtl ? 'rtl' : 'ltr'">
     <h1 class="text-[18px] sm:text-[20px] md:text-[24px] 2xl:text-[28px] text-[#0F184B] dark:text-dark-text font-bold mb-8 sm:mb-10 md:mb-16 2xl:mb-20 text-center leading-relaxed">
-      دانش خود را به‌روز نگه دارید <span class="text-[#2C7379] dark:text-dark-highlight">هر هفته</span> مقالات جدیدی در حوزه طراحی سایت، تولید محتوا منتشر می‌کنیم.
+      {{ $t('articles.heroTitle.part1') }}
+      <span class="text-[#2C7379] dark:text-dark-highlight">{{ $t('articles.heroTitle.highlight') }}</span>
+      {{ $t('articles.heroTitle.part2') }}
     </h1>
 
     <!-- حالت لودینگ -->
-    <div v-if="pending" class="text-center text-slate-500 dark:text-dark-text/70 py-10">در حال بارگذاری مقالات...</div>
+    <div v-if="pending" class="text-center text-slate-500 dark:text-dark-text/70 py-10">{{ $t('articles.loading') }}</div>
 
     <!-- حالت خطا -->
-    <div v-else-if="error" class="text-center text-red-500 py-10">خطا در دریافت مقالات</div>
+    <div v-else-if="error" class="text-center text-red-500 py-10">{{ $t('articles.error') }}</div>
 
     <!-- حالت خالی -->
-    <div v-else-if="!articles.length" class="text-center text-slate-500 dark:text-dark-text/70 py-10">مقاله‌ای یافت نشد</div>
+    <div v-else-if="!articles.length" class="text-center text-slate-500 dark:text-dark-text/70 py-10">{{ $t('articles.empty') }}</div>
 
     <div v-else class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-y-6 sm:gap-y-8 md:gap-y-12 2xl:gap-y-16 gap-x-3 sm:gap-x-5 md:gap-x-8 2xl:gap-x-10 justify-items-center" dir="ltr">
       <NuxtLink
         v-for="post in articles"
         :key="post.id"
-        :to="`/articles/${post.slug}`"
+        :to="localePath(`/articles/${post.slug}`)"
         class="w-full md:w-[281px] 2xl:w-[350px] h-[210px] sm:h-[260px] md:h-[379px] 2xl:h-[430px] bg-[#ABD7D8]/35 dark:bg-dark-[#ABD7D857] rounded-[16px] sm:rounded-[20px] md:rounded-[25px] 2xl:rounded-[28px] p-2 sm:p-3 md:p-4 2xl:p-5 flex flex-col relative transition-transform"
       >
         <div class="relative w-full">
@@ -54,17 +56,17 @@
       <button
         :disabled="page <= 1"
         @click="goToPage(page - 1)"
-        class="px-4 py-2 rounded-full bg-[#ABD7D8]/40 dark:bg-dark-surface/50 text-[#0F184B] dark:text-dark-text-deep disabled:opacity-40"
+        class="px-4 py-2 rounded-full bg-[#ABD7D8]/40 dark:bg-dark-surface/50 text-[#0F184B] dark:text-dark-text-deep disabled:opacity-40 whitespace-nowrap"
       >
-        قبلی
+        {{ $t('articles.pagination.previous') }}
       </button>
       <span class="text-sm text-[#0F184B] dark:text-dark-text">{{ meta.current_page }} / {{ meta.last_page }}</span>
       <button
         :disabled="page >= meta.last_page"
         @click="goToPage(page + 1)"
-        class="px-4 py-2 rounded-full bg-[#ABD7D8]/40 dark:bg-dark-surface/50 text-[#0F184B] dark:text-dark-text-deep disabled:opacity-40"
+        class="px-4 py-2 rounded-full bg-[#ABD7D8]/40 dark:bg-dark-surface/50 text-[#0F184B] dark:text-dark-text-deep disabled:opacity-40 whitespace-nowrap"
       >
-        بعدی
+        {{ $t('articles.pagination.next') }}
       </button>
     </div>
   </div>
@@ -80,6 +82,10 @@ const apiBase = 'https://nadertechnologyteam.ir'; // یا از config.public.api
 const route = useRoute();
 const router = useRouter();
 const page = computed(() => parseInt(route.query.page) || 1);
+
+const localePath = useLocalePath();
+const { locale, localeProperties } = useI18n();
+const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
 const { data, pending, error, refresh } = await useFetch(
   () => `${apiBase}/api/articles`,
@@ -99,7 +105,7 @@ function goToPage(newPage) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   try {
-    return new Date(dateStr).toLocaleDateString('fa-IR');
+    return new Date(dateStr).toLocaleDateString(locale.value === 'fa' ? 'fa-IR' : 'en-US');
   } catch {
     return dateStr;
   }
@@ -113,6 +119,8 @@ scrollbarConfig.value = {
 };
 
 </script>
+
+
 
 <style scoped>
 /* HTML: <img class="inner-curve" src="" alt=""> */

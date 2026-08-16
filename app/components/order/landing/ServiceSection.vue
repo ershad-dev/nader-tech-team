@@ -1,8 +1,13 @@
 <template>
   <!-- تغییر max-w-6xl به max-w-4xl برای جمع‌تر شدن کل صفحه -->
+  <!-- توجه: dir="ltr" اینجا عمداً ثابت نگه داشته شده، چون کل چیدمان فیزیکی
+       (موقعیت تصویر، مارجین‌های ml/mr، ترتیب flex-row/flex-row-reverse برای
+       افکت زیگزاگ) بر مبنای همین جهت ثابت طراحی شده و اگر داینامیک بشه،
+       رفتار flex-row طبق CSS به جهت نوشتاری وابسته‌ست و کل layout در حالت
+       فارسی به‌هم می‌ریزه. فقط متن‌ها و لینک‌ها ترجمه/اصلاح می‌شن. -->
   <div class="max-w-4xl min-[1920px]:max-w-5xl mx-auto py-10 md:py-14 lg:py-16 min-[1920px]:py-20 px-4 lg:-mt-[80px]" dir="ltr">
     <h2 class="text-[20px] md:text-[23px] lg:text-[26px] min-[1920px]:text-[30px] font-bold text-center text-[#2C7379] dark:text-dark-highlight mb-8 md:mb-10 lg:mb-12 min-[1920px]:mb-16">
-      خدمات ارائه شده
+      {{ $t('order.serviceSection.title') }}
     </h2>
 
     <!-- بخش اول -->
@@ -31,7 +36,7 @@
         >
           <div class="h-full flex items-center justify-between">
 
-            <NuxtLink to="/order/requestProject">
+            <NuxtLink :to="localePath('/order/requestProject')">
               <div
                 class="w-[38px] h-[38px] md:w-[44px] md:h-[44px] lg:w-[50px] lg:h-[50px] min-[1920px]:w-[58px] min-[1920px]:h-[58px] flex items-center justify-center
                        rounded-full cursor-pointer hover:bg-white/20 dark:hover:bg-dark-highlight/20 transition"
@@ -59,10 +64,10 @@
 
             <div class="text-right text-white">
               <h3 class="text-[20px] md:text-[26px] lg:text-[32px] min-[1920px]:text-[36px] font-bold leading-none">
-                سفارش پروژه
+                {{ $t('order.serviceSection.orderProject') }}
               </h3>
               <p class="text-[15px] md:text-[20px] lg:text-[26px] min-[1920px]:text-[28px] mt-1 md:mt-2 min-[1920px]:mt-3 opacity-90">
-                تولید محتوا
+                {{ $t('order.serviceSection.contentLabel') }}
               </p>
             </div>
 
@@ -100,7 +105,7 @@
           <div class="h-full flex items-center justify-between">
 
             <!-- Arrow -->
-            <NuxtLink to="/order/requestProject">
+            <NuxtLink :to="localePath('/order/requestProject')">
               <div class="w-[38px] h-[38px] md:w-[44px] md:h-[44px] lg:w-[50px] lg:h-[50px] min-[1920px]:w-[58px] min-[1920px]:h-[58px] flex items-center justify-center
                           rounded-full cursor-pointer hover:bg-white/20 dark:hover:bg-dark-highlight/20 transition">
                 <svg class="w-full h-full" viewBox="0 0 50 50" fill="none">
@@ -116,10 +121,10 @@
             <!-- Text -->
             <div class="text-right text-white">
               <h3 class="text-[20px] md:text-[26px] lg:text-[32px] min-[1920px]:text-[36px] font-bold leading-none">
-                سفارش پروژه
+                {{ $t('order.serviceSection.orderProject') }}
               </h3>
               <p class="text-[15px] md:text-[20px] lg:text-[26px] min-[1920px]:text-[28px] mt-1 md:mt-2 min-[1920px]:mt-3 opacity-90">
-                طراحی سایت
+                {{ $t('order.serviceSection.webLabel') }}
               </p>
             </div>
 
@@ -132,6 +137,20 @@
 </template>
 
 <script setup>
-const contentServices = ['تولید ویدیوهای حرفه‌ای شبکه‌های اجتماعی', 'ساخت ریلزهای ویو محور', 'فیلم‌برداری و تدوین', 'سناریو نویسی و ایده‌پردازی'];
-const webServices = ['طراحی UI/UX مدرن و کاربر ممحور', 'توسعه فرانت‌اند و بک‌‌اند', 'طراحی فروشگاه‌های اینترنتی', 'بهینه‌سازی عملکرد سایت'];
+const { t } = useI18n()
+const localePath = useLocalePath()
+
+const contentServices = computed(() => [
+  t('order.serviceSection.contentServices.0'),
+  t('order.serviceSection.contentServices.1'),
+  t('order.serviceSection.contentServices.2'),
+  t('order.serviceSection.contentServices.3'),
+])
+
+const webServices = computed(() => [
+  t('order.serviceSection.webServices.0'),
+  t('order.serviceSection.webServices.1'),
+  t('order.serviceSection.webServices.2'),
+  t('order.serviceSection.webServices.3'),
+])
 </script>

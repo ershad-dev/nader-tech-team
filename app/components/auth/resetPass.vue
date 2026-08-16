@@ -8,6 +8,10 @@ definePageMeta({
 const config = useRuntimeConfig()
 const loading = ref(false)
 
+// --- i18n ---
+const { t, localeProperties } = useI18n()
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
 const form = ref({
   password: '',
   password_confirmation: ''
@@ -27,21 +31,21 @@ const resetPassword = async () => {
   const resetToken = localStorage.getItem('reset_token')
 
   if (!login || !resetToken) {
-    navigateTo('/auth/forgot-password')
+    navigateTo(localePath('/auth/forgot-password'))
     return
   }
 
   // اعتبارسنجی سمت کلاینت
   if (!form.value.password) {
-    errors.value.password = 'رمز عبور را وارد کنید'
+    errors.value.password = t('auth.resetPassword.validation.passwordRequired')
   } else if (form.value.password.length < 8) {
-    errors.value.password = 'رمز عبور باید حداقل ۸ کاراکتر باشد'
+    errors.value.password = t('auth.resetPassword.validation.passwordMinLength')
   }
 
   if (!form.value.password_confirmation) {
-    errors.value.password_confirmation = 'تکرار رمز عبور را وارد کنید'
+    errors.value.password_confirmation = t('auth.resetPassword.validation.confirmRequired')
   } else if (form.value.password !== form.value.password_confirmation) {
-    errors.value.password_confirmation = 'تکرار رمز عبور مطابقت ندارد'
+    errors.value.password_confirmation = t('auth.resetPassword.validation.mismatch')
   }
 
   // اگر خطایی وجود دارد، متوقف شو
@@ -64,23 +68,25 @@ const resetPassword = async () => {
     localStorage.removeItem('reset_login')
     localStorage.removeItem('reset_token')
 
-    alert(response.message || 'رمز عبور با موفقیت تغییر کرد')
-    navigateTo('/auth/login')
+    alert(response.message || t('auth.resetPassword.successDefault'))
+    navigateTo(localePath('/auth/login'))
 
   } catch (error) {
     // نمایش خطای سرور برای رمز عبور
-    errors.value.password = error?.response?._data?.message || 'خطا در تغییر رمز عبور'
+    errors.value.password = error?.response?._data?.message || t('auth.resetPassword.errorDefault')
   } finally {
     loading.value = false
   }
 }
+
+const localePath = useLocalePath()
 </script>
 
 <template>
-  <div class="text-center" dir="rtl">
+  <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-8">
-      تعیین رمز عبور جدید
+      {{ $t('auth.resetPassword.title') }}
     </h1>
 
     <form @submit.prevent="resetPassword">
@@ -90,13 +96,13 @@ const resetPassword = async () => {
         <AuthInput
           v-model="form.password"
           type="password"
-          label="رمز عبور جدید"
+          :label="$t('auth.resetPassword.fields.newPassword')"
           class="[&>div>input]:h-[44px] [&>div>input]:py-4"
           @input="errors.password = ''"
         />
         <p
           v-if="errors.password"
-          class="text-red-500 dark:text-red-400 text-[12px] text-right mt-1 px-1"
+          :class="['text-red-500 dark:text-red-400 text-[12px] mt-1 px-1', isRtl ? 'text-right' : 'text-left']"
         >
           {{ errors.password }}
         </p>
@@ -107,13 +113,13 @@ const resetPassword = async () => {
         <AuthInput
           v-model="form.password_confirmation"
           type="password"
-          label="تکرار رمز عبور جدید"
+          :label="$t('auth.resetPassword.fields.confirmPassword')"
           class="[&>div>input]:h-[44px] [&>div>input]:py-4"
           @input="errors.password_confirmation = ''"
         />
         <p
           v-if="errors.password_confirmation"
-          class="text-red-500 dark:text-red-400 text-[12px] text-right mt-1 px-1"
+          :class="['text-red-500 dark:text-red-400 text-[12px] mt-1 px-1', isRtl ? 'text-right' : 'text-left']"
         >
           {{ errors.password_confirmation }}
         </p>
@@ -124,7 +130,7 @@ const resetPassword = async () => {
           type="submit"
           :disabled="loading"
         >
-          {{ loading ? 'در حال ذخیره...' : 'ذخیره رمز عبور' }}
+          {{ loading ? $t('auth.resetPassword.saving') : $t('auth.resetPassword.save') }}
         </AuthButton>
       </div>
 
