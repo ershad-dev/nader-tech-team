@@ -1,1 +1,17 @@
-{ "portfolio": {} }
+{
+  "portfolio": {
+    "heading": "Our Projects",
+    "subheading": "An overview of completed projects and our portfolio",
+    "previewHeading": "Project Previews",
+    "loading": "Loading...",
+    "error": "Failed to load project data",
+    "empty": "No projects found",
+    "cardCaption": "Project name and description",
+    "categories": {
+      "all": "View All",
+      "web": "Web Design",
+      "content": "Content Creation",
+      "event": "Event Hosting"
+    }
+  }
+}

@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen py-10" :dir="isRtl ? 'rtl' : 'ltr'">
+  <div class="min-h-screen py-10 -mb-[50px]" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <!-- ۲. بخش تب‌ها و پروژه‌ها با منطق اسلایدر -->
     <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-8 lg:py-16 px-4">
 <div class="flex justify-center mb-8 lg:mb-10 px-2">
-  <div class="w-full max-w-[846px] lg:w-[846px] min-[1920px]:w-[1000px] h-auto lg:h-[59px] min-[1920px]:h-[72px] bg-white dark:bg-dark-input rounded-[30px] lg:rounded-[48px] p-1 shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border border border-gray-100 dark:border-transparent flex flex-nowrap items-center justify-center gap-1 sm:gap-2 overflow-hidden">
+  <div class="w-full max-w-[846px] lg:w-[846px] min-[1920px]:w-[1000px] h-[52px] sm:h-[59px] min-[1920px]:h-[72px] bg-white dark:bg-dark-input rounded-[22px] lg:rounded-[48px] p-1.5 shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border border border-gray-100 dark:border-transparent flex flex-nowrap items-center justify-center gap-1 sm:gap-2 overflow-hidden">
 
     <button 
       v-for="category in categories" :key="category.key"
       @click="activeCategory = category.key; currentIndex = 0"
       :class="[
-        'flex-1 min-w-0 px-1 sm:px-4 lg:px-8 py-1.5 lg:py-3 lg:w-[178px] min-[1920px]:w-[210px] h-auto lg:h-[43px] min-[1920px]:h-[54px] rounded-[14px] lg:rounded-[19px] text-[10px] xs:text-[11px] sm:text-[15px] lg:text-[18px] min-[1920px]:text-[20px] font-bold transition-all duration-300 truncate whitespace-nowrap',
+        'flex-1 min-w-0 px-2 sm:px-4 lg:px-8 py-2 lg:py-3 lg:w-[178px] min-[1920px]:w-[210px] h-[44px] sm:h-auto lg:h-[43px] min-[1920px]:h-[54px] rounded-[16px] lg:rounded-[19px] text-[13px] xs:text-[14px] sm:text-[15px] lg:text-[18px] min-[1920px]:text-[20px] font-bold transition-all duration-300 truncate whitespace-nowrap',
         activeCategory === category.key
           ? 'bg-[#2C7379] dark:bg-[#407B80] text-white dark:text-white shadow-md'
           : ' text-[#0F184B] dark:text-white hover:bg-slate-200 dark:hover:bg-dark-accent/70'

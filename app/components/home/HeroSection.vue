@@ -3,14 +3,13 @@
     class="max-w-6xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-[1700px] mx-auto mt-12 text-center px-4"
     :dir="isRtl ? 'rtl' : 'ltr'"
   >
-    <h1
-    class="text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B]dark:text-white mb-4 leading-relaxed lg:mb-1 2xl:mb-3"
-    >
-      {{ $t('home.hero.titlePart1') }}
-      <span class="text-[#B18F55]">{{ $t('home.hero.titleHighlight') }}</span>
-      {{ $t('home.hero.titlePart2') }}
-    </h1>
-
+<h1
+  class="text-[13px] xs:text-[15px] sm:text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B] dark:text-white mb-5 leading-relaxed lg:mb-[15px] 2xl:mb-3 whitespace-nowrap md:whitespace-normal"
+>
+  {{ $t('home.hero.titlePart1') }}
+  <span class="text-[#B18F55]">{{ $t('home.hero.titleHighlight') }}</span>
+  {{ $t('home.hero.titlePart2') }}
+</h1>
     <div
       v-if="slides.length"
       class="relative w-full max-w-[976px] lg:max-w-[1100px] xl:max-w-[1280px] 2xl:max-w-[1500px] aspect-[21/9] rounded-[17px] overflow-hidden mx-auto shadow-lg"

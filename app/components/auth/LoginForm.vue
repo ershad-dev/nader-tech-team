@@ -135,9 +135,9 @@ const loginUser = async () => {
       {{ toast.message }}
     </div>
 
-    <h1 class="text-lg font-bold text-[#0F184B] dark:text-dark-text-deep mb-[100px] font-roboto">
-      {{ $t('auth.login.welcome') }}
-    </h1>
+ <h1 class="text-lg font-bold text-[#0F184B] dark:text-dark-text-deep mb-[100px] font-roboto whitespace-nowrap">
+  {{ $t('auth.login.welcome') }}
+</h1>
 
     <div class="flex gap-6 mb-6 text-[16px] font-medium font-roboto">
       <button
@@ -228,16 +228,18 @@ const loginUser = async () => {
 <AuthButton
   type="submit"
   :disabled="loading"
-  class="mb-[25px] text-[22px]"
+  class="mb-[5px] text-[22px] flex items-center justify-center text-center"
 >
-  {{ loading ? $t('auth.login.submitting') : $t('auth.login.submit') }}
+  <span class="mt-[3px]">
+    {{ loading ? $t('auth.login.submitting') : $t('auth.login.submit') }}
+  </span>
 </AuthButton>
     </form>
 
-    <div class="mt-6 text-[16px] text-[#0F184B] dark:text-dark-text-deep font-bold cursor-pointer font-roboto">
-      <NuxtLink :to="localePath('/auth/register')">
-        {{ $t('auth.login.registerLink') }}
-      </NuxtLink>
-    </div>
+<div class="mt-[5px] text-[16px] text-[#0F184B] dark:text-dark-text-deep font-bold cursor-pointer font-roboto">
+  <NuxtLink :to="localePath('/auth/register')">
+    {{ $t('auth.login.registerLink') }}
+  </NuxtLink>
+</div>
   </div>
 </template>

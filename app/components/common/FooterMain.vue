@@ -62,7 +62,7 @@
 
   <div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[40px] font-roboto">
 
-  <h3 class="text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">{{ $t('footer.linksTitle') }}</h3>
+<h3 class="!mt-[20px] lg:!mt-0 text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">{{ $t('footer.linksTitle') }}</h3>
 
   <ul class="space-y-2 sm:space-y-3">
   <li v-for="link in links" :key="link.path" class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">

@@ -4,7 +4,7 @@
     <HomeHeroSection />
     <HomeLeadMembers />
     <HomeProjectShowcase />
-    <HomeFeedback />
+    <!-- <HomeFeedback /> -->
   </div>
 </template>
 

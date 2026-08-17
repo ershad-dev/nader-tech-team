@@ -305,7 +305,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- نام کاربری -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium  text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.username') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.username') }}</label>
           <input
             v-model="username"
             type="text"
@@ -323,7 +323,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- نام و نام خانوادگی (باید همیشه فارسی باشد - محدودیت واقعی سیستم) -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.fullName') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.fullName') }}</label>
           <input
             v-model="full_name"
             type="text"
@@ -341,7 +341,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- ایمیل -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.email') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.email') }}</label>
           <input
             v-model="email"
             type="email"
@@ -358,7 +358,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- شماره تماس -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.mobile') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.mobile') }}</label>
           <input
             v-model="mobile"
             type="text"
@@ -378,7 +378,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- کد ملی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.nationalCode') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.nationalCode') }}</label>
           <input
             v-model="national_code"
             type="text"
@@ -397,7 +397,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- تاریخ تولد شمسی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.birthDate') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.birthDate') }}</label>
           <input
             v-model="birth_date"
             type="text"
@@ -416,7 +416,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- استان -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.province') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.province') }}</label>
           <input
             v-model="province"
             type="text"
@@ -432,7 +432,7 @@ const registerUser = handleSubmit(async (values) => {
 
         <!-- کد پستی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.postalCode') }}</label>
+          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.postalCode') }}</label>
           <input
             v-model="postal_code"
             type="text"
@@ -453,7 +453,7 @@ const registerUser = handleSubmit(async (values) => {
 
       <!-- آدرس -->
       <div class="flex flex-col mt-5" :class="isRtl ? 'text-right' : 'text-left'">
-        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.address') }}</label>
+        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.address') }}</label>
         <textarea
           v-model="address"
           dir="rtl"
@@ -469,7 +469,7 @@ const registerUser = handleSubmit(async (values) => {
 
       <!-- رمز عبور -->
       <div class="flex flex-col mt-5" :class="isRtl ? 'text-right' : 'text-left'">
-        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.password') }}</label>
+        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.password') }}</label>
         <div class="relative">
           <input
             v-model="password"
@@ -506,7 +506,7 @@ const registerUser = handleSubmit(async (values) => {
 
       <!-- تکرار رمز عبور -->
       <div class="flex flex-col mt-5" :class="isRtl ? 'text-right' : 'text-left'">
-        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-1 font-roboto">{{ $t('auth.register.fields.passwordConfirm') }}</label>
+        <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.passwordConfirm') }}</label>
         <div class="relative">
           <input
             v-model="password_confirmation"
@@ -546,12 +546,14 @@ const registerUser = handleSubmit(async (values) => {
       <!-- دکمه ثبت‌نام -->
       <div class="mt-8">
         <AuthButton type="submit" :disabled="loading">
-          {{ loading ? $t('auth.register.submitting') : $t('auth.register.submit') }}
+          <span class="mt-[8px] block text-[22px]">
+            {{ loading ? $t('auth.register.submitting') : $t('auth.register.submit') }}
+          </span>
         </AuthButton>
       </div>
     </form>
 
-    <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-bold cursor-pointer underline font-roboto">
+    <div class="mt-[5px] text-sm text-[#1a2333] dark:text-dark-text-deep font-bold cursor-pointer underline font-roboto">
       <NuxtLink :to="localePath('/auth/login')">{{ $t('auth.register.loginLink') }}</NuxtLink>
     </div>
 

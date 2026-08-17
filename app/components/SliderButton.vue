@@ -7,11 +7,15 @@
       :src="direction === 'left' ? '/images/r-arrow.png' : '/images/l-arrow.png'" 
       :alt="direction"
       class="w-[42px] h-[33px] -gap-[10px]"
+      :class="isRtl ? '' : 'scale-x-[-1]'"
     />
   </button>
 </template>
 
 <script setup>
+const { localeProperties } = useI18n();
+const isRtl = computed(() => localeProperties.value.dir === 'rtl');
+
 defineProps({
   direction: {
     type: String,

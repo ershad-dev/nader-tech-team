@@ -112,7 +112,7 @@ const handleInput = (event) => {
         </div>
       </div>
 
-      <div class="mt-16 text-[18px] font-roboto">
+      <div class="mt-[10px] text-[18px] font-roboto">
         <AuthButton
           type="submit"
           :disabled="loading"
@@ -122,7 +122,7 @@ const handleInput = (event) => {
       </div>
     </form>
 
-    <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer underline font-roboto">
+    <div class="mt-[10px] text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer underline font-roboto">
       <NuxtLink :to="localePath('/auth/login')">
         {{ $t('auth.forgotPassword.backToLogin') }}
       </NuxtLink>

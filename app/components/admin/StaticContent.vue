@@ -93,15 +93,20 @@
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
                 <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">خدمت والد (اختیاری)</label>
-                <select
-                  v-model="newService.parent_id"
-                  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-black focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
-                >
-                  <option :value="null">—  (خدمت اصلی) —</option>
-                  <option v-for="entry in topLevelServiceOptions" :key="entry.node.id" :value="entry.node.id">
-                    {{ entry.node.title || '(بدون عنوان)' }}
-                  </option>
-                </select>
+               <select
+  v-model="entry.node.parent_id"
+  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+>
+  <option class="text-black" :value="null">—   (خدمت اصلی) —</option>
+  <option
+    class="text-black"
+    v-for="opt in topLevelServiceOptions.filter(o => o.node.id !== entry.node.id)"
+    :key="opt.node.id"
+    :value="opt.node.id"
+  >
+    {{ opt.node.title || '(بدون عنوان)' }}
+  </option>
+</select>
               </div>
               <div class="w-full sm:w-40">
                 <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">ترتیب نمایش</label>
@@ -251,19 +256,20 @@
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
                   <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">خدمت والد</label>
-                  <select
-                    v-model="entry.node.parent_id"
-                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-black focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
-                  >
-                    <option :value="null">—   (خدمت اصلی) —</option>
-                    <option
-                      v-for="opt in topLevelServiceOptions.filter(o => o.node.id !== entry.node.id)"
-                      :key="opt.node.id"
-                      :value="opt.node.id"
-                    >
-                      {{ opt.node.title || '(بدون عنوان)' }}
-                    </option>
-                  </select>
+<select
+  v-model="newService.parent_id"
+  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+>
+  <option class="text-black" :value="null">—  (خدمت اصلی) —</option>
+  <option
+    class="text-black"
+    v-for="entry in topLevelServiceOptions"
+    :key="entry.node.id"
+    :value="entry.node.id"
+  >
+    {{ entry.node.title || '(بدون عنوان)' }}
+  </option>
+</select>
                 </div>
                 <div class="w-full sm:w-40">
                   <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">ترتیب نمایش</label>
