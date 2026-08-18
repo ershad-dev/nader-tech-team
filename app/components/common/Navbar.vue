@@ -2,10 +2,10 @@
   <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] min-[1100px]:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto min-[1100px]:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white dark:bg-[#CECDCD] rounded-[1.75rem] sm:rounded-[2rem] min-[1100px]:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col min-[1100px]:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-dark-border/30 transition-all duration-300" dir="ltr" :class="isRtl ? 'nav-mobile-rtl' : 'nav-mobile-ltr'">
 
     <!-- Header (لوگو و همبرگر) -->
-    <div
-      class="relative flex w-full min-[1100px]:w-auto justify-between items-center px-1 min-[1100px]:px-0"
-      :class="isRtl ? 'order-last' : 'order-first'"
-    >
+<div
+  class="relative flex w-full min-[1100px]:w-auto justify-between items-center px-1 min-[1100px]:px-0 order-first"
+  :class="isRtl ? 'min-[1100px]:order-last' : 'min-[1100px]:order-first'"
+>
 
       <!-- آیکون همبرگر (سمت چپ) - انیمیشن تبدیل به ضربدر -->
       <button
@@ -27,8 +27,11 @@
         ></span>
       </button>
 
-      <!-- لینک‌های اصلی (بین لوگو و دکمه‌ی همبرگری) - فقط زیر breakpoint 1100 -->
-      <div class="min-[1100px]:hidden flex items-center gap-3 sm:gap-4 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal text-[12px] sm:text-[13px] whitespace-nowrap">
+<!-- لینک‌های اصلی (بین لوگو و دکمه‌ی همبرگری) - فقط زیر breakpoint 1100 -->
+      <div
+        class="min-[1100px]:hidden flex items-center gap-2 sm:gap-2.5 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal whitespace-nowrap"
+        :class="locale === 'en' ? 'text-[10px] sm:text-[12px]' : 'text-[13px] sm:text-[14px]'"
+      >
         <NuxtLink :to="localePath('/')" exact-active-class="!font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.home') }}</NuxtLink>
         <NuxtLink :to="localePath('/order')" exact-active-class="!font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.order') }}</NuxtLink>
         <NuxtLink :to="localePath('/articles')" exact-active-class="!font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.articles') }}</NuxtLink>

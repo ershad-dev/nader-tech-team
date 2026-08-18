@@ -123,8 +123,8 @@
   </div>
 
 <div class="flex items-center justify-center gap-4 mt-8">
-  <SliderButton :direction="isRtl ? 'left' : 'right'" @click="prevCategory" />
-  <SliderButton :direction="isRtl ? 'right' : 'left'" @click="nextCategory" />
+  <SliderButton direction="left" @click="prevCategory" />
+  <SliderButton direction="right" @click="nextCategory" />
 </div>
 </section>
   </div>

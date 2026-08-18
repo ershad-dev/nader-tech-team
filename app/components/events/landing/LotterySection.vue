@@ -8,8 +8,12 @@ onMounted(() => {
 
 const router = useRouter()
 const localePath = useLocalePath()
-const { localeProperties } = useI18n()
+const { localeProperties, locale } = useI18n()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
+
+const lotteryBannerImage = computed(() =>
+  locale.value === 'en' ? '/images/rebon-lottery-en.png' : '/images/rebon-lottery1.png'
+)
 
 function goToRegister() {
   router.push(isLoggedIn.value
@@ -39,22 +43,22 @@ function goToLoginPage() {
       />
 
       <!-- کانتینر بیرونی -->
-<div
-  :dir="isRtl ? 'rtl' : 'ltr'"
-  :class="[
-    'absolute inset-0 z-10 flex items-center px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white',
-    isRtl ? 'justify-start -mr-[50px]' : 'justify-end -ml-[50px]'
-  ]"
->
+      <div
+        :dir="isRtl ? 'rtl' : 'ltr'"
+        :class="[
+          'absolute inset-0 z-10 flex items-center px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white',
+          isRtl ? 'justify-start -mr-[50px]' : 'justify-end -ml-[50px]'
+        ]"
+      >
         <!-- بلوک محتوا -->
         <div class="flex flex-col items-center text-center">
-<img
-  src="/images/rebon-lottery1.png"
-  alt=""
-  class="w-[60%] sm:w-[68%] md:w-[60%] lg:w-[52%] xl:w-[60%]
-         max-w-[200px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[600px]
-         h-auto object-contain"
-/>
+          <img
+            :src="lotteryBannerImage"
+            alt=""
+            class="w-[60%] sm:w-[68%] md:w-[60%] lg:w-[52%] xl:w-[60%]
+                   max-w-[200px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[600px]
+                   h-auto object-contain"
+          />
           <div
             class="w-[60%] sm:w-[58%] md:w-[56%] lg:w-[55%]
                    h-[1.5px] sm:h-[2px]
@@ -77,11 +81,11 @@ function goToLoginPage() {
          w-[80px] h-[26px]
          sm:w-[130px] sm:h-[38px]
          md:w-auto md:h-auto
-         px-4 sm:px-6 md:px-8 lg:px-10
+         px-2 sm:px-6 md:px-8 lg:px-10
          md:py-3 lg:py-3.5
          rounded-lg sm:rounded-xl md:rounded-2xl
-         text-[9px] sm:text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]
          font-bold hover:bg-white transition whitespace-nowrap leading-none"
+  :class="locale === 'en' ? 'text-[7px] sm:text-[11px] md:text-[16px] lg:text-[18px] xl:text-[20px]' : 'text-[9px] sm:text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]'"
 >
   {{ $t('events.lottery.landing.registerButton') }}
 </button>

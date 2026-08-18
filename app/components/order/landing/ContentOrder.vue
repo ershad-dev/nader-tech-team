@@ -111,12 +111,12 @@ const visibleProjects = visibleItems(4);
       </template>
 
       <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
-      <div
-        class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6"
-      >
-        <SliderButton :direction="isRtl ? 'left' : 'right'" @click="nextSlide" />
-        <SliderButton :direction="isRtl ? 'right' : 'left'" @click="prevSlide" />
-      </div>
+<div
+  class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6"
+>
+  <SliderButton direction="left" @click="prevSlide" />
+  <SliderButton direction="right" @click="nextSlide" />
+</div>
     </div>
   </div>
 </template>

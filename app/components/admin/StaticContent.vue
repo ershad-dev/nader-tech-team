@@ -64,13 +64,13 @@
         >
           <div class="flex items-center justify-between mb-3">
             <span class="font-bold text-[#0F184B] dark:text-white text-[14px]">خدمت جدید</span>
-            <button @click="cancelAddService" class="text-[12px] text-[#454C6A]/70 dark:text-white/60 hover:underline">انصراف</button>
+            <button @click="cancelAddService" class="text-[12px] text-[#454C6A]/70 dark:text-white hover:underline">انصراف</button>
           </div>
 
           <div class="flex flex-col gap-3">
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">عنوان</label>
+                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">عنوان</label>
                 <input
                   v-model="newService.title"
                   type="text"
@@ -79,7 +79,7 @@
                 />
               </div>
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">اسلاگ (slug)</label>
+                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">اسلاگ (slug)</label>
                 <input
                   v-model="newService.slug"
                   type="text"
@@ -92,24 +92,19 @@
 
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">خدمت والد (اختیاری)</label>
-               <select
-  v-model="entry.node.parent_id"
-  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
->
-  <option class="text-black" :value="null">—   (خدمت اصلی) —</option>
-  <option
-    class="text-black"
-    v-for="opt in topLevelServiceOptions.filter(o => o.node.id !== entry.node.id)"
-    :key="opt.node.id"
-    :value="opt.node.id"
-  >
-    {{ opt.node.title || '(بدون عنوان)' }}
-  </option>
-</select>
+                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">خدمت والد (اختیاری)</label>
+                <select
+                  v-model="newService.parent_id"
+                  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+                >
+                  <option class="text-black" :value="null">—  (خدمت اصلی) —</option>
+                  <option class="text-black" v-for="entry in topLevelServiceOptions" :key="entry.node.id" :value="entry.node.id">
+                    {{ entry.node.title || '(بدون عنوان)' }}
+                  </option>
+                </select>
               </div>
               <div class="w-full sm:w-40">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">ترتیب نمایش</label>
+                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">ترتیب نمایش</label>
                 <input
                   v-model.number="newService.sort_order"
                   type="number"
@@ -119,7 +114,7 @@
             </div>
 
             <div>
-              <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">توضیحات</label>
+              <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">توضیحات</label>
               <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
                 <span class="hidden">{{ newServiceEditorState.tick }}</span>
                 <div v-if="newServiceEditorState.editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
@@ -235,7 +230,7 @@
             <div class="flex flex-col gap-3">
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
-                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">عنوان</label>
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">عنوان</label>
                   <input
                     v-model="entry.node.title"
                     type="text"
@@ -243,7 +238,7 @@
                   />
                 </div>
                 <div class="flex-1">
-                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">اسلاگ</label>
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">اسلاگ</label>
                   <input
                     v-model="entry.node.slug"
                     type="text"
@@ -255,24 +250,24 @@
 
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
-                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">خدمت والد</label>
-<select
-  v-model="newService.parent_id"
-  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
->
-  <option class="text-black" :value="null">—  (خدمت اصلی) —</option>
-  <option
-    class="text-black"
-    v-for="entry in topLevelServiceOptions"
-    :key="entry.node.id"
-    :value="entry.node.id"
-  >
-    {{ entry.node.title || '(بدون عنوان)' }}
-  </option>
-</select>
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">خدمت والد</label>
+                  <select
+                    v-model="entry.node.parent_id"
+                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+                  >
+                    <option class="text-black" :value="null">—   (خدمت اصلی) —</option>
+                    <option
+                      class="text-black"
+                      v-for="opt in topLevelServiceOptions.filter(o => o.node.id !== entry.node.id)"
+                      :key="opt.node.id"
+                      :value="opt.node.id"
+                    >
+                      {{ opt.node.title || '(بدون عنوان)' }}
+                    </option>
+                  </select>
                 </div>
                 <div class="w-full sm:w-40">
-                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">ترتیب نمایش</label>
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">ترتیب نمایش</label>
                   <input
                     v-model.number="entry.node.sort_order"
                     type="number"
@@ -377,13 +372,13 @@
         >
           <div class="flex items-center justify-between mb-3">
             <span class="font-bold text-[#0F184B] dark:text-white text-[14px]">آیتم جدید در «{{ activePageLabel }}»</span>
-            <button @click="cancelAdd" class="text-[12px] text-[#454C6A]/70 dark:text-white/60 hover:underline">انصراف</button>
+            <button @click="cancelAdd" class="text-[12px] text-[#454C6A]/70 dark:text-white hover:underline">انصراف</button>
           </div>
 
           <div class="flex flex-col gap-3">
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">کلید (key)</label>
+                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">کلید (key)</label>
                 <input
                   v-model="newItem.key"
                   type="text"
@@ -392,23 +387,23 @@
                 />
               </div>
               <div class="w-full sm:w-48">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">نوع (type)</label>
+                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">نوع (type)</label>
                 <select
                   v-model="newItem.type"
                   class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                 >
-                  <option value="text">متن</option>
-                  <option value="html">HTML</option>
-                  <option value="image_path">تصویر</option>
-                  <option value="json">JSON</option>
-                  <option value="number">عدد</option>
-                  <option value="boolean">بولین</option>
+                  <option class="text-black" value="text">متن</option>
+                  <option class="text-black" value="html">HTML</option>
+                  <option class="text-black" value="image_path">تصویر</option>
+                  <option class="text-black" value="json">JSON</option>
+                  <option class="text-black" value="number">عدد</option>
+                  <option class="text-black" value="boolean">بولین</option>
                 </select>
               </div>
             </div>
 
             <div>
-              <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">مقدار (value)</label>
+              <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">مقدار (value)</label>
 
               <!-- text -->
               <textarea
@@ -490,7 +485,7 @@
                     {{ newItem._uploading ? 'در حال آماده‌سازی فایل...' : 'آپلود از سیستم' }}
                     <input type="file" accept="image/*" class="hidden" :disabled="newItem._uploading" @change="handleImageFieldUpload($event, newItem)" />
                   </label>
-                  <span v-if="newItem._file" class="text-[11px] text-[#454C6A]/70 dark:text-white/60">
+                  <span v-if="newItem._file" class="text-[11px] text-[#454C6A]/70 dark:text-white">
                     فایل انتخاب‌شده: {{ newItem._file.name }} — با «افزودن» ارسال می‌شود
                   </span>
                 </div>

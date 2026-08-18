@@ -4,7 +4,8 @@
     :dir="isRtl ? 'rtl' : 'ltr'"
   >
 <h1
-  class="text-[13px] xs:text-[15px] sm:text-[20px] md:text-[28px] lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold text-[#0F184B] dark:text-white mb-5 leading-relaxed lg:mb-[15px] 2xl:mb-3 whitespace-nowrap md:whitespace-normal"
+  class="font-bold text-[#0F184B] dark:text-white mb-5 leading-relaxed lg:mb-[15px] 2xl:mb-3 break-words w-full max-w-full"
+  style="font-size: clamp(13px, 2.5vw, 40px);"
 >
   {{ $t('home.hero.titlePart1') }}
   <span class="text-[#B18F55]">{{ $t('home.hero.titleHighlight') }}</span>
@@ -28,12 +29,12 @@
     </div>
 
 <div
-      v-if="slides.length > 1"
-      class="flex justify-center gap-4 mt-6 lg:mt-8 2xl:mt-10 lg:gap-5 2xl:gap-6"
-    >
-      <SliderButton :direction="isRtl ? 'left' : 'right'" @click="handleNext" />
-      <SliderButton :direction="isRtl ? 'right' : 'left'" @click="handlePrev" />
-    </div>
+  v-if="slides.length > 1"
+  class="flex justify-center gap-4 mt-6 lg:mt-8 2xl:mt-10 lg:gap-5 2xl:gap-6"
+>
+  <SliderButton direction="left" @click="handlePrev" />
+  <SliderButton direction="right" @click="handleNext" />
+</div>
   </div>
 </template>
 

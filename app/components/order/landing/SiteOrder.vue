@@ -91,7 +91,7 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
 <h1
   class="ml-auto bg-[#fcfaf4] dark:bg-[#ADE9EA] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] xxl:w-[200px] xxl:h-[48px] xxl:text-[20px] text-[#2d6a66] dark:text-[#407B80] flex items-center justify-center rounded-[19px] shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border mt-[80px] md:mt-[70px] xl:mt-[100px] xxl:mt-[120px]"
 >
-  {{ $t('order.siteOrder.badge') }}
+  <span class="mt-[5px]">{{ $t('order.siteOrder.badge') }}</span>
 </h1>
 
       <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + پشتیبانی از سواپ انگشت -->
@@ -148,15 +148,17 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
       <!-- دکمه‌های اسلایدر: فقط از md به بالا نمایش داده می‌شن -->
       <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[100px]">
         <SliderButton
-          :direction="isRtl ? 'left' : 'right'"
+direction="left"
           @click="nextSlide"
         />
 
         <SliderButton
-          :direction="isRtl ? 'right' : 'left'"
+direction="right"
           @click="prevSlide"
         />
       </div>
+
+
     </div>
   </div>
 
@@ -209,9 +211,16 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
 
 <div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
   <div class="flex items-center h-full gap-1">
-    <span class="text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold ml-[2px] sm:ml-[4px] md:-ml-[10px] xxl:ml-[5px] text-[#EAAA3C] dark:text-dark-gold rokh-bold-num mt-2">
-      {{ formatStepNumber(index + 1) }}
-    </span>
+<span
+  :class="[
+    'text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold text-[#EAAA3C] dark:text-dark-gold rokh-bold-num mt-2',
+    isRtl
+      ? 'ml-[2px] sm:ml-[4px] md:-ml-[10px] xxl:ml-[5px]'
+      : 'ml-[2px] sm:ml-[4px] md:ml-1 xxl:ml-[5px]'
+  ]"
+>
+  {{ formatStepNumber(index + 1) }}
+</span>
     <h3 class="flex-1 text-center text-[#EAAA3C] dark:text-dark-gold font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] truncate rokh-bold-num">{{ step.title }}</h3>
   </div>
 </div>

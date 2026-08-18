@@ -63,9 +63,9 @@
 
       <!-- کنترل‌های اسلایدر -->
       <div class="flex items-center justify-between mt-8 lg:mt-12 px-2">
-<div  class="flex justify-center gap-3 lg:gap-4 z-20">
-  <SliderButton :direction="isRtl ? 'left' : 'right'" @click="nextSlide" />
-  <SliderButton :direction="isRtl ? 'right' : 'left'" @click="prevSlide" />
+<div class="flex justify-center gap-3 lg:gap-4 z-20">
+  <SliderButton direction="left" @click="prevSlide" />
+  <SliderButton direction="right" @click="nextSlide" />
 </div>
 
         <div class="flex gap-2">
