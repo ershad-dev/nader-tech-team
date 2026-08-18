@@ -82,7 +82,8 @@
   <div 
     v-for="(member, index) in teamMembers" 
     :key="index" 
-    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] dark:bg-[#3B5D6C] rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0"
+    @click="openMemberModal(member)"
+    class="min-w-[85vw] max-w-[340px] md:w-[calc(50%-12px)] md:min-w-[calc(50%-12px)] md:max-w-none 2xl:w-[calc(50%-16px)] 2xl:min-w-[calc(50%-16px)] h-[194px] 2xl:h-[220px] bg-[#BFD1D5] dark:bg-[#3B5D6C] rounded-[40px] flex items-center overflow-hidden shadow-sm snap-start shrink-0 cursor-pointer"
   >
     <div class="w-[120px] md:w-[205px] 2xl:w-[230px] h-full shrink-0">
       <img :src="member.image" :alt="member.name" class="w-full h-full object-cover object-top rounded-[40px]" />
@@ -127,6 +128,51 @@
   <SliderButton direction="right" @click="nextCategory" />
 </div>
 </section>
+
+    <!-- Team Member Modal -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div 
+          v-if="selectedMember"
+          @click.self="closeMemberModal"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+        >
+          <div 
+            class="relative bg-[#BFD1D5] dark:bg-[#3B5D6C] rounded-[32px] w-full max-w-md max-h-[85vh] overflow-y-auto p-6 sm:p-8"
+            :dir="isRtl ? 'rtl' : 'ltr'"
+          >
+            <!-- دکمه بستن -->
+            <button 
+              @click="closeMemberModal"
+              class="absolute top-4 rtl:left-4 ltr:right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/10 text-[#2D4745] dark:text-white hover:bg-white/70 dark:hover:bg-white/20 transition"
+              aria-label="close"
+            >
+              ✕
+            </button>
+
+            <div class="flex justify-center mb-5">
+              <img 
+                :src="selectedMember.image" 
+                :alt="selectedMember.name" 
+                class="w-[130px] h-[130px] object-cover object-top rounded-full"
+              />
+            </div>
+
+            <div :class="isRtl ? 'text-right' : 'text-left'">
+              <h3 class="text-[20px] sm:text-[22px] font-bold text-[#2D4745] dark:text-white mb-1 text-center">
+                {{ selectedMember.name }}
+              </h3>
+              <p class="text-[#5A6E6C] dark:text-white text-[16px] sm:text-[18px] font-medium mb-4 text-center">
+                {{ selectedMember.role }}
+              </p>
+              <p class="text-[14px] sm:text-[16px] text-[#747893] dark:text-white font-roboto leading-relaxed">
+                {{ selectedMember.desc }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -252,6 +298,23 @@ footerConfig.value = {
 };
 
 // =====================================================
+// مودال جزئیات عضو تیم
+// =====================================================
+const selectedMember = ref(null)
+
+function openMemberModal(member) {
+  selectedMember.value = member
+}
+
+function closeMemberModal() {
+  selectedMember.value = null
+}
+
+function handleEscKey(e) {
+  if (e.key === 'Escape') closeMemberModal()
+}
+
+// =====================================================
 // اسلایدر تیم: درگ با موس/لمس + autoplay
 // =====================================================
 const slider = ref(null)
@@ -288,6 +351,8 @@ const startTeamAutoplay = () => {
 }
 
 onMounted(() => {
+  window.addEventListener('keydown', handleEscKey)
+
   const el = slider.value
   if (!el) return
 
@@ -358,6 +423,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleEscKey)
   clearTeamAutoplay()
   if (sliderObserver) sliderObserver.disconnect()
 })
@@ -378,6 +444,15 @@ scrollbarConfig.value = {
 .scrollbar-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 </style>
