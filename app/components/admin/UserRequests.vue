@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
 
 const config = useRuntimeConfig?.() || { public: { apiBase: 'https://nadertechnologyteam.ir' } }
@@ -41,6 +41,18 @@ const meta = ref({ current_page: 1, last_page: 1, total: 0 })
 // 👇 جدید: state لودینگ ترکیبی برای کل صفحه
 const isPageLoading = computed(() => tabsLoading.value || isLoading.value)
 
+// نگاشت یک آیتم خام API به شکلی که در قالب استفاده می‌شود (هم برای لیست صفحه‌بندی‌شده و هم برای سرچ)
+const mapRequestItem = (item) => ({
+  id: item.id,
+  name: item.name,
+  phone: item.mobile,
+  email: item.email,
+  details: item.description,
+  serviceId: item.type?.id ?? null,
+  serviceTitle: item.type?.title || '',
+  avatar: DEFAULT_AVATAR,
+})
+
 const fetchProjectRequests = async () => {
   isLoading.value = true
   errorMessage.value = ''
@@ -54,16 +66,7 @@ const fetchProjectRequests = async () => {
       },
     })
 
-    requests.value = (res.data || []).map((item) => ({
-      id: item.id,
-      name: item.name,
-      phone: item.mobile,
-      email: item.email,
-      details: item.description,
-      serviceId: item.type?.id ?? null,
-      serviceTitle: item.type?.title || '',
-      avatar: DEFAULT_AVATAR,
-    }))
+    requests.value = (res.data || []).map(mapRequestItem)
 
     if (res.meta) {
       meta.value = res.meta
@@ -97,6 +100,97 @@ const filteredUsers = computed(() => {
   return requests.value.filter((r) => r.serviceId === activeTab.value)
 })
 
+// --- جستجو ---
+// این endpoint هم مثل /api/admin/users فقط page/per_page می‌گیره، پارامتر فیلتر متنی نداره.
+// پس همون الگو رو پیاده می‌کنیم: کل درخواست‌ها رو یک‌بار (با گذر از تمام صفحات) می‌گیریم و کش می‌کنیم،
+// بعد فیلتر بر اساس موبایل/ایمیل + تب فعال، سمت فرانت‌اند انجام میشه.
+const searchMode = ref('mobile') // 'mobile' | 'email'
+const searchQuery = ref('')
+let searchDebounceTimer = null
+
+const allRequestsCache = ref([])
+const allRequestsLoaded = ref(false)
+const searchLoading = ref(false)
+
+const isSearching = computed(() => searchQuery.value.trim().length > 0)
+
+const loadAllRequestsForSearch = async () => {
+  if (allRequestsLoaded.value) return
+  searchLoading.value = true
+  errorMessage.value = ''
+  try {
+    const collected = []
+    let page = 1
+    let lastPage = 1
+    const MAX_PAGES_SAFETY = 50 // جلوگیری از حلقه بی‌نهایت در صورت خطای غیرمنتظره بک‌اند
+
+    do {
+      const res = await $fetch(`${API_BASE}/admin/requests`, {
+        method: 'GET',
+        headers: { ...authHeader() },
+        query: { page, per_page: 100 },
+      })
+      collected.push(...(res.data || []).map(mapRequestItem))
+      lastPage = res.meta?.last_page || 1
+      page++
+    } while (page <= lastPage && page <= MAX_PAGES_SAFETY)
+
+    allRequestsCache.value = collected
+    allRequestsLoaded.value = true
+  } catch (err) {
+    console.error('خطا در بارگذاری کامل درخواست‌ها برای جستجو', err)
+    errorMessage.value = 'خطا در دریافت اطلاعات برای جستجو.'
+  } finally {
+    searchLoading.value = false
+  }
+}
+
+// نتیجه‌ی سرچ: هم روی موبایل/ایمیل فیلتر میشه، هم تب فعال (نوع درخواست) رعایت میشه
+const searchResults = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return []
+  return allRequestsCache.value.filter((r) => {
+    const field = searchMode.value === 'mobile' ? r.phone : r.email
+    const matchesQuery = (field || '').toLowerCase().includes(q)
+    const matchesTab = activeTab.value === null ? true : r.serviceId === activeTab.value
+    return matchesQuery && matchesTab
+  })
+})
+
+// چیزی که واقعاً توی لیست نمایش داده میشه: یا نتیجه‌ی سرچ، یا لیست عادیِ فیلترشده با تب
+const displayedUsers = computed(() => (isSearching.value ? searchResults.value : filteredUsers.value))
+
+const setSearchMode = (mode) => {
+  if (searchMode.value === mode) return
+  searchMode.value = mode
+  if (searchQuery.value.trim() && !allRequestsLoaded.value) {
+    loadAllRequestsForSearch()
+  }
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+}
+
+const triggerSearch = (delay = 400) => {
+  clearTimeout(searchDebounceTimer)
+  searchDebounceTimer = setTimeout(() => {
+    if (searchQuery.value.trim() && !allRequestsLoaded.value) {
+      loadAllRequestsForSearch()
+    }
+  }, delay)
+}
+
+watch(searchQuery, () => {
+  if (searchQuery.value.trim()) {
+    triggerSearch()
+  }
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(searchDebounceTimer)
+})
+
 const goToPage = (page) => {
   if (page < 1 || page > meta.value.last_page) return
   currentPage.value = page
@@ -114,7 +208,7 @@ const toggleAccordion = (id) => {
     <!-- تب‌ها فقط وقتی نمایش داده می‌شن که واقعاً آماده باشن -->
     <div
       v-if="tabs.length > 0"
-      class="flex flex-wrap justify-center items-center gap-2 mb-6 lg:mb-8 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0"
+      class="flex flex-wrap justify-center items-center gap-2 mb-4 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[78px] rounded-[27px] px-2 lg:px-0"
     >
       <button
         v-for="tab in tabs"
@@ -131,9 +225,66 @@ const toggleAccordion = (id) => {
       </button>
     </div>
 
+    <!-- نوار جستجو -->
+    <div class="w-full flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6 lg:mb-8">
+      <!-- دکمه جابجایی حالت جستجو -->
+      <div class="flex bg-[#F7F3EB] dark:bg-dark-surface rounded-full p-1 shrink-0 self-start sm:self-auto">
+        <button
+          type="button"
+          @click="setSearchMode('mobile')"
+          :class="[
+            'px-4 py-2 rounded-full text-sm font-bold transition-all',
+            searchMode === 'mobile'
+              ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white'
+              : 'text-gray-500 dark:text-white/70'
+          ]"
+        >
+          موبایل
+        </button>
+        <button
+          type="button"
+          @click="setSearchMode('email')"
+          :class="[
+            'px-4 py-2 rounded-full text-sm font-bold transition-all',
+            searchMode === 'email'
+              ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white'
+              : 'text-gray-500 dark:text-white/70'
+          ]"
+        >
+          ایمیل
+        </button>
+      </div>
+
+      <!-- اینپوت جستجو -->
+      <div class="relative flex-1">
+        <input
+          v-model="searchQuery"
+          type="text"
+          dir="ltr"
+          :placeholder="searchMode === 'mobile' ? 'جستجو بر اساس شماره موبایل...' : 'جستجو بر اساس ایمیل...'"
+          style="padding-left: 1rem; padding-right: 2.75rem; text-align: left; box-sizing: border-box; display: block;"
+          class="w-full py-2.5 rounded-full bg-white dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#67A9A8]/40"
+        />
+        <button
+          v-if="searchQuery"
+          type="button"
+          @click="clearSearch"
+          style="right: 0.75rem; width: 1.25rem; height: 1.25rem; line-height: 1;"
+          class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white mt-[3px]"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+
     <!-- یک state واحد برای «کل صفحه در حال بارگذاری» -->
     <div v-if="isPageLoading" class="text-center text-gray-400 dark:text-white mt-10">
       در حال بارگذاری...
+    </div>
+
+    <!-- در حال بارگذاری کل لیست برای جستجو -->
+    <div v-else-if="isSearching && searchLoading" class="text-center text-gray-400 dark:text-white mt-10">
+      در حال جستجو در همه درخواست‌ها...
     </div>
 
     <div v-else-if="errorMessage" class="text-center text-red-500 dark:text-red-300 mt-10">
@@ -145,7 +296,7 @@ const toggleAccordion = (id) => {
 
     <template v-else>
       <div class="space-y-4">
-        <div v-for="user in filteredUsers" :key="user.id"
+        <div v-for="user in displayedUsers" :key="user.id"
              class="bg-[#FFFFFF3B] dark:bg-dark-input/20 p-4 sm:p-5 lg:p-6 rounded-2xl border border-gray-300 dark:border-dark-border transition-all duration-300">
 
           <div class="flex justify-between items-start">
@@ -182,10 +333,10 @@ const toggleAccordion = (id) => {
           </div>
         </div>
 
-        <p v-if="filteredUsers.length === 0" class="text-center text-gray-400 dark:text-white/70 mt-10">موردی برای نمایش وجود ندارد.</p>
+        <p v-if="displayedUsers.length === 0" class="text-center text-gray-400 dark:text-white/70 mt-10">موردی برای نمایش وجود ندارد.</p>
       </div>
 
-      <div v-if="meta.last_page > 1" class="flex justify-center items-center gap-2 mt-6">
+      <div v-if="!isSearching && meta.last_page > 1" class="flex justify-center items-center gap-2 mt-6">
         <button
           @click="goToPage(currentPage - 1)"
           :disabled="currentPage <= 1"

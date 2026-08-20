@@ -135,33 +135,33 @@ const loginUser = async () => {
       {{ toast.message }}
     </div>
 
- <h1 class="text-lg font-bold text-[#0F184B] dark:text-dark-text-deep mb-[100px] font-roboto whitespace-nowrap">
-  {{ $t('auth.login.welcome') }}
+<h1 class="text-[17px] sm:text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap">
+  {{ $t('auth.forgotPassword.welcome') }}
 </h1>
 
-    <div class="flex gap-6 mb-6 text-[16px] font-medium font-roboto">
-      <button
-        type="button"
-        @click="activeTab = 'password'"
-        :class="[
-          'text-[#0F184B] dark:text-dark-text-deep',
-          activeTab === 'password' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
-        ]"
-      >
-        {{ $t('auth.login.tabs.password') }}
-      </button>
+<div class="flex gap-6 mb-6 font-medium font-roboto" :class="locale === 'en' ? 'text-[15px]' : 'text-[16px]'">
+  <button
+    type="button"
+    @click="activeTab = 'password'"
+    :class="[
+      'text-[#0F184B] dark:text-dark-text-deep whitespace-nowrap',
+      activeTab === 'password' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
+    ]"
+  >
+    {{ $t('auth.login.tabs.password') }}
+  </button>
 
-      <button
-        type="button"
-        @click="activeTab = 'otp'"
-        :class="[
-          'text-[#0F184B] dark:text-dark-text-deep',
-          activeTab === 'otp' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
-        ]"
-      >
-        {{ $t('auth.login.tabs.otp') }}
-      </button>
-    </div>
+  <button
+    type="button"
+    @click="activeTab = 'otp'"
+    :class="[
+      'text-[#0F184B] dark:text-dark-text-deep whitespace-nowrap',
+      activeTab === 'otp' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
+    ]"
+  >
+    {{ $t('auth.login.tabs.otp') }}
+  </button>
+</div>
 
     <form @submit.prevent="loginUser">
       <div class="font-roboto" :class="isRtl ? 'text-right' : 'text-left'">
@@ -236,7 +236,7 @@ const loginUser = async () => {
 </AuthButton>
     </form>
 
-<div class="mt-[5px] text-[16px] text-[#0F184B] dark:text-dark-text-deep font-bold cursor-pointer font-roboto">
+<div class="mt-[20px] text-[16px] text-[#0F184B] dark:text-dark-text-deep font-bold cursor-pointer font-roboto underline underline-offset-2">
   <NuxtLink :to="localePath('/auth/register')">
     {{ $t('auth.login.registerLink') }}
   </NuxtLink>

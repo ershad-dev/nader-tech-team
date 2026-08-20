@@ -70,7 +70,7 @@
           <div class="flex flex-col gap-3">
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">عنوان</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">عنوان</label>
                 <input
                   v-model="newService.title"
                   type="text"
@@ -79,7 +79,7 @@
                 />
               </div>
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">اسلاگ (slug)</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">اسلاگ (slug)</label>
                 <input
                   v-model="newService.slug"
                   type="text"
@@ -92,7 +92,7 @@
 
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">خدمت والد (اختیاری)</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">خدمت والد (اختیاری)</label>
                 <select
                   v-model="newService.parent_id"
                   class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
@@ -104,7 +104,7 @@
                 </select>
               </div>
               <div class="w-full sm:w-40">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">ترتیب نمایش</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">ترتیب نمایش</label>
                 <input
                   v-model.number="newService.sort_order"
                   type="number"
@@ -114,7 +114,7 @@
             </div>
 
             <div>
-              <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">توضیحات</label>
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">توضیحات</label>
               <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
                 <span class="hidden">{{ newServiceEditorState.tick }}</span>
                 <div v-if="newServiceEditorState.editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
@@ -371,14 +371,14 @@
           class="mb-5 bg-[#FFFFFF3B] dark:bg-dark-input/20 p-4 sm:p-5 lg:p-6 rounded-2xl border-2 border-dashed border-[#67A9A8]/60 dark:border-dark-accent/60"
         >
           <div class="flex items-center justify-between mb-3">
-            <span class="font-bold text-[#0F184B] dark:text-white text-[14px]">آیتم جدید در «{{ activePageLabel }}»</span>
+            <span class="font-bold text-[#000000] dark:text-white text-[14px]">آیتم جدید در «{{ activePageLabel }}»</span>
             <button @click="cancelAdd" class="text-[12px] text-[#454C6A]/70 dark:text-white hover:underline">انصراف</button>
           </div>
 
           <div class="flex flex-col gap-3">
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">کلید (key)</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">کلید (key)</label>
                 <input
                   v-model="newItem.key"
                   type="text"
@@ -387,7 +387,7 @@
                 />
               </div>
               <div class="w-full sm:w-48">
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">نوع (type)</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">نوع (type)</label>
                 <select
                   v-model="newItem.type"
                   class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
@@ -403,7 +403,7 @@
             </div>
 
             <div>
-              <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">مقدار (value)</label>
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">مقدار (value)</label>
 
               <!-- text -->
               <textarea

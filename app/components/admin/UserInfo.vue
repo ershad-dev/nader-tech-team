@@ -6,9 +6,63 @@
       اطلاعات کاربران
     </div>
 
+    <!-- نوار جستجو -->
+    <div
+      class="w-full max-w-[812px] lg:w-[812px] mx-auto mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+    >
+      <!-- دکمه جابجایی حالت جستجو -->
+      <div class="flex bg-[#BFD1D5] dark:bg-dark-surface rounded-full p-1 shrink-0 self-start sm:self-auto">
+        <button
+          type="button"
+          @click="setSearchMode('mobile')"
+          :class="[
+            'px-4 py-2 rounded-full text-sm font-bold transition-all',
+            searchMode === 'mobile'
+              ? 'bg-[#0F184B] dark:bg-dark-accent text-white dark:text-dark-text-deep'
+              : 'text-[#0F184B] dark:text-dark-text'
+          ]"
+        >
+          موبایل
+        </button>
+        <button
+          type="button"
+          @click="setSearchMode('email')"
+          :class="[
+            'px-4 py-2 rounded-full text-sm font-bold transition-all',
+            searchMode === 'email'
+              ? 'bg-[#0F184B] dark:bg-dark-accent text-white dark:text-dark-text-deep'
+              : 'text-[#0F184B] dark:text-dark-text'
+          ]"
+        >
+          ایمیل
+        </button>
+      </div>
+
+      <!-- اینپوت جستجو -->
+      <div class="relative flex-1">
+        <input
+          v-model="searchQuery"
+          type="text"
+          dir="ltr"
+          :placeholder="searchMode === 'mobile' ? 'جستجو بر اساس شماره موبایل...' : 'جستجو بر اساس ایمیل...'"
+          style="padding-left: 1rem; padding-right: 2.75rem; text-align: left; box-sizing: border-box; display: block;"
+          class="w-full py-2.5 rounded-full bg-white dark:bg-dark-surface border border-[#BFD1D5] dark:border-dark-border/40 text-[#0F184B] dark:text-dark-text text-sm focus:outline-none focus:ring-2 focus:ring-[#0F184B]/30"
+        />
+        <button
+          v-if="searchQuery"
+          type="button"
+          @click="clearSearch"
+          style="right: 0.75rem; width: 1.25rem; height: 1.25rem; line-height: 1;"
+          class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-dark-text mt-[3px]"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+
     <!-- حالت لودینگ -->
-    <div v-if="loading" class="text-center py-10 text-[#0F184B] dark:text-dark-text font-bold">
-      در حال بارگذاری...
+    <div v-if="loading || (isSearching && searchLoading)" class="text-center py-10 text-[#0F184B] dark:text-dark-text font-bold">
+      {{ isSearching ? 'در حال جستجو در همه کاربران...' : 'در حال بارگذاری...' }}
     </div>
 
     <!-- حالت خطا -->
@@ -39,14 +93,14 @@
 
         <!-- بدون کاربر -->
         <div
-          v-if="users.length === 0"
+          v-if="!(loading || (isSearching && searchLoading)) && displayedUsers.length === 0"
           class="text-center py-10 text-gray-500 dark:text-dark-text/60 bg-[#F7F3EB] dark:bg-dark-bg rounded-2xl lg:rounded-none"
         >
           کاربری یافت نشد
         </div>
 
         <div
-          v-for="user in users"
+          v-for="user in displayedUsers"
           :key="user.id"
           class="border-b border-[#E5E5E5] dark:border-dark-border/30 last:border-none bg-[#F7F3EB] dark:bg-dark-bg rounded-2xl lg:rounded-none mb-3 lg:mb-0 shadow-sm lg:shadow-none overflow-hidden"
         >
@@ -172,9 +226,9 @@
         </div>
       </div>
 
-      <!-- Pagination -->
+      <!-- Pagination (فقط وقتی سرچ فعال نیست، چون نتایج سرچ کل لیست فیلترشده رو یک‌جا نشون می‌ده) -->
       <div
-        v-if="meta && meta.last_page > 1"
+        v-if="!isSearching && meta && meta.last_page > 1"
         class="flex justify-center items-center gap-2 mt-6 flex-wrap"
       >
         <button
@@ -202,7 +256,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
 // هدر Authorization از همان composable مشترک لاگین گرفته می‌شود
 const { authHeader, initFromStorage } = useAdminAuth()
@@ -219,8 +273,66 @@ const detailLoading = ref(false)
 const currentPage = ref(1)
 const perPage = ref(15)
 
+// --- جستجو ---
+// نکته مهم: API فعلی (/api/admin/users) هیچ پارامتر فیلتری (مثل mobile/email) پشتیبانی نمی‌کنه،
+// فقط page و per_page داره. پس جستجو رو سمت فرانت‌اند انجام می‌دیم: کل کاربران رو یک‌بار
+// (با per_page حداکثری) می‌گیریم، کش می‌کنیم و فیلتر روی همون لیست کامل انجام میشه.
+const searchMode = ref('mobile') // 'mobile' | 'email'
+const searchQuery = ref('')
+let searchDebounceTimer = null
+
+const allUsersCache = ref([])
+const allUsersLoaded = ref(false)
+const searchLoading = ref(false)
+
+const isSearching = computed(() => searchQuery.value.trim().length > 0)
+
+const searchResults = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return []
+  return allUsersCache.value.filter((u) => {
+    const field = searchMode.value === 'mobile' ? u.mobile : u.email
+    return (field || '').toLowerCase().includes(q)
+  })
+})
+
+// چیزی که واقعاً توی جدول نمایش داده میشه: یا نتیجه‌ی سرچ، یا لیست صفحه‌بندی‌شده‌ی عادی
+const displayedUsers = computed(() => (isSearching.value ? searchResults.value : users.value))
+
 const API_BASE = 'https://nadertechnologyteam.ir'
 const DEFAULT_AVATAR = '/images/user-avatar.jpg'
+
+// کل کاربران رو (با گذر از تمام صفحات بک‌اند) فقط یک‌بار برای سرچ می‌گیره و کش می‌کنه
+const loadAllUsersForSearch = async () => {
+  if (allUsersLoaded.value) return
+  searchLoading.value = true
+  errorMessage.value = ''
+  try {
+    const collected = []
+    let page = 1
+    let lastPage = 1
+    const MAX_PAGES_SAFETY = 50 // جلوگیری از حلقه بی‌نهایت در صورت خطای غیرمنتظره بک‌اند
+
+    do {
+      const data = await $fetch(`${API_BASE}/api/admin/users`, {
+        method: 'GET',
+        headers: authHeader(),
+        params: { page, per_page: 100 }, // ۱۰۰ حداکثر مقداریه که بک‌اند طبق مستندات قبول می‌کنه
+      })
+      collected.push(...data.data)
+      lastPage = data.meta.last_page
+      page++
+    } while (page <= lastPage && page <= MAX_PAGES_SAFETY)
+
+    allUsersCache.value = collected
+    allUsersLoaded.value = true
+  } catch (err) {
+    console.error('خطا در بارگذاری کامل کاربران برای جستجو', err)
+    errorMessage.value = 'خطا در دریافت اطلاعات برای جستجو.'
+  } finally {
+    searchLoading.value = false
+  }
+}
 
 const fetchUsers = async (page = currentPage.value) => {
   loading.value = true
@@ -289,6 +401,40 @@ const toggleUser = (id) => {
   expandedId.value = id
   fetchUserDetail(id) // برای دریافت جزئیات به‌روز کاربر (اختیاری)
 }
+
+// جابجایی بین حالت جستجوی موبایل و ایمیل — چون فیلتر سمت فرانت‌اند روی کش انجام میشه،
+// فقط کافیه لیست کامل (اگر قبلاً لود نشده) آماده باشه؛ فیلتر کردن خودش computed و آنی است
+const setSearchMode = (mode) => {
+  if (searchMode.value === mode) return
+  searchMode.value = mode
+  if (searchQuery.value.trim() && !allUsersLoaded.value) {
+    loadAllUsersForSearch()
+  }
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+}
+
+// با debounce فقط برای جلوگیری از فراخوانی زودهنگام loadAllUsersForSearch با هر keypress
+const triggerSearch = (delay = 400) => {
+  clearTimeout(searchDebounceTimer)
+  searchDebounceTimer = setTimeout(() => {
+    if (searchQuery.value.trim() && !allUsersLoaded.value) {
+      loadAllUsersForSearch()
+    }
+  }, delay)
+}
+
+watch(searchQuery, () => {
+  if (searchQuery.value.trim()) {
+    triggerSearch()
+  }
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(searchDebounceTimer)
+})
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '—'

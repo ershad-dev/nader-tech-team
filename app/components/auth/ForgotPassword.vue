@@ -81,9 +81,9 @@ const handleInput = (event) => {
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
-    <h1 class="text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-8 font-roboto">
-      {{ $t('auth.forgotPassword.welcome') }}
-    </h1>
+<h1 class="text-[17px] sm:text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-8 font-roboto whitespace-nowrap">
+  {{ $t('auth.forgotPassword.welcome') }}
+</h1>
 
     <h3
       class="w-fit whitespace-nowrap mx-auto font-roboto mb-4 text-[#0F184B] dark:text-dark-text-deep text-[16px] border-b border-[#0F184B] dark:border-dark-border"

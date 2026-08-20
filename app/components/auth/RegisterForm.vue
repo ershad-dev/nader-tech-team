@@ -553,7 +553,7 @@ const registerUser = handleSubmit(async (values) => {
       </div>
     </form>
 
-    <div class="mt-[5px] text-sm text-[#1a2333] dark:text-dark-text-deep font-bold cursor-pointer underline font-roboto">
+    <div class="mt-[20px] text-sm text-[#1a2333] dark:text-dark-text-deep font-bold cursor-pointer underline font-roboto">
       <NuxtLink :to="localePath('/auth/login')">{{ $t('auth.register.loginLink') }}</NuxtLink>
     </div>
 
