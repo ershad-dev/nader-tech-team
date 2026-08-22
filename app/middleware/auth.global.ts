@@ -2,12 +2,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   // ۱. اگر در حال رفتن به مسیر ادمین هستید
   if (to.path.startsWith('/admin')) {
 
-    // در سرور هدایت انجام نمی‌دهیم (چون localStorage روی سرور وجود ندارد)
     if (import.meta.server) return
 
-    // ۲. در کلاینت (مرورگر) وضعیت لاگین را از composable مشترک می‌خوانیم
     const { initFromStorage, isLoggedIn } = useAdminAuth()
-    initFromStorage() // بازیابی توکن از localStorage به state
+    initFromStorage()
 
     const loginPath = '/admin/ntt20119'
     const loggedIn = isLoggedIn()
@@ -21,8 +19,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
     }
   }
 
+  // تشخیص لوکیل انگلیسی از روی مسیر
+  const isEnLocale = to.path.startsWith('/en')
+  const localePrefix = isEnLocale ? '/en' : ''
+
   // ۳. برای صفحه درخواست پروژه (فرم order-request)
-if (to.path.startsWith('/order/requestProject')) {
+  if (to.path.startsWith('/order/requestProject') || to.path.startsWith('/en/order/requestProject')) {
 
     if (import.meta.server) return
 
@@ -30,7 +32,7 @@ if (to.path.startsWith('/order/requestProject')) {
     initAuth()
 
     if (!token.value) {
-      return navigateTo(`/auth/login?redirect=${to.fullPath}`)
+      return navigateTo(`${localePrefix}/auth/login?redirect=${to.fullPath}`)
     }
   }
 

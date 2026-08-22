@@ -6,6 +6,5 @@ definePageMeta({
 </script>
 
 <template>
-  <!-- فراخوانی کامپوننتِ لاگین ادمین -->
   <AdminLogin />
 </template>

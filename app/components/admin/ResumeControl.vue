@@ -1,12 +1,16 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth' // مسیر رو مطابق پروژه‌ت تنظیم کن
+import { useAdminPermissions } from '~/composables/useAdminPermissions'
 
 // ==================== تنظیمات پایه ====================
 const API_BASE = 'https://nadertechnologyteam.ir'
 
 const { authHeader, initFromStorage } = useAdminAuth()
 initFromStorage()
+
+// دسترسی read-only
+const { isReadOnly } = useAdminPermissions()
 
 // ==================== وضعیت نمایش ====================
 const activeView = ref('list') // 'list' | 'form'
@@ -24,15 +28,35 @@ const currentPage = ref(1)
 const perPage = ref(6)
 const totalPages = ref(1)
 
+// ==================== فیلتر دسته‌بندی (تب‌ها) ====================
+// ⚠️ قبلاً با category_slug روی /api/admin/resumes امتحان شد و فیلتر نمی‌کرد.
+// طبق composable عمومی useResumes (که روی /api/resumes درست کار می‌کنه)،
+// پارامتر درست category_id هست، نه slug. چون هر دو endpoint احتمالاً از
+// همون منبع داده می‌خونن، اینجا هم با category_id امتحان می‌کنیم.
+// اگه بازم فیلتر نکرد، یعنی /api/admin/resumes اصلاً این پارامتر رو
+// پیاده‌سازی نکرده و باید از بک‌اند بپرسیم.
+const activeCategoryId = ref(null)
+
+const selectCategoryTab = (id) => {
+  if (activeCategoryId.value === id) return
+  activeCategoryId.value = id
+  fetchResumes(1)
+}
+
 const fetchResumes = async (page = 1) => {
   isLoadingList.value = true
   errorMessage.value = ''
   try {
     // نکته: در $fetch از کلید "query" استفاده می‌کنیم نه "params"
     // مسیر واقعی طبق پروژه: /api/admin/resumes (plural)
+    const query = { page, per_page: perPage.value }
+    if (activeCategoryId.value) {
+      query.category_id = activeCategoryId.value
+    }
+
     const res = await $fetch(`${API_BASE}/api/admin/resumes`, {
       method: 'GET',
-      query: { page, per_page: perPage.value },
+      query,
       headers: { ...authHeader() },
     })
 
@@ -60,11 +84,6 @@ const goToPage = (page) => {
 fetchResumes(1)
 
 // ==================== دسته‌بندی‌ها (از Services) ====================
-// ⚠️ مسیر واقعی: /api/services (نه /api/project-services که توی سواگر اومده بود)
-// ⚠️ این endpoint یک لیست flat از همه‌ی خدمات برمی‌گردونه (بدون parent_id).
-// طبق هماهنگی با بک‌اند، فقط ۳ تای زیر «دسته‌بندی اصلی رزومه» هستن، بقیه
-// زیرخدمات/موارد دیگه‌ان که ربطی به دسته‌بندی رزومه ندارن. چون فیلد
-// مشخصی برای تشخیص خودکار وجود نداره، این id ها فعلاً هاردکد شدن:
 //   1  = طراحی سایت (وب‌سایت)
 //   8  = تولید محتوا
 //   15 = برگزاری ایونت
@@ -96,7 +115,7 @@ const fetchCategories = async () => {
   } catch (err) {
     console.error(err)
     // اگه گرفتن دسته‌بندی‌ها خطا داد، فرم همچنان قابل استفاده می‌مونه
-    // فقط select دسته‌بندی خالی می‌مونه
+    // فقط select دسته‌بندی و تب‌های فیلتر خالی می‌مونن
   } finally {
     isLoadingCategories.value = false
   }
@@ -108,16 +127,21 @@ fetchCategories()
 const emptyForm = () => ({
   id: null,
   title: '',
+  title_en: '',
   slug: '',
   description: '',
+  description_en: '',
   is_published: true,
   category_id: null,
   category_name: '', // فقط برای نمایش (سرور در حالت ویرایش category_id برنمی‌گردونه، فقط نام category)
   customer_name: '',
+  customer_name_en: '',
   customer_position: '',
+  customer_position_en: '',
   customer_avatar: null,        // فایل جدید (اختیاری)
   customer_avatar_preview: null, // برای نمایش
   customer_description: '',
+  customer_description_en: '',
   images: [],           // فایل‌های جدید (File[])
   images_preview: [],   // پیش‌نمایش فایل‌های جدید
   existing_images: [],  // تصاویر موجود از سرور (فقط برای نمایش موقع ویرایش)
@@ -128,6 +152,11 @@ const form = reactive(emptyForm())
 const resetForm = () => Object.assign(form, emptyForm())
 
 const openForm = async (item = null) => {
+  // گارد read-only: یوزر مشاهده‌فقط اجازه‌ی باز کردن فرم افزودن جدید را ندارد
+  // (ولی می‌تونه فرم ویرایش رو برای مشاهده باز کنه، چون همه‌ی اینپوت‌ها و
+  // دکمه‌ی ذخیره داخل خود فرم غیرفعال می‌شن)
+  if (!item && isReadOnly.value) return
+
   resetForm()
   selectedItem.value = item
   activeView.value = 'form'
@@ -149,22 +178,25 @@ const openForm = async (item = null) => {
       const d = res.data
       form.id = d.id
       form.title = d.title || ''
+      form.title_en = d.title_en || ''
       form.slug = d.slug || ''
       form.description = d.description || ''
+      form.description_en = d.description_en || ''
       form.is_published = !!d.is_published
 
-      // ⚠️ پاسخ GET تکی فقط "category" (نام دسته‌بندی به‌صورت رشته) رو برمی‌گردونه،
-      // نه category_id. برای اینکه select ازپیش‌انتخاب‌شده باشه، با تطبیق نام
-      // دسته با title سرویس‌ها، id مربوطه رو پیدا می‌کنیم (راه‌حل موقت تا وقتی
-      // بک‌اند خود category_id رو هم توی GET تکی برگردونه).
+
       form.category_name = d.category || ''
       const matched = categories.value.find((c) => c.title === form.category_name)
       form.category_id = matched ? matched.id : null
 
+
       form.customer_name = d.review?.name || ''
+      form.customer_name_en = d.review?.name_en || ''
       form.customer_position = d.review?.position || ''
+      form.customer_position_en = d.review?.position_en || ''
       form.customer_avatar_preview = d.review?.avatar || null
       form.customer_description = d.review?.description || ''
+      form.customer_description_en = d.review?.description_en || ''
       form.existing_images = d.images || []
     } catch (err) {
       console.error(err)
@@ -183,6 +215,7 @@ const closeForm = () => {
 
 // ---- آپلود آواتار مشتری ----
 const onAvatarChange = (e) => {
+  if (isReadOnly.value) return
   const file = e.target.files?.[0]
   if (!file) return
   form.customer_avatar = file
@@ -190,12 +223,14 @@ const onAvatarChange = (e) => {
 }
 
 const removeAvatar = () => {
+  if (isReadOnly.value) return
   form.customer_avatar = null
   form.customer_avatar_preview = null
 }
 
 // ---- آپلود تصاویر پروژه ----
 const onImagesChange = (e) => {
+  if (isReadOnly.value) return
   const files = Array.from(e.target.files || [])
   files.forEach((file) => {
     form.images.push(file)
@@ -205,13 +240,14 @@ const onImagesChange = (e) => {
 }
 
 const removeNewImage = (index) => {
+  if (isReadOnly.value) return
   form.images.splice(index, 1)
   form.images_preview.splice(index, 1)
 }
 
 const removeExistingImage = (id) => {
-  // توجه: چون images موقع آپدیت کل تصاویر قبلی رو جایگزین می‌کنه،
-  // حذف از این لیست یعنی موقع ذخیره دیگه ارسال نمی‌شه
+  if (isReadOnly.value) return
+
   form.existing_images = form.existing_images.filter((img) => img.id !== id)
 }
 
@@ -219,25 +255,30 @@ const removeExistingImage = (id) => {
 const buildFormData = () => {
   const fd = new FormData()
   fd.append('title', form.title)
+  if (form.title_en) fd.append('title_en', form.title_en)
   if (form.slug) fd.append('slug', form.slug)
   fd.append('description', form.description)
+  if (form.description_en) fd.append('description_en', form.description_en)
   fd.append('is_published', form.is_published ? 1 : 0)
   if (form.category_id) fd.append('category_id', form.category_id)
   fd.append('customer_name', form.customer_name)
+  if (form.customer_name_en) fd.append('customer_name_en', form.customer_name_en)
   if (form.customer_position) fd.append('customer_position', form.customer_position)
+  if (form.customer_position_en) fd.append('customer_position_en', form.customer_position_en)
   if (form.customer_avatar) fd.append('customer_avatar', form.customer_avatar)
   fd.append('customer_description', form.customer_description)
+  if (form.customer_description_en) fd.append('customer_description_en', form.customer_description_en)
 
-  // توجه مهم: در آپدیت، فیلد images کل تصاویر قبلی رو جایگزین می‌کنه.
-  // پس اگه تصویر قدیمی حذف نشده، باید همچنان به سرور اطلاع داده بشه.
-  // چون API آپلود فایل می‌خواد نه URL، اینجا فقط فایل‌های جدید رو می‌فرستیم.
-  // اگر بک‌اند برای نگه‌داشتن تصاویر قدیمی به id نیاز داره، باید endpoint جدا بگیری.
+
   form.images.forEach((file) => fd.append('images[]', file))
 
   return fd
 }
 
 const saveChanges = async () => {
+  // گارد read-only: حتی اگر مستقیم از Console صدا زده بشه، اینجا متوقف می‌شود
+  if (isReadOnly.value) return
+
   if (!form.title || !form.description || !form.customer_name || !form.customer_description) {
     errorMessage.value = 'لطفاً فیلدهای الزامی (نام پروژه، توضیحات، نام مشتری، نظر مشتری) را پر کنید'
     return
@@ -249,8 +290,7 @@ const saveChanges = async () => {
     const fd = buildFormData()
 
     if (form.id) {
-      // آپدیت - از _method=PUT روی POST طبق مستندات استفاده می‌شه
-      // مسیر واقعی: /api/admin/resumes/{id}
+
       await $fetch(`${API_BASE}/api/admin/resumes/${form.id}`, {
         method: 'POST',
         query: { _method: 'PUT' },
@@ -278,6 +318,9 @@ const saveChanges = async () => {
 
 // ---- حذف رزومه ----
 const deleteItem = async (id) => {
+  // گارد read-only: حتی اگر مستقیم از Console صدا زده بشه، اینجا متوقف می‌شود
+  if (isReadOnly.value) return
+
   if (!confirm('آیا از حذف این رزومه مطمئن هستید؟')) return
   isDeleting.value = true
   errorMessage.value = ''
@@ -305,6 +348,14 @@ const deleteItem = async (id) => {
 <template>
   <div class="p-4 sm:p-5 lg:p-6 min-h-screen" dir="rtl">
 
+    <!-- بنر هشدار read-only -->
+    <div
+      v-if="isReadOnly"
+      class="max-w-[812px] mx-auto mb-4 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-sm rounded-xl px-4 py-3 font-bold text-center"
+    >
+      شما دسترسی مشاهده‌فقط دارید و نمی‌توانید رزومه‌ها را ایجاد، ویرایش یا حذف کنید.
+    </div>
+
     <!-- پیام خطای عمومی -->
     <div
       v-if="errorMessage"
@@ -317,12 +368,51 @@ const deleteItem = async (id) => {
     <div v-if="activeView === 'list'">
       <div class="flex items-center justify-between w-full max-w-[812px] lg:w-[812px] h-[54px] lg:h-[60px] mx-auto mb-6 lg:mb-8 px-4 lg:px-6 bg-white dark:bg-dark-surface rounded-[27px]">
         <h2 class="text-[16px] sm:text-[18px] lg:text-[20px] font-bold text-[#1a2333] dark:text-dark-text">کنترل رزومه</h2>
-        <button @click="openForm()" class="bg-[#67A9A880] dark:bg-dark-accent text-black dark:text-dark-text-deep px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] dark:hover:bg-dark-accent-hover transition-all whitespace-nowrap">
+        <button
+          @click="openForm()"
+          :disabled="isReadOnly"
+          class="bg-[#67A9A880] dark:bg-dark-accent text-black dark:text-dark-text-deep px-3 sm:px-5 lg:px-6 py-2 rounded-full text-xs sm:text-sm hover:bg-[#235754] dark:hover:bg-dark-accent-hover transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#67A9A880]"
+        >
           + افزودن رزومه
         </button>
       </div>
 
+      <!-- تب‌های فیلتر دسته‌بندی -->
+      <div class="w-full flex justify-center mb-6 lg:mb-8 px-1">
+        <div class="max-w-full bg-white dark:bg-dark-input rounded-[24px] sm:rounded-[30px] lg:rounded-[48px] p-1 shadow-sm border border-gray-100 dark:border-dark-border inline-flex flex-nowrap items-center justify-center gap-1 xs:gap-1.5 sm:gap-2">
+          <button
+            @click="selectCategoryTab(null)"
+            :class="[
+              'min-w-0 px-2 sm:px-6 py-1.5 sm:py-2.5 rounded-[18px] sm:rounded-[19px] text-[10px] xs:text-[11px] sm:text-sm font-bold transition-all duration-300 truncate',
+              activeCategoryId === null
+                ? 'bg-[#2d6a66] dark:bg-dark-accent text-white dark:text-dark-text-deep shadow-md'
+                : 'text-[#1a2333] dark:text-dark-text hover:bg-slate-100 dark:hover:bg-dark-surface/40'
+            ]"
+          >
+            همه
+          </button>
+
+          <button
+            v-for="cat in categories"
+            :key="cat.id"
+            @click="selectCategoryTab(cat.id)"
+            :class="[
+              'min-w-0 px-2 sm:px-6 py-1.5 sm:py-2.5 rounded-[18px] sm:rounded-[19px] text-[10px] xs:text-[11px] sm:text-sm font-bold transition-all duration-300 truncate',
+              activeCategoryId === cat.id
+                ? 'bg-[#2d6a66] dark:bg-dark-accent text-white dark:text-dark-text-deep shadow-md'
+                : 'text-[#1a2333] dark:text-dark-text hover:bg-slate-100 dark:hover:bg-dark-surface/40'
+            ]"
+          >
+            {{ cat.title }}
+          </button>
+        </div>
+      </div>
+
       <div v-if="isLoadingList" class="text-center text-gray-500 dark:text-dark-text/60 py-10">در حال بارگذاری...</div>
+
+      <div v-else-if="resumeItems.length === 0" class="text-center text-gray-500 dark:text-dark-text/60 py-10">
+        رزومه‌ای در این دسته‌بندی یافت نشد
+      </div>
 
       <div v-else class="grid grid-cols-2 lg:flex lg:flex-wrap gap-3 sm:gap-5 lg:gap-6 justify-items-center lg:justify-center max-w-full lg:max-w-[900px] mx-auto mb-10">
         <div
@@ -336,18 +426,18 @@ const deleteItem = async (id) => {
           <div class="flex justify-between w-full mt-auto gap-1 sm:gap-2 px-1 sm:px-2 pb-1 sm:pb-2 pt-2 sm:pt-4">
             <button
               @click="deleteItem(item.id)"
-              :disabled="isDeleting"
+              :disabled="isDeleting || isReadOnly"
               class="flex-1 bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] disabled:opacity-50"
             >
               حذف
             </button>
-            <button @click="openForm(item)" class="flex-1 bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] hover:bg-blue-100 dark:hover:bg-dark-accent-hover">ویرایش</button>
+            <button @click="openForm(item)" class="flex-1 bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs lg:w-[66px] hover:bg-blue-100 dark:hover:bg-dark-accent-hover">{{ isReadOnly ? 'مشاهده' : 'ویرایش' }}</button>
           </div>
         </div>
       </div>
 
       <!-- Pagination -->
-      <div class="flex justify-center lg:justify-end items-center mt-8">
+      <div v-if="resumeItems.length > 0" class="flex justify-center lg:justify-end items-center mt-8">
         <div dir="ltr" class="flex items-center gap-2 lg:ml-[150px]">
           <button
             v-for="page in totalPages"
@@ -384,9 +474,17 @@ const deleteItem = async (id) => {
 
       <button @click="closeForm" class="mb-6 lg:mb-8 text-gray-500 dark:text-dark-text/70 font-bold hover:text-black dark:hover:text-dark-text">← بازگشت</button>
 
+      <!-- بنر هشدار read-only داخل فرم -->
+      <div
+        v-if="isReadOnly"
+        class="mb-6 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-sm rounded-xl px-4 py-3 font-bold text-center"
+      >
+        شما دسترسی مشاهده‌فقط دارید — این فرم فقط برای مشاهده است.
+      </div>
+
       <div v-if="isLoadingForm" class="text-center text-gray-500 dark:text-dark-text/60 py-10">در حال بارگذاری اطلاعات...</div>
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+      <fieldset v-else :disabled="isReadOnly" class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 min-w-0 border-0 p-0 m-0">
 
         <div class="flex flex-col gap-6 lg:gap-8">
           <!-- اطلاعات پروژه -->
@@ -402,7 +500,18 @@ const deleteItem = async (id) => {
                   v-model="form.title"
                   type="text"
                   placeholder="نام پروژه را وارد کنید"
-                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text/80">Project Name (English)</label>
+                <input
+                  v-model="form.title_en"
+                  type="text"
+                  dir="ltr"
+                  placeholder="Project name in English"
+                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -413,7 +522,7 @@ const deleteItem = async (id) => {
                   type="text"
                   placeholder="ecommerce-website-design"
                   dir="ltr"
-                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full h-[42px] sm:h-[45px] px-4 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -458,7 +567,18 @@ const deleteItem = async (id) => {
                   v-model="form.description"
                   rows="3"
                   placeholder="توضیحات کامل پروژه"
-                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent"
+                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                ></textarea>
+              </div>
+
+              <div>
+                <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text/80">Project Details (English)</label>
+                <textarea
+                  v-model="form.description_en"
+                  rows="3"
+                  dir="ltr"
+                  placeholder="Full project description in English"
+                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
                 ></textarea>
               </div>
 
@@ -475,56 +595,112 @@ const deleteItem = async (id) => {
 
         <div class="flex flex-col gap-6 lg:gap-8">
 
-          <!-- اطلاعات مشتری -->
-          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
-            <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
-              <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div> <h3>اطلاعات مشتری</h3>
-            </div>
+<!-- اطلاعات مشتری -->
+<div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
+  <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
+    <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div>
+    <h3>اطلاعات مشتری</h3>
+  </div>
 
-            <div class="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-0 mb-4">
-              <div class="flex items-center gap-3 sm:gap-4">
-                <img
-                  :src="form.customer_avatar_preview || '/images/avatar-placeholder.png'"
-                  class="rounded-full h-[70px] w-[70px] sm:h-[90px] sm:w-[90px] object-cover"
-                />
-                <div>
-                  <input
-                    v-model="form.customer_name"
-                    type="text"
-                    placeholder="نام مشتری *"
-                    class="font-bold text-sm sm:text-base border-b border-gray-300 dark:border-dark-border/40 bg-transparent dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none mb-1 w-full"
-                  />
-                  <input
-                    v-model="form.customer_position"
-                    type="text"
-                    placeholder="سمت مشتری"
-                    class="text-xs sm:text-sm text-gray-500 dark:text-dark-text/60 border-b border-gray-200 dark:border-dark-border/30 bg-transparent dark:placeholder:text-dark-text/40 focus:outline-none w-full"
-                  />
-                </div>
-              </div>
-              <div class="flex flex-row sm:flex-col gap-2">
-                <label class="w-20 py-1 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg text-center cursor-pointer">
-                  ویرایش
-                  <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
-                </label>
-                <button @click="removeAvatar" class="w-20 py-1 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg">حذف تصویر</button>
-              </div>
-            </div>
+  <!-- آواتار -->
+  <div class="flex items-center gap-4 mb-5">
+    <img
+      :src="form.customer_avatar_preview || '/images/avatar-placeholder.png'"
+      class="rounded-full h-[70px] w-[70px] sm:h-[90px] sm:w-[90px] object-cover shrink-0"
+    />
+    <div class="flex gap-2">
+      <label
+        class="px-4 py-1.5 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg text-center"
+        :class="isReadOnly ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
+      >
+        ویرایش تصویر
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" :disabled="isReadOnly" @change="onAvatarChange" />
+      </label>
+      <button @click="removeAvatar" :disabled="isReadOnly" class="px-4 py-1.5 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+        حذف تصویر
+      </button>
+    </div>
+  </div>
 
-            <textarea
-              v-model="form.customer_description"
-              rows="3"
-              placeholder="نظر مشتری درباره پروژه *"
-              class="mt-2 w-full text-xs sm:text-sm text-gray-600 dark:text-dark-text/80 bg-gray-50 dark:bg-dark-input/30 dark:placeholder:text-dark-text/40 p-3 sm:p-4 rounded-xl focus:outline-none"
-            ></textarea>
-          </div>
+  <!-- نام مشتری -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+    <div>
+      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نام مشتری *</label>
+      <input
+        v-model="form.customer_name"
+        type="text"
+        placeholder="نام مشتری"
+        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+      />
+    </div>
+    <div>
+      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Name (English)</label>
+      <input
+        v-model="form.customer_name_en"
+        type="text"
+        dir="ltr"
+        placeholder="Customer name"
+        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+      />
+    </div>
+  </div>
+
+  <!-- سمت مشتری -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+    <div>
+      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">سمت مشتری</label>
+      <input
+        v-model="form.customer_position"
+        type="text"
+        placeholder="مثلاً مدیرعامل"
+        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+      />
+    </div>
+    <div>
+      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Position (English)</label>
+      <input
+        v-model="form.customer_position_en"
+        type="text"
+        dir="ltr"
+        placeholder="e.g. CEO"
+        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+      />
+    </div>
+  </div>
+
+  <!-- نظر مشتری -->
+  <div class="space-y-3">
+    <div>
+      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نظر مشتری درباره پروژه *</label>
+      <textarea
+        v-model="form.customer_description"
+        rows="3"
+        placeholder="نظر مشتری درباره پروژه"
+        class="w-full text-sm text-gray-600 dark:text-dark-text/80 bg-gray-50 dark:bg-dark-input/30 dark:placeholder:text-dark-text/40 p-3 rounded-xl focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
+      ></textarea>
+    </div>
+    <div>
+      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Review (English)</label>
+      <textarea
+        v-model="form.customer_description_en"
+        rows="3"
+        dir="ltr"
+        placeholder="Customer's review in English"
+        class="w-full text-sm text-gray-600 dark:text-dark-text/80 bg-gray-50 dark:bg-dark-input/30 dark:placeholder:text-dark-text/40 p-3 rounded-xl focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
+      ></textarea>
+    </div>
+  </div>
+</div>
                     <!-- تصاویر پروژه -->
                     <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
             <div class="flex items-center justify-between mb-4 lg:mb-6">
               <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base dark:text-dark-text"><div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div> تصاویر پروژه</h3>
-              <label class="px-3 sm:px-4 py-1 border dark:border-dark-border/40 rounded-xl text-xs font-bold bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep cursor-pointer">
+              <label
+                class="px-3 sm:px-4 py-1 border dark:border-dark-border/40 rounded-xl text-xs font-bold bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep"
+                :class="isReadOnly ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
+              >
                 افزودن
-                <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" @change="onImagesChange" />
+                <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" :disabled="isReadOnly" @change="onImagesChange" />
               </label>
             </div>
             <div class="flex flex-wrap gap-2 sm:gap-3 lg:gap-4">
@@ -536,6 +712,7 @@ const deleteItem = async (id) => {
               >
                 <img :src="img.image" class="w-full h-full object-cover" />
                 <button
+                  v-if="!isReadOnly"
                   @click="removeExistingImage(img.id)"
                   class="absolute top-1 left-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
                 >×</button>
@@ -549,12 +726,14 @@ const deleteItem = async (id) => {
               >
                 <img :src="src" class="w-full h-full object-cover" />
                 <button
+                  v-if="!isReadOnly"
                   @click="removeNewImage(index)"
                   class="absolute top-1 left-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
                 >×</button>
               </div>
 
               <label
+                v-if="!isReadOnly"
                 class="w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input/30 rounded-2xl border border-dashed dark:border-dark-border/50 flex items-center justify-center text-2xl text-gray-400 dark:text-dark-text/40 cursor-pointer"
               >
                 +
@@ -564,9 +743,9 @@ const deleteItem = async (id) => {
           </div>
         </div>
         
-      </div>
+      </fieldset>
 
-      <div class="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 sm:gap-4 mt-8 lg:mt-10 pt-6 border-t border-gray-200 dark:border-dark-border/30" dir="ltr">
+      <div v-if="!isReadOnly" class="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 sm:gap-4 mt-8 lg:mt-10 pt-6 border-t border-gray-200 dark:border-dark-border/30" dir="ltr">
         <button
           @click="saveChanges"
           :disabled="isSaving"

@@ -13,6 +13,7 @@ const otp = ref(['', '', '', '', '', ''])
 const loginToken = ref('')
 const timer = ref(120)
 const inputRefs = ref([])
+const toast = ref({ message: '', type: '' })
 
 let interval = null
 
@@ -53,7 +54,13 @@ const formattedTimer = computed(() => {
   return `${m}:${s.toString().padStart(2, '0')}`
 })
 
-// مدیریت ورود اعداد و فوکوس خودکار
+// نمایش پیام toast
+const showToast = (message, type = 'error') => {
+  toast.value = { message, type }
+  setTimeout(() => { toast.value = { message: '', type: '' } }, 4000)
+}
+
+// مدیریت ورود اعداد و فوکوس خودکار به اینپوت بعدی
 const handleInput = (index) => {
   otp.value[index] = otp.value[index].replace(/\D/g, '')
 
@@ -62,17 +69,24 @@ const handleInput = (index) => {
   }
 }
 
+// وقتی با بک‌اسپیس یه اینپوت خالی پاک بشه، برو به اینپوت قبلی
+const handleKeydown = (index, event) => {
+  if (event.key === 'Backspace' && !otp.value[index] && index > 0) {
+    inputRefs.value[index - 1]?.focus()
+  }
+}
+
 // تایید OTP
 const verifyCode = async () => {
   const code = otp.value.join('')
 
   if (code.length !== 6) {
-    alert(t('auth.verify.errors.incompleteCode'))
+    showToast(t('auth.verify.errors.incompleteCode'))
     return
   }
 
   if (!loginToken.value) {
-    alert(t('auth.verify.errors.tokenNotFound'))
+    showToast(t('auth.verify.errors.tokenNotFound'))
     await navigateTo(localePath('/auth/login'))
     return
   }
@@ -90,42 +104,44 @@ const verifyCode = async () => {
       }
     })
 
-    console.log('VERIFY RESPONSE =>', response)
-
     const accessToken = response?.data?.access_token
     const user = response?.data?.user
 
     if (!accessToken) {
-      alert(t('auth.verify.errors.noAccessToken'))
+      showToast(t('auth.verify.errors.noAccessToken'))
       return
     }
 
     localStorage.setItem('access_token', accessToken)
 
     if (user) {
-      localStorage.setItem(
-        'user',
-        JSON.stringify(user)
-      )
+      localStorage.setItem('user', JSON.stringify(user))
     }
 
     localStorage.removeItem('login_token')
 
     await navigateTo(localePath('/profile'))
   } catch (error) {
-    console.error('VERIFY OTP ERROR =>', error)
-
-    alert(
-      error?.data?.message ||
-      error?.response?._data?.message ||
-      t('auth.verify.errors.invalidOrExpired')
-    )
+    // پیام خطا رو کامل خودمون می‌نویسیم، به متن بک‌اند تکیه نمی‌کنیم
+    showToast(t('auth.verify.errors.invalidOrExpired'))
   }
 }
 </script>
 
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
+
+    <div
+      v-if="toast.message"
+      :class="[
+        'fixed top-5 p-4 rounded text-white z-50 transition-opacity font-roboto',
+        isRtl ? 'left-5' : 'right-5',
+        toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+      ]"
+    >
+      {{ toast.message }}
+    </div>
+
     <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-10">
       {{ $t('auth.verify.title') }}
     </h1>
@@ -139,6 +155,7 @@ const verifyCode = async () => {
           v-model="otp[i - 1]"
           :ref="el => inputRefs[i - 1] = el"
           @input="handleInput(i - 1)"
+          @keydown="handleKeydown(i - 1, $event)"
           type="text"
           inputmode="numeric"
           maxlength="1"

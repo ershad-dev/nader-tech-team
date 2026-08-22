@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useForm, useField, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 
-import TermsAgreement from '~/components/TermsAgreement.vue'
+import TermsAgreement from '~/components/Terms/TermsAgreement.vue'
 
 definePageMeta({ layout: 'auth' })
 
@@ -539,12 +539,12 @@ const registerUser = handleSubmit(async (values) => {
       </div>
 
       <!-- اطلاع‌رسانی پذیرش قوانین و مقررات -->
-      <div class="mt-5" :class="isRtl ? 'text-right' : 'text-left'">
+      <div class="mt-[30px]" :class="isRtl ? 'text-right' : 'text-left'">
         <TermsAgreement />
       </div>
 
       <!-- دکمه ثبت‌نام -->
-      <div class="mt-8">
+      <div class="mt-[10px]">
         <AuthButton type="submit" :disabled="loading">
           <span class="mt-[8px] block text-[22px]">
             {{ loading ? $t('auth.register.submitting') : $t('auth.register.submit') }}

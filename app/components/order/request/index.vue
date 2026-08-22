@@ -174,7 +174,10 @@
               class="w-full p-3 sm:p-3.5 md:p-4 bg-white/35 dark:bg-dark-input/40 rounded-[14px] sm:rounded-[16px] md:rounded-[17px] border cursor-pointer flex justify-between items-center shadow-[0_3px_0px_rgba(0,0,0,0.15)] -mb-[5px]"
               :class="errors.service_id ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             >
-              <span class="text-gray-500 dark:text-dark-text-deep text-[13px] sm:text-[14px] md:text-[16px]">
+              <span
+                class="text-[13px] sm:text-[14px] md:text-[16px] font-roboto"
+                :class="selected ? 'text-black dark:text-white' : 'text-gray-500 dark:text-white'"
+              >
                 {{ selected ? selected.title : (servicesLoading ? $t('order.requestForm.loadingServices') : $t('order.requestForm.selectPlaceholder')) }}
               </span>
               <Icon name="heroicons:chevron-down" class="text-gray-400 dark:text-dark-text-deep" />

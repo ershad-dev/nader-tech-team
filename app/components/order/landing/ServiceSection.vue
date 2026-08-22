@@ -24,7 +24,7 @@
 
       <div class="order-1 md:order-none w-full max-w-[305px] min-[1920px]:max-w-[380px] md:w-[280px] lg:w-[305px] min-[1920px]:w-[380px] h-[260px] md:h-[290px] lg:h-[315px] min-[1920px]:h-[390px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] min-[1920px]:rounded-[56px] overflow-hidden">
         <img
-          src="/images/content-service.jpg"
+          src="/images/content-order.png"
           class="w-full h-full object-cover"
         />
 
@@ -66,7 +66,7 @@
               <h3 class="text-[20px] md:text-[26px] lg:text-[32px] min-[1920px]:text-[36px] font-bold leading-none">
                 {{ $t('order.serviceSection.orderProject') }}
               </h3>
-              <p class="text-[15px] md:text-[20px] lg:text-[26px] min-[1920px]:text-[28px] mt-1 md:mt-2 min-[1920px]:mt-3 opacity-90">
+              <p class="text-[15px] md:text-[19px] lg:text-[23px] min-[1920px]:text-[26px] mt-1 md:mt-2 min-[1920px]:mt-3 opacity-90">
                 {{ $t('order.serviceSection.contentLabel') }}
               </p>
             </div>
@@ -91,7 +91,7 @@
       <div class="order-1 md:order-none w-full max-w-[305px] min-[1920px]:max-w-[380px] md:w-[280px] lg:w-[305px] min-[1920px]:w-[380px] h-[260px] md:h-[290px] lg:h-[315px] min-[1920px]:h-[390px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] min-[1920px]:rounded-[56px] overflow-hidden">
 
         <img
-          src="/images/web-service.jpg"
+          src="/images/web-order.png"
           class="w-full h-full lg:h-[400px] object-cover"
         />
 
@@ -123,7 +123,7 @@
               <h3 class="text-[20px] md:text-[26px] lg:text-[32px] min-[1920px]:text-[36px] font-bold leading-none">
                 {{ $t('order.serviceSection.orderProject') }}
               </h3>
-              <p class="text-[15px] md:text-[20px] lg:text-[26px] min-[1920px]:text-[28px] mt-1 md:mt-2 min-[1920px]:mt-3 opacity-90">
+              <p class="text-[15px] md:text-[19px] lg:text-[23px] min-[1920px]:text-[26px] mt-1 md:mt-2 min-[1920px]:mt-3 opacity-90">
                 {{ $t('order.serviceSection.webLabel') }}
               </p>
             </div>

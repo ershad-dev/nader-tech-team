@@ -55,14 +55,18 @@
       <LotteryResults v-else :lottery-id="resolvedLotteryId" :winners="finalWinners" />
 
       <div v-if="!showResults" class="flex flex-col items-center gap-3 sm:gap-4 min-[1920px]:gap-6 px-2 sm:px-0">
-        <p v-if="!canDraw" class="text-amber-200 text-sm font-medium text-center bg-black/20 rounded-xl px-4 py-2">
+        <!-- بنر هشدار read-only: اولویت با این پیام است -->
+        <p v-if="isReadOnly" class="text-amber-200 text-sm font-medium text-center bg-black/20 rounded-xl px-4 py-2">
+          شما دسترسی مشاهده‌فقط دارید و نمی‌توانید قرعه‌کشی را برگزار کنید.
+        </p>
+        <p v-else-if="!canDraw" class="text-amber-200 text-sm font-medium text-center bg-black/20 rounded-xl px-4 py-2">
           این قرعه‌کشی تا تاریخ {{ formatDateTime(lottery?.ends_at) }} قابل برگزاری نیست.
         </p>
         <p v-if="drawError" class="text-red-300 text-sm font-medium text-center">{{ drawError }}</p>
 
         <button
           @click="startDraw"
-          :disabled="isDrawing || !entries.length || !canDraw"
+          :disabled="isDrawing || !entries.length || !canDraw || isReadOnly"
           class="w-full max-w-[478px] sm:w-[478px] bg-white text-[#3949ab] px-6 sm:px-10 py-3 rounded-full font-bold shadow-xl flex items-center justify-center gap-2 h-[44px] text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <span>{{ isDrawing ? 'در حال قرعه‌کشی...' : 'شروع قرعه‌کشی' }}</span>
@@ -107,6 +111,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, inject, defineAsyncComponent } from 'vue';
+import { useAdminPermissions } from '~/composables/useAdminPermissions'
 // وارد کردن کامپوننت نتایج که قبلاً ساختیم
 const LotteryResults = defineAsyncComponent(() => import('./LotteryResults.vue'));
 
@@ -115,6 +120,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['back'])
+
+// دسترسی read-only
+const { isReadOnly } = useAdminPermissions()
 
 // اگر lotteryId به‌عنوان prop پاس داده نشده باشد، از query param آدرس خونده می‌شود
 const route = useRoute()
@@ -195,6 +203,8 @@ const spinToWinner = async (availableIndexes) => {
 }
 
 const startDraw = async () => {
+  // گارد read-only: حتی اگر از Console صدا زده بشه، اینجا متوقف می‌شود
+  if (isReadOnly.value) return
   if (isDrawing.value || loadingData.value || !entries.value.length) return
   if (!canDraw.value) {
     drawError.value = `این قرعه‌کشی تا تاریخ ${formatDateTime(lottery.value?.ends_at)} قابل برگزاری نیست.`

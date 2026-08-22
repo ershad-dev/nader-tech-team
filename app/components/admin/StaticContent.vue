@@ -10,6 +10,14 @@
       </p>
     </div>
 
+    <!-- Read-only banner -->
+    <div
+      v-if="isReadOnly"
+      class="mx-5 lg:mx-8 mb-2 px-4 py-2.5 rounded-xl text-[13px] font-bold bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800/50"
+    >
+      شما دسترسی فقط-خواندنی دارید و امکان ایجاد، ویرایش یا حذف محتوا را ندارید.
+    </div>
+
     <!-- Page tabs -->
     <div class="px-5 lg:px-8">
       <div class="flex flex-wrap justify-center items-center gap-2 mb-2 bg-[#F7F3EB] dark:bg-dark-surface py-3 lg:py-0 lg:h-[64px] rounded-[27px] px-2">
@@ -51,7 +59,8 @@
           <button
             v-if="!showAddServiceForm"
             @click="openAddServiceForm"
-            class="px-4 py-2 rounded-full bg-[#0F184B] dark:bg-dark-accent text-white text-[12px] font-bold hover:opacity-90 transition"
+            :disabled="isReadOnly"
+            class="px-4 py-2 rounded-full bg-[#0F184B] dark:bg-dark-accent text-white text-[12px] font-bold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             + افزودن خدمت جدید
           </button>
@@ -70,7 +79,7 @@
           <div class="flex flex-col gap-3">
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
-                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">عنوان</label>
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">عنوان (فارسی)</label>
                 <input
                   v-model="newService.title"
                   type="text"
@@ -78,6 +87,19 @@
                   class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                 />
               </div>
+              <div class="flex-1">
+                <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">Title (English)</label>
+                <input
+                  v-model="newService.title_en"
+                  type="text"
+                  dir="ltr"
+                  placeholder="e.g. Website Design"
+                  class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
                 <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">اسلاگ (slug)</label>
                 <input
@@ -88,9 +110,6 @@
                   class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                 />
               </div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-3">
               <div class="flex-1">
                 <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">خدمت والد (اختیاری)</label>
                 <select
@@ -114,7 +133,7 @@
             </div>
 
             <div>
-              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">توضیحات</label>
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">توضیحات (فارسی)</label>
               <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
                 <span class="hidden">{{ newServiceEditorState.tick }}</span>
                 <div v-if="newServiceEditorState.editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
@@ -135,6 +154,17 @@
               </div>
             </div>
 
+            <div>
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">Description (English)</label>
+              <textarea
+                v-model="newService.description_en"
+                rows="4"
+                dir="ltr"
+                placeholder="English description..."
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
+            </div>
+
             <div class="flex items-center justify-between">
               <button
                 type="button"
@@ -145,12 +175,11 @@
                 <span class="w-8 h-4 rounded-full relative transition-colors" :class="newService.is_active ? 'bg-[#67A9A8] dark:bg-dark-accent' : 'bg-gray-300 dark:bg-dark-border'">
                   <span class="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" :class="newService.is_active ? 'right-0.5' : 'right-4'" />
                 </span>
-                <!-- <span class="text-[12px] font-bold">{{ newService.is_active ? 'فعال' : 'غیرفعال' }}</span> -->
               </button>
 
               <button
                 @click="addService"
-                :disabled="addingService"
+                :disabled="addingService || isReadOnly"
                 class="px-4 py-2 rounded-full bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white text-[12px] font-bold hover:bg-[#8FB0B2] dark:hover:bg-dark-accent-hover transition disabled:opacity-50"
               >
                 {{ addingService ? 'در حال افزودن...' : 'افزودن' }}
@@ -183,21 +212,13 @@
                 <span class="font-bold text-[#000000] dark:text-white text-[15px] sm:text-[17px]">
                   {{ entry.node.title || '(بدون عنوان)' }}
                 </span>
-                <!-- <span
-                  class="px-2 py-0.5 rounded-md text-[10px] font-bold"
-                  :class="entry.node.is_active
-                    ? 'bg-[#67A9A8]/15 dark:bg-dark-accent/15 text-[#2C7379] dark:text-dark-highlight'
-                    : 'bg-gray-100 dark:bg-dark-input text-gray-500 dark:text-white/50'"
-                >
-                  {{ entry.node.is_active ? 'فعال' : 'غیرفعال' }}
-                </span> -->
               </div>
 
               <div class="flex items-center gap-2 shrink-0">
                 <template v-if="confirmDeleteServiceId === entry.node.id">
                   <button
                     @click="doDeleteService(entry.node)"
-                    :disabled="entry.node._deleting"
+                    :disabled="entry.node._deleting || isReadOnly"
                     class="px-3 py-1.5 rounded-full bg-red-500 text-white text-[12px] font-bold hover:bg-red-600 transition disabled:opacity-50"
                   >
                     {{ entry.node._deleting ? '...' : 'تایید حذف' }}
@@ -212,14 +233,15 @@
                 <template v-else>
                   <button
                     @click="saveService(entry.node)"
-                    :disabled="entry.node._saving"
+                    :disabled="entry.node._saving || isReadOnly"
                     class="px-3 py-1.5 rounded-full bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white text-[12px] font-bold hover:bg-[#8FB0B2] dark:hover:bg-dark-accent-hover transition disabled:opacity-50"
                   >
                     {{ entry.node._saving ? '...' : 'ذخیره' }}
                   </button>
                   <button
                     @click="confirmDeleteServiceId = entry.node.id"
-                    class="px-3 py-1.5 rounded-full border border-red-300 dark:border-red-800/50 text-red-500 dark:text-red-400 text-[12px] font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition"
+                    :disabled="isReadOnly"
+                    class="px-3 py-1.5 rounded-full border border-red-300 dark:border-red-800/50 text-red-500 dark:text-red-400 text-[12px] font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50"
                   >
                     حذف
                   </button>
@@ -230,13 +252,25 @@
             <div class="flex flex-col gap-3">
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
-                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">عنوان</label>
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">عنوان (فارسی)</label>
                   <input
                     v-model="entry.node.title"
                     type="text"
                     class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                   />
                 </div>
+                <div class="flex-1">
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">Title (English)</label>
+                  <input
+                    v-model="entry.node.title_en"
+                    type="text"
+                    dir="ltr"
+                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
                   <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">اسلاگ</label>
                   <input
@@ -246,9 +280,6 @@
                     class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                   />
                 </div>
-              </div>
-
-              <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
                   <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">خدمت والد</label>
                   <select
@@ -275,42 +306,6 @@
                   />
                 </div>
               </div>
-
-              <!-- <div>
-                <label class="block text-[11px] text-[#454C6A]/70 dark:text-white/60 mb-1">توضیحات</label>
-                <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
-                  <span class="hidden">{{ entry.node._editorTick }}</span>
-                  <div v-if="entry.node._editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
-                    <button type="button" @click="entry.node._editor.chain().focus().toggleBold().run()" :class="editorBtnClass(entry.node._editor.isActive('bold'))"><b>B</b></button>
-                    <button type="button" @click="entry.node._editor.chain().focus().toggleItalic().run()" :class="editorBtnClass(entry.node._editor.isActive('italic'))"><i>I</i></button>
-                    <button type="button" @click="entry.node._editor.chain().focus().toggleUnderline().run()" :class="editorBtnClass(entry.node._editor.isActive('underline'))"><u>U</u></button>
-                    <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                    <button type="button" @click="entry.node._editor.chain().focus().toggleBulletList().run()" :class="editorBtnClass(entry.node._editor.isActive('bulletList'))">•</button>
-                    <button type="button" @click="entry.node._editor.chain().focus().toggleOrderedList().run()" :class="editorBtnClass(entry.node._editor.isActive('orderedList'))">1.</button>
-                    <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                    <button type="button" @click="setEditorLink(entry.node._editor)" :class="editorBtnClass(entry.node._editor.isActive('link'))">لینک</button>
-                  </div>
-                  <editor-content
-                    v-if="entry.node._editor"
-                    :editor="entry.node._editor"
-                    class="prosemirror-wrap px-3 py-2 min-h-[90px] max-h-[260px] overflow-y-auto text-[13px] text-[#0F184B] dark:text-white"
-                  />
-                </div>
-              </div> -->
-              <!-- خدمات فعال / غیرفعال -->
-              <!-- <div>
-                <button
-                  type="button"
-                  @click="entry.node.is_active = !entry.node.is_active"
-                  class="flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit transition"
-                  :class="entry.node.is_active ? 'bg-[#67A9A8]/15 dark:bg-dark-accent/15 border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white' : 'bg-gray-50 dark:bg-dark-input border-gray-300 dark:border-dark-border text-gray-400 dark:text-white/60'"
-                >
-                  <span class="w-8 h-4 rounded-full relative transition-colors" :class="entry.node.is_active ? 'bg-[#67A9A8] dark:bg-dark-accent' : 'bg-gray-300 dark:bg-dark-border'">
-                    <span class="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" :class="entry.node.is_active ? 'right-0.5' : 'right-4'" />
-                  </span>
-                  <span class="text-[12px] font-bold">{{ entry.node.is_active ? 'فعال' : 'غیرفعال' }}</span>
-                </button>
-              </div> -->
             </div>
           </div>
         </div>
@@ -345,7 +340,8 @@
               <button
                 v-if="!g.hasImage"
                 @click="quickAddServiceImage(g.number)"
-                class="px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-[11px] font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition shrink-0"
+                :disabled="isReadOnly"
+                class="px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-[11px] font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition shrink-0 disabled:opacity-50"
               >
                 + افزودن تصویر
               </button>
@@ -359,7 +355,8 @@
           <button
             v-if="!showAddForm"
             @click="showAddForm = true"
-            class="px-4 py-2 rounded-full bg-[#0F184B] dark:bg-dark-accent text-white text-[12px] font-bold hover:opacity-90 transition"
+            :disabled="isReadOnly"
+            class="px-4 py-2 rounded-full bg-[#0F184B] dark:bg-dark-accent text-white text-[12px] font-bold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             + افزودن آیتم جدید
           </button>
@@ -403,7 +400,7 @@
             </div>
 
             <div>
-              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">مقدار (value)</label>
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">مقدار فارسی (value)</label>
 
               <!-- text -->
               <textarea
@@ -440,7 +437,7 @@
                   <button type="button" @click="setEditorLink(newItemEditorState.editor)" :class="editorBtnClass(newItemEditorState.editor.isActive('link'))">لینک</button>
                   <label class="px-2 py-1 rounded text-[11px] font-bold cursor-pointer hover:bg-[#67A9A8]/15 dark:hover:bg-dark-accent/15 text-[#454C6A] dark:text-white/80">
                     تصویر
-                    <input type="file" accept="image/*" class="hidden" @change="insertEditorImage($event, newItemEditorState.editor)" />
+                    <input type="file" accept="image/*" class="hidden" :disabled="isReadOnly" @change="insertEditorImage($event, newItemEditorState.editor)" />
                   </label>
                   <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
                   <button type="button" @click="newItemEditorState.editor.chain().focus().undo().run()">↶</button>
@@ -480,10 +477,10 @@
                   />
                   <label
                     class="w-fit cursor-pointer px-3 py-1.5 rounded-full border border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white text-[11px] font-bold hover:bg-[#67A9A8]/10 dark:hover:bg-dark-accent/10 transition"
-                    :class="{ 'opacity-50 pointer-events-none': newItem._uploading }"
+                    :class="{ 'opacity-50 pointer-events-none': newItem._uploading || isReadOnly }"
                   >
                     {{ newItem._uploading ? 'در حال آماده‌سازی فایل...' : 'آپلود از سیستم' }}
-                    <input type="file" accept="image/*" class="hidden" :disabled="newItem._uploading" @change="handleImageFieldUpload($event, newItem)" />
+                    <input type="file" accept="image/*" class="hidden" :disabled="newItem._uploading || isReadOnly" @change="handleImageFieldUpload($event, newItem)" />
                   </label>
                   <span v-if="newItem._file" class="text-[11px] text-[#454C6A]/70 dark:text-white">
                     فایل انتخاب‌شده: {{ newItem._file.name }} — با «افزودن» ارسال می‌شود
@@ -498,26 +495,28 @@
                 type="number"
                 class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
               />
+            </div>
 
-              <!-- boolean -->
-              <!-- <button
-                v-else-if="newItem.type === 'boolean'"
-                type="button"
-                @click="newItem.value = !newItem.value"
-                class="flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit transition"
-                :class="newItem.value ? 'bg-[#67A9A8]/15 dark:bg-dark-accent/15 border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white' : 'bg-gray-50 dark:bg-dark-input border-gray-300 dark:border-dark-border text-gray-400 dark:text-white/60'"
-              >
-                <span class="w-8 h-4 rounded-full relative transition-colors" :class="newItem.value ? 'bg-[#67A9A8] dark:bg-dark-accent' : 'bg-gray-300 dark:bg-dark-border'">
-                  <span class="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" :class="newItem.value ? 'right-0.5' : 'right-4'" />
-                </span>
-                <span class="text-[12px] font-bold">{{ newItem.value ? 'فعال' : 'غیرفعال' }}</span>
-              </button> -->
+            <!-- نسخه انگلیسی (متن، HTML و JSON قابل ترجمه‌ست) -->
+            <div v-if="newItem.type === 'text' || newItem.type === 'html' || newItem.type === 'json'">
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">English value (اختیاری — با کلید «{{ (newItem.key || 'key') + '_en' }}» ذخیره می‌شود)</label>
+              <textarea
+                v-model="newItem.value_en"
+                :rows="newItem.type === 'json' ? 5 : 2"
+                dir="ltr"
+                :spellcheck="newItem.type === 'json' ? false : true"
+                placeholder="English text / HTML / JSON..."
+                :class="[
+                  'w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20',
+                  newItem.type === 'json' ? 'text-[12px] font-mono' : 'text-[13px] font-roboto'
+                ]"
+              />
             </div>
 
             <div class="flex justify-end">
               <button
                 @click="addItem"
-                :disabled="adding"
+                :disabled="adding || isReadOnly"
                 class="px-4 py-2 rounded-full bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white text-[12px] font-bold hover:bg-[#8FB0B2] dark:hover:bg-dark-accent-hover transition disabled:opacity-50"
               >
                 {{ adding ? 'در حال افزودن...' : 'افزودن' }}
@@ -557,7 +556,7 @@
                 <template v-if="confirmDeleteKey === (item.id ?? item.key)">
                   <button
                     @click="doDelete(item)"
-                    :disabled="item._deleting"
+                    :disabled="item._deleting || isReadOnly"
                     class="px-3 py-1.5 rounded-full bg-red-500 text-white text-[12px] font-bold hover:bg-red-600 transition disabled:opacity-50"
                   >
                     {{ item._deleting ? '...' : 'تایید حذف' }}
@@ -572,14 +571,15 @@
                 <template v-else>
                   <button
                     @click="saveItem(item)"
-                    :disabled="item._saving"
+                    :disabled="item._saving || isReadOnly"
                     class="px-3 py-1.5 rounded-full bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white text-[12px] font-bold hover:bg-[#8FB0B2] dark:hover:bg-dark-accent-hover transition disabled:opacity-50"
                   >
                     {{ item._saving ? '...' : 'ذخیره' }}
                   </button>
                   <button
                     @click="confirmDeleteKey = item.id ?? item.key"
-                    class="px-3 py-1.5 rounded-full border border-red-300 dark:border-red-800/50 text-red-500 dark:text-red-400 text-[12px] font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition"
+                    :disabled="isReadOnly"
+                    class="px-3 py-1.5 rounded-full border border-red-300 dark:border-red-800/50 text-red-500 dark:text-red-400 text-[12px] font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50"
                   >
                     حذف
                   </button>
@@ -588,52 +588,72 @@
             </div>
 
             <!-- text -->
-            <textarea
-              v-if="item.type === 'text'"
-              v-model="item.value"
-              rows="2"
-              class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
-            />
-
-            <!-- html: Tiptap -->
-            <div
-              v-else-if="item.type === 'html'"
-              class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20"
-            >
-              <span class="hidden">{{ item._editorTick }}</span>
-              <div v-if="item._editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
-                <button type="button" @click="item._editor.chain().focus().toggleBold().run()" :class="editorBtnClass(item._editor.isActive('bold'))"><b>B</b></button>
-                <button type="button" @click="item._editor.chain().focus().toggleItalic().run()" :class="editorBtnClass(item._editor.isActive('italic'))"><i>I</i></button>
-                <button type="button" @click="item._editor.chain().focus().toggleUnderline().run()" :class="editorBtnClass(item._editor.isActive('underline'))"><u>U</u></button>
-                <button type="button" @click="item._editor.chain().focus().toggleStrike().run()" :class="editorBtnClass(item._editor.isActive('strike'))"><s>S</s></button>
-                <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                <button type="button" @click="item._editor.chain().focus().setParagraph().run()" :class="editorBtnClass(item._editor.isActive('paragraph'))">P</button>
-                <button type="button" @click="item._editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="editorBtnClass(item._editor.isActive('heading', { level: 2 }))">H2</button>
-                <button type="button" @click="item._editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="editorBtnClass(item._editor.isActive('heading', { level: 3 }))">H3</button>
-                <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                <button type="button" @click="item._editor.chain().focus().toggleBulletList().run()" :class="editorBtnClass(item._editor.isActive('bulletList'))">•</button>
-                <button type="button" @click="item._editor.chain().focus().toggleOrderedList().run()" :class="editorBtnClass(item._editor.isActive('orderedList'))">1.</button>
-                <button type="button" @click="item._editor.chain().focus().toggleBlockquote().run()" :class="editorBtnClass(item._editor.isActive('blockquote'))">”</button>
-                <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                <button type="button" @click="item._editor.chain().focus().setTextAlign('right').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'right' }))">راست</button>
-                <button type="button" @click="item._editor.chain().focus().setTextAlign('center').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'center' }))">وسط</button>
-                <button type="button" @click="item._editor.chain().focus().setTextAlign('left').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'left' }))">چپ</button>
-                <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                <button type="button" @click="setEditorLink(item._editor)" :class="editorBtnClass(item._editor.isActive('link'))">لینک</button>
-                <label class="px-2 py-1 rounded text-[11px] font-bold cursor-pointer hover:bg-[#67A9A8]/15 dark:hover:bg-dark-accent/15 text-[#454C6A] dark:text-white/80">
-                  تصویر
-                  <input type="file" accept="image/*" class="hidden" @change="insertEditorImage($event, item._editor)" />
-                </label>
-                <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                <button type="button" @click="item._editor.chain().focus().undo().run()">↶</button>
-                <button type="button" @click="item._editor.chain().focus().redo().run()">↷</button>
-              </div>
-              <editor-content
-                v-if="item._editor"
-                :editor="item._editor"
-                class="prosemirror-wrap px-3 py-2 min-h-[120px] max-h-[320px] overflow-y-auto text-[13px] text-[#0F184B] dark:text-white"
+            <template v-if="item.type === 'text'">
+              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1">فارسی</label>
+              <textarea
+                v-model="item.value"
+                rows="2"
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
               />
-            </div>
+              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1 mt-2">English</label>
+              <textarea
+                v-model="item.value_en"
+                rows="2"
+                dir="ltr"
+                placeholder="English text..."
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
+            </template>
+
+            <!-- html: Tiptap (فارسی) + textarea ساده برای انگلیسی -->
+            <template v-else-if="item.type === 'html'">
+              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1">فارسی</label>
+              <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
+                <span class="hidden">{{ item._editorTick }}</span>
+                <div v-if="item._editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
+                  <button type="button" @click="item._editor.chain().focus().toggleBold().run()" :class="editorBtnClass(item._editor.isActive('bold'))"><b>B</b></button>
+                  <button type="button" @click="item._editor.chain().focus().toggleItalic().run()" :class="editorBtnClass(item._editor.isActive('italic'))"><i>I</i></button>
+                  <button type="button" @click="item._editor.chain().focus().toggleUnderline().run()" :class="editorBtnClass(item._editor.isActive('underline'))"><u>U</u></button>
+                  <button type="button" @click="item._editor.chain().focus().toggleStrike().run()" :class="editorBtnClass(item._editor.isActive('strike'))"><s>S</s></button>
+                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
+                  <button type="button" @click="item._editor.chain().focus().setParagraph().run()" :class="editorBtnClass(item._editor.isActive('paragraph'))">P</button>
+                  <button type="button" @click="item._editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="editorBtnClass(item._editor.isActive('heading', { level: 2 }))">H2</button>
+                  <button type="button" @click="item._editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="editorBtnClass(item._editor.isActive('heading', { level: 3 }))">H3</button>
+                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
+                  <button type="button" @click="item._editor.chain().focus().toggleBulletList().run()" :class="editorBtnClass(item._editor.isActive('bulletList'))">•</button>
+                  <button type="button" @click="item._editor.chain().focus().toggleOrderedList().run()" :class="editorBtnClass(item._editor.isActive('orderedList'))">1.</button>
+                  <button type="button" @click="item._editor.chain().focus().toggleBlockquote().run()" :class="editorBtnClass(item._editor.isActive('blockquote'))">”</button>
+                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
+                  <button type="button" @click="item._editor.chain().focus().setTextAlign('right').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'right' }))">راست</button>
+                  <button type="button" @click="item._editor.chain().focus().setTextAlign('center').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'center' }))">وسط</button>
+                  <button type="button" @click="item._editor.chain().focus().setTextAlign('left').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'left' }))">چپ</button>
+                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
+                  <button type="button" @click="setEditorLink(item._editor)" :class="editorBtnClass(item._editor.isActive('link'))">لینک</button>
+                  <label class="px-2 py-1 rounded text-[11px] font-bold cursor-pointer hover:bg-[#67A9A8]/15 dark:hover:bg-dark-accent/15 text-[#454C6A] dark:text-white/80">
+                    تصویر
+                    <input type="file" accept="image/*" class="hidden" :disabled="isReadOnly" @change="insertEditorImage($event, item._editor)" />
+                  </label>
+                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
+                  <button type="button" @click="item._editor.chain().focus().undo().run()">↶</button>
+                  <button type="button" @click="item._editor.chain().focus().redo().run()">↷</button>
+                </div>
+                <editor-content
+                  v-if="item._editor"
+                  :editor="item._editor"
+                  class="prosemirror-wrap px-3 py-2 min-h-[120px] max-h-[320px] overflow-y-auto text-[13px] text-[#0F184B] dark:text-white"
+                />
+              </div>
+
+              <!-- نسخه‌ی انگلیسی HTML: برای سادگی، textarea خام (بدون تولبار) -->
+              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1 mt-2">English (raw HTML)</label>
+              <textarea
+                v-model="item.value_en"
+                rows="4"
+                dir="ltr"
+                placeholder="<p>English HTML...</p>"
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
+            </template>
 
             <!-- workflow steps (order page) -->
             <div v-else-if="isWorkflowItem(item)" class="flex flex-col gap-3">
@@ -648,19 +668,20 @@
                     <button
                       type="button"
                       @click="moveStep(item, idx, -1)"
-                      :disabled="idx === 0"
+                      :disabled="idx === 0 || isReadOnly"
                       class="w-6 h-6 rounded-full text-[12px] text-[#454C6A] dark:text-white/70 hover:bg-gray-200 dark:hover:bg-dark-input disabled:opacity-30 transition"
                     >↑</button>
                     <button
                       type="button"
                       @click="moveStep(item, idx, 1)"
-                      :disabled="idx === parseSteps(item).length - 1"
+                      :disabled="idx === parseSteps(item).length - 1 || isReadOnly"
                       class="w-6 h-6 rounded-full text-[12px] text-[#454C6A] dark:text-white/70 hover:bg-gray-200 dark:hover:bg-dark-input disabled:opacity-30 transition"
                     >↓</button>
                     <button
                       type="button"
                       @click="removeStep(item, idx)"
-                      class="w-6 h-6 rounded-full text-[12px] text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition"
+                      :disabled="isReadOnly"
+                      class="w-6 h-6 rounded-full text-[12px] text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-30"
                     >×</button>
                   </div>
                 </div>
@@ -669,12 +690,12 @@
                   :value="step.title"
                   @input="updateStepField(item, idx, 'title', $event.target.value)"
                   type="text"
-                  placeholder="عنوان مرحله"
+                  placeholder="عنوان مرحله (فارسی)"
                   class="w-full mb-2 px-3 py-1.5 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] font-bold text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                 />
 
                 <!-- content: Tiptap -->
-                <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
+                <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20 mb-2">
                   <span class="hidden">{{ stepEditorTick }}</span>
                   <div class="flex flex-wrap items-center gap-1 px-2 py-1 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
                     <button type="button" @click="getStepEditor(item, step).chain().focus().toggleBold().run()" :class="editorBtnClass(getStepEditor(item, step).isActive('bold'))"><b>B</b></button>
@@ -691,25 +712,57 @@
                     class="prosemirror-wrap px-3 py-2 min-h-[70px] text-[13px] text-[#0F184B] dark:text-white"
                   />
                 </div>
+
+                <!-- نسخه انگلیسی مرحله -->
+                <div class="mt-2 pt-2 border-t border-dashed border-[#BFD1D5] dark:border-dark-border">
+                  <input
+                    :value="step.title_en"
+                    @input="updateStepField(item, idx, 'title_en', $event.target.value)"
+                    type="text"
+                    dir="ltr"
+                    placeholder="Step title (English)"
+                    class="w-full mb-2 px-3 py-1.5 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] font-bold text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
+                  />
+                  <textarea
+                    :value="step.content_en"
+                    @input="updateStepField(item, idx, 'content_en', $event.target.value)"
+                    rows="3"
+                    dir="ltr"
+                    placeholder="Step content (English, HTML allowed)"
+                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                  />
+                </div>
               </div>
 
               <button
                 type="button"
                 @click="addStep(item)"
-                class="px-3 py-2 rounded-lg border-2 border-dashed border-[#67A9A8]/60 dark:border-dark-accent/60 text-[#2C7379] dark:text-dark-highlight text-[12px] font-bold hover:bg-[#67A9A8]/10 dark:hover:bg-dark-accent/10 transition"
+                :disabled="isReadOnly"
+                class="px-3 py-2 rounded-lg border-2 border-dashed border-[#67A9A8]/60 dark:border-dark-accent/60 text-[#2C7379] dark:text-dark-highlight text-[12px] font-bold hover:bg-[#67A9A8]/10 dark:hover:bg-dark-accent/10 transition disabled:opacity-50"
               >
                 + افزودن مرحله
               </button>
             </div>
 
             <!-- json -->
-            <textarea
-              v-else-if="item.type === 'json'"
-              v-model="item.value"
-              rows="5"
-              spellcheck="false"
-              class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
-            />
+            <template v-else-if="item.type === 'json'">
+              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1">فارسی</label>
+              <textarea
+                v-model="item.value"
+                rows="5"
+                spellcheck="false"
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
+              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1 mt-2">English</label>
+              <textarea
+                v-model="item.value_en"
+                rows="5"
+                dir="ltr"
+                spellcheck="false"
+                placeholder='["Question 1?", "Question 2?"]'
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
+            </template>
 
             <!-- image_path -->
             <div v-else-if="item.type === 'image_path'" class="flex flex-col sm:flex-row sm:items-start gap-3">
@@ -729,10 +782,10 @@
                 />
                 <label
                   class="w-fit cursor-pointer px-3 py-1.5 rounded-full border border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white text-[11px] font-bold hover:bg-[#67A9A8]/10 dark:hover:bg-dark-accent/10 transition"
-                  :class="{ 'opacity-50 pointer-events-none': item._uploading }"
+                  :class="{ 'opacity-50 pointer-events-none': item._uploading || isReadOnly }"
                 >
                   {{ item._uploading ? 'در حال آماده‌سازی فایل...' : 'آپلود از سیستم' }}
-                  <input type="file" accept="image/*" class="hidden" :disabled="item._uploading" @change="handleImageFieldUpload($event, item)" />
+                  <input type="file" accept="image/*" class="hidden" :disabled="item._uploading || isReadOnly" @change="handleImageFieldUpload($event, item)" />
                 </label>
                 <span v-if="item._file" class="text-[11px] text-[#454C6A]/70 dark:text-white/60">
                   فایل انتخاب‌شده: {{ item._file.name }} — با «ذخیره» ارسال می‌شود
@@ -747,20 +800,6 @@
               type="number"
               class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
             />
-
-            <!-- boolean -->
-            <!-- <button
-              v-else-if="item.type === 'boolean'"
-              type="button"
-              @click="item.value = !item.value"
-              class="flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit transition"
-              :class="item.value ? 'bg-[#67A9A8]/15 dark:bg-dark-accent/15 border-[#67A9A8] dark:border-dark-accent text-[#2C7379] dark:text-white' : 'bg-gray-50 dark:bg-dark-input border-gray-300 dark:border-dark-border text-gray-400 dark:text-white/60'"
-            >
-              <span class="w-8 h-4 rounded-full relative transition-colors" :class="item.value ? 'bg-[#67A9A8] dark:bg-dark-accent' : 'bg-gray-300 dark:bg-dark-border'">
-                <span class="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" :class="item.value ? 'right-0.5' : 'right-4'" />
-              </span>
-              <span class="text-[12px] font-bold">{{ item.value ? 'فعال' : 'غیرفعال' }}</span>
-            </button> -->
 
             <!-- fallback -->
             <textarea
@@ -787,19 +826,9 @@ import TextAlign from '@tiptap/extension-text-align'
 
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
-// Files uploaded via image_path come back from the backend as a RELATIVE
-// path (e.g. "pages/events/GHKLJVcrr65FQnilcCupl7ld1AD1Y1QyLfNiGymZ.jpg"),
-// not a full URL. Confirmed by opening this in the browser:
-//   https://nadertechnologyteam.ir/storage/pages/events/GHKLJVcrr65FQnilcCupl7ld1AD1Y1QyLfNiGymZ.jpg
-// -> works and shows the uploaded image. So the storage base below must be
-// prefixed onto any relative image_path value before it's used as <img src>.
 const STORAGE_BASE = 'https://nadertechnologyteam.ir/storage/'
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024 // 2MB
 
-// Turns an image_path value into something usable as <img :src>.
-// Passes through untouched if it's already a full URL (http/https),
-// a local preview (blob:), or a data URL (data:) — only bare relative
-// paths coming straight from the backend get the storage base prepended.
 const resolveImageUrl = (value) => {
   if (!value) return value
   if (/^(https?:|blob:|data:)/.test(value)) return value
@@ -807,9 +836,8 @@ const resolveImageUrl = (value) => {
 }
 
 const { authHeader, initFromStorage } = useAdminAuth()
+const { isReadOnly } = useAdminPermissions()
 
-// NOTE: tab slug 'services' maps to the /api/services endpoints (see below),
-// not to the key-value /page/{page} content endpoints the other tabs use.
 const pages = ref([
   { slug: 'about', label: 'درباره ما' },
   { slug: 'events', label: 'ایونت‌ها' },
@@ -849,9 +877,6 @@ const typeBadgeClass = (type) => ({
   boolean: 'bg-pink-50 dark:bg-pink-900/30 text-pink-500 dark:text-pink-300',
 }[type] || 'bg-gray-100 dark:bg-dark-input text-gray-500 dark:text-dark-text-deep/70')
 
-// ── Grouping / sorting for the events page (service_N, service_N_image, ...) ──
-// Items belonging to the same service number are shown together and in
-// numeric order, instead of the default alphabetical/insertion order.
 const sortedItems = computed(() => {
   return [...items.value].sort((a, b) => {
     const an = a.key.match(/^service_(\d+)/)
@@ -868,8 +893,6 @@ const sortedItems = computed(() => {
   })
 })
 
-// List of detected service numbers on the events page, with whether an
-// image (service_N_image) already exists for each one.
 const serviceGroups = computed(() => {
   if (activePage.value !== 'events') return []
   const numbers = new Set()
@@ -892,9 +915,8 @@ const serviceGroups = computed(() => {
     })
 })
 
-// Opens the add-form pre-filled with the correct key/type for a service's image,
-// so the admin doesn't have to type "service_N_image" by hand.
 const quickAddServiceImage = (n) => {
+  if (isReadOnly.value) return
   showAddForm.value = true
   newItem.key = `service_${n}_image`
   newItem.type = 'image_path'
@@ -929,12 +951,8 @@ const setEditorLink = (editor) => {
   editor.chain().focus().setLink({ href: url }).run()
 }
 
-// Image inserted inline inside the HTML content itself (not the image_path field).
-// No dedicated upload endpoint has been confirmed for this yet, so it's still
-// embedded as a base64 data URL. If/when the backend exposes an upload route
-// for inline images too, this should switch to the same FormData approach
-// used in handleImageFieldUpload below.
 const insertEditorImage = (event, editor) => {
+  if (isReadOnly.value) return
   const file = event.target.files?.[0]
   event.target.value = ''
   if (!file || !editor) return
@@ -954,11 +972,7 @@ const insertEditorImage = (event, editor) => {
   reader.readAsDataURL(file)
 }
 
-// ── Tiptap: per-item editor instances (type === 'html') ──────
-// Editor instances are stored with markRaw() so Vue doesn't deep-proxy
-// them (Tiptap/ProseMirror objects break under a reactive Proxy).
-// `_editorTick` is a plain reactive counter bumped on every transaction
-// so toolbar active-states (bold/italic/...) re-render live.
+// ── Tiptap: per-item editor instances (type === 'html') — فقط نسخه فارسی ──
 const createEditorForItem = (item) => {
   if (item.type !== 'html' || item._editor) return
   item._editorTick = 0
@@ -1006,12 +1020,6 @@ const destroyNewItemEditor = () => {
 }
 
 // ── Workflow (order page) steps editor ──────────────────────
-// Only the "workflow" json item on the "order" page gets the dedicated
-// step-by-step editor instead of a raw JSON textarea. Steps are kept as
-// plain {id, title, content} objects; item.value stays the JSON string
-// source of truth, so save/delete logic elsewhere is untouched.
-// NOTE: step.content is stored as HTML (via Tiptap), not plain text —
-// wherever this is rendered outside the admin, it needs v-html.
 const isWorkflowItem = (item) => item.page === 'order' && item.type === 'json' && item.key === 'workflow'
 
 const parseSteps = (item) => {
@@ -1028,6 +1036,7 @@ const writeSteps = (item, steps) => {
 }
 
 const updateStepField = (item, index, field, val) => {
+  if (isReadOnly.value) return
   const steps = parseSteps(item)
   if (!steps[index]) return
   steps[index] = { ...steps[index], [field]: val }
@@ -1035,13 +1044,16 @@ const updateStepField = (item, index, field, val) => {
 }
 
 const addStep = (item) => {
+  if (isReadOnly.value) return
   const steps = parseSteps(item)
   const nextId = steps.length ? Math.max(...steps.map(s => Number(s.id) || 0)) + 1 : 1
-  steps.push({ id: nextId, title: '', content: '' })
+  // title_en / content_en هم از همون ابتدا روی هر مرحله وجود دارن
+  steps.push({ id: nextId, title: '', content: '', title_en: '', content_en: '' })
   writeSteps(item, steps)
 }
 
 const removeStep = (item, index) => {
+  if (isReadOnly.value) return
   const steps = parseSteps(item)
   const removed = steps[index]
   steps.splice(index, 1)
@@ -1050,6 +1062,7 @@ const removeStep = (item, index) => {
 }
 
 const moveStep = (item, index, dir) => {
+  if (isReadOnly.value) return
   const steps = parseSteps(item)
   const target = index + dir
   if (target < 0 || target >= steps.length) return
@@ -1057,12 +1070,9 @@ const moveStep = (item, index, dir) => {
   writeSteps(item, steps)
 }
 
-// ── Workflow step content editors (Tiptap) ──────────────────
-// Keyed by `${item.key}:${step.id}` since steps are plain objects
-// re-created on every writeSteps() call — the editor can't be stashed
-// on the step object itself, it would be lost on the next write.
+// ── Workflow step content editors (Tiptap) — فقط نسخه فارسی ─
 const stepEditors = reactive(new Map())
-const stepEditorTick = ref(0) // bumped on every transaction to re-render toolbar active-states
+const stepEditorTick = ref(0)
 
 const stepEditorKey = (item, step) => `${item.key}:${step.id}`
 
@@ -1095,13 +1105,7 @@ const destroyAllStepEditors = () => {
   stepEditors.clear()
 }
 
-// ── image_path field upload (shared by items and the add-form) ─
-// Keeps the raw File around (target._file) instead of converting to base64.
-// A temporary local object URL (target._previewUrl) is used purely so the
-// admin can preview the picture before hitting "save" — it is revoked and
-// replaced with the real server value (relative path) once the upsert
-// succeeds (see applyUploadResult below), and also revoked if the
-// item/form is discarded. Display everywhere goes through resolveImageUrl().
+// ── image_path field upload ──────────────────────────────────
 const revokePreview = (target) => {
   if (target._previewUrl) {
     URL.revokeObjectURL(target._previewUrl)
@@ -1110,6 +1114,7 @@ const revokePreview = (target) => {
 }
 
 const handleImageFieldUpload = (event, target) => {
+  if (isReadOnly.value) return
   const file = event.target.files?.[0]
   event.target.value = ''
   if (!file) return
@@ -1125,7 +1130,7 @@ const handleImageFieldUpload = (event, target) => {
   revokePreview(target)
   target._file = file
   target._previewUrl = URL.createObjectURL(file)
-  target.value = target._previewUrl // local preview only, replaced after save
+  target.value = target._previewUrl
 }
 
 // ── Fetch / normalize (key-value page content) ──────────────
@@ -1140,6 +1145,8 @@ const normalizeIncoming = (raw) => {
   return {
     ...raw,
     value,
+    value_en: '',
+    _enId: null,
     _saving: false,
     _deleting: false,
     _uploading: false,
@@ -1156,13 +1163,31 @@ const fetchItems = async (page) => {
   destroyAllStepEditors()
   items.value.forEach(revokePreview)
   try {
-    // GET is a public, read-only endpoint per the docs — no auth header here.
-    // Sending Authorization would trigger a CORS preflight (OPTIONS) that
-    // this backend currently rejects with 405.
     const res = await $fetch(`${API_BASE}/page/${page}`)
-    // Backend wraps the array in { data: [...] } rather than returning it directly.
     const list = Array.isArray(res) ? res : (res?.data ?? [])
-    items.value = list.map(normalizeIncoming)
+    const normalized = list.map(normalizeIncoming)
+
+    // آیتم‌هایی که کلیدشون به «_en» ختم میشه، نسخه‌ی انگلیسیِ یه آیتم دیگه‌ن؛
+    // اینجا جداشون می‌کنیم و به آیتم فارسیِ متناظرشون می‌چسبونیم، تا توی
+    // لیست به‌صورت یک کارت با دو فیلد (فارسی/انگلیسی) دیده بشن، نه دو ردیف جدا
+    const enMap = new Map()
+    const baseItems = []
+    normalized.forEach((it) => {
+      if (it.key.endsWith('_en')) {
+        enMap.set(it.key.slice(0, -3), it)
+      } else {
+        baseItems.push(it)
+      }
+    })
+    baseItems.forEach((it) => {
+      const enItem = enMap.get(it.key)
+      if (enItem) {
+        it.value_en = enItem.value ?? ''
+        it._enId = enItem.id ?? null
+      }
+    })
+
+    items.value = baseItems
     items.value.forEach(createEditorForItem)
   } catch (err) {
     showToast('خطا در دریافت محتوای این صفحه', 'error')
@@ -1191,19 +1216,6 @@ const buildOutgoingValue = (type, value) => {
   return value
 }
 
-// Real write endpoint from the backend (Ali, 24 Tir):
-// POST /api/admin/page  -> upserts by (page, key), creates if new, updates
-// if that combo exists. Requires the admin bearer token.
-// Response: { message, data: { id, key, value, type, page } }
-//
-// Two request shapes:
-//  - file provided (new image_path upload)         -> multipart/form-data
-//  - everything else (text/html/json/number/boolean,
-//    or image_path where the admin only typed a URL) -> application/json
-//
-// Confirmed working (Ali): image uploads now save correctly. data.value
-// comes back as a RELATIVE path (e.g. "pages/events/xxx.jpg"), not a full
-// URL — see STORAGE_BASE / resolveImageUrl() above for how it's displayed.
 const upsertPageItem = async ({ page, key, value, type, file }) => {
   let body
 
@@ -1212,11 +1224,8 @@ const upsertPageItem = async ({ page, key, value, type, file }) => {
     formData.append('page', page)
     formData.append('key', key)
     formData.append('type', type)
-    formData.append('value', file) // raw file — NOT base64
+    formData.append('value', file)
     body = formData
-    // Don't set Content-Type manually here: the browser needs to add the
-    // multipart boundary itself. $fetch/ofetch already skips setting
-    // Content-Type when body is a FormData instance.
   } else {
     body = { page, key, value, type }
   }
@@ -1236,9 +1245,6 @@ const deletePageItemRequest = async (id) => {
   })
 }
 
-// After a successful upsert of an image_path item, swap the local preview
-// object URL out for the real relative path the server returned. Display
-// components always run this through resolveImageUrl() before use.
 const applyUploadResult = (target, saved) => {
   revokePreview(target)
   target._file = null
@@ -1246,6 +1252,7 @@ const applyUploadResult = (target, saved) => {
 }
 
 const saveItem = async (item) => {
+  if (isReadOnly.value) return
   item._saving = true
   try {
     const usingNewFile = item.type === 'image_path' && !!item._file
@@ -1261,6 +1268,19 @@ const saveItem = async (item) => {
 
     if (saved?.id) item.id = saved.id
     if (usingNewFile) applyUploadResult(item, saved)
+
+    // نسخه‌ی انگلیسی (فقط برای text/html) - با کلید «key_en» ذخیره می‌شه
+    if ((item.type === 'text' || item.type === 'html' || item.type === 'json') && item.value_en?.trim()) {
+      const valueEn = item.type === 'json' ? buildOutgoingValue(item.type, item.value_en) : item.value_en
+      const savedEn = await upsertPageItem({
+        page: activePage.value,
+        key: `${item.key}_en`,
+        value: valueEn,
+        type: item.type,
+      })
+      if (savedEn?.id) item._enId = savedEn.id
+    }
+
     showToast(`«${item.key}» ذخیره شد`)
   } catch (err) {
     const raw = String(err?.data?.message || err?.message || '')
@@ -1275,12 +1295,14 @@ const saveItem = async (item) => {
 }
 
 // ── Delete (key-value item) ─────────────────────────────────
-const confirmDeleteKey = ref(null) // item.id (or item.key as fallback) pending confirmation
+const confirmDeleteKey = ref(null)
 
 const doDelete = async (item) => {
+  if (isReadOnly.value) return
   item._deleting = true
   try {
     if (item.id) await deletePageItemRequest(item.id)
+    if (item._enId) await deletePageItemRequest(item._enId) // نسخه‌ی انگلیسی هم حذف بشه
     destroyItemEditor(item)
     if (isWorkflowItem(item)) {
       parseSteps(item).forEach(step => destroyStepEditor(item, step))
@@ -1299,7 +1321,7 @@ const doDelete = async (item) => {
 // ── Add new item ─────────────────────────────────────────────
 const showAddForm = ref(false)
 const adding = ref(false)
-const newItem = reactive({ key: '', type: 'text', value: '', _uploading: false, _file: null, _previewUrl: null })
+const newItem = reactive({ key: '', type: 'text', value: '', value_en: '', _uploading: false, _file: null, _previewUrl: null })
 
 const defaultValueForType = (type) => {
   if (type === 'boolean') return false
@@ -1311,6 +1333,7 @@ watch(() => newItem.type, (type) => {
   revokePreview(newItem)
   newItem._file = null
   newItem.value = defaultValueForType(type)
+  newItem.value_en = ''
   if (type === 'html') ensureNewItemEditor()
   else destroyNewItemEditor()
 })
@@ -1319,6 +1342,7 @@ const resetNewItem = () => {
   newItem.key = ''
   newItem.type = 'text'
   newItem.value = ''
+  newItem.value_en = ''
   revokePreview(newItem)
   newItem._file = null
   destroyNewItemEditor()
@@ -1330,6 +1354,7 @@ const cancelAdd = () => {
 }
 
 const addItem = async () => {
+  if (isReadOnly.value) return
   const key = newItem.key.trim()
   if (!key) {
     showToast('کلید (key) را وارد کنید', 'error')
@@ -1354,6 +1379,20 @@ const addItem = async () => {
     })
 
     const pushed = normalizeIncoming(saved ?? { key, value, type: newItem.type, page: activePage.value })
+
+    // نسخه‌ی انگلیسی (فقط برای text/html)
+    if ((newItem.type === 'text' || newItem.type === 'html' || newItem.type === 'json') && newItem.value_en?.trim()) {
+      const valueEn = newItem.type === 'json' ? buildOutgoingValue(newItem.type, newItem.value_en) : newItem.value_en
+      const savedEn = await upsertPageItem({
+        page: activePage.value,
+        key: `${key}_en`,
+        value: valueEn,
+        type: newItem.type,
+      })
+      pushed.value_en = newItem.value_en
+      pushed._enId = savedEn?.id ?? null
+    }
+
     items.value.push(pushed)
     createEditorForItem(items.value[items.value.length - 1])
 
@@ -1368,21 +1407,6 @@ const addItem = async () => {
 
 // ══════════════════════════════════════════════════════════════
 // ── SERVICES (خدمات) — hierarchical, parent/children ──
-//   GET    /api/services/tree              -> hierarchical tree (top-level + children)
-//   POST   /api/admin/services             -> create   (TESTING — unconfirmed)
-//   PUT    /api/admin/services/{id}        -> update   (TESTING — unconfirmed)
-//   DELETE /api/admin/services/{id}        -> delete   (TESTING — unconfirmed), cascades to children
-//
-// Confirmed by testing against the live server:
-//   - GET  /api/project-services/tree  -> does NOT work (fails to load)
-//   - GET  /api/services/tree          -> works
-//   - PUT  /api/services/{id}          -> 405, only GET/HEAD registered there
-//   - PUT  /api/project-services/{id}  -> not yet confirmed working either
-// So write ops are guessed at /admin/services/*, mirroring this project's
-// own pattern for page content (public GET /page/{page}, admin write under
-// /admin/page). This still needs to be confirmed with the backend dev —
-// if /admin/services also 404s/405s, the real write route is unknown and
-// must be provided by them.
 // ══════════════════════════════════════════════════════════════
 
 const servicesTree = ref([])
@@ -1391,7 +1415,9 @@ const isLoadingServices = ref(false)
 const normalizeServiceNodes = (nodes, parentId = null) => (nodes || []).map(n => {
   const node = {
     ...n,
-    parent_id: parentId,          // مشتق‌شده از ساختار درخت، نه فیلد خام API
+    parent_id: parentId,
+    title_en: n.title_en || '',
+    description_en: n.description_en || '',
     is_active: !!n.is_active,
     _saving: false,
     _deleting: false,
@@ -1402,9 +1428,6 @@ const normalizeServiceNodes = (nodes, parentId = null) => (nodes || []).map(n =>
   return node
 })
 
-// Flattens the tree into { node, level } pairs for display — `node` stays
-// a reference into servicesTree so editing/mutating it in the template
-// stays reactive (no spread copy here, unlike normalizeServiceNodes above).
 const flattenServiceNodes = (nodes, level = 0) => {
   let result = []
   for (const node of nodes) {
@@ -1417,9 +1440,6 @@ const flattenServiceNodes = (nodes, level = 0) => {
 }
 const flatServiceEntries = computed(() => flattenServiceNodes(servicesTree.value))
 
-// Only top-level services (no parent) are valid options in the "خدمت والد"
-// dropdown — every other service must nest directly under one of these,
-// not under an arbitrary sub-service.
 const topLevelServiceOptions = computed(() => flatServiceEntries.value.filter(e => e.level === 0))
 
 const createEditorForService = (node) => {
@@ -1462,13 +1482,16 @@ const fetchServicesTree = async () => {
 }
 
 const saveService = async (node) => {
+  if (isReadOnly.value) return
   node._saving = true
   try {
     const payload = {
       parent_id: node.parent_id ?? null,
       title: node.title,
+      title_en: node.title_en,
       slug: node.slug,
       description: node.description,
+      description_en: node.description_en,
       sort_order: node.sort_order,
       is_active: node.is_active,
     }
@@ -1478,8 +1501,6 @@ const saveService = async (node) => {
       body: payload,
     })
     showToast(res?.message || `«${node.title}» به‌روزرسانی شد`)
-    // Refetch: parent_id / sort_order changes can move the node within the
-    // tree, so we rebuild from the server's authoritative structure.
     await fetchServicesTree()
   } catch (err) {
     showToast(String(err?.data?.message || err?.message || 'به‌روزرسانی ناموفق بود'), 'error')
@@ -1487,9 +1508,10 @@ const saveService = async (node) => {
   }
 }
 
-const confirmDeleteServiceId = ref(null) // service.id pending delete confirmation
+const confirmDeleteServiceId = ref(null)
 
 const doDeleteService = async (node) => {
+  if (isReadOnly.value) return
   node._deleting = true
   try {
     await $fetch(`${API_BASE}/admin/services/${node.id}`, {
@@ -1498,7 +1520,7 @@ const doDeleteService = async (node) => {
     })
     showToast(`«${node.title}» حذف شد`)
     confirmDeleteServiceId.value = null
-    await fetchServicesTree() // cascade-deleted children come off the list too
+    await fetchServicesTree()
   } catch (err) {
     showToast(String(err?.data?.message || err?.message || 'حذف ناموفق بود'), 'error')
     node._deleting = false
@@ -1511,8 +1533,10 @@ const addingService = ref(false)
 const newService = reactive({
   parent_id: null,
   title: '',
+  title_en: '',
   slug: '',
   description: '',
+  description_en: '',
   sort_order: 1,
   is_active: true,
 })
@@ -1539,6 +1563,7 @@ const destroyNewServiceEditor = () => {
 }
 
 const openAddServiceForm = () => {
+  if (isReadOnly.value) return
   showAddServiceForm.value = true
   ensureNewServiceEditor()
 }
@@ -1547,14 +1572,17 @@ const cancelAddService = () => {
   showAddServiceForm.value = false
   newService.parent_id = null
   newService.title = ''
+  newService.title_en = ''
   newService.slug = ''
   newService.description = ''
+  newService.description_en = ''
   newService.sort_order = 1
   newService.is_active = true
   destroyNewServiceEditor()
 }
 
 const addService = async () => {
+  if (isReadOnly.value) return
   const title = newService.title.trim()
   const slug = newService.slug.trim()
   if (!title || !slug) {
@@ -1569,8 +1597,10 @@ const addService = async () => {
       body: {
         parent_id: newService.parent_id ?? null,
         title,
+        title_en: newService.title_en,
         slug,
         description: newService.description,
+        description_en: newService.description_en,
         sort_order: newService.sort_order,
         is_active: newService.is_active,
       },

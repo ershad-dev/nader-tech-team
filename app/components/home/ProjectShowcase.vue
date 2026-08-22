@@ -48,10 +48,10 @@
       <!-- گرید پروژه‌ها -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 min-[1920px]:gap-8">
   <div v-for="project in visibleProjects" :key="project.id" 
-       class="relative w-full lg:w-[250px] min-[1920px]:w-[300px] h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white dark:bg-dark-input rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 dark:border-dark-border shadow-lg dark:shadow-none hover:shadow-2xl dark:hover:ring-1 dark:hover:ring-dark-accent transition-all duration-300 overflow-hidden group">
+class="relative w-full lg:max-w-[250px] min-[1920px]:max-w-[300px] mx-auto h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white dark:bg-dark-input rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 dark:border-dark-border shadow-lg dark:shadow-none hover:shadow-2xl dark:hover:ring-1 dark:hover:ring-dark-accent transition-all duration-300 overflow-hidden group">
 
       <NuxtLink :to="localePath(`/order/${project.slug}`)">
-      <img :src="resumeCover(project)" class="w-full h-[214px] sm:h-[274px] lg:w-[250px] lg:h-[344px] min-[1920px]:w-[300px] min-[1920px]:h-[414px] object-cover" />
+<img :src="resumeCover(project)" class="w-full h-[214px] sm:h-[274px] lg:h-[344px] min-[1920px]:h-[414px] object-cover" />
       
       <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/60 dark:bg-black/30 p-3 lg:p-5 min-[1920px]:p-6 border-t border-white/30 dark:border-dark-border/30 text-center">
         <h3 class="text-[#0F184B] dark:text-dark-text font-bold text-[14px] sm:text-[16px] lg:text-[20px] min-[1920px]:text-[22px]">{{ project.title }}</h3>
@@ -64,8 +64,8 @@
       <!-- کنترل‌های اسلایدر -->
       <div class="flex items-center justify-between mt-8 lg:mt-12 px-2">
 <div class="flex justify-center gap-3 lg:gap-4 z-20">
-  <SliderButton direction="left" @click="prevSlide" />
-  <SliderButton direction="right" @click="nextSlide" />
+  <IconsSliderButton direction="left" @click="prevSlide" />
+  <IconsSliderButton direction="right" @click="nextSlide" />
 </div>
 
         <div class="flex gap-2">
@@ -87,12 +87,12 @@
 />
     <div class="relative z-10 flex flex-col lg:flex-row items-center gap-6 lg:gap-8 xl:gap-12 min-[1920px]:gap-16 min-[1920px]:flex-nowrap">
       <div class="flex-1 w-full lg:max-w-[45%] xl:max-w-none">
-        <img 
-            :key="currentContent.image" 
-            :src="currentContent.image" 
-            :alt="currentContent.title"
-            class="w-full h-[220px] lg:h-[280px] xl:w-[506px] xl:h-[386px] min-[1920px]:w-[650px] min-[1920px]:h-[480px] object-cover rounded-tl-[17px] rounded-br-[17px] rounded-tr-[65px] rounded-bl-[65px] shadow-xl dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-500" 
-          />
+<img 
+    :key="currentContent.image" 
+    :src="currentContent.image" 
+    :alt="currentContent.title"
+    class="w-full md:w-auto md:mx-auto lg:w-full lg:mx-0 h-[220px] lg:h-[280px] xl:w-[506px] xl:h-[386px] min-[1920px]:w-[650px] min-[1920px]:h-[480px] object-cover md:object-contain lg:object-cover rounded-tl-[17px] rounded-br-[17px] rounded-tr-[65px] rounded-bl-[65px] shadow-xl dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-500" 
+  />
       </div>
       
       <div
@@ -103,11 +103,16 @@
       >
 <h2 class="text-[26px] lg:text-[30px] xl:text-[34px] min-[1920px]:text-[40px] font-bold mb-4 lg:mb-5 xl:mb-6 min-[1920px]:mb-8 text-[#0F184B] dark:text-black lg:mt-3">{{ currentContent.title }}</h2>
 
-<p class="leading-[30px] lg:leading-[36px] xl:leading-[44px] min-[1920px]:leading-[48px] mb-6 lg:mb-7 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[16px] lg:text-[17px] xl:text-[18px] min-[1920px]:text-[24px] min-[1920px]:font-bold">{{ currentContent.description }}</p>
+<p class="leading-[30px] lg:leading-[36px] xl:leading-[44px] min-[1920px]:leading-[48px] mb-6 lg:mb-7 xl:mb-8 min-[1920px]:mb-10 opacity-90 text-[#0F184B] dark:text-black/90 font-roboto text-[16px] lg:text-[17px] xl:text-[18px] min-[1920px]:text-[24px]">{{ currentContent.description }}</p>
 
 <NuxtLink :to="localePath(currentContent.buttonLink)">
   <button
-    class="bg-[#ECD0A0] dark:bg-[#CCAE7A] border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto lg:mx-0 lg:w-full lg:max-w-[240px] xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-all shadow-lg text-[20px] lg:text-[21px] xl:text-[22px] min-[1920px]:text-[24px] mt-6 lg:mt-8 xl:mt-[50px] flex items-center justify-center whitespace-nowrap"
+    :class="[
+      'bg-[#ECD0A0] dark:bg-dark-gold border-[0.5px] border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-[#435056] w-full max-w-[268px] mx-auto lg:mx-0 lg:w-full lg:max-w-[240px] xl:w-[268px] min-[1920px]:w-[320px] h-[48px] min-[1920px]:h-[58px] font-bold px-8 rounded-[16px] hover:scale-105 transition-all shadow-lg mt-6 lg:mt-8 xl:mt-[50px] flex items-center justify-center whitespace-nowrap',
+      activeCategory === 'content'
+        ? 'text-[14px] lg:text-[15px] xl:text-[16px] min-[1920px]:text-[18px]'
+        : 'text-[20px] lg:text-[21px] xl:text-[22px] min-[1920px]:text-[24px]'
+    ]"
   >
     {{ currentContent.buttonText }}
   </button>
@@ -173,21 +178,21 @@ const contentMap = computed(() => ({
   web: {
     title: t('home.services.web.title'),
     description: t('home.services.web.description'),
-    image: '/images/img-services.png',
+    image: '/images/web-showcase.png',
     buttonText: t('home.services.web.buttonText'),
     buttonLink: '/order/requestProject',
   },
   content: {
     title: t('home.services.content.title'),
     description: t('home.services.content.description'),
-    image: '/images/img-services.png',
+    image: '/images/content-showcase.png',
     buttonText: t('home.services.content.buttonText'),
     buttonLink: '/order/requestProject',
   },
   event: {
     title: t('home.services.event.title'),
     description: t('home.services.event.description'),
-    image: '/images/img-services.png',
+    image: '/images/event-showcase.png',
     buttonText: t('home.services.event.buttonText'),
     buttonLink: '/order/requestProject',
   },

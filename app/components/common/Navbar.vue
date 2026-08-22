@@ -41,7 +41,7 @@
       <!-- لوگو (سمت راست در موبایل / یک باکس مجزا در دسکتاپ) -->
 <div class="flex items-center">
   <NuxtLink :to="localePath('/')" @click="isOpen = false">
-    <img src="/images/ntt-logo.png" alt="Logo" class="w-9 h-9 sm:w-10 sm:h-10 min-[1920px]:w-11 min-[1920px]:h-11 object-contain" />
+    <img src="/images/ntt-logo.png" alt="Logo" class="w-[35px] h-[35px] sm:w-[50px] sm:h-[50px] min-[1920px]:w-[80px] min-[1920px]:h-[80px] object-contain" />
   </NuxtLink>
 </div>
 
@@ -219,7 +219,7 @@
 </template>
 
 <script setup>
-import TermsModal from '~/components/TermsModal.vue'
+import TermsModal from '~/components/Terms/TermsModal.vue'
 
 const route = useRoute()
 const { token } = useAuth()

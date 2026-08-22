@@ -12,11 +12,11 @@
       "testimonialsTitle": "Client Satisfaction from Our Events",
       "testimonialsSubtitle": "Client Experience in Their Own Words",
       "testimonials": {
-        "0": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
-        "1": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
-        "2": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
-        "3": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" },
-        "4": { "text": "\"Working with this team was one of our best professional experiences. From the very first meetings, our needs and goals were well understood, and every stage of the project proceeded with careful planning. The quality of execution, responsiveness, and attention to detail made the final result exceed our expectations. We are very satisfied with this collaboration and will definitely use their services again for future projects.\"" }
+        "0": { "text": "..." },
+        "1": { "text": "..." },
+        "2": { "text": "..." },
+        "3": { "text": "..." },
+        "4": { "text": "..." }
       }
     },
     "lottery": {
@@ -45,9 +45,8 @@
         "registeredAt": "Registration Date",
         "screenshotHint": "Please take a screenshot of this page; your ticket will be verified based on this information upon entry.",
         "backHome": "Back to Home"
-      }
-    },
-    "registerForm": {
+      },
+      "registerForm": {
         "loading": "Loading lottery details...",
         "starts": "Starts",
         "ends": "Ends",
@@ -55,7 +54,9 @@
         "people": "people",
         "price": "Price",
         "submit": "Register for the Lottery",
-        "submitting": "Registering..."
+        "submitting": "Registering...",
+        "location": "Location"
       }
+    }
   }
 }

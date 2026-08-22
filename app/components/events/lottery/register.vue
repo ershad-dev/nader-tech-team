@@ -20,14 +20,14 @@
         </div>
 
         <template v-else-if="lottery">
-          <h1 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-dark-text mb-4 text-center mt-6">{{ lottery.title }}</h1>
+          <h1 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-dark-text mb-4 text-center mt-6">{{ pickLocalized(lottery, 'title', 'title_en') }}</h1>
           <div class="w-16 h-1 bg-[#2D7A6F] dark:bg-dark-accent rounded-full mx-auto mb-6"></div>
 
           <p class="text-gray-500 dark:text-dark-text/70 text-sm md:text-base leading-relaxed mb-8 text-center">
-            {{ lottery.description }}
+            {{ pickLocalized(lottery, 'description', 'description_en') }}
           </p>
 
-          <!-- اطلاعات قرعه‌کشی که از API واقعی میاد (تاریخ شروع، پایان و ظرفیت) -->
+          <!-- اطلاعات قرعه‌کشی که از API واقعی میاد (تاریخ شروع، پایان، مکان و ظرفیت) -->
           <div class="bg-[#ebebeb] dark:bg-dark-input rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm mb-8 overflow-hidden">
             <div class="flex items-center p-3 md:p-4 border-b border-gray-300 dark:border-dark-border/60">
               <Icon name="heroicons:calendar-days" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
@@ -36,6 +36,10 @@
             <div class="flex items-center p-3 md:p-4 border-b border-gray-300 dark:border-dark-border/60">
               <Icon name="heroicons:clock" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
               <span class="w-full text-gray-700 dark:text-dark-text-deep text-sm md:text-base">{{ $t('events.lottery.registerForm.ends') }}: {{ formatDate(lottery.ends_at) }}</span>
+            </div>
+            <div class="flex items-center p-3 md:p-4 border-b border-gray-300 dark:border-dark-border/60">
+              <Icon name="heroicons:map-pin" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
+              <span class="w-full text-gray-700 dark:text-dark-text-deep text-sm md:text-base">{{ $t('events.lottery.registerForm.location') }}: {{ pickLocalized(lottery, 'location', 'location_en') }}</span>
             </div>
             <div class="flex items-center p-3 md:p-4">
               <Icon name="heroicons:users" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
@@ -77,6 +81,12 @@ const loadError = ref('')
 const submitting = ref(false)
 const submitError = ref('')
 
+// انتخاب فیلد فارسی/انگلیسی بر اساس زبان فعال (بک‌اند این مدل رو با هدر X-Language لوکالایز نمی‌کنه)
+const pickLocalized = (obj, faKey, enKey) => {
+  const enVal = obj?.[enKey]
+  return (locale.value === 'en' && enVal) ? enVal : obj?.[faKey]
+}
+
 onMounted(async () => {
   try {
     await fetchActiveLottery()
@@ -111,6 +121,17 @@ async function handleRegister() {
     // اطلاعات ثبت‌نام (کاربر، قرعه‌کشی، تاریخ ثبت‌نام) رو برای صفحه رسید نگه می‌داریم
     const registration = useState('lottery-registration', () => null)
     registration.value = res.data
+
+    // fallback: چون useState فقط تو حافظه‌ست و با رفرش واقعی صفحه پاک میشه،
+    // یه کپی هم تو sessionStorage نگه می‌داریم تا صفحه success بتونه بعد از رفرش بازیابیش کنه
+    if (process.client) {
+      try {
+        sessionStorage.setItem('lottery-registration', JSON.stringify(res.data))
+      } catch (e) {
+        // اگه sessionStorage در دسترس نبود (مثلاً حالت خصوصی مرورگر)، بی‌خیال میشیم
+        // چون useState همچنان برای navigation عادی کار می‌کنه
+      }
+    }
 
     await navigateTo(localePath('/events/lottery/success'))
   } catch (err) {

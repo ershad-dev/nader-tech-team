@@ -12,6 +12,16 @@
       "web": "Web Design",
       "content": "Content Creation",
       "event": "Event Hosting"
-    }
+    },
+    "resume": {
+  "loading": "Loading...",
+  "notFound": "Project not found",
+  "heroTitle": "Your brand's future starts here",
+  "close": "Close",
+  "fullImagePreview": "Full image preview",
+  "trustTitle": "Client Trust",
+  "reviewHeading": "Client's Experience",
+  "customer": "Customer"
+}
   }
 }

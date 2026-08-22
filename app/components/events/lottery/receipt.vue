@@ -11,7 +11,11 @@
 
         <h2 class="text-green-600 dark:text-green-400 font-bold text-lg md:text-xl text-center my-6">{{ $t('events.lottery.register.successTitle') }}</h2>
 
-        <div v-if="!registration" class="text-center text-gray-400 dark:text-dark-text/60 text-sm py-6">
+        <div v-if="loading" class="text-center text-gray-400 dark:text-dark-text/60 text-sm py-6">
+          {{ $t('events.lottery.registerForm.loading') }}
+        </div>
+
+        <div v-else-if="!registration" class="text-center text-gray-400 dark:text-dark-text/60 text-sm py-6">
           {{ $t('events.lottery.register.notFound') }}
         </div>
 
@@ -95,7 +99,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const pdfTarget = ref(null)
 
@@ -108,6 +112,24 @@ const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 // POST /api/lotteris/{lottery}/register داخل useState('lottery-registration', ...) ذخیره شده
 // طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره که همون کد قرعه‌کشی/بلیط کاربره
 const registration = useState('lottery-registration', () => null)
+
+// چون useState فقط تو حافظه‌ی کلاینت زنده‌ست و با یه رفرش واقعی مرورگر از بین میره،
+// یه لحظه لودینگ نگه می‌داریم تا اول از sessionStorage (اگه بود) بازیابی کنیم
+const loading = ref(true)
+
+onMounted(() => {
+  if (!registration.value && process.client) {
+    try {
+      const cached = sessionStorage.getItem('lottery-registration')
+      if (cached) {
+        registration.value = JSON.parse(cached)
+      }
+    } catch (e) {
+      // داده خراب یا sessionStorage در دسترس نیست؛ همون notFound نمایش داده میشه
+    }
+  }
+  loading.value = false
+})
 
 function formatDate(value) {
   if (!value) return '-'

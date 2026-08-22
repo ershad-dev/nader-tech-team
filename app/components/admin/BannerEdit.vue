@@ -6,6 +6,14 @@
       تغییر عکس بنر
     </div>
 
+    <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
+    <div
+      v-if="isReadOnly"
+      class="text-center bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold py-2 px-4 rounded-xl mb-6 max-w-[812px] mx-auto"
+    >
+      شما فقط دسترسی مشاهده دارید و امکان ویرایش وجود ندارد.
+    </div>
+
     <!-- پیام خطا / بارگذاری کلی لیست -->
     <div v-if="loadingList" class="text-center text-[#0F184B] dark:text-dark-text font-bold py-6">
       در حال بارگذاری بنرها...
@@ -71,9 +79,10 @@
           <div class="flex justify-center gap-3 lg:gap-4 mt-4 w-full">
             <button
               @click="toggleActive(slot)"
-              :disabled="slot.busy"
+              :disabled="slot.busy || isReadOnly"
+              :title="isReadOnly ? 'شما فقط دسترسی مشاهده دارید' : ''"
               :class="[
-                'w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] rounded-[27px] font-bold flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50',
+                'w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] rounded-[27px] font-bold flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50 disabled:cursor-not-allowed',
                 slot.is_active
                   ? 'bg-[#7FCB86] hover:bg-[#66B36D] dark:bg-dark-accent dark:hover:bg-dark-accent-hover text-black dark:text-dark-text-deep'
                   : 'bg-[#ABD7D8] hover:bg-[#8FB0B2] dark:bg-dark-input dark:hover:bg-dark-input/80 text-black dark:text-dark-text-deep'
@@ -83,8 +92,9 @@
             </button>
             <button
               @click="deleteBanner(slot, slotIndex)"
-              :disabled="slot.busy"
-              class="w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] dark:bg-dark-input dark:hover:bg-dark-input/80 rounded-[27px] font-bold text-black dark:text-dark-text-deep flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50"
+              :disabled="slot.busy || isReadOnly"
+              :title="isReadOnly ? 'شما فقط دسترسی مشاهده دارید' : ''"
+              class="w-[140px] sm:w-[160px] lg:w-[172px] h-[34px] bg-[#ABD7D8] hover:bg-[#8FB0B2] dark:bg-dark-input dark:hover:bg-dark-input/80 rounded-[27px] font-bold text-black dark:text-dark-text-deep flex items-center justify-center text-[14px] sm:text-[15px] lg:text-[16px] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               حذف
             </button>
@@ -98,18 +108,21 @@
         <!-- اسلات خالی: هم برای جایگزینی و هم برای بنر کاملا جدید از همینجا آپلود می‌شه -->
         <div
           v-else
-          class="relative w-full aspect-[437/325] border-4 border-dashed border-[#BFD1D5] dark:border-dark-border rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] dark:hover:bg-dark-input/20 transition-all"
+          class="relative w-full aspect-[437/325] border-4 border-dashed border-[#BFD1D5] dark:border-dark-border rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center transition-all"
+          :class="isReadOnly ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[#FDFBF7] dark:hover:bg-dark-input/20'"
         >
           <input
             type="file"
             accept="image/*"
             class="hidden"
             :id="'file-slot-' + slotIndex"
+            :disabled="isReadOnly"
             @change="uploadToSlot($event, slotIndex)"
           />
           <label
             :for="'file-slot-' + slotIndex"
-            class="cursor-pointer text-5xl sm:text-6xl text-[#BFD1D5] dark:text-dark-border"
+            class="text-5xl sm:text-6xl text-[#BFD1D5] dark:text-dark-border"
+            :class="isReadOnly ? 'cursor-not-allowed' : 'cursor-pointer'"
           >
             +
           </label>
@@ -133,8 +146,10 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
+import { useAdminPermissions } from '@/composables/useAdminPermissions' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
 
 const { authHeader, initFromStorage, isLoggedIn, clearAuth } = useAdminAuth()
+const { isReadOnly } = useAdminPermissions()
 
 // همون دامنه‌ای که در صفحه‌ی لاگین استفاده شده
 const BASE_URL = 'https://nadertechnologyteam.ir/api/admin/banners'
@@ -281,8 +296,15 @@ onMounted(() => {
   fetchBanners()
 })
 
-/** ====== تغییر وضعیت فعال/غیرفعال (دکمه‌ی تایید) ====== */
+/**
+ * ====== تغییر وضعیت فعال/غیرفعال (دکمه‌ی تایید) ======
+ * گارد isReadOnly یک لایه‌ی دفاعی اضافه در فرانت هست (کنار disabled روی دکمه)،
+ * تا حتی با فراخوانی مستقیم تابع از DevTools هم کاری انجام نشه.
+ * جلوگیری واقعی و قطعی باید سمت بک‌اند روی همین اندپوینت اعمال بشه.
+ */
 const toggleActive = async (banner) => {
+  if (isReadOnly.value) return
+
   banner.busy = true
   banner.error = ''
   const nextValue = !banner.is_active
@@ -305,6 +327,7 @@ const toggleActive = async (banner) => {
  * رو null می‌کنیم. به بقیه‌ی slotMap دست نمی‌زنیم، پس بقیه اسلات‌ها جابه‌جا نمی‌شن.
  */
 const deleteBanner = async (banner, slotIndex) => {
+  if (isReadOnly.value) return
   if (!confirm('آیا از حذف این بنر مطمئن هستید؟')) return
 
   banner.busy = true
@@ -325,6 +348,11 @@ const deleteBanner = async (banner, slotIndex) => {
  * slotIndex ای که کاربر از روش آپلود کرده قرار می‌گیره، نه انتهای لیست.
  */
 const uploadToSlot = async (event, slotIndex) => {
+  if (isReadOnly.value) {
+    event.target.value = ''
+    return
+  }
+
   const file = event.target.files[0]
   if (!file) return
 

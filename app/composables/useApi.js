@@ -22,9 +22,22 @@ export async function apiFetch(path, options = {}) {
     token = window.localStorage.getItem('access_token')
   }
 
+  // زبان فعلی سایت رو از خود ماژول i18n می‌خونیم (نه useI18n() چون این composable
+  // همیشه داخل setup کامپوننت صدا زده نمیشه؛ useNuxtApp() محدود به context نیست)
+  // بک‌اند طبق این هدر تصمیم می‌گیره نسخه فارسی یا انگلیسی فیلدهای متنی
+  // (title/description و...) رو برگردونه. اگه هدر نره، پیش‌فرض فارسیه.
+  let currentLocale = 'fa'
+  try {
+    const nuxtApp = useNuxtApp()
+    currentLocale = nuxtApp.$i18n?.locale?.value || 'fa'
+  } catch (err) {
+    currentLocale = 'fa'
+  }
+
   const headers = {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    'X-Language': currentLocale,
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {})
   }

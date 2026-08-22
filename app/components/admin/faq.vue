@@ -8,6 +8,7 @@
       </div>
 
       <button
+        v-if="!isReadOnly"
         @click="openCreateModal"
         class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-3xl  bg-[#67A9A880] hover:bg-[#8FB0B2] dark:bg-dark-accent/60 dark:hover:bg-dark-accent-hover/60 border border-white dark:border-dark-border text-[#0F184B] dark:text-dark-text-deep font-bold text-[14px] shadow-md transition-all duration-300 hover:scale-[1.03] self-start sm:self-auto"
       >
@@ -16,6 +17,14 @@
         </svg>
         افزودن سوال جدید
       </button>
+    </div>
+
+    <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
+    <div
+      v-if="isReadOnly"
+      class="mb-5 px-4 py-3 rounded-2xl bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold text-[13px] text-center"
+    >
+      شما فقط دسترسی مشاهده دارید و امکان افزودن، ویرایش یا حذف سوالات وجود ندارد.
     </div>
 
     <!-- Error banner -->
@@ -45,6 +54,7 @@
       </svg>
       <p class="text-[14px] text-gray-400 dark:text-dark-text">هنوز سوالی ثبت نشده است</p>
       <button
+        v-if="!isReadOnly"
         @click="openCreateModal"
         class="mt-2 px-5 py-2 rounded-2xl bg-[#67A9A880] hover:bg-[#8FB0B2] dark:bg-dark-accent/60 dark:hover:bg-dark-accent-hover/60 border border-white dark:border-dark-border text-[#0F184B] dark:text-dark-text-deep font-bold text-[13px] transition-all duration-300"
       >
@@ -74,6 +84,13 @@
               {{ item.question }}
             </h3>
             <span
+              v-if="item.question_en"
+              class="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-blue-50 dark:bg-dark-input text-blue-500 dark:text-dark-text-deep font-medium font-roboto"
+              title="دارای ترجمه انگلیسی"
+            >
+              EN
+            </span>
+            <span
               v-if="!item.is_active"
               class="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-dark-input text-gray-400 dark:text-dark-text-deep font-medium"
             >
@@ -83,6 +100,7 @@
 
           <div class="flex items-center gap-2 shrink-0">
             <span
+              v-if="!isReadOnly"
               @click.stop="openEditModal(item)"
               class="p-2 rounded-full hover:bg-[#ECEDF4] dark:hover:bg-dark-input text-[#454C6A] dark:text-dark-text transition-colors duration-200 cursor-pointer"
               title="ویرایش"
@@ -92,6 +110,7 @@
               </svg>
             </span>
             <span
+              v-if="!isReadOnly"
               @click.stop="openDeleteModal(item)"
               class="p-2 rounded-full hover:bg-red-50 text-red-400 hover:text-red-500 transition-colors duration-200 cursor-pointer"
               title="حذف"
@@ -113,9 +132,17 @@
 
         <transition name="expand">
           <div v-if="expandedId === item.id" class="px-5 pb-5 pt-0">
-            <div class="border-t border-[#ECEDF4] dark:border-dark-border pt-4">
-              <p class="text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 whitespace-pre-line">{{ item.answer }}</p>
-              <p class="text-[11px] text-gray-600 dark:text-dark-text mt-3 font-roboto">{{ formatDate(item.created_at) }}</p>
+            <div class="border-t border-[#ECEDF4] dark:border-dark-border pt-4 flex flex-col gap-3">
+              <div>
+                <p class="text-[11px] text-gray-400 dark:text-dark-text mb-1 font-bold">فارسی</p>
+                <p class="text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 whitespace-pre-line">{{ item.answer }}</p>
+              </div>
+              <div v-if="item.question_en || item.answer_en" dir="ltr" class="text-left">
+                <p class="text-[11px] text-gray-400 dark:text-dark-text mb-1 font-bold">English</p>
+                <p class="text-[13px] lg:text-[14px] font-bold text-[#0F184B] dark:text-dark-text mb-1">{{ item.question_en }}</p>
+                <p class="text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 whitespace-pre-line font-roboto">{{ item.answer_en }}</p>
+              </div>
+              <p class="text-[11px] text-gray-600 dark:text-dark-text font-roboto">{{ formatDate(item.created_at) }}</p>
             </div>
           </div>
         </transition>
@@ -125,7 +152,7 @@
     <!-- Create / Edit Modal -->
     <transition name="fade">
       <div
-        v-if="isFormModalOpen"
+        v-if="isFormModalOpen && !isReadOnly"
         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
         @click.self="closeFormModal"
       >
@@ -142,6 +169,7 @@
           </div>
 
           <form @submit.prevent="submitForm" class="flex flex-col gap-4">
+            <!-- فارسی -->
             <div>
               <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">سوال</label>
               <input
@@ -161,6 +189,36 @@
                 rows="5"
                 placeholder="متن پاسخ را وارد کنید"
                 class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none bg-white/20"
+              ></textarea>
+            </div>
+
+            <!-- جداکننده -->
+            <div class="flex items-center gap-3 my-1">
+              <span class="flex-1 h-px bg-[#ECEDF4] dark:bg-dark-border"></span>
+              <span class="text-[11px] text-gray-400 dark:text-dark-text font-roboto font-bold">ENGLISH</span>
+              <span class="flex-1 h-px bg-[#ECEDF4] dark:bg-dark-border"></span>
+            </div>
+
+            <!-- انگلیسی -->
+            <div>
+              <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">سوال (English)</label>
+              <input
+                v-model="form.question_en"
+                type="text"
+                dir="ltr"
+                placeholder="Question in English"
+                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 bg-white/20 font-roboto text-left"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">پاسخ (English)</label>
+              <textarea
+                v-model="form.answer_en"
+                rows="5"
+                dir="ltr"
+                placeholder="Answer in English"
+                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none bg-white/20 font-roboto text-left"
               ></textarea>
             </div>
 
@@ -217,7 +275,7 @@
     <!-- Delete Confirm Modal -->
     <transition name="fade">
       <div
-        v-if="isDeleteModalOpen"
+        v-if="isDeleteModalOpen && !isReadOnly"
         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
         @click.self="closeDeleteModal"
       >
@@ -254,6 +312,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر را مطابق پروژه تنظیم کنید
+import { useAdminPermissions } from '@/composables/useAdminPermissions' // مسیر را مطابق پروژه تنظیم کنید
 
 /**
  * این کامپوننت با اندپوینت‌های زیر کار می‌کند (طبق Swagger ارسالی):
@@ -264,9 +324,13 @@ import { ref, computed, onMounted } from 'vue'
  *   DELETE /api/admin/faqs/{faq}
  *
  * توکن احراز هویت از همان composable پروژه (useAdminAuth) گرفته می‌شود.
+ *
+ * دوزبانه‌سازی: هر آیتم FAQ دو فیلد اضافه‌ی متنی دارد: question_en, answer_en
+ * (مشابه الگوی title_en/description_en که در services استفاده شده)
  */
 
 const { authHeader, initFromStorage } = useAdminAuth()
+const { isReadOnly } = useAdminPermissions()
 
 const API_BASE = 'https://nadertechnologyteam.ir/api/admin/faqs'
 
@@ -286,7 +350,9 @@ const deleteTarget = ref(null)
 
 const emptyForm = () => ({
   question: '',
+  question_en: '',
   answer: '',
+  answer_en: '',
   sort_order: 0,
   is_active: true
 })
@@ -322,6 +388,7 @@ const toggleExpand = (id) => {
 }
 
 const openCreateModal = () => {
+  if (isReadOnly.value) return
   isEditing.value = false
   editingId.value = null
   form.value = emptyForm()
@@ -333,11 +400,14 @@ const openCreateModal = () => {
 }
 
 const openEditModal = (item) => {
+  if (isReadOnly.value) return
   isEditing.value = true
   editingId.value = item.id
   form.value = {
     question: item.question,
+    question_en: item.question_en || '',
     answer: item.answer,
+    answer_en: item.answer_en || '',
     sort_order: item.sort_order,
     is_active: !!item.is_active
   }
@@ -351,6 +421,8 @@ const closeFormModal = () => {
 }
 
 const submitForm = async () => {
+  if (isReadOnly.value) return
+
   formError.value = ''
   isSubmitting.value = true
   try {
@@ -379,6 +451,7 @@ const submitForm = async () => {
 }
 
 const openDeleteModal = (item) => {
+  if (isReadOnly.value) return
   deleteTarget.value = item
   isDeleteModalOpen.value = true
 }
@@ -390,6 +463,7 @@ const closeDeleteModal = () => {
 }
 
 const confirmDelete = async () => {
+  if (isReadOnly.value) return
   if (!deleteTarget.value) return
   isSubmitting.value = true
   errorMessage.value = ''

@@ -109,15 +109,11 @@ import { ref, computed } from 'vue'
 import ServiceCard from '@/components/events/landing/ServiceCard.vue'
 
 // --- i18n ---
-const { localeProperties } = useI18n()
+const { locale, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 // ── Image URL resolver ──────────────────────────────────────
-// Images uploaded via the admin panel (image_path type) come back from the
-// backend as a RELATIVE path (e.g. "pages/events/xxx.jpg"), not a full URL.
-// This must be prefixed with the storage base before use in <img :src>.
-// Kept in sync with the same helper used in the admin panel component.
 const STORAGE_BASE = 'https://nadertechnologyteam.ir/storage/'
 
 const resolveImageUrl = (value) => {
@@ -126,11 +122,6 @@ const resolveImageUrl = (value) => {
   return STORAGE_BASE + value.replace(/^\/+/, '')
 }
 
-const pageData = ref({
-  description_1: '',
-  description_2: ''
-})
-
 // تصاویر پیش‌فرض (در صورتی که برای اون سرویس تصویر خاصی از API نیومده باشه)
 const defaultImages = [
   '/images/event-card-1.png',
@@ -138,50 +129,69 @@ const defaultImages = [
   '/images/event-card-3.jpg'
 ]
 
-const services = ref([])
-const questions = ref([])
-
-// اولین آیتم questions به عنوان تایتل و بقیه به عنوان لیست سوالات
-const questionsTitle = computed(() => questions.value[0] || '')
-const questionsList = computed(() => questions.value.slice(1))
+// =====================================================
+// اتصال به API صفحه events + دوزبانه‌سازی
+// -----------------------------------------------------
+// آرایه‌ی خام رو نگه می‌داریم تا با تغییر locale، بدون فچ مجدد،
+// دوباره محاسبه بشه. برای هر کلید متنی، اگه نسخه‌ی «key_en»
+// وجود داشته و پر باشه و زبان فعلی en باشه، از اون استفاده میشه؛
+// وگرنه fallback به نسخه‌ی فارسی همون کلید.
+// =====================================================
+const rawItems = ref([])
 
 const { data: eventsRes, error: eventsError } = await useFetch(
   'https://nadertechnologyteam.ir/api/page/events'
 )
 
 if (eventsRes.value && eventsRes.value.data) {
-  const items = eventsRes.value.data
-  const findValue = (key) => items.find((i) => i.key === key)?.value || ''
+  rawItems.value = eventsRes.value.data
+} else if (eventsError.value) {
+  console.error('خطا در دریافت اطلاعات صفحه events:', eventsError.value)
+}
 
-  pageData.value.description_1 = findValue('description_1')
-  pageData.value.description_2 = findValue('description_2')
+const rawMap = computed(() => {
+  const map = {}
+  rawItems.value.forEach((item) => {
+    map[item.key] = item
+  })
+  return map
+})
 
-  // 1) پیدا کردن همه‌ی شماره‌هایی که کلید service_N دارن (به‌صورت داینامیک)
-  const serviceNumbers = new Set()
+// کلید فارسی/انگلیسی رو می‌گیره و مقدار مناسب رو برمی‌گردونه
+const pickValue = (key) => {
+  const faEntry = rawMap.value[key]
+  const enEntry = rawMap.value[`${key}_en`]
+  const useEn = locale.value === 'en' && enEntry && enEntry.value
+  return (useEn ? enEntry.value : faEntry?.value) || ''
+}
+
+// ── description_1 / description_2 ───────────────────────────
+const pageData = computed(() => ({
+  description_1: pickValue('description_1'),
+  description_2: pickValue('description_2')
+}))
+
+// ── services (service_N / service_N_image) ──────────────────
+// نکته: تصویر (service_N_image) دوزبانه نمیشه چون خودِ عکسه، نه متن؛
+// پس همیشه از نسخه‌ی اصلی (بدون _en) خونده میشه.
+const services = computed(() => {
   const serviceKeyRegex = /^service_(\d+)$/
+  const serviceNumbers = new Set()
 
-  items.forEach((item) => {
+  rawItems.value.forEach((item) => {
     const match = item.key.match(serviceKeyRegex)
-    if (match) {
-      serviceNumbers.add(Number(match[1]))
-    }
+    if (match) serviceNumbers.add(Number(match[1]))
   })
 
-  // 2) مرتب‌سازی شماره‌ها تا ترتیب کارت‌ها درست باشه (1، 2، 3، 4، ...)
   const sortedNumbers = Array.from(serviceNumbers).sort((a, b) => a - b)
 
-  // 3) ساخت آرایه‌ی services: خط اول service_N = عنوان، بقیه‌ی خطوط = توضیحات
-  //    و تصویر از کلید جدا service_N_image (اگر ادمین آپلود کرده باشه)
-  //    مقدار خام از بک‌اند یه مسیر نسبیه (مثل "pages/events/xxx.jpg") پس
-  //    قبل از استفاده باید از resolveImageUrl رد بشه، وگرنه مرورگر نمی‌تونه
-  //    لودش کنه و عکس نمایش داده نمیشه.
-  services.value = sortedNumbers.map((n, index) => {
-    const rawValue = findValue(`service_${n}`)
+  return sortedNumbers.map((n, index) => {
+    const rawValue = pickValue(`service_${n}`)
     const lines = rawValue.split('\n')
     const title = lines[0] || ''
     const description = lines.slice(1).join('\n').trim()
 
-    const imageFromApi = findValue(`service_${n}_image`)
+    const imageFromApi = rawMap.value[`service_${n}_image`]?.value
 
     return {
       title,
@@ -191,19 +201,22 @@ if (eventsRes.value && eventsRes.value.data) {
         : defaultImages[index % defaultImages.length]
     }
   })
+})
 
-  // 4) پردازش کلید questions (یک رشته‌ی JSON که آرایه‌ای از رشته‌هاست)
-  const questionsRaw = findValue('questions')
-  if (questionsRaw) {
-    try {
-      const parsed = JSON.parse(questionsRaw)
-      questions.value = Array.isArray(parsed) ? parsed : []
-    } catch (e) {
-      console.error('خطا در پارس کردن questions:', e)
-      questions.value = []
-    }
+// ── questions (آرایه‌ی JSON، با fallback بین questions/questions_en) ─
+const questions = computed(() => {
+  const raw = pickValue('questions')
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (e) {
+    console.error('خطا در پارس کردن questions:', e)
+    return []
   }
-} else if (eventsError.value) {
-  console.error('خطا در دریافت اطلاعات صفحه events:', eventsError.value)
-}
+})
+
+// اولین آیتم questions به عنوان تایتل و بقیه به عنوان لیست سوالات
+const questionsTitle = computed(() => questions.value[0] || '')
+const questionsList = computed(() => questions.value.slice(1))
 </script>

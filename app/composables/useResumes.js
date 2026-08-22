@@ -16,6 +16,7 @@ export const RESUME_CATEGORY_IDS = {
 // categoryIdInput می‌تونه عدد ساده، null (یعنی همه)، یا ref/computed باشه
 export const useResumes = (categoryIdInput = null) => {
   const config = useRuntimeConfig()
+  const { locale } = useI18n()
   const categoryId = isRef(categoryIdInput) ? categoryIdInput : ref(categoryIdInput)
 
   const query = computed(() => {
@@ -26,10 +27,14 @@ export const useResumes = (categoryIdInput = null) => {
     return q
   })
 
+  // بک‌اند بر اساس این هدر تصمیم می‌گیره فیلدهای متنی (title/description و...)
+  // رو فارسی یا انگلیسی برگردونه. باید داخل key هم لحاظ بشه، وگرنه با سوییچ
+  // زبان، Nuxt از کش قبلی (زبان قبلی) استفاده می‌کنه و دوباره فچ نمی‌زنه.
   const { data, pending, error, refresh } = useFetch('/resumes', {
     baseURL: config.public.apiBase,
     query,
-    key: computed(() => `resumes-${categoryId.value || 'all'}`),
+    headers: computed(() => ({ 'X-Language': locale.value })),
+    key: computed(() => `resumes-${categoryId.value || 'all'}-${locale.value}`),
     default: () => ({ data: [], meta: null }),
   })
 
@@ -42,10 +47,12 @@ export const useResumes = (categoryIdInput = null) => {
 // جزئیات یک پروژه بر اساس slug
 export const useResume = (slug) => {
   const config = useRuntimeConfig()
+  const { locale } = useI18n()
 
   const { data, pending, error, refresh } = useFetch(`/resumes/${slug}`, {
     baseURL: config.public.apiBase,
-    key: `resume-${slug}`,
+    headers: computed(() => ({ 'X-Language': locale.value })),
+    key: computed(() => `resume-${slug}-${locale.value}`),
   })
 
   // پاسخ به‌صورت { data: {...} } میاد، اینجا باز می‌کنیم

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAdminAuth } from '@/composables/useAdminAuth'; // مسیر را مطابق پروژه تنظیم کنید
+import { useAdminPermissions } from '@/composables/useAdminPermissions'; // مسیر را مطابق پروژه تنظیم کنید
 
 // Tiptap
 import { EditorContent, useEditor } from '@tiptap/vue-3';
@@ -19,6 +20,7 @@ const API_BASE = 'https://nadertechnologyteam.ir/api/admin/articles';
 const IMAGE_UPLOAD_URL = 'https://nadertechnologyteam.ir/api/admin/articles/upload-image';
 
 const { initFromStorage, authHeader, clearAuth } = useAdminAuth();
+const { isReadOnly } = useAdminPermissions();
 
 // در سمت کلاینت، توکن را از localStorage بازیابی کن (بعد از رفرش صفحه)
 if (import.meta.client) initFromStorage();
@@ -52,7 +54,7 @@ function dismissToast(id) {
 }
 
 /**
- * تبدیل هر نوع خطای دریافتی از $fetch/axios/네‌شبکه به یک پیام فارسیِ روشن.
+ * تبدیل هر نوع خطای دریافتی از $fetch/axios/شبکه به یک پیام فارسیِ روشن.
  * context: توضیح کوتاه از عملیاتی که در حال انجام بود (برای دقیق‌تر شدن پیام)
  */
 function getErrorMessage(err, context = '') {
@@ -176,16 +178,24 @@ function changePage(page) {
 
 /* ---------------------------------------------------------
    فرم افزودن / ویرایش مقاله
+   دوزبانه‌سازی: هر مقاله فیلدهای انگلیسی زیر را دارد
+   title_en, content_en, thumbnail_alt_en, meta_title_en, meta_description_en
+   (thumbnail و slug دوزبانه نمی‌شوند)
 --------------------------------------------------------- */
 const emptyForm = () => ({
   id: null,
   title: '',
+  title_en: '',
   slug: '',
   content: '',
+  content_en: '',
   thumbnail_alt: '',
+  thumbnail_alt_en: '',
   meta_title: '',
+  meta_title_en: '',
   meta_description: '',
-  status: 'draft',
+  meta_description_en: '',
+  status: 'published',
 });
 
 const form = reactive(emptyForm());
@@ -212,22 +222,28 @@ const formErrorSummary = computed(() => {
 function fieldLabel(field) {
   const map = {
     title: 'نام مقاله',
+    title_en: 'نام مقاله (English)',
     slug: 'نامک (Slug)',
     content: 'متن توضیحات مقاله',
+    content_en: 'متن توضیحات مقاله (English)',
     thumbnail: 'تصویر مقاله',
     thumbnail_alt: 'متن جایگزین تصویر',
+    thumbnail_alt_en: 'متن جایگزین تصویر (English)',
     meta_title: 'عنوان سئو',
+    meta_title_en: 'عنوان سئو (English)',
     meta_description: 'توضیحات سئو',
+    meta_description_en: 'توضیحات سئو (English)',
     status: 'وضعیت',
   };
   return map[field] || field;
 }
 
 /* ---------------------------------------------------------
-   Tiptap Editor
+   Tiptap Editor - نسخه‌ی فارسی
 --------------------------------------------------------- */
 const editor = useEditor({
   content: '',
+  editable: !isReadOnly.value,
   extensions: [
     StarterKit,
     Underline,
@@ -246,31 +262,56 @@ const editor = useEditor({
   },
 });
 
+/* ---------------------------------------------------------
+   Tiptap Editor - نسخه‌ی انگلیسی (content_en)
+--------------------------------------------------------- */
+const editorEn = useEditor({
+  content: '',
+  editable: !isReadOnly.value,
+  extensions: [
+    StarterKit,
+    Underline,
+    Link.configure({ openOnClick: false, autolink: true }),
+    Image,
+    TextAlign.configure({ types: ['heading', 'paragraph'] }),
+  ],
+  onUpdate: ({ editor }) => {
+    form.content_en = editor.getHTML();
+  },
+  editorProps: {
+    attributes: {
+      class: 'prose max-w-none focus:outline-none min-h-[180px] sm:min-h-[250px] p-4 dark:text-dark-text',
+      dir: 'ltr',
+    },
+  },
+});
+
 onBeforeUnmount(() => {
   editor.value?.destroy();
+  editorEn.value?.destroy();
   if (import.meta.client) {
     window.removeEventListener('online', handleOnline);
     window.removeEventListener('offline', handleOffline);
   }
 });
 
-function setLink() {
-  if (!editor.value) return;
-  const previousUrl = editor.value.getAttributes('link').href;
+function setLink(targetEditor) {
+  if (isReadOnly.value) return;
+  if (!targetEditor.value) return;
+  const previousUrl = targetEditor.value.getAttributes('link').href;
   const url = window.prompt('آدرس لینک را وارد کنید:', previousUrl || 'https://');
   if (url === null) return; // کاربر لغو کرد
 
   if (url === '') {
-    editor.value.chain().focus().extendMarkRange('link').unsetLink().run();
+    targetEditor.value.chain().focus().extendMarkRange('link').unsetLink().run();
     return;
   }
 
   // اعتبارسنجی ساده‌ی آدرس برای جلوگیری از لینک‌های خراب/ناقص
   try {
-    // اگر پروتکل نداشته باشد، تست new URL خطا می‌دهد؛ در آن صورت https اضافه می‌کنیم
     const normalized = /^https?:\/\//i.test(url) ? url : `https://${url}`;
     new URL(normalized);
-    editor.value.chain().focus().extendMarkRange('link').setLink({ href: normalized }).run();
+    targetEditor.value.chain().focus().extendMarkRange('link').setLink({ href: normalized }).run();
   } catch {
     showToast('error', 'آدرس لینک واردشده معتبر نیست. لطفاً یک URL صحیح مانند https://example.com وارد کنید.');
   }
@@ -278,50 +319,66 @@ function setLink() {
 
 /* ---------------------------------------------------------
    آپلود تصویر داخل متن مقاله (Tiptap Image Extension)
+   نسخه‌ی عمومی که هم برای ادیتور فارسی و هم انگلیسی کار می‌کند
 --------------------------------------------------------- */
-const contentImageInput = ref(null); // ref روی input فایل مخفی
+const contentImageInputFa = ref(null); // ref روی input فایل مخفی (فارسی)
+const contentImageInputEn = ref(null); // ref روی input فایل مخفی (انگلیسی)
 const isUploadingImage = ref(false);
+const isUploadingImageEn = ref(false);
 const imageUploadError = ref('');
+const imageUploadErrorEn = ref('');
 
 const MAX_IMAGE_SIZE_MB = 5;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const ALLOWED_IMAGE_TYPES_LABEL = 'jpg, jpeg, png, webp, gif';
 
 function triggerImageUpload() {
-  if (isUploadingImage.value) return; // از کلیک تکراری حین آپلود جلوگیری می‌کند
+  if (isReadOnly.value) return;
+  if (isUploadingImage.value) return;
   imageUploadError.value = '';
-  contentImageInput.value?.click();
+  contentImageInputFa.value?.click();
 }
 
-async function onContentImageSelected(e) {
+function triggerImageUploadEn() {
+  if (isReadOnly.value) return;
+  if (isUploadingImageEn.value) return;
+  imageUploadErrorEn.value = '';
+  contentImageInputEn.value?.click();
+}
+
+async function handleContentImageSelected(e, { targetEditor, isUploadingRef, errorRef }) {
+  if (isReadOnly.value) {
+    e.target.value = '';
+    return;
+  }
+
   const file = e.target.files?.[0];
-  // اجازه می‌دهیم input بعداً همان فایل را دوباره انتخاب کند
-  e.target.value = '';
+  e.target.value = ''; // اجازه می‌دهد input بعداً همان فایل را دوباره انتخاب کند
   if (!file) return;
 
-  imageUploadError.value = '';
+  errorRef.value = '';
 
   if (import.meta.client && !navigator.onLine) {
-    imageUploadError.value = 'اتصال اینترنت برقرار نیست؛ برای آپلود تصویر باید آنلاین باشید.';
+    errorRef.value = 'اتصال اینترنت برقرار نیست؛ برای آپلود تصویر باید آنلاین باشید.';
     return;
   }
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    imageUploadError.value = `فرمت «${file.type || 'نامشخص'}» مجاز نیست. فرمت‌های مجاز: ${ALLOWED_IMAGE_TYPES_LABEL}`;
+    errorRef.value = `فرمت «${file.type || 'نامشخص'}» مجاز نیست. فرمت‌های مجاز: ${ALLOWED_IMAGE_TYPES_LABEL}`;
     return;
   }
   if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
     const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-    imageUploadError.value = `حجم تصویر (${sizeMb} مگابایت) بیشتر از حد مجاز (${MAX_IMAGE_SIZE_MB} مگابایت) است.`;
+    errorRef.value = `حجم تصویر (${sizeMb} مگابایت) بیشتر از حد مجاز (${MAX_IMAGE_SIZE_MB} مگابایت) است.`;
     return;
   }
 
   // پیش‌نمایش موقت و فوری با blob محلی، تا زمانی که آپلود واقعی تمام شود
   const localPreviewUrl = URL.createObjectURL(file);
-  if (!editor.value) return;
+  if (!targetEditor.value) return;
 
-  editor.value.chain().focus().setImage({ src: localPreviewUrl, alt: file.name }).run();
+  targetEditor.value.chain().focus().setImage({ src: localPreviewUrl, alt: file.name }).run();
 
-  isUploadingImage.value = true;
+  isUploadingRef.value = true;
   try {
     const fd = new FormData();
     fd.append('image', file);
@@ -332,35 +389,46 @@ async function onContentImageSelected(e) {
       body: fd,
     });
 
-    // انتظار می‌رود بک‌اند یک آدرس عمومی مثل { url: '...' } برگرداند
     const uploadedUrl = res?.url || res?.data?.url;
     if (!uploadedUrl) {
       throw { __custom: true, message: 'پاسخ سرور معتبر نبود (فیلد url در پاسخ آپلود یافت نشد).' };
     }
 
-    // جایگزینی src موقت با آدرس نهاییِ برگشتی از سرور
-    replaceImageSrcInEditor(localPreviewUrl, uploadedUrl);
+    replaceImageSrcInEditor(targetEditor, localPreviewUrl, uploadedUrl);
   } catch (err) {
     if (isUnauthorized(err)) {
-      removeImageFromEditorBySrc(localPreviewUrl);
+      removeImageFromEditorBySrc(targetEditor, localPreviewUrl);
       handleUnauthorized();
       return;
     }
-    imageUploadError.value = err?.__custom
-      ? err.message
-      : getErrorMessage(err, 'آپلود تصویر');
-    // در صورت خطا، تصویر موقت را از متن حذف می‌کنیم تا لینک شکسته باقی نماند
-    removeImageFromEditorBySrc(localPreviewUrl);
+    errorRef.value = err?.__custom ? err.message : getErrorMessage(err, 'آپلود تصویر');
+    removeImageFromEditorBySrc(targetEditor, localPreviewUrl);
   } finally {
-    isUploadingImage.value = false;
+    isUploadingRef.value = false;
     URL.revokeObjectURL(localPreviewUrl);
   }
 }
 
+function onContentImageSelected(e) {
+  handleContentImageSelected(e, {
+    targetEditor: editor,
+    isUploadingRef: isUploadingImage,
+    errorRef: imageUploadError,
+  });
+}
+
+function onContentImageSelectedEn(e) {
+  handleContentImageSelected(e, {
+    targetEditor: editorEn,
+    isUploadingRef: isUploadingImageEn,
+    errorRef: imageUploadErrorEn,
+  });
+}
+
 // جایگزین کردن src یک تصویر خاص در سند Tiptap (برای سوییچ از blob محلی به URL نهایی)
-function replaceImageSrcInEditor(oldSrc, newSrc) {
-  if (!editor.value) return;
-  const { state, view } = editor.value;
+function replaceImageSrcInEditor(targetEditor, oldSrc, newSrc) {
+  if (!targetEditor.value) return;
+  const { state, view } = targetEditor.value;
   const { tr, doc } = state;
   doc.descendants((node, pos) => {
     if (node.type.name === 'image' && node.attrs.src === oldSrc) {
@@ -371,9 +439,9 @@ function replaceImageSrcInEditor(oldSrc, newSrc) {
 }
 
 // حذف یک تصویر خاص از سند Tiptap با src (برای حالت خطا در آپلود)
-function removeImageFromEditorBySrc(src) {
-  if (!editor.value) return;
-  const { state, view } = editor.value;
+function removeImageFromEditorBySrc(targetEditor, src) {
+  if (!targetEditor.value) return;
+  const { state, view } = targetEditor.value;
   const { tr, doc } = state;
   const positions = [];
   doc.descendants((node, pos) => {
@@ -381,7 +449,6 @@ function removeImageFromEditorBySrc(src) {
       positions.push(pos);
     }
   });
-  // از انتها حذف می‌کنیم تا موقعیت‌ها جابه‌جا نشوند
   positions.reverse().forEach((pos) => {
     tr.delete(pos, pos + 1);
   });
@@ -389,6 +456,7 @@ function removeImageFromEditorBySrc(src) {
 }
 
 function openCreateForm() {
+  if (isReadOnly.value) return;
   Object.assign(form, emptyForm());
   thumbnailFile.value = null;
   thumbnailPreview.value = '';
@@ -396,20 +464,27 @@ function openCreateForm() {
   formErrors.value = {};
   formErrorMessage.value = '';
   imageUploadError.value = '';
+  imageUploadErrorEn.value = '';
   isFormVisible.value = true;
   editor.value?.commands.setContent('');
+  editorEn.value?.commands.setContent('');
 }
 
 function openEditForm(article) {
   Object.assign(form, {
     id: article.id,
     title: article.title || '',
+    title_en: article.title_en || '',
     slug: article.slug || '',
     content: article.content || '',
+    content_en: article.content_en || '',
     thumbnail_alt: article.thumbnail_alt || '',
+    thumbnail_alt_en: article.thumbnail_alt_en || '',
     meta_title: article.meta_title || '',
+    meta_title_en: article.meta_title_en || '',
     meta_description: article.meta_description || '',
-    status: article.status || 'draft',
+    meta_description_en: article.meta_description_en || '',
+    status: article.status || 'published',
   });
   thumbnailFile.value = null;
   thumbnailPreview.value = article.thumbnail || '';
@@ -417,14 +492,21 @@ function openEditForm(article) {
   formErrors.value = {};
   formErrorMessage.value = '';
   imageUploadError.value = '';
+  imageUploadErrorEn.value = '';
   isFormVisible.value = true;
   editor.value?.commands.setContent(article.content || '');
+  editorEn.value?.commands.setContent(article.content_en || '');
 }
 
 const THUMBNAIL_MAX_MB = 2;
 const THUMBNAIL_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 function onThumbnailChange(e) {
+  if (isReadOnly.value) {
+    e.target.value = '';
+    return;
+  }
+
   const file = e.target.files?.[0];
   e.target.value = ''; // امکان انتخاب دوباره‌ی همان فایل را می‌دهد
   if (!file) return;
@@ -448,17 +530,24 @@ function onThumbnailChange(e) {
 function buildFormData() {
   const fd = new FormData();
   fd.append('title', form.title);
+  if (form.title_en) fd.append('title_en', form.title_en);
   if (form.slug) fd.append('slug', form.slug);
   fd.append('content', form.content);
+  if (form.content_en) fd.append('content_en', form.content_en);
   if (form.thumbnail_alt) fd.append('thumbnail_alt', form.thumbnail_alt);
+  if (form.thumbnail_alt_en) fd.append('thumbnail_alt_en', form.thumbnail_alt_en);
   if (form.meta_title) fd.append('meta_title', form.meta_title);
+  if (form.meta_title_en) fd.append('meta_title_en', form.meta_title_en);
   if (form.meta_description) fd.append('meta_description', form.meta_description);
+  if (form.meta_description_en) fd.append('meta_description_en', form.meta_description_en);
   if (form.status) fd.append('status', form.status);
   if (thumbnailFile.value) fd.append('thumbnail', thumbnailFile.value);
   return fd;
 }
 
 async function saveArticle() {
+  if (isReadOnly.value) return;
+
   formErrors.value = {};
   formErrorMessage.value = '';
 
@@ -472,7 +561,6 @@ async function saveArticle() {
   if (Object.keys(clientErrors).length) {
     formErrors.value = clientErrors;
     formErrorMessage.value = 'لطفاً موارد مشخص‌شده در فرم را تکمیل یا اصلاح کنید.';
-    // اسکرول به بالای فرم تا کاربر بنر خطا را ببیند
     if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
@@ -527,6 +615,7 @@ async function saveArticle() {
 const deletingId = ref(null);
 
 async function deleteArticle(article) {
+  if (isReadOnly.value) return;
   if (!confirm(`آیا از حذف مقاله «${article.title}» مطمئن هستید؟ این عملیات قابل بازگشت نیست.`)) return;
 
   if (import.meta.client && !navigator.onLine) {
@@ -626,6 +715,14 @@ onMounted(() => {
         {{ isEditMode ? 'ویرایش مقاله' : 'افزودن مقاله' }}
       </h2>
 
+      <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
+      <div
+        v-if="isReadOnly"
+        class="mb-5 text-center bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold py-2 px-4 rounded-xl"
+      >
+        شما فقط دسترسی مشاهده دارید و امکان ویرایش وجود ندارد.
+      </div>
+
       <!-- بنر خلاصه‌ی خطاهای فرم -->
       <div
         v-if="formErrorMessage"
@@ -641,18 +738,32 @@ onMounted(() => {
         </ul>
       </div>
 
-      <div class="space-y-4 sm:space-y-6">
+      <fieldset :disabled="isReadOnly" class="space-y-4 sm:space-y-6">
         <!-- نام مقاله -->
         <div>
           <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">نام مقاله *</label>
           <input
             v-model="form.title"
             type="text"
-            class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text"
+            class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text disabled:opacity-60 disabled:cursor-not-allowed"
             :class="formErrors.title ? 'border-red-500 focus:border-red-500' : 'border-gray-300 dark:border-dark-border'"
             placeholder="تفاوت طراحی سایت اختصاصی با قالب آماده"
           />
           <p v-if="formErrors.title" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.title[0] }}</p>
+        </div>
+
+        <!-- نام مقاله (English) -->
+        <div>
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">نام مقاله (English)</label>
+          <input
+            v-model="form.title_en"
+            type="text"
+            dir="ltr"
+            class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text font-roboto text-left disabled:opacity-60 disabled:cursor-not-allowed"
+            :class="formErrors.title_en ? 'border-red-500 focus:border-red-500' : 'border-gray-300 dark:border-dark-border'"
+            placeholder="Article title in English"
+          />
+          <p v-if="formErrors.title_en" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.title_en[0] }}</p>
         </div>
 
         <!-- نامک (slug) -->
@@ -661,7 +772,7 @@ onMounted(() => {
           <input
             v-model="form.slug"
             type="text"
-            class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text"
+            class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text disabled:opacity-60 disabled:cursor-not-allowed"
             :class="formErrors.slug ? 'border-red-500 focus:border-red-500' : 'border-gray-300 dark:border-dark-border'"
             placeholder="در صورت خالی بودن به‌صورت خودکار ساخته می‌شود"
           />
@@ -686,23 +797,32 @@ onMounted(() => {
               بدون تصویر
             </div>
 
-            <label class="bg-gray-300 dark:bg-dark-input px-6 py-2 rounded-xl text-sm font-bold cursor-pointer dark:text-dark-text-deep">
+            <label
+              class="bg-gray-300 dark:bg-dark-input px-6 py-2 rounded-xl text-sm font-bold dark:text-dark-text-deep"
+              :class="isReadOnly ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
+            >
               انتخاب تصویر
-              <input type="file" accept=".jpg,.jpeg,.png,.webp" class="hidden" @change="onThumbnailChange" />
+              <input type="file" accept=".jpg,.jpeg,.png,.webp" class="hidden" :disabled="isReadOnly" @change="onThumbnailChange" />
             </label>
           </div>
-          <p class="text-xs text-gray-500 dark:text-dark-text mt-1">حداکثر حجم ۲ مگابایت، فرمت‌های مجاز: jpg, jpeg, png, webp</p>
+          <p class="text-xs text-gray-500 dark:text-dark-text mt-1">حداکثر حجم ۲ مگابایت، فرمت‌های مجاز: jpg, jpeg, png, webp (تصویر برای هر دو زبان مشترک است)</p>
           <p v-if="thumbnailError" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ thumbnailError }}</p>
           <p v-else-if="formErrors.thumbnail" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.thumbnail[0] }}</p>
         </div>
 
         <!-- متن جایگزین تصویر -->
-        <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن جایگزین تصویر (Alt)</label>
-          <input v-model="form.thumbnail_alt" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text" placeholder="تصویر مقاله" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن جایگزین تصویر (Alt)</label>
+            <input v-model="form.thumbnail_alt" type="text" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text disabled:opacity-60 disabled:cursor-not-allowed" placeholder="تصویر مقاله" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن جایگزین تصویر (Alt - English)</label>
+            <input v-model="form.thumbnail_alt_en" type="text" dir="ltr" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-dark-text font-roboto text-left disabled:opacity-60 disabled:cursor-not-allowed" placeholder="Article image" />
+          </div>
         </div>
 
-        <!-- متن توضیحات مقاله (Tiptap) -->
+        <!-- متن توضیحات مقاله (Tiptap) - فارسی -->
         <div>
           <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن توضیحات مقاله *</label>
 
@@ -713,55 +833,56 @@ onMounted(() => {
             >
               <!-- Toolbar -->
               <div v-if="editor" class="flex flex-wrap items-center gap-1 border-b border-gray-300 dark:border-dark-border p-2">
-                <button type="button" @click="editor.chain().focus().toggleBold().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('bold') }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">B</button>
-                <button type="button" @click="editor.chain().focus().toggleItalic().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('italic') }" class="px-2.5 py-1 rounded-lg text-sm italic dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">I</button>
-                <button type="button" @click="editor.chain().focus().toggleUnderline().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('underline') }" class="px-2.5 py-1 rounded-lg text-sm underline dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">U</button>
-                <button type="button" @click="editor.chain().focus().toggleStrike().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('strike') }" class="px-2.5 py-1 rounded-lg text-sm line-through dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">S</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleBold().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('bold') }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">B</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleItalic().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('italic') }" class="px-2.5 py-1 rounded-lg text-sm italic dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">I</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleUnderline().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('underline') }" class="px-2.5 py-1 rounded-lg text-sm underline dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">U</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleStrike().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('strike') }" class="px-2.5 py-1 rounded-lg text-sm line-through dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">S</button>
 
                 <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
 
-                <button type="button" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('heading', { level: 2 }) }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">H2</button>
-                <button type="button" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('heading', { level: 3 }) }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">H3</button>
-                <button type="button" @click="editor.chain().focus().setParagraph().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('paragraph') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">متن</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('heading', { level: 2 }) }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">H2</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('heading', { level: 3 }) }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">H3</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().setParagraph().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('paragraph') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">متن</button>
 
                 <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
 
-                <button type="button" @click="editor.chain().focus().toggleBulletList().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('bulletList') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">• لیست</button>
-                <button type="button" @click="editor.chain().focus().toggleOrderedList().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('orderedList') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">۱. لیست</button>
-                <button type="button" @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('blockquote') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">نقل‌قول</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleBulletList().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('bulletList') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">• لیست</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleOrderedList().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('orderedList') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">۱. لیست</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('blockquote') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">نقل‌قول</button>
 
                 <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
 
-                <button type="button" @click="editor.chain().focus().setTextAlign('right').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive({ textAlign: 'right' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">راست</button>
-                <button type="button" @click="editor.chain().focus().setTextAlign('center').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive({ textAlign: 'center' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">وسط</button>
-                <button type="button" @click="editor.chain().focus().setTextAlign('left').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive({ textAlign: 'left' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">چپ</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().setTextAlign('right').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive({ textAlign: 'right' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">راست</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().setTextAlign('center').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive({ textAlign: 'center' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">وسط</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().setTextAlign('left').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive({ textAlign: 'left' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">چپ</button>
 
                 <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
 
-                <button type="button" @click="setLink" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('link') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">لینک</button>
+                <button type="button" :disabled="isReadOnly" @click="setLink(editor)" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('link') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">لینک</button>
 
                 <!-- دکمه‌ی درج تصویر داخل متن -->
                 <button
                   type="button"
                   @click="triggerImageUpload"
-                  :disabled="isUploadingImage"
-                  class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 flex items-center gap-1"
+                  :disabled="isUploadingImage || isReadOnly"
+                  class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                 >
                   <span v-if="isUploadingImage">⏳ در حال آپلود...</span>
                   <span v-else>🖼 تصویر</span>
                 </button>
                 <input
-                  ref="contentImageInput"
+                  ref="contentImageInputFa"
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/gif"
                   class="hidden"
+                  :disabled="isReadOnly"
                   @change="onContentImageSelected"
                 />
 
                 <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
 
-                <button type="button" @click="editor.chain().focus().undo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">↩</button>
-                <button type="button" @click="editor.chain().focus().redo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70">↪</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().undo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">↩</button>
+                <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().redo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">↪</button>
               </div>
 
               <!-- Editor Content -->
@@ -780,14 +901,100 @@ onMounted(() => {
           <p v-if="formErrors.content" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.content[0] }}</p>
         </div>
 
-        <!-- سئو (اختیاری) -->
+        <!-- جداکننده -->
+        <div class="flex items-center gap-3 my-1">
+          <span class="flex-1 h-px bg-gray-300 dark:bg-dark-border"></span>
+          <span class="text-[11px] text-gray-400 dark:text-dark-text font-roboto font-bold">ENGLISH CONTENT</span>
+          <span class="flex-1 h-px bg-gray-300 dark:bg-dark-border"></span>
+        </div>
+
+        <!-- متن توضیحات مقاله (Tiptap) - انگلیسی -->
+        <div>
+          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن توضیحات مقاله (English)</label>
+
+          <ClientOnly>
+            <div
+              class="w-full bg-white/20 dark:bg-dark-input/20 border rounded-2xl overflow-hidden"
+              :class="formErrors.content_en ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
+            >
+              <!-- Toolbar -->
+              <div v-if="editorEn" class="flex flex-wrap items-center gap-1 border-b border-gray-300 dark:border-dark-border p-2" dir="ltr">
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleBold().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('bold') }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">B</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleItalic().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('italic') }" class="px-2.5 py-1 rounded-lg text-sm italic dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">I</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleUnderline().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('underline') }" class="px-2.5 py-1 rounded-lg text-sm underline dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">U</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleStrike().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('strike') }" class="px-2.5 py-1 rounded-lg text-sm line-through dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">S</button>
+
+                <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
+
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleHeading({ level: 2 }).run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('heading', { level: 2 }) }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">H2</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleHeading({ level: 3 }).run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('heading', { level: 3 }) }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">H3</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().setParagraph().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('paragraph') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Text</button>
+
+                <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
+
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleBulletList().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('bulletList') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">• List</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleOrderedList().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('orderedList') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">1. List</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleBlockquote().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('blockquote') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Quote</button>
+
+                <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
+
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().setTextAlign('right').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive({ textAlign: 'right' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Right</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().setTextAlign('center').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive({ textAlign: 'center' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Center</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().setTextAlign('left').run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive({ textAlign: 'left' }) }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Left</button>
+
+                <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
+
+                <button type="button" :disabled="isReadOnly" @click="setLink(editorEn)" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('link') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Link</button>
+
+                <!-- دکمه‌ی درج تصویر داخل متن -->
+                <button
+                  type="button"
+                  @click="triggerImageUploadEn"
+                  :disabled="isUploadingImageEn || isReadOnly"
+                  class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                >
+                  <span v-if="isUploadingImageEn">⏳ Uploading...</span>
+                  <span v-else>🖼 Image</span>
+                </button>
+                <input
+                  ref="contentImageInputEn"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  class="hidden"
+                  :disabled="isReadOnly"
+                  @change="onContentImageSelectedEn"
+                />
+
+                <span class="w-px h-5 bg-gray-300 dark:bg-dark-border mx-1"></span>
+
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().undo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">↩</button>
+                <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().redo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">↪</button>
+              </div>
+
+              <!-- Editor Content -->
+              <EditorContent :editor="editorEn" class="min-h-[180px] sm:min-h-[250px]" />
+            </div>
+
+            <!-- Fallback هنگام SSR -->
+            <template #fallback>
+              <div class="w-full h-[180px] sm:h-[250px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-2xl flex items-center justify-center text-sm text-gray-400 dark:text-dark-text">
+                Loading editor...
+              </div>
+            </template>
+          </ClientOnly>
+
+          <p v-if="imageUploadErrorEn" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ imageUploadErrorEn }}</p>
+          <p v-if="formErrors.content_en" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.content_en[0] }}</p>
+        </div>
+
+        <!-- سئو (اختیاری) - فارسی -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">عنوان سئو</label>
             <input
               v-model="form.meta_title"
               type="text"
-              class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text"
+              class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text disabled:opacity-60 disabled:cursor-not-allowed"
               :class="formErrors.meta_title ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             />
             <p v-if="formErrors.meta_title" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.meta_title[0] }}</p>
@@ -797,24 +1004,52 @@ onMounted(() => {
             <input
               v-model="form.meta_description"
               type="text"
-              class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text"
+              class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text disabled:opacity-60 disabled:cursor-not-allowed"
               :class="formErrors.meta_description ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             />
             <p v-if="formErrors.meta_description" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.meta_description[0] }}</p>
           </div>
         </div>
 
-        <!-- وضعیت انتشار -->
-        <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">وضعیت</label>
-          <select v-model="form.status" class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none dark:text-black">
-            <option value="draft">پیش‌نویس</option>
-            <option value="published">منتشر شده</option>
-            <option value="archived">آرشیو شده</option>
-          </select>
+        <!-- سئو (اختیاری) - انگلیسی -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">عنوان سئو (English)</label>
+            <input
+              v-model="form.meta_title_en"
+              type="text"
+              dir="ltr"
+              class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text font-roboto text-left disabled:opacity-60 disabled:cursor-not-allowed"
+              :class="formErrors.meta_title_en ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
+            />
+            <p v-if="formErrors.meta_title_en" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.meta_title_en[0] }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">توضیحات سئو (English)</label>
+            <input
+              v-model="form.meta_description_en"
+              type="text"
+              dir="ltr"
+              class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border rounded-[17px] px-4 focus:outline-none dark:text-dark-text font-roboto text-left disabled:opacity-60 disabled:cursor-not-allowed"
+              :class="formErrors.meta_description_en ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
+            />
+            <p v-if="formErrors.meta_description_en" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.meta_description_en[0] }}</p>
+          </div>
         </div>
 
-        <div class="flex justify-end">
+        <!-- وضعیت انتشار -->
+<div>
+  <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">وضعیت</label>
+  <select
+    v-model="form.status"
+    class="w-full h-[46px] sm:h-[50px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-[17px] px-4 focus:outline-none text-black dark:text-white disabled:opacity-60 disabled:cursor-not-allowed"
+  >
+    <option value="published" class="text-black">منتشر شده</option>
+    <option value="archived" class="text-black">آرشیو شده</option>
+  </select>
+</div>
+
+        <div v-if="!isReadOnly" class="flex justify-end">
           <button
             @click="saveArticle"
             :disabled="isSaving || isOffline"
@@ -825,16 +1060,29 @@ onMounted(() => {
             <span v-else>ذخیره مقاله</span>
           </button>
         </div>
-      </div>
+      </fieldset>
     </div>
   </div>
 
   <!-- ۲. لیست مقالات -->
   <div v-else class="max-w-full lg:max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
 
+    <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
+    <div
+      v-if="isReadOnly"
+      class="mb-4 text-center bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold py-2 px-4 rounded-xl"
+    >
+      شما فقط دسترسی مشاهده دارید و امکان افزودن، ویرایش یا حذف مقاله وجود ندارد.
+    </div>
+
     <div class="flex flex-row justify-between items-center mb-5 sm:mb-8 bg-white dark:bg-dark-surface rounded-full w-full h-[52px] sm:h-[60px] px-3 sm:px-4">
       <h1 class="text-base sm:text-lg lg:text-xl font-bold text-[#1a2333] dark:text-dark-text-deep">مقالات</h1>
-      <button @click="openCreateForm" class="bg-[#67A9A880] dark:bg-dark-accent/60 px-3 sm:px-6 py-2 rounded-full font-bold flex items-center gap-2 text-[12px] sm:text-[14px] whitespace-nowrap dark:text-dark-text-deep">
+      <button
+        @click="openCreateForm"
+        :disabled="isReadOnly"
+        :title="isReadOnly ? 'شما فقط دسترسی مشاهده دارید' : ''"
+        class="bg-[#67A9A880] dark:bg-dark-accent/60 px-3 sm:px-6 py-2 rounded-full font-bold flex items-center gap-2 text-[12px] sm:text-[14px] whitespace-nowrap dark:text-dark-text-deep disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         + افزودن مقاله
       </button>
     </div>
@@ -861,7 +1109,11 @@ onMounted(() => {
     <div v-else-if="articles.length === 0" class="flex flex-col items-center justify-center py-16 gap-2 text-center">
       <span class="text-3xl">📄</span>
       <p class="text-sm text-gray-500 dark:text-dark-text">هنوز هیچ مقاله‌ای ثبت نشده است.</p>
-      <button @click="openCreateForm" class="mt-2 text-sm font-bold text-[#286463] dark:text-dark-accent underline">
+      <button
+        v-if="!isReadOnly"
+        @click="openCreateForm"
+        class="mt-2 text-sm font-bold text-[#286463] dark:text-dark-accent underline"
+      >
         اولین مقاله را اضافه کنید
       </button>
     </div>
@@ -874,7 +1126,14 @@ onMounted(() => {
       >
         <img :src="article.thumbnail" class="w-full h-[100px] sm:w-[110px] sm:h-[132px] lg:w-[136px] lg:h-[163px] object-cover rounded-xl sm:rounded-2xl shrink-0" />
         <div class="flex-1 w-full">
-          <h3 class="font-bold text-[12px] sm:text-base lg:text-lg mb-1.5 sm:mb-3 lg:mb-4 line-clamp-2 dark:text-dark-text">{{ article.title }}</h3>
+          <h3 class="font-bold text-[12px] sm:text-base lg:text-lg mb-1.5 sm:mb-3 lg:mb-4 line-clamp-2 dark:text-dark-text flex items-center gap-2">
+            <span class="line-clamp-2">{{ article.title }}</span>
+            <span
+              v-if="article.title_en"
+              class="shrink-0 text-[9px] px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-dark-input text-blue-500 dark:text-dark-text-deep font-medium font-roboto"
+              title="دارای ترجمه انگلیسی"
+            >EN</span>
+          </h3>
           <div class="flex flex-col gap-1 sm:gap-2 text-gray-500 text-[10px] sm:text-sm">
             <span class="flex items-center gap-1 sm:gap-2 text-[#747893] dark:text-dark-text">
               <AdminIconsDateVector /> {{ formatDate(article.created_at) }}
@@ -888,16 +1147,19 @@ onMounted(() => {
         <div class="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
           <button
             @click="deleteArticle(article)"
-            :disabled="deletingId === article.id"
-            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] dark:bg-dark-input rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-60 dark:text-dark-text-deep"
+            :disabled="deletingId === article.id || isReadOnly"
+            :title="isReadOnly ? 'شما فقط دسترسی مشاهده دارید' : ''"
+            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] dark:bg-dark-input rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-60 disabled:cursor-not-allowed dark:text-dark-text-deep"
           >
             <AdminIconsDelete /> {{ deletingId === article.id ? 'در حال حذف...' : 'حذف' }}
           </button>
           <button
             @click="openEditForm(article)"
-            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] dark:bg-dark-input rounded-lg sm:rounded-[10px] text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 dark:text-dark-text-deep"
+            :disabled="isReadOnly"
+            :title="isReadOnly ? 'شما فقط دسترسی مشاهده دارید' : ''"
+            class="flex-1 sm:flex-none sm:w-[85px] h-[26px] sm:h-[26px] bg-[#BFD1D5] dark:bg-dark-input rounded-lg sm:rounded-[10px] text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 dark:text-dark-text-deep disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <AdminIconsEdit /> ویرایش
+            <AdminIconsEdit /> {{ isReadOnly ? 'مشاهده' : 'ویرایش' }}
           </button>
         </div>
       </div>

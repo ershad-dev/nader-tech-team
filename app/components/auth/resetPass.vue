@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 definePageMeta({
   layout: 'auth'
@@ -10,6 +10,7 @@ const loading = ref(false)
 
 // --- i18n ---
 const { t, localeProperties } = useI18n()
+const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const form = ref({
@@ -17,11 +18,18 @@ const form = ref({
   password_confirmation: ''
 })
 
-// تعریف آبجکت خطاها
+// خطاهای زیر اینپوت‌ها
 const errors = ref({
   password: '',
   password_confirmation: ''
 })
+
+// توست
+const toast = ref({ message: '', type: '' })
+const showToast = (message, type = 'error') => {
+  toast.value = { message, type }
+  setTimeout(() => { toast.value = { message: '', type: '' } }, 4000)
+}
 
 const resetPassword = async () => {
   // پاکسازی خطاهای قبلی
@@ -68,24 +76,41 @@ const resetPassword = async () => {
     localStorage.removeItem('reset_login')
     localStorage.removeItem('reset_token')
 
-    alert(response.message || t('auth.resetPassword.successDefault'))
+    showToast(response.message || t('auth.resetPassword.successDefault'), 'success')
     navigateTo(localePath('/auth/login'))
 
   } catch (error) {
-    // نمایش خطای سرور برای رمز عبور
-    errors.value.password = error?.response?._data?.message || t('auth.resetPassword.errorDefault')
+    const serverMessage = error?.response?._data?.message
+    const serverErrors = error?.response?._data?.errors
+
+    if (serverErrors?.password) {
+      errors.value.password = serverErrors.password[0] ?? serverErrors.password
+    } else if (serverErrors?.password_confirmation) {
+      errors.value.password_confirmation = serverErrors.password_confirmation[0] ?? serverErrors.password_confirmation
+    } else {
+      showToast(serverMessage || t('auth.resetPassword.errorDefault'))
+    }
   } finally {
     loading.value = false
   }
 }
-
-const localePath = useLocalePath()
 </script>
 
 <template>
-  <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
+  <div class="text-center font-roboto" :dir="isRtl ? 'rtl' : 'ltr'">
 
-    <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-8">
+    <div
+      v-if="toast.message"
+      :class="[
+        'fixed top-5 p-4 rounded text-white z-50 transition-opacity font-roboto',
+        isRtl ? 'left-5' : 'right-5',
+        toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+      ]"
+    >
+      {{ toast.message }}
+    </div>
+
+    <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-8 font-roboto">
       {{ $t('auth.resetPassword.title') }}
     </h1>
 
@@ -97,12 +122,12 @@ const localePath = useLocalePath()
           v-model="form.password"
           type="password"
           :label="$t('auth.resetPassword.fields.newPassword')"
-          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
           @input="errors.password = ''"
         />
         <p
           v-if="errors.password"
-          :class="['text-red-500 dark:text-red-400 text-[12px] mt-1 px-1', isRtl ? 'text-right' : 'text-left']"
+          :class="['text-red-500 dark:text-red-400 text-[12px] mt-1 px-1 font-roboto', isRtl ? 'text-right' : 'text-left']"
         >
           {{ errors.password }}
         </p>
@@ -114,12 +139,12 @@ const localePath = useLocalePath()
           v-model="form.password_confirmation"
           type="password"
           :label="$t('auth.resetPassword.fields.confirmPassword')"
-          class="[&>div>input]:h-[44px] [&>div>input]:py-4"
+          class="[&>div>input]:h-[44px] [&>div>input]:py-4 font-roboto"
           @input="errors.password_confirmation = ''"
         />
         <p
           v-if="errors.password_confirmation"
-          :class="['text-red-500 dark:text-red-400 text-[12px] mt-1 px-1', isRtl ? 'text-right' : 'text-left']"
+          :class="['text-red-500 dark:text-red-400 text-[12px] mt-1 px-1 font-roboto', isRtl ? 'text-right' : 'text-left']"
         >
           {{ errors.password_confirmation }}
         </p>
@@ -129,6 +154,7 @@ const localePath = useLocalePath()
         <AuthButton
           type="submit"
           :disabled="loading"
+          class="font-roboto"
         >
           {{ loading ? $t('auth.resetPassword.saving') : $t('auth.resetPassword.save') }}
         </AuthButton>

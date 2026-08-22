@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
-import TermsAgreement from '~/components/TermsAgreement.vue'
+import * as yup from 'yup'
+import TermsAgreement from '~/components/Terms/TermsAgreement.vue'
 
 definePageMeta({ layout: 'auth' })
 
@@ -52,30 +53,38 @@ const handlePasswordKeydown = (e) => {
   }
 }
 
-const loginUser = async () => {
-  // ۱. ریست کردن خطاهای قبلی قبل از ارسال مجدد
+// ==================== اسکیمای اعتبارسنجی (کامل خودمون، بدون تکیه به پیام بک‌اند) ====================
+const loginSchema = computed(() => yup.object({
+  login: yup
+    .string()
+    .required(t('auth.login.validation.required'))
+    .matches(/^\d+$/, t('auth.login.validation.digitsOnly'))
+    .length(11, t('auth.login.validation.length'))
+    .matches(/^09/, t('auth.login.validation.prefix')),
+  password:
+    activeTab.value === 'password'
+      ? yup.string().required(t('auth.login.validation.passwordRequired'))
+      : yup.string().notRequired(),
+}))
+
+const validateForm = async () => {
   errors.value = { login: '', password: '' }
-
-  const loginValue = String(form.value.login || '').trim()
-
-  // ۲. اعتبارسنجی شماره تلفن
-  if (!loginValue) {
-    errors.value.login = t('auth.login.validation.required')
-  } else if (!/^\d+$/.test(loginValue)) {
-    errors.value.login = t('auth.login.validation.digitsOnly')
-  } else if (loginValue.length !== 11) {
-    errors.value.login = t('auth.login.validation.length')
-  } else if (!loginValue.startsWith('09')) {
-    errors.value.login = t('auth.login.validation.prefix')
+  try {
+    await loginSchema.value.validate(form.value, { abortEarly: false })
+    return true
+  } catch (validationError) {
+    validationError.inner.forEach((err) => {
+      if (err.path && !errors.value[err.path]) {
+        errors.value[err.path] = err.message
+      }
+    })
+    return false
   }
+}
 
-  // ۳. اعتبارسنجی رمز عبور
-  if (activeTab.value === 'password' && !form.value.password) {
-    errors.value.password = t('auth.login.validation.passwordRequired')
-  }
-
-  // اگر خطای کلاینت وجود داشت، عملیات متوقف شود
-  if (errors.value.login || errors.value.password) return
+const loginUser = async () => {
+  const isValid = await validateForm()
+  if (!isValid) return
 
   loading.value = true
 
@@ -85,7 +94,7 @@ const loginUser = async () => {
         baseURL: config.public.apiBase,
         method: 'POST',
         body: {
-          login: loginValue,
+          login: form.value.login,
           password: form.value.password
         }
       })
@@ -100,7 +109,7 @@ const loginUser = async () => {
       const response = await $fetch('/auth/send-otp', {
         baseURL: config.public.apiBase,
         method: 'POST',
-        body: { mobile: loginValue }
+        body: { mobile: form.value.login }
       })
 
       if (response?.data?.login_token) {
@@ -110,11 +119,17 @@ const loginUser = async () => {
       }
     }
   } catch (error) {
+    const status = error?.response?.status ?? error?.status
     const serverErrors = error?.response?._data?.errors
-    if (serverErrors) {
-      errors.value = { ...errors.value, ...serverErrors }
+
+    // فقط تشخیص می‌دیم کدوم فیلد خطا داره، ولی متن پیام رو کامل خودمون می‌نویسیم
+    if (status === 401 || (status === 422 && serverErrors)) {
+      errors.value.login = t('auth.login.validation.credentialsInvalid')
+      if (activeTab.value === 'password') {
+        errors.value.password = t('auth.login.validation.credentialsInvalid')
+      }
     } else {
-      showToast(error?.response?._data?.message || t('auth.login.toast.serverError'))
+      showToast(t('auth.login.toast.serverError'))
     }
   } finally {
     loading.value = false
@@ -135,11 +150,17 @@ const loginUser = async () => {
       {{ toast.message }}
     </div>
 
-<h1 class="text-[17px] sm:text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap">
+<h1
+  class="font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap"
+  :class="isRtl ? 'text-[16px] sm:text-xl' : 'text-[17px] sm:text-xl'"
+>
   {{ $t('auth.forgotPassword.welcome') }}
 </h1>
 
-<div class="flex gap-6 mb-6 font-medium font-roboto" :class="locale === 'en' ? 'text-[15px]' : 'text-[16px]'">
+<div
+  class="flex gap-6 mb-6 font-medium font-roboto w-full justify-center sm:justify-start"
+  :class="locale === 'en' ? 'text-[13px]' : 'text-[16px]'"
+>
   <button
     type="button"
     @click="activeTab = 'password'"
@@ -221,7 +242,7 @@ const loginUser = async () => {
       </div>
 
       <!-- اطلاع‌رسانی پذیرش قوانین و مقررات (بدون الزام تیک زدن) -->
-      <div class="mb-[40px]" :class="isRtl ? 'text-right' : 'text-left'">
+      <div class="mb-[12px] mt-[30px]" :class="isRtl ? 'text-right' : 'text-left'">
         <TermsAgreement />
       </div>
 

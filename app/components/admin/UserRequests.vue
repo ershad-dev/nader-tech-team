@@ -103,8 +103,8 @@ const filteredUsers = computed(() => {
 // --- جستجو ---
 // این endpoint هم مثل /api/admin/users فقط page/per_page می‌گیره، پارامتر فیلتر متنی نداره.
 // پس همون الگو رو پیاده می‌کنیم: کل درخواست‌ها رو یک‌بار (با گذر از تمام صفحات) می‌گیریم و کش می‌کنیم،
-// بعد فیلتر بر اساس موبایل/ایمیل + تب فعال، سمت فرانت‌اند انجام میشه.
-const searchMode = ref('mobile') // 'mobile' | 'email'
+// بعد فیلتر بر اساس موبایل/نام + تب فعال، سمت فرانت‌اند انجام میشه.
+const searchMode = ref('mobile') // 'mobile' | 'name'
 const searchQuery = ref('')
 let searchDebounceTimer = null
 
@@ -145,12 +145,12 @@ const loadAllRequestsForSearch = async () => {
   }
 }
 
-// نتیجه‌ی سرچ: هم روی موبایل/ایمیل فیلتر میشه، هم تب فعال (نوع درخواست) رعایت میشه
+// نتیجه‌ی سرچ: هم روی موبایل/نام فیلتر میشه، هم تب فعال (نوع درخواست) رعایت میشه
 const searchResults = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
   if (!q) return []
   return allRequestsCache.value.filter((r) => {
-    const field = searchMode.value === 'mobile' ? r.phone : r.email
+    const field = searchMode.value === 'mobile' ? r.phone : r.name
     const matchesQuery = (field || '').toLowerCase().includes(q)
     const matchesTab = activeTab.value === null ? true : r.serviceId === activeTab.value
     return matchesQuery && matchesTab
@@ -235,45 +235,47 @@ const toggleAccordion = (id) => {
           :class="[
             'px-4 py-2 rounded-full text-sm font-bold transition-all',
             searchMode === 'mobile'
-              ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white'
-              : 'text-gray-500 dark:text-white/70'
+              ? 'bg-[#2d6a66] dark:bg-dark-accent text-[#ffffff] dark:text-white'
+              : 'text-[#0F184B] dark:text-white/70'
           ]"
         >
           موبایل
         </button>
         <button
           type="button"
-          @click="setSearchMode('email')"
+          @click="setSearchMode('name')"
           :class="[
             'px-4 py-2 rounded-full text-sm font-bold transition-all',
-            searchMode === 'email'
-              ? 'bg-[#67A9A8] dark:bg-dark-accent text-[#0F184B] dark:text-white'
-              : 'text-gray-500 dark:text-white/70'
+            searchMode === 'name'
+              ? 'bg-[#2d6a66] dark:bg-dark-accent text-[#ffffff] dark:text-white'
+              : 'text-[#0F184B] dark:text-white/70'
           ]"
         >
-          ایمیل
+          نام
         </button>
       </div>
 
       <!-- اینپوت جستجو -->
       <div class="relative flex-1">
         <input
-          v-model="searchQuery"
-          type="text"
-          dir="ltr"
-          :placeholder="searchMode === 'mobile' ? 'جستجو بر اساس شماره موبایل...' : 'جستجو بر اساس ایمیل...'"
-          style="padding-left: 1rem; padding-right: 2.75rem; text-align: left; box-sizing: border-box; display: block;"
-          class="w-full py-2.5 rounded-full bg-white dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#67A9A8]/40"
-        />
-        <button
-          v-if="searchQuery"
-          type="button"
-          @click="clearSearch"
-          style="right: 0.75rem; width: 1.25rem; height: 1.25rem; line-height: 1;"
-          class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white mt-[3px]"
-        >
-          ✕
-        </button>
+  v-model="searchQuery"
+  type="text"
+  :dir="searchMode === 'mobile' ? 'ltr' : 'rtl'"
+  :placeholder="searchMode === 'mobile' ? 'جستجو بر اساس شماره موبایل' : 'جستجو بر اساس نام و نام‌خانوادگی'"
+  :style="searchMode === 'mobile'
+    ? 'padding-right: 1rem; padding-left: 2.75rem; text-align: right; box-sizing: border-box; display: block;'
+    : 'padding-right: 1rem; padding-left: 2.75rem; text-align: right; box-sizing: border-box; display: block;'"
+  class="w-full py-2.5 rounded-full bg-white dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border text-[#0F184B] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#67A9A8]/40"
+/>
+<button
+  v-if="searchQuery"
+  type="button"
+  @click="clearSearch"
+  style="left: 0.75rem; width: 1.25rem; height: 1.25rem; line-height: 1;"
+  class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white mt-[3px]"
+>
+  ✕
+</button>
       </div>
     </div>
 

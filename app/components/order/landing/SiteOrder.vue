@@ -29,20 +29,20 @@ const visibleProjects = visibleItems(3)
 // از همون endpoint عمومی صفحه‌ی order خونده می‌شن:
 //   GET /api/page/order  ->  { data: [ { key: "workflow", value: "<json-string>", type: "json", ... } ] }
 //
-// value آیتم workflow رشته‌ی JSON آرایه‌ای از {id, title, content} است.
-// content هر مرحله از طریق ادیتور Tiptap در پنل ادمین ساخته می‌شه، یعنی
-// HTML است (نه متن ساده) — پس در تمپلیت با v-html رندر می‌شه.
+// برخلاف بقیه‌ی محتوای کلید-مقدار این پروژه (که نسخه‌ی انگلیسی یا ردیف
+// جداست یا فیلد _en روی خودِ آبجکته)، اینجا چون value خودش یک آرایه‌ی
+// JSON از چند آیتمه، نسخه‌ی انگلیسی هر آیتم داخل خودِ همون آیتم میاد:
+//   { id, title, content, title_en, content_en }
+// یعنی فقط یک ردیف "workflow" هست (نه "workflow_en")، و باید بر اساس
+// زبان فعلی بین title/content و title_en/content_en هر آیتم سوییچ کنیم.
 //
-// نکته‌ی مهم درباره‌ی دوزبانگی: محتوای workflow از پنل ادمین میاد و فعلاً
-// endpoint فقط یک نسخه (فارسی) برمی‌گردونه، بدون پارامتر زبان. یعنی این
-// بخش فعلاً حتی در حالت en هم محتوای فارسی رو نشون می‌ده، مگر اینکه بک‌اند
-// در آینده از این endpoint نسخه‌ی دوزبانه ارائه بده. این خارج از اسکوپ
-// فرانت‌اند فعلیه. فقط fallbackSteps (که کاملاً سمت فرانت‌انده) رو
-// دوزبانه کردیم.
+// content و content_en هر دو از ادیتور Tiptap در پنل ادمین ساخته می‌شن
+// (HTML)، پس در تمپلیت با v-html رندر می‌شن.
 //
-// اگر fetch با خطا مواجه بشه یا آیتم workflow خالی/نامعتبر باشه، به یک
-// آرایه‌ی ثابت (fallbackSteps) برمی‌گردیم تا این بخش از صفحه هیچ‌وقت
-// خالی نمونه.
+// اگر fetch با خطا مواجه بشه، آیتم workflow خالی/نامعتبر باشه، یا برای
+// یک آیتم نسخه‌ی en پر نشده باشه، به ترتیب: نسخه‌ی en آیتم → نسخه‌ی fa
+// همون آیتم → (اگر کل workflow خالی/نامعتبر بود) fallbackSteps کاملاً
+// ثابت و دوزبانه از i18n.
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 
 const fallbackSteps = computed(() => ([
@@ -63,7 +63,11 @@ const steps = computed(() => {
   try {
     const parsed = JSON.parse(workflowItem.value)
     if (Array.isArray(parsed) && parsed.length) {
-      return parsed.map(s => ({ title: s.title, desc: s.content }))
+      const useEn = locale.value === 'en'
+      return parsed.map(s => ({
+        title: (useEn && s.title_en) ? s.title_en : s.title,
+        desc: (useEn && s.content_en) ? s.content_en : s.content,
+      }))
     }
   } catch {
     // مقدار JSON نامعتبر بود — سکوت و بازگشت به fallback
@@ -147,12 +151,12 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
 
       <!-- دکمه‌های اسلایدر: فقط از md به بالا نمایش داده می‌شن -->
       <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[100px]">
-        <SliderButton
+        <IconsSliderButton
 direction="left"
           @click="nextSlide"
         />
 
-        <SliderButton
+        <IconsSliderButton
 direction="right"
           @click="prevSlide"
         />
@@ -198,38 +202,48 @@ direction="right"
   </div>
 
 <div class="flex flex-wrap xxl:flex-nowrap justify-center gap-3 sm:gap-4 md:gap-3 xl:gap-12 xxl:gap-10 items-start md:items-center xl:items-start">
-  <div
-    v-for="(step, index) in steps"
-    :key="index"
-    :class="[
-      'relative bg-[#E4E6EB] dark:bg-[#96ACB1] rounded-[1.5rem] md:rounded-[1.75rem] w-[105px] sm:w-[140px] md:w-[140px] xl:w-[182px] xxl:w-[210px] h-[160px] sm:h-[190px] md:h-[195px] xl:h-[235px] xxl:h-[270px] flex flex-col shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-transform duration-500 mt-[12px] sm:mt-[20px] md:mt-[20px] xl:mt-[50px] xxl:mt-[60px]',
-      index % 2 !== 0 ? 'xl:translate-y-12 xxl:translate-y-14' : '',
-    ]"
-  >
-      <div class="absolute -right-1 top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[30px] xxl:h-[36px] bg-[#EAAA3C] dark:bg-dark-gold rounded-full -mt-[6px] md:-mt-[6px] xxl:-mt-[8px]"></div>
-
-
-<div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] h-[48px] sm:h-[58px] md:h-[52px] xxl:h-[58px]">
-  <div class="relative flex items-center h-full">
-    <span
-      :class="[
-        'absolute top-1/2 -translate-y-1/2 text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold text-[#EAAA3C] dark:text-dark-gold rokh-bold-num',
-        isRtl ? 'right-1' : 'left-1'
-      ]"
-    >
-      {{ formatStepNumber(index + 1) }}
-    </span>
-    <h3 class="w-full text-center text-[#EAAA3C] dark:text-dark-gold font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] truncate rokh-bold-num px-6 sm:px-8">
-      {{ step.title }}
-    </h3>
-  </div>
-</div>  
-
 <div
-  class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow flex items-center justify-center text-center text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 [&_p]:m-0 [&_p]:text-center"
-  v-html="step.desc"
-></div>
+  v-for="(step, index) in steps"
+  :key="index"
+  :class="[
+    'relative bg-[#E4E6EB] dark:bg-[#96ACB1] rounded-[1.5rem] md:rounded-[1.75rem] w-[105px] sm:w-[140px] md:w-[140px] xl:w-[182px] xxl:w-[210px] flex flex-col shadow-lg dark:shadow-none dark:ring-1 dark:ring-dark-border transition-transform duration-500 mt-[12px] sm:mt-[20px] md:mt-[20px] xl:mt-[50px] xxl:mt-[60px]',
+    isRtl
+      ? 'h-[160px] sm:h-[190px] md:h-[195px] xl:h-[235px] xxl:h-[270px]'
+      : 'h-[160px] sm:h-[190px] md:h-[220px] xl:h-[270px] xxl:h-[310px]',
+    index % 2 !== 0 ? 'xl:translate-y-12 xxl:translate-y-14' : '',
+  ]"
+>
+  <div
+    :class="[
+      'absolute top-5 md:top-5 w-1.5 h-[28px] sm:h-[34px] md:h-[40px] xxl:h-[45px] bg-[#EAAA3C] dark:bg-dark-gold rounded-full -mt-[6px] md:-mt-[6px] xxl:-mt-[8px]',
+      isRtl ? '-right-1' : '-left-1'
+    ]"
+  ></div>
+
+  <div class="bg-white dark:bg-[#435157] p-2 sm:p-3 md:p-2.5 xxl:p-3 rounded-b-[1.5rem] rounded-t-[1.5rem] md:rounded-b-[1.75rem] md:rounded-t-[1.75rem] xxl:rounded-b-[2rem] xxl:rounded-t-[2rem] min-h-[48px] sm:min-h-[58px] md:min-h-[52px] xxl:min-h-[58px]">
+    <div class="relative flex items-center py-1 mt-[6px]">
+      <span
+        :class="[
+          'absolute top-1/2 -translate-y-1/2 text-[20px] sm:text-[26px] md:text-[26px] xl:text-[40px] xxl:text-[46px] font-extrabold text-[#EAAA3C] dark:text-dark-gold',
+          isRtl ? 'right-1 rokh-bold-num' : 'left-1 font-roboto'
+        ]"
+      >
+        {{ formatStepNumber(index + 1) }}
+      </span>
+      <h3
+        class="w-full text-center text-[#EAAA3C] dark:text-dark-gold font-bold text-[12px] sm:text-[15px] md:text-[18px] xl:text-[22px] xxl:text-[25px] line-clamp-2 px-6 sm:px-8 leading-tight"
+        :class="isRtl ? 'rokh-bold-num' : 'font-roboto'"
+      >
+        {{ step.title }}
+      </h3>
     </div>
+  </div>
+
+  <div
+    class="px-2 sm:px-3 pb-2 sm:pb-3 md:px-2.5 md:pb-2.5 flex-grow flex items-center justify-center text-center text-[#747893] dark:text-black text-[10px] sm:text-[12px] md:text-[16px] xl:text-[20px] xxl:text-[22px] font-normal font-roboto leading-relaxed md:leading-snug mt-1 md:mt-1 [&_p]:m-0 [&_p]:text-center"
+    v-html="step.desc"
+  ></div>
+</div>
   </div>
 </div>
   </div>

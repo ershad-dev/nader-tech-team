@@ -17,7 +17,7 @@
     >
       <Transition name="slide-fade">
         <div :key="currentSlide" class="absolute inset-0 w-full h-full">
-          <NuxtLink :to="localePath('/auth/login')" class="block w-full h-full">
+          <NuxtLink :to="localePath('/order/requestProject')" class="block w-full h-full">
             <img
               :src="slides[currentSlide].image"
               :alt="slides[currentSlide].alt || slides[currentSlide].title"
@@ -32,8 +32,8 @@
   v-if="slides.length > 1"
   class="flex justify-center gap-4 mt-6 lg:mt-8 2xl:mt-10 lg:gap-5 2xl:gap-6"
 >
-  <SliderButton direction="left" @click="handlePrev" />
-  <SliderButton direction="right" @click="handleNext" />
+  <IconsSliderButton direction="left" @click="handlePrev" />
+  <IconsSliderButton direction="right" @click="handleNext" />
 </div>
   </div>
 </template>

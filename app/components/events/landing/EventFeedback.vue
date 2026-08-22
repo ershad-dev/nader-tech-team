@@ -68,12 +68,12 @@
 
     <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
     <div class="hidden md:flex justify-center items-center gap-2 mt-6 sm:mt-8 min-[1920px]:mt-10">
-      <SliderButton
+      <IconsSliderButton
         :direction="isRtl ? 'left' : 'right'"
         @click="nextSlide"
       />
 
-      <SliderButton
+      <IconsSliderButton
         :direction="isRtl ? 'right' : 'left'"
         @click="prevSlide"
       />

@@ -3,9 +3,11 @@ import { ref, onMounted, computed } from 'vue'
 import LotteryDraw from './LotteryDraw.vue'
 import LotteryInfoModal from './LotteryInfoModal.vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
+import { useAdminPermissions } from '~/composables/useAdminPermissions'
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 const { authHeader, initFromStorage } = useAdminAuth()
+const { isReadOnly } = useAdminPermissions()
 
 const colorMode = useColorMode()
 
@@ -90,7 +92,15 @@ const fetchEntries = async () => {
 
 // وقتی اطلاعات قرعه‌کشی از مودال ویرایش شد، هدر همین صفحه هم آپدیت بشه
 const onLotteryUpdated = (updatedLottery) => {
+  if (isReadOnly.value) return
   currentLottery.value = { ...currentLottery.value, ...updatedLottery }
+}
+
+// ورود به صفحه‌ی برگزاری قرعه‌کشی؛ برای کاربر فقط-نمایش مسدود است
+// چون LotteryDraw.vue عملیات نوشتنی (اجرای واقعی قرعه‌کشی) انجام می‌دهد.
+const openLotteryDraw = () => {
+  if (isReadOnly.value) return
+  showLotteryPage.value = true
 }
 
 onMounted(() => {
@@ -101,6 +111,14 @@ onMounted(() => {
 
 <template>
   <div v-if="!showLotteryPage" class="max-w-full lg:max-w-[1000px] min-[1920px]:max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 min-[1920px]:p-12" dir="rtl">
+
+    <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
+    <div
+      v-if="isReadOnly"
+      class="mb-5 text-center bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold py-2.5 px-4 rounded-xl text-sm"
+    >
+      شما فقط دسترسی مشاهده دارید و امکان برگزاری یا ویرایش قرعه‌کشی وجود ندارد.
+    </div>
 
     <div class="bg-white dark:bg-dark-input flex items-center justify-center gap-3 py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] dark:text-dark-text-deep shadow-sm text-sm sm:text-base min-[1920px]:text-lg relative">
       <div class="text-center">
@@ -176,8 +194,10 @@ onMounted(() => {
 
     <div class="mt-6 lg:mt-8 min-[1920px]:mt-12 flex justify-center">
       <button
-        @click="showLotteryPage = true"
-        class="bg-[#286463] dark:bg-dark-accent text-white dark:text-dark-text-deep px-8 sm:px-10 lg:px-12 min-[1920px]:px-16 py-2.5 sm:py-3 min-[1920px]:py-4 rounded-xl font-bold hover:bg-[#1e4a49] dark:hover:bg-dark-accent-hover transition shadow-lg cursor-pointer text-sm sm:text-base min-[1920px]:text-lg w-full sm:w-auto"
+        @click="openLotteryDraw"
+        :disabled="isReadOnly"
+        :title="isReadOnly ? 'شما فقط دسترسی مشاهده دارید' : ''"
+        class="bg-[#286463] dark:bg-dark-accent text-white dark:text-dark-text-deep px-8 sm:px-10 lg:px-12 min-[1920px]:px-16 py-2.5 sm:py-3 min-[1920px]:py-4 rounded-xl font-bold hover:bg-[#1e4a49] dark:hover:bg-dark-accent-hover transition shadow-lg cursor-pointer text-sm sm:text-base min-[1920px]:text-lg w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#286463] dark:disabled:hover:bg-dark-accent"
       >
         برگزاری قرعه‌کشی
       </button>
@@ -187,12 +207,13 @@ onMounted(() => {
       v-if="lotteryId"
       :show="showInfoModal"
       :lottery-id="lotteryId"
+      :read-only="isReadOnly"
       @close="showInfoModal = false"
       @updated="onLotteryUpdated"
     />
   </div>
 
-<LotteryDraw v-else :lottery-id="lotteryId" @back="showLotteryPage = false" />
+<LotteryDraw v-else :lottery-id="lotteryId" :read-only="isReadOnly" @back="showLotteryPage = false" />
 </template>
 
 <style scoped>

@@ -58,69 +58,67 @@
 
 <div class="bg-[#BFD1D5] dark:bg-dark-footer w-full pt-8 sm:pt-10 lg:pt-16 transition-colors duration-300">
 
-  <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 sm:gap-8 lg:gap-12 text-center pb-8 sm:pb-10 lg:pb-12 px-4 lg:px-0">
+<div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 sm:gap-8 lg:gap-12 text-center pb-8 sm:pb-10 lg:pb-12 px-4 lg:px-6 xl:px-8">
 
-  <div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[40px] font-roboto">
+  <div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[32px] xl:leading-[40px] font-roboto">
 
-<h3 class="!mt-[20px] lg:!mt-0 text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[20px] mb-4">{{ $t('footer.linksTitle') }}</h3>
+    <h3 class="!mt-[20px] lg:!mt-0 text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[16px] xl:text-[20px] mb-4 whitespace-nowrap">{{ $t('footer.linksTitle') }}</h3>
 
-  <ul class="space-y-2 sm:space-y-3">
-  <li v-for="link in links" :key="link.path" class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
-    <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
-    <NuxtLink :to="localePath(link.path)" class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors">
-      {{ $t(link.nameKey) }}
-    </NuxtLink>
-  </li>
+    <ul class="space-y-2 sm:space-y-3">
+      <li v-for="link in links" :key="link.path" class="flex items-center gap-2 whitespace-nowrap text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[13px] xl:text-[16px]">
+        <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
+        <NuxtLink :to="localePath(link.path)" class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors">
+          {{ $t(link.nameKey) }}
+        </NuxtLink>
+      </li>
 
-  <!-- لینک قوانین و مقررات -->
-  <li class="flex items-center gap-2 text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[16px]">
-    <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
-    <button
-      type="button"
-      @click="showTermsModal = true"
-      class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors cursor-pointer"
-    >
-      {{ $t('footer.terms') }}
-    </button>
-  </li>
-</ul>
-
+      <li class="flex items-center gap-2 whitespace-nowrap text-[#2D4745] dark:text-dark-text/80 text-[14px] sm:text-[15px] lg:text-[13px] xl:text-[16px]">
+        <span class="w-2 h-2 bg-[#2D7A6F] dark:bg-dark-accent rounded-full flex-shrink-0"></span>
+        <button
+          type="button"
+          @click="showTermsModal = true"
+          class="hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors cursor-pointer"
+        >
+          {{ $t('footer.terms') }}
+        </button>
+      </li>
+    </ul>
   </div>
 
   <div class="flex flex-col items-center gap-4 sm:gap-5 lg:gap-6">
 
-  <p class="text-[#0F184B] dark:text-dark-text font-bold text-[13px] sm:text-[15px] lg:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
-  {{ $t('footer.tagline') }}
-  </p>
+    <p class="text-[#0F184B] dark:text-dark-text font-bold text-[13px] sm:text-[15px] lg:text-[14px] xl:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
+      {{ $t('footer.tagline') }}
+    </p>
 
-  <a
-    href="mailto:info@nadertech.com"
-    dir="ltr"
-    class="text-[#2D4745] dark:text-dark-text/80 text-[13px] sm:text-[15px] lg:text-[16px] hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors font-roboto"
-  >
-nadertechteam@protonmail.com
-  </a>
+    <a
+      href="mailto:info@nadertech.com"
+      dir="ltr"
+      class="text-[#2D4745] dark:text-dark-text/80 text-[13px] sm:text-[15px] lg:text-[13px] xl:text-[16px] hover:text-[#2D7A6F] dark:hover:text-dark-accent transition-colors font-roboto"
+    >
+      nadertechteam@protonmail.com
+    </a>
 
-  <div class="flex justify-center gap-2 sm:gap-3 flex-wrap">
-  <img
-  v-for="icon in socialIcons"
-  :key="icon"
-  :src="`/images/${icon}.png`"
-  alt="social"
-  class="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain hover:opacity-80 transition cursor-pointer dark:opacity-90 dark:hover:opacity-100"
-  />
-  </div>
+    <div class="flex justify-center gap-2 sm:gap-3 flex-wrap">
+      <img
+        v-for="icon in socialIcons"
+        :key="icon"
+        :src="`/images/${icon}.png`"
+        alt="social"
+        class="w-7 h-7 sm:w-8 sm:h-8 lg:w-8 lg:h-8 xl:w-10 xl:h-10 object-contain hover:opacity-80 transition cursor-pointer dark:opacity-90 dark:hover:opacity-100"
+      />
+    </div>
 
   </div>
 
   <div class="flex flex-row lg:flex-col gap-3 sm:gap-4 lg:gap-4 items-center">
-  <img src="/images/enamad2.png" alt="Enamad" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[153px] lg:h-[157px] object-contain" />
-  <img src="/images/zarrinpall.png" alt="Zarrinpal" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[153px] lg:h-[157px] object-contain" />
+    <img src="/images/enamad2.png" alt="Enamad" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[110px] lg:h-[113px] xl:w-[153px] xl:h-[157px] object-contain" />
+    <img src="/images/zarrinpall.png" alt="Zarrinpal" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[110px] lg:h-[113px] xl:w-[153px] xl:h-[157px] object-contain" />
   </div>
 
   </div>
 
-  </div>
+</div>
 
   <!-- مودال قوانین و مقررات -->
   <TermsModal v-model="showTermsModal" />
@@ -130,7 +128,7 @@ nadertechteam@protonmail.com
   </template>
 
   <script setup>
-  import TermsModal from '~/components/TermsModal.vue'
+  import TermsModal from '~/components/Terms/TermsModal.vue'
   import promoTexts from '~/assets/data/promoTexts.json'
 
   const route = useRoute();

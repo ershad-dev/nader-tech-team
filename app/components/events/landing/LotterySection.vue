@@ -43,13 +43,14 @@ function goToLoginPage() {
       />
 
       <!-- کانتینر بیرونی -->
-      <div
-        :dir="isRtl ? 'rtl' : 'ltr'"
-        :class="[
-          'absolute inset-0 z-10 flex items-center px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white',
-          isRtl ? 'justify-start -mr-[50px]' : 'justify-end -ml-[50px]'
-        ]"
-      >
+<div
+  :dir="isRtl ? 'rtl' : 'ltr'"
+  :class="[
+    'absolute inset-0 z-10 flex items-center px-[5%] sm:px-[4.5%] md:px-[4%] lg:px-[4%] text-white',
+    isRtl ? 'justify-start -mr-[24px]' : 'justify-end -ml-[50px]',
+    locale === 'en' ? '-mr-[24px] sm:-mr-[52px] md:-mr-[48px] lg:-mr-[40px] xl:mr-0' : ''
+  ]"
+>
         <!-- بلوک محتوا -->
         <div class="flex flex-col items-center text-center">
           <img

@@ -11,14 +11,14 @@
       class="w-full max-w-[812px] lg:w-[812px] mx-auto mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
     >
       <!-- دکمه جابجایی حالت جستجو -->
-      <div class="flex bg-[#BFD1D5] dark:bg-dark-surface rounded-full p-1 shrink-0 self-start sm:self-auto">
+      <div class="flex bg-[#F7F3EB] dark:bg-dark-surface rounded-full p-1 shrink-0 self-start sm:self-auto">
         <button
           type="button"
           @click="setSearchMode('mobile')"
           :class="[
             'px-4 py-2 rounded-full text-sm font-bold transition-all',
             searchMode === 'mobile'
-              ? 'bg-[#0F184B] dark:bg-dark-accent text-white dark:text-dark-text-deep'
+              ? 'bg-[#2d6a66] dark:bg-dark-accent text-white dark:text-dark-text-deep'
               : 'text-[#0F184B] dark:text-dark-text'
           ]"
         >
@@ -26,37 +26,39 @@
         </button>
         <button
           type="button"
-          @click="setSearchMode('email')"
+          @click="setSearchMode('name')"
           :class="[
             'px-4 py-2 rounded-full text-sm font-bold transition-all',
-            searchMode === 'email'
-              ? 'bg-[#0F184B] dark:bg-dark-accent text-white dark:text-dark-text-deep'
+            searchMode === 'name'
+              ? 'bg-[#2d6a66] dark:bg-dark-accent text-white dark:text-dark-text-deep'
               : 'text-[#0F184B] dark:text-dark-text'
           ]"
         >
-          ایمیل
+          نام
         </button>
       </div>
 
       <!-- اینپوت جستجو -->
       <div class="relative flex-1">
         <input
-          v-model="searchQuery"
-          type="text"
-          dir="ltr"
-          :placeholder="searchMode === 'mobile' ? 'جستجو بر اساس شماره موبایل...' : 'جستجو بر اساس ایمیل...'"
-          style="padding-left: 1rem; padding-right: 2.75rem; text-align: left; box-sizing: border-box; display: block;"
-          class="w-full py-2.5 rounded-full bg-white dark:bg-dark-surface border border-[#BFD1D5] dark:border-dark-border/40 text-[#0F184B] dark:text-dark-text text-sm focus:outline-none focus:ring-2 focus:ring-[#0F184B]/30"
-        />
-        <button
-          v-if="searchQuery"
-          type="button"
-          @click="clearSearch"
-          style="right: 0.75rem; width: 1.25rem; height: 1.25rem; line-height: 1;"
-          class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-dark-text mt-[3px]"
-        >
-          ✕
-        </button>
+  v-model="searchQuery"
+  type="text"
+  :dir="searchMode === 'mobile' ? 'ltr' : 'rtl'"
+  :placeholder="searchMode === 'mobile' ? 'جستجو بر اساس شماره موبایل' : 'جستجو بر اساس نام و نام‌خانوادگی'"
+  :style="searchMode === 'mobile'
+    ? 'padding-right: 1rem; padding-left: 2.75rem; text-align: right; box-sizing: border-box; display: block;'
+    : 'padding-right: 1rem; padding-left: 2.75rem; text-align: right; box-sizing: border-box; display: block;'"
+  class="w-full py-2.5 rounded-full bg-white dark:bg-dark-surface border border-[#BFD1D5] dark:border-dark-border/40 text-[#0F184B] dark:text-dark-text text-sm focus:outline-none focus:ring-2 focus:ring-[#0F184B]/30"
+/>
+<button
+  v-if="searchQuery"
+  type="button"
+  @click="clearSearch"
+  style="left: 0.75rem; width: 1.25rem; height: 1.25rem; line-height: 1;"
+  class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-dark-text mt-[3px]"
+>
+  ✕
+</button>
       </div>
     </div>
 
@@ -109,7 +111,7 @@
             @click="toggleUser(user.id)"
             class="cursor-pointer hover:bg-[#FDFBF7] dark:hover:bg-dark-surface/50 transition-all
                    flex flex-col gap-2 py-4 px-4
-                   lg:grid lg:grid-cols-4 lg:text-[18px] lg:font-bold lg:py-6 lg:px-6 lg:text-center lg:gap-0"
+                   lg:grid lg:grid-cols-4 lg:text-[18px] lg:font-bold lg:py-6 lg:px-6 lg:text-center lg:gap-0 mb-[20px]"
           >
             <div class="flex justify-between items-center lg:block">
               <span class="text-xs text-gray-500 dark:text-dark-text/60 font-normal lg:hidden">کد کاربری</span>
@@ -274,10 +276,10 @@ const currentPage = ref(1)
 const perPage = ref(15)
 
 // --- جستجو ---
-// نکته مهم: API فعلی (/api/admin/users) هیچ پارامتر فیلتری (مثل mobile/email) پشتیبانی نمی‌کنه،
+// نکته مهم: API فعلی (/api/admin/users) هیچ پارامتر فیلتری (مثل mobile/full_name) پشتیبانی نمی‌کنه،
 // فقط page و per_page داره. پس جستجو رو سمت فرانت‌اند انجام می‌دیم: کل کاربران رو یک‌بار
 // (با per_page حداکثری) می‌گیریم، کش می‌کنیم و فیلتر روی همون لیست کامل انجام میشه.
-const searchMode = ref('mobile') // 'mobile' | 'email'
+const searchMode = ref('mobile') // 'mobile' | 'name'
 const searchQuery = ref('')
 let searchDebounceTimer = null
 
@@ -291,7 +293,7 @@ const searchResults = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
   if (!q) return []
   return allUsersCache.value.filter((u) => {
-    const field = searchMode.value === 'mobile' ? u.mobile : u.email
+    const field = searchMode.value === 'mobile' ? u.mobile : u.full_name
     return (field || '').toLowerCase().includes(q)
   })
 })
@@ -402,7 +404,7 @@ const toggleUser = (id) => {
   fetchUserDetail(id) // برای دریافت جزئیات به‌روز کاربر (اختیاری)
 }
 
-// جابجایی بین حالت جستجوی موبایل و ایمیل — چون فیلتر سمت فرانت‌اند روی کش انجام میشه،
+// جابجایی بین حالت جستجوی موبایل و نام — چون فیلتر سمت فرانت‌اند روی کش انجام میشه،
 // فقط کافیه لیست کامل (اگر قبلاً لود نشده) آماده باشه؛ فیلتر کردن خودش computed و آنی است
 const setSearchMode = (mode) => {
   if (searchMode.value === mode) return

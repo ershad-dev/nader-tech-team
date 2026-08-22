@@ -1,9 +1,11 @@
 <script setup>
 import { ref, reactive, watch } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
+import { useAdminPermissions } from '~/composables/useAdminPermissions'
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 const { authHeader } = useAdminAuth()
+const { isReadOnly } = useAdminPermissions()
 
 const props = defineProps({
   show: { type: Boolean, default: false },
@@ -24,7 +26,9 @@ const formError = ref('')
 const lottery = ref(null) // داده‌ی اصلی (فقط نمایش)
 const form = reactive({
   title: '',
+  title_en: '',
   description: '',
+  description_en: '',
   starts_at: '',
   ends_at: '',
   capacity: 0,
@@ -32,6 +36,7 @@ const form = reactive({
   winner_count: 1,
   status: 'draft',
   location: '',
+  location_en: '',
 })
 
 const statusOptions = [
@@ -61,7 +66,9 @@ const formatDate = (isoStr) => {
 
 const fillForm = (data) => {
   form.title = data.title || ''
+  form.title_en = data.title_en || ''
   form.description = data.description || ''
+  form.description_en = data.description_en || ''
   form.starts_at = toLocalInput(data.starts_at)
   form.ends_at = toLocalInput(data.ends_at)
   form.capacity = data.capacity ?? 0
@@ -69,6 +76,7 @@ const fillForm = (data) => {
   form.winner_count = data.winner_count ?? 1
   form.status = data.status || 'draft'
   form.location = data.location || ''
+  form.location_en = data.location_en || ''
 }
 
 const fetchDetails = async () => {
@@ -96,6 +104,8 @@ const fetchDetails = async () => {
 }
 
 const startEdit = () => {
+  // گارد read-only: یوزر مشاهده‌فقط اجازه‌ی ورود به حالت ویرایش را ندارد
+  if (isReadOnly.value) return
   if (lottery.value) fillForm(lottery.value)
   formError.value = ''
   isEditing.value = true
@@ -108,6 +118,9 @@ const cancelEdit = () => {
 }
 
 const save = async () => {
+  // گارد read-only: حتی اگر با دستکاری DevTools این تابع مستقیم صدا زده بشه، اینجا متوقف می‌شود
+  if (isReadOnly.value) return
+
   formError.value = ''
 
   if (!form.title.trim()) {
@@ -126,7 +139,9 @@ const save = async () => {
       headers: authHeader(),
       body: {
         title: form.title,
+        title_en: form.title_en,
         description: form.description,
+        description_en: form.description_en,
         starts_at: form.starts_at,
         ends_at: form.ends_at,
         capacity: Number(form.capacity),
@@ -134,6 +149,7 @@ const save = async () => {
         winner_count: Number(form.winner_count),
         status: form.status,
         location: form.location,
+        location_en: form.location_en,
       },
     })
     lottery.value = res.data
@@ -189,7 +205,9 @@ watch(
               <button
                 v-if="!isEditing"
                 @click="startEdit"
-                class="text-sm font-bold text-[#286463] dark:text-dark-accent border border-[#286463] dark:border-dark-accent rounded-lg px-3 py-1.5 hover:bg-[#286463]/10 dark:hover:bg-dark-accent/10 transition cursor-pointer"
+                :disabled="isReadOnly"
+                :title="isReadOnly ? 'شما دسترسی مشاهده‌فقط دارید' : ''"
+                class="text-sm font-bold text-[#286463] dark:text-dark-accent border border-[#286463] dark:border-dark-accent rounded-lg px-3 py-1.5 hover:bg-[#286463]/10 dark:hover:bg-dark-accent/10 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
               >
                 ویرایش
               </button>
@@ -226,6 +244,14 @@ watch(
           <div v-else-if="loadError" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ loadError }}</div>
 
           <div v-else class="flex flex-col gap-4">
+            <!-- بنر هشدار read-only -->
+            <div
+              v-if="isReadOnly"
+              class="text-sm text-amber-700 dark:text-amber-300 font-bold bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg px-3 py-2"
+            >
+              شما دسترسی مشاهده‌فقط دارید و نمی‌توانید این قرعه‌کشی را ویرایش کنید.
+            </div>
+
             <!-- خطای فرم / ذخیره‌سازی: فقط بالای فرم نشون داده میشه، فرم حذف نمیشه -->
             <div
               v-if="formError"
@@ -234,9 +260,9 @@ watch(
               {{ formError }}
             </div>
 
-            <!-- عنوان -->
+            <!-- عنوان (فارسی) -->
             <div>
-              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">عنوان</label>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">عنوان (فارسی)</label>
               <input
                 v-if="isEditing"
                 v-model="form.title"
@@ -246,11 +272,22 @@ watch(
               <p v-else class="text-sm text-[#1a2333] dark:text-white font-bold">{{ lottery?.title || '—' }}</p>
             </div>
 
-
-
-            <!-- توضیحات -->
+            <!-- عنوان (انگلیسی) -->
             <div>
-              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">توضیحات</label>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">عنوان (انگلیسی)</label>
+              <input
+                v-if="isEditing"
+                v-model="form.title_en"
+                type="text"
+                dir="ltr"
+                class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+              />
+              <p v-else dir="ltr" class="text-sm text-[#1a2333] dark:text-white font-bold text-left">{{ lottery?.title_en || '—' }}</p>
+            </div>
+
+            <!-- توضیحات (فارسی) -->
+            <div>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">توضیحات (فارسی)</label>
               <textarea
                 v-if="isEditing"
                 v-model="form.description"
@@ -258,6 +295,19 @@ watch(
                 class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent resize-none"
               ></textarea>
               <p v-else class="text-sm text-gray-700 dark:text-white whitespace-pre-line">{{ lottery?.description || '—' }}</p>
+            </div>
+
+            <!-- توضیحات (انگلیسی) -->
+            <div>
+              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">توضیحات (انگلیسی)</label>
+              <textarea
+                v-if="isEditing"
+                v-model="form.description_en"
+                rows="3"
+                dir="ltr"
+                class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent resize-none"
+              ></textarea>
+              <p v-else dir="ltr" class="text-sm text-gray-700 dark:text-white whitespace-pre-line text-left">{{ lottery?.description_en || '—' }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -310,17 +360,31 @@ watch(
                 />
                 <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.price?.toLocaleString('fa-IR') ?? '—' }}</p>
               </div>
-                          <!-- مکان برگزاری -->
-            <div>
-              <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">مکان برگزاری</label>
-              <input
-                v-if="isEditing"
-                v-model="form.location"
-                type="text"
-                class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
-              />
-              <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.location || '—' }}</p>
-            </div>
+
+              <!-- مکان برگزاری (فارسی) -->
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">مکان برگزاری (فارسی)</label>
+                <input
+                  v-if="isEditing"
+                  v-model="form.location"
+                  type="text"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+                />
+                <p v-else class="text-sm text-gray-700 dark:text-white">{{ lottery?.location || '—' }}</p>
+              </div>
+
+              <!-- مکان برگزاری (انگلیسی) -->
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">مکان برگزاری (انگلیسی)</label>
+                <input
+                  v-if="isEditing"
+                  v-model="form.location_en"
+                  type="text"
+                  dir="ltr"
+                  class="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-input dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#286463] dark:focus:border-dark-accent"
+                />
+                <p v-else dir="ltr" class="text-sm text-gray-700 dark:text-white text-left">{{ lottery?.location_en || '—' }}</p>
+              </div>
 
               <!-- تعداد برندگان -->
               <div>

@@ -43,7 +43,7 @@ const sendResetCode = async () => {
   loading.value = true
 
   try {
-    const response = await $fetch('/auth/forgot-password', {
+    await $fetch('/auth/forgot-password', {
       baseURL: config.public.apiBase,
       method: 'POST',
       headers: {
@@ -60,19 +60,23 @@ const sendResetCode = async () => {
     await navigateTo(localePath('/auth/verify-forgot-password-code'))
 
   } catch (error) {
-    console.error('FORGOT PASSWORD ERROR:', error)
+    const status = error?.response?.status ?? error?.status
 
-    // دریافت پیام خطا از سرور و نمایش در زیر اینپوت
-    errors.value.login = error?.data?.message ||
-                         error?.response?._data?.message ||
-                         t('auth.forgotPassword.validation.serverError')
+    // پیام خطا رو کامل خودمون می‌نویسیم، به متن بک‌اند تکیه نمی‌کنیم
+    if (status === 404) {
+      errors.value.login = t('auth.forgotPassword.validation.mobileNotFound')
+    } else if (status === 422) {
+      errors.value.login = t('auth.forgotPassword.validation.invalidMobile')
+    } else {
+      errors.value.login = t('auth.forgotPassword.validation.serverError')
+    }
   } finally {
     loading.value = false
   }
 }
 
 // تابع محدودکننده برای فقط عدد و حداکثر 11 رقم
-const handleInput = (event) => {
+const handleInput = () => {
   form.value.login = form.value.login.replace(/\D/g, '').slice(0, 11)
   errors.value.login = ''
 }
@@ -81,7 +85,10 @@ const handleInput = (event) => {
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
-<h1 class="text-[17px] sm:text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-8 font-roboto whitespace-nowrap">
+<h1
+  class="font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap"
+  :class="isRtl ? 'text-[16px] sm:text-xl' : 'text-[17px] sm:text-xl'"
+>
   {{ $t('auth.forgotPassword.welcome') }}
 </h1>
 
@@ -103,13 +110,13 @@ const handleInput = (event) => {
           @input="handleInput"
         />
 
-        <div
-          v-if="errors.login"
-          class="text-red-500 dark:text-red-400 text-[12px] mt-1 px-1"
-          :class="isRtl ? 'text-right' : 'text-left'"
-        >
-          {{ errors.login }}
-        </div>
+<div
+  v-if="errors.login"
+  class="text-red-500 dark:text-red-400 text-[12px] mt-1 px-1 font-roboto"
+  :class="isRtl ? 'text-right' : 'text-left'"
+>
+  {{ errors.login }}
+</div>
       </div>
 
       <div class="mt-[10px] text-[18px] font-roboto">
