@@ -34,40 +34,45 @@
       <div v-else-if="error" class="text-center py-20 text-red-500 dark:text-red-400">{{ $t('portfolio.error') }}</div>
       <div v-else-if="items.length === 0" class="text-center py-20 text-[#747893] dark:text-dark-text">{{ $t('portfolio.empty') }}</div>
 
-<div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">        <NuxtLink
+      <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <NuxtLink
           v-for="project in visibleProjects"
           :key="project.slug"
           :to="localePath(`/order/${project.slug}`)"
           class="group relative w-full h-[160px] sm:h-[220px] lg:h-[350px] bg-white dark:bg-dark-input rounded-[20px] sm:rounded-[28px] lg:rounded-[48px] border border-gray-200 dark:border-dark-border shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden"
         >
-          <img :src="resumeCover(project)" :alt="project.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img
+            :src="resumeCover(project)"
+            :alt="resumeAlt(project)"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
 
           <div class="absolute bottom-0 left-0 right-0 backdrop-blur-md bg-white/70 dark:bg-dark-input/70 p-2.5 sm:p-3.5 lg:p-5 border-t border-white/30 dark:border-dark-border/30 text-center">
-            <h3 class="text-[#0F184B] dark:text-dark-text-deep font-bold text-[12px] sm:text-[15px] lg:text-[20px] truncate">{{ project.title }}</h3>
+            <h3 class="text-[#0F184B] dark:text-dark-text-deep font-bold text-[12px] sm:text-[15px] lg:text-[20px] truncate">{{ resumeTitle(project) }}</h3>
             <p class="text-[9px] sm:text-[11px] lg:text-[14px] text-gray-600 dark:text-dark-text-deep/80 truncate">{{ $t('portfolio.cardCaption') }}</p>
           </div>
         </NuxtLink>
       </div>
 
-<div
-  v-if="!pending && !error"
-  class="flex items-center justify-between mt-8 sm:mt-10 lg:mt-12 px-4 max-w-6xl mx-auto"
->
-<div class="flex gap-2 sm:gap-3 lg:gap-4 z-20">
-  <IconsSliderButton direction="left" @click="isRtl ? nextSlide() : prevSlide()" />
-  <IconsSliderButton direction="right" @click="isRtl ? prevSlide() : nextSlide()" />
-</div>
+      <div
+        v-if="!pending && !error"
+        class="flex items-center justify-between mt-8 sm:mt-10 lg:mt-12 px-4 max-w-6xl mx-auto"
+      >
+        <div class="flex gap-2 sm:gap-3 lg:gap-4 z-20">
+          <IconsSliderButton direction="left" @click="isRtl ? nextSlide() : prevSlide()" />
+          <IconsSliderButton direction="right" @click="isRtl ? prevSlide() : nextSlide()" />
+        </div>
 
-  <div class="flex gap-1.5 sm:gap-2">
-    <div v-for="i in (totalSlides || 1)" :key="i"
-         @click="currentIndex = i - 1"
-         :class="[
-           'h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer',
-           currentIndex === i - 1 ? 'w-7 sm:w-10 bg-[#0F184B] dark:bg-dark-accent' : 'w-2 sm:w-2.5 bg-slate-300 dark:bg-dark-border'
-         ]">
-    </div>
-  </div>
-</div>
+        <div class="flex gap-1.5 sm:gap-2">
+          <div v-for="i in (totalSlides || 1)" :key="i"
+               @click="currentIndex = i - 1"
+               :class="[
+                 'h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer',
+                 currentIndex === i - 1 ? 'w-7 sm:w-10 bg-[#0F184B] dark:bg-dark-accent' : 'w-2 sm:w-2.5 bg-slate-300 dark:bg-dark-border'
+               ]">
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -77,7 +82,7 @@ import { ref, computed, watch } from 'vue'
 import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
 const localePath = useLocalePath();
-const { t, localeProperties } = useI18n();
+const { t, locale, localeProperties } = useI18n();
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
 // نگاشت کلید داخلی (زبان‌مستقل) به category_id واقعی که به API فرستاده می‌شه
@@ -106,6 +111,33 @@ const activeCategoryId = computed(() =>
 )
 
 const { items, pending, error } = useResumes(activeCategoryId)
+
+// --- انتخاب فیلد صحیح بر اساس زبان فعلی ---
+// API همیشه هم نسخه فارسی (title/alt) و هم انگلیسی (title_en/alt_en) رو
+// در یک پاسخ برمی‌گردونه؛ پس نیازی به ری‌فچ با تغییر زبان نیست،
+// فقط باید موقع نمایش فیلد درست رو انتخاب کنیم.
+const resumeTitle = (project) => {
+  if (locale.value === 'en' && project.title_en) {
+    return project.title_en
+  }
+  return project.title
+}
+
+const resumeAlt = (project) => {
+  const cover = project.cover
+  if (!cover) return resumeTitle(project)
+
+  if (locale.value === 'en' && cover.alt_en) {
+    return cover.alt_en
+  }
+  return cover.alt || resumeTitle(project)
+}
+
+// اگه تابع resumeCover رو از جای دیگه (مثلاً یک composable) ایمپورت نکردید،
+// می‌تونید همینجا تعریفش کنید تا مطمئن بشید مسیر عکس درست ساخته میشه:
+const resumeCover = (project) => {
+  return project?.cover?.image || ''
+}
 
 const currentIndex = ref(0)
 const itemsPerPage = 12

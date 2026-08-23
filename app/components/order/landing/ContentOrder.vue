@@ -114,8 +114,8 @@ const visibleProjects = visibleItems(4);
 <div
   class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6"
 >
-  <SliderButton direction="left" @click="prevSlide" />
-  <SliderButton direction="right" @click="nextSlide" />
+  <IconsSliderButton direction="left" @click="prevSlide" />
+  <IconsSliderButton direction="right" @click="nextSlide" />
 </div>
     </div>
   </div>
