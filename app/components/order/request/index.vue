@@ -230,18 +230,34 @@
 
 <script setup>
 // --- i18n ---
-const { t, localeProperties } = useI18n()
+const { t, locale, localeProperties } = useI18n()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 // ---- state لیست خدمات (درخواست برای) ----
-const options = ref([])       // { id, title, slug, ... }
+// دیتای خام از API رو جدا نگه می‌داریم و «options» رو بر اساس زبان فعلی
+// می‌سازیم؛ این‌جوری اگه کاربر وسط پر کردن فرم زبان رو عوض کنه، هم لیست
+// دراپ‌داون هم گزینه‌ی انتخاب‌شده خودکار به‌روز میشه (بدون فچ دوباره).
+// چون title_en فعلاً توی بک‌اند خالیه (null)، وقتی انگلیسی نبود fallback
+// به فارسی میاد تا دراپ‌داون خالی نمونه.
+const rawOptions = ref([])       // { id, title, title_en, ... } خام از سرور
 const isOpen = ref(false)
-const selected = ref(null)
+const selectedId = ref(null)
 const servicesLoading = ref(false)
 const dropdownRef = ref(null)
 
+const localizeTitle = (item) => {
+  if (locale.value === 'en') return item.title_en || item.title
+  return item.title
+}
+
+const options = computed(() =>
+  rawOptions.value.map((o) => ({ ...o, title: localizeTitle(o) }))
+)
+
+const selected = computed(() => options.value.find((o) => o.id === selectedId.value) || null)
+
 const select = (option) => {
-  selected.value = option
+  selectedId.value = option.id
   form.type_id = option.id
   isOpen.value = false
   if (errors.value.type_id) delete errors.value.type_id
@@ -258,7 +274,7 @@ const fetchServices = async () => {
   servicesLoading.value = true
   try {
     const res = await $fetch(`https://nadertechnologyteam.ir/api/requests/types`)
-    options.value = res?.data || res || []
+    rawOptions.value = res?.data || res || []
   } catch (e) {
     // این لاگ فقط برای دیباگ در کنسوله، کاربر نمی‌بینتش، نیازی به ترجمه نداره
     console.error('خطا در دریافت لیست خدمات:', e)
@@ -296,7 +312,7 @@ const resetForm = () => {
   form.mobile = ''
   form.email = ''
   form.description = ''
-  selected.value = null
+  selectedId.value = null
 }
 
 // --- اعتبارسنجی سمت کلاینت قبل از ارسال ---
