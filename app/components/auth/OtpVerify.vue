@@ -9,14 +9,15 @@ const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const config = useRuntimeConfig()
 
-const otp = ref(['', '', '', '', '', ''])
-const loginToken = ref('')
-const timer = ref(120)
-const inputRefs = ref([])
+const otp = ref(['', '', '', '', '', '']) // 6 رقم کد OTP
+const loginToken = ref('')                // توکن موقت لاگین
+const timer = ref(120)                    // شمارش معکوس اعتبار کد (ثانیه)
+const inputRefs = ref([])                 // رفرنس اینپوت‌های OTP برای مدیریت فوکوس
 const toast = ref({ message: '', type: '' })
 
 let interval = null
 
+// چک کردن وجود login_token و شروع تایمر
 onMounted(() => {
   const storedToken = localStorage.getItem('login_token')
 
@@ -29,13 +30,14 @@ onMounted(() => {
   startTimer()
 })
 
+// پاک کردن تایمر هنگام خروج از صفحه
 onBeforeUnmount(() => {
   if (interval) {
     clearInterval(interval)
   }
 })
 
-// تایمر
+// شروع شمارش معکوس تایمر
 const startTimer = () => {
   interval = setInterval(() => {
     if (timer.value > 0) {
@@ -46,7 +48,7 @@ const startTimer = () => {
   }, 1000)
 }
 
-// نمایش تایمر
+// فرمت نمایش تایمر به صورت mm:ss
 const formattedTimer = computed(() => {
   const m = Math.floor(timer.value / 60)
   const s = timer.value % 60
@@ -60,7 +62,7 @@ const showToast = (message, type = 'error') => {
   setTimeout(() => { toast.value = { message: '', type: '' } }, 4000)
 }
 
-// مدیریت ورود اعداد و فوکوس خودکار به اینپوت بعدی
+// فیلتر کردن ورودی غیرعددی و فوکوس خودکار به اینپوت بعدی
 const handleInput = (index) => {
   otp.value[index] = otp.value[index].replace(/\D/g, '')
 
@@ -69,14 +71,14 @@ const handleInput = (index) => {
   }
 }
 
-// وقتی با بک‌اسپیس یه اینپوت خالی پاک بشه، برو به اینپوت قبلی
+// برگشت به اینپوت قبلی با بک‌اسپیس روی خونه‌ی خالی
 const handleKeydown = (index, event) => {
   if (event.key === 'Backspace' && !otp.value[index] && index > 0) {
     inputRefs.value[index - 1]?.focus()
   }
 }
 
-// تایید OTP
+// ارسال و بررسی کد OTP
 const verifyCode = async () => {
   const code = otp.value.join('')
 
@@ -120,7 +122,8 @@ const verifyCode = async () => {
 
     localStorage.removeItem('login_token')
 
-    await navigateTo(localePath('/profile'))
+    // رفرش کامل صفحه بعد از ورود موفق
+    window.location.href = localePath('/profile')
   } catch (error) {
     // پیام خطا رو کامل خودمون می‌نویسیم، به متن بک‌اند تکیه نمی‌کنیم
     showToast(t('auth.verify.errors.invalidOrExpired'))
@@ -131,6 +134,7 @@ const verifyCode = async () => {
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
+    <!-- پیام toast -->
     <div
       v-if="toast.message"
       :class="[
@@ -163,6 +167,7 @@ const verifyCode = async () => {
         />
       </div>
 
+      <!-- نمایش تایمر شمارش معکوس -->
       <div class="mb-10 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium">
         {{ formattedTimer }}
       </div>
@@ -172,6 +177,7 @@ const verifyCode = async () => {
       </AuthButton>
     </form>
 
+    <!-- لینک بازگشت به صفحه ورود -->
     <div class="mt-6 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer">
       <NuxtLink :to="localePath('/auth/login')">
         {{ $t('auth.verify.backToLogin') }}

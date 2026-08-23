@@ -18,12 +18,13 @@ const { t, locale, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-const activeTab = ref('profile') // 'profile' | 'security' | 'changeMobile'
-const loading = ref(false)
-const loadingAvatar = ref(false)
+const activeTab = ref('profile') // تب فعال: profile, security, changeMobile
+const loading = ref(false)       // لودینگ عملیات‌های اصلی
+const loadingAvatar = ref(false) // لودینگ آپلود/حذف آواتار
 
-const isEditing = ref(false)
+const isEditing = ref(false) // وضعیت ویرایش فرم پروفایل
 
+// اطلاعات پروفایل کاربر
 const userData = ref({
   full_name: '',
   username: '',
@@ -37,13 +38,14 @@ const userData = ref({
   avatar: ''
 })
 
+// فرم تغییر پسورد
 const passwordData = ref({
   current_password: '',
   new_password: '',
   new_password_confirmation: ''
 })
 
-// فیلد شماره‌ی جدید برای فرم «تغییر شماره موبایل»
+// شماره جدید برای فرم تغییر موبایل
 const newMobile = ref('')
 
 const toast = ref({
@@ -51,6 +53,7 @@ const toast = ref({
   type: ''
 })
 
+// نمایش پیام toast
 const showToast = (message, type = 'error') => {
   toast.value = {
     message,
@@ -65,8 +68,10 @@ const showToast = (message, type = 'error') => {
   }, 4000)
 }
 
+// خواندن توکن از localStorage
 const token = () => localStorage.getItem('access_token')
 
+// ساخت آدرس کامل تصویر آواتار
 const getAvatarUrl = (path) => {
   if (!path) return '/images/avater-man.jpg'
   if (/^https?:\/\//.test(path)) return path
@@ -75,6 +80,7 @@ const getAvatarUrl = (path) => {
   return root + path
 }
 
+// چک کردن لاگین بودن کاربر و گرفتن اطلاعات پروفایل
 onMounted(async () => {
   if (!token()) {
     navigateTo(localePath('/auth/login'))
@@ -84,6 +90,7 @@ onMounted(async () => {
   await getProfile()
 })
 
+// دریافت اطلاعات پروفایل از سرور
 const getProfile = async () => {
   try {
     const response = await $fetch('/profile', {
@@ -107,6 +114,7 @@ const getProfile = async () => {
   }
 }
 
+// ذخیره تغییرات پروفایل
 const updateProfile = async () => {
   loading.value = true
 
@@ -152,14 +160,12 @@ const updateProfile = async () => {
   }
 }
 
+// لغو ویرایش و برگردوندن مقادیر اصلی
 const cancelEdit = async () => {
   await getProfile()
 }
 
 // تغییر شماره موبایل (بدون OTP)
-// طبق Swagger، PUT /api/profile هر ۴ فیلد رسمی (full_name, username,
-// email, mobile) را با هم می‌خواهد، برای همین بقیه‌ی فیلدها از مقادیر
-// فعلی userData پر می‌شوند و فقط mobile عوض می‌شود.
 const changeMobile = async () => {
   if (!newMobile.value.trim()) {
     showToast(t('profile.changeMobile.enterNewMobile'))
@@ -210,11 +216,13 @@ const changeMobile = async () => {
   }
 }
 
+// لغو تغییر شماره موبایل
 const cancelChangeMobile = () => {
   newMobile.value = ''
   activeTab.value = 'profile'
 }
 
+// تغییر پسورد کاربر
 const changePassword = async () => {
   if (
     !passwordData.value.current_password ||
@@ -282,6 +290,8 @@ const changePassword = async () => {
 }
 
 const fileInput = ref(null)
+
+// آپلود آواتار جدید
 const uploadAvatar = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
@@ -324,6 +334,7 @@ const uploadAvatar = async (event) => {
   }
 }
 
+// حذف آواتار فعلی
 const deleteAvatar = async () => {
   if (!token()) return navigateTo(localePath('/auth/login'))
 
@@ -353,15 +364,17 @@ const deleteAvatar = async () => {
   }
 }
 
+// خروج از حساب کاربری با رفرش کامل صفحه
 const logout = () => {
   localStorage.removeItem('access_token')
-  navigateTo(localePath('/auth/login'))
+  window.location.href = localePath('/auth/login')
 }
 </script>
 
 <template>
   <div class="max-w-[1110px] 2xl:max-w-[1400px] mx-auto p-4 md:p-8 2xl:p-12 mt-30">
 
+    <!-- پیام toast -->
     <div
       v-if="toast.message"
       :class="[
@@ -374,6 +387,7 @@ const logout = () => {
 
     <div class="bg-[#2C73792B] p-4 sm:p-6 md:p-10 2xl:p-14 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] 2xl:rounded-[48px] shadow-sm mt-[50px]">
 
+      <!-- بخش آواتار -->
       <div class="flex justify-center w-full">
         <div class="bg-[#ffffff]/10 p-4 sm:p-5 md:p-6 2xl:p-8 rounded-[20px] sm:rounded-[24px] md:rounded-[27px] 2xl:rounded-[32px] mb-6 sm:mb-8 2xl:mb-10 flex flex-row items-start sm:items-center justify-start sm:justify-center gap-4 sm:gap-5 md:gap-6 2xl:gap-8 w-full max-w-[652px] 2xl:max-w-[760px] h-auto sm:h-[187px] 2xl:h-[210px] shadow-xl" :dir="isRtl ? 'rtl' : 'ltr'">
 
@@ -417,7 +431,7 @@ const logout = () => {
 
       <div class="bg-[#ffffff]/10 p-4 sm:p-6 md:p-8 2xl:p-12 rounded-2xl sm:rounded-3xl 2xl:rounded-[40px] border-[0.5px] border-[#D9D9D9] shadow-xl mt-6 sm:mt-8 2xl:mt-10">
 
-<!-- Profile Tab -->
+<!-- تب پروفایل -->
 <div v-if="activeTab === 'profile'"
      class="flex flex-col lg:grid lg:grid-cols-2 2xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-x-6 2xl:gap-x-10 lg:gap-y-5 2xl:gap-y-8 font-roboto items-center lg:justify-items-center w-full"
      :dir="isRtl ? 'rtl' : 'ltr'">
@@ -446,8 +460,7 @@ const logout = () => {
     />
   </div>
 
-  <!-- شماره موبایل همیشه readonly است؛ تغییرش فقط از تب
-       «تغییر شماره موبایل» ممکن است -->
+  <!-- شماره موبایل فقط از تب تغییر موبایل قابل ویرایشه -->
   <div class="flex flex-col gap-2 2xl:gap-3 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-none lg:w-fit">
     <label class="text-[12px] sm:text-[15px] 2xl:text-[17px] font-normal text-black mr-1">{{ $t('profile.fields.mobile') }}</label>
     <input
@@ -532,7 +545,7 @@ const logout = () => {
 
 </div>
 
-        <!-- Security Tab -->
+        <!-- تب امنیت / تغییر پسورد -->
         <div v-else-if="activeTab === 'security'" class="space-y-5 sm:space-y-6 2xl:space-y-8 max-w-[500px] 2xl:max-w-[600px] mx-auto">
           <AuthInput
             :label="$t('profile.security.currentPassword')"
@@ -568,7 +581,7 @@ const logout = () => {
           </AuthButton>
         </div>
 
-<!-- Change Mobile Tab -->
+<!-- تب تغییر شماره موبایل -->
 <div v-else-if="activeTab === 'changeMobile'" class="space-y-6 sm:space-y-10 2xl:space-y-12 mt-10 mb-16 sm:mt-[100px] sm:mb-[100px] px-4 sm:px-0" :dir="isRtl ? 'rtl' : 'ltr'">
   <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 2xl:gap-6 w-full">
     <label class="text-[13px] sm:text-[15px] 2xl:text-[17px] font-normal text-black whitespace-nowrap font-roboto">
@@ -608,7 +621,7 @@ const logout = () => {
   </AuthButton>
 </div>
 
-<!-- Bottom Menu -->
+<!-- منوی پایین (سوییچ تب‌ها + خروج) -->
 <div
   class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 md:gap-12 2xl:gap-16 mt-8 2xl:mt-12 text-[#1a2333] dark:text-white font-bold text-[14px] sm:text-[16px] 2xl:text-[18px]"
 >
@@ -652,7 +665,7 @@ const logout = () => {
   </button>
 </div>
 
-        <!-- Profile Actions -->
+        <!-- دکمه‌های ویرایش/ذخیره/لغو پروفایل -->
         <div
           class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 2xl:gap-6 mt-8 sm:mt-10 2xl:mt-14 max-w-[700px] 2xl:max-w-[820px] mx-auto"
           v-if="activeTab === 'profile'"

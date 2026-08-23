@@ -11,41 +11,41 @@ const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const config = useRuntimeConfig()
 
-const activeTab = ref('password')
-const loading = ref(false)
-const toast = ref({ message: '', type: '' })
+const activeTab = ref('password') // تب فعال (پسورد یا OTP)
+const loading = ref(false)        // وضعیت لودینگ دکمه
+const toast = ref({ message: '', type: '' }) // پیام toast
 
-// تعریف وضعیت خطاها برای هر فیلد
-const errors = ref({
+const errors = ref({    // خطاهای فرم
   login: '',
   password: ''
 })
 
-const form = ref({
+const form = ref({       // مقادیر فرم
   login: '',
   password: ''
 })
 
-// تابع نمایش پیام‌های عمومی (Toast)
+// نمایش پیام toast
 const showToast = (message, type = 'error') => {
   toast.value = { message, type }
   setTimeout(() => { toast.value = { message: '', type: '' } }, 4000)
 }
 
-// ---- هندلر شماره تلفن: فقط عدد قبول می‌کند ----
+// فیلتر کردن ورودی شماره موبایل (فقط عدد، حداکثر 11 رقم)
 const handleLoginInput = (e) => {
   const digitsOnly = e.target.value.replace(/\D/g, '')
   form.value.login = digitsOnly.slice(0, 11)
   e.target.value = form.value.login
 }
 
-// ---- هندلر پسورد: جلوگیری از تایپ فارسی ----
+// فیلتر کردن کاراکترهای فارسی از پسورد
 const handlePasswordInput = (e) => {
   const filtered = e.target.value.replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g, '')
   form.value.password = filtered
   e.target.value = filtered
 }
 
+// جلوگیری از تایپ کاراکتر فارسی در پسورد
 const handlePasswordKeydown = (e) => {
   const char = e.key
   if (char && char.length === 1 && /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(char)) {
@@ -53,7 +53,7 @@ const handlePasswordKeydown = (e) => {
   }
 }
 
-// ==================== اسکیمای اعتبارسنجی (کامل خودمون، بدون تکیه به پیام بک‌اند) ====================
+// اسکیمای اعتبارسنجی فرم
 const loginSchema = computed(() => yup.object({
   login: yup
     .string()
@@ -67,6 +67,7 @@ const loginSchema = computed(() => yup.object({
       : yup.string().notRequired(),
 }))
 
+// اعتبارسنجی فرم قبل از ارسال
 const validateForm = async () => {
   errors.value = { login: '', password: '' }
   try {
@@ -82,6 +83,7 @@ const validateForm = async () => {
   }
 }
 
+// ارسال فرم لاگین (پسورد یا OTP)
 const loginUser = async () => {
   const isValid = await validateForm()
   if (!isValid) return
@@ -102,7 +104,9 @@ const loginUser = async () => {
       if (response?.data?.access_token) {
         localStorage.setItem('access_token', response.data.access_token)
         showToast(t('auth.login.toast.loginSuccess'), 'success')
-        setTimeout(() => navigateTo(localePath('/profile')), 500)
+        setTimeout(() => {
+          window.location.href = localePath('/profile')
+        }, 500)
       }
     }
     else if (activeTab.value === 'otp') {
@@ -115,14 +119,15 @@ const loginUser = async () => {
       if (response?.data?.login_token) {
         localStorage.setItem('login_token', response.data.login_token)
         showToast(t('auth.login.toast.otpSent'), 'success')
-        setTimeout(() => navigateTo(localePath('/auth/verify')), 500)
+        setTimeout(() => {
+          window.location.href = localePath('/auth/verify')
+        }, 500)
       }
     }
   } catch (error) {
     const status = error?.response?.status ?? error?.status
     const serverErrors = error?.response?._data?.errors
 
-    // فقط تشخیص می‌دیم کدوم فیلد خطا داره، ولی متن پیام رو کامل خودمون می‌نویسیم
     if (status === 401 || (status === 422 && serverErrors)) {
       errors.value.login = t('auth.login.validation.credentialsInvalid')
       if (activeTab.value === 'password') {
@@ -139,6 +144,7 @@ const loginUser = async () => {
 
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
+    <!-- پیام toast -->
     <div
       v-if="toast.message"
       :class="[
@@ -150,42 +156,46 @@ const loginUser = async () => {
       {{ toast.message }}
     </div>
 
-<h1
-  class="font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap"
-  :class="isRtl ? 'text-[16px] sm:text-xl' : 'text-[17px] sm:text-xl'"
->
-  {{ $t('auth.forgotPassword.welcome') }}
-</h1>
+    <!-- عنوان -->
+    <h1
+      class="font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap"
+      :class="isRtl ? 'text-[16px] sm:text-xl' : 'text-[17px] sm:text-xl'"
+    >
+      {{ $t('auth.forgotPassword.welcome') }}
+    </h1>
 
-<div
-  class="flex gap-6 mb-6 font-medium font-roboto w-full justify-center sm:justify-start"
-  :class="locale === 'en' ? 'text-[13px]' : 'text-[16px]'"
->
-  <button
-    type="button"
-    @click="activeTab = 'password'"
-    :class="[
-      'text-[#0F184B] dark:text-dark-text-deep whitespace-nowrap',
-      activeTab === 'password' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
-    ]"
-  >
-    {{ $t('auth.login.tabs.password') }}
-  </button>
+    <!-- تب‌های ورود -->
+    <div
+      class="flex gap-6 mb-6 font-medium font-roboto w-full justify-center sm:justify-start"
+      :class="locale === 'en' ? 'text-[13px]' : 'text-[16px]'"
+    >
+      <button
+        type="button"
+        @click="activeTab = 'password'"
+        :class="[
+          'text-[#0F184B] dark:text-dark-text-deep whitespace-nowrap',
+          activeTab === 'password' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
+        ]"
+      >
+        {{ $t('auth.login.tabs.password') }}
+      </button>
 
-  <button
-    type="button"
-    @click="activeTab = 'otp'"
-    :class="[
-      'text-[#0F184B] dark:text-dark-text-deep whitespace-nowrap',
-      activeTab === 'otp' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
-    ]"
-  >
-    {{ $t('auth.login.tabs.otp') }}
-  </button>
-</div>
+      <button
+        type="button"
+        @click="activeTab = 'otp'"
+        :class="[
+          'text-[#0F184B] dark:text-dark-text-deep whitespace-nowrap',
+          activeTab === 'otp' ? 'border-b-2 border-[#1a2333] dark:border-dark-border' : ''
+        ]"
+      >
+        {{ $t('auth.login.tabs.otp') }}
+      </button>
+    </div>
 
+    <!-- فرم لاگین -->
     <form @submit.prevent="loginUser">
       <div class="font-roboto" :class="isRtl ? 'text-right' : 'text-left'">
+        <!-- فیلد موبایل -->
         <div class="mb-4">
           <AuthInput
             v-model="form.login"
@@ -208,6 +218,7 @@ const loginUser = async () => {
           </p>
         </div>
 
+        <!-- فیلد پسورد (فقط تب پسورد) -->
         <div
           v-if="activeTab === 'password'"
           class="mb-4"
@@ -232,6 +243,7 @@ const loginUser = async () => {
         </div>
       </div>
 
+      <!-- لینک فراموشی رمز -->
       <div class="mb-6" :class="isRtl ? 'text-right' : 'text-left'">
         <NuxtLink
           :to="localePath('/auth/forgot-password')"
@@ -241,26 +253,28 @@ const loginUser = async () => {
         </NuxtLink>
       </div>
 
-      <!-- اطلاع‌رسانی پذیرش قوانین و مقررات (بدون الزام تیک زدن) -->
+      <!-- پذیرش قوانین -->
       <div class="mb-[12px] mt-[30px]" :class="isRtl ? 'text-right' : 'text-left'">
         <TermsAgreement />
       </div>
 
-<AuthButton
-  type="submit"
-  :disabled="loading"
-  class="mb-[5px] text-[22px] flex items-center justify-center text-center"
->
-  <span class="mt-[3px]">
-    {{ loading ? $t('auth.login.submitting') : $t('auth.login.submit') }}
-  </span>
-</AuthButton>
+      <!-- دکمه ارسال -->
+      <AuthButton
+        type="submit"
+        :disabled="loading"
+        class="mb-[5px] text-[22px] flex items-center justify-center text-center"
+      >
+        <span class="mt-[3px]">
+          {{ loading ? $t('auth.login.submitting') : $t('auth.login.submit') }}
+        </span>
+      </AuthButton>
     </form>
 
-<div class="mt-[20px] text-[16px] text-[#0F184B] dark:text-dark-text-deep font-bold cursor-pointer font-roboto underline underline-offset-2">
-  <NuxtLink :to="localePath('/auth/register')">
-    {{ $t('auth.login.registerLink') }}
-  </NuxtLink>
-</div>
+    <!-- لینک ثبت‌نام -->
+    <div class="mt-[20px] text-[16px] text-[#0F184B] dark:text-dark-text-deep font-bold cursor-pointer font-roboto underline underline-offset-2">
+      <NuxtLink :to="localePath('/auth/register')">
+        {{ $t('auth.login.registerLink') }}
+      </NuxtLink>
+    </div>
   </div>
 </template>

@@ -3,49 +3,54 @@ const { locale } = useI18n();
 const route = useRoute();
 const { resume: project, pending, error } = useResume(route.params.slug);
 
-// انتخاب نسخه‌ی فارسی/انگلیسی هر فیلد بر اساس زبان فعلی، با fallback به فارسی
-// اگر ترجمه‌ی انگلیسی موجود نباشه یا خالی باشه (دقیقاً مثل faq.vue)
+// انتخاب فیلد فارسی/انگلیسی بر اساس زبان فعلی
 const pickLocalized = (obj, faKey, enKey) => {
   const enVal = obj?.[enKey];
   return (locale.value === 'en' && enVal) ? enVal : obj?.[faKey];
 };
 
+// عنوان و توضیحات پروژه بر اساس زبان
 const projectTitle = computed(() => pickLocalized(project.value, 'title', 'title_en'));
 const projectDescription = computed(() => pickLocalized(project.value, 'description', 'description_en'));
 const reviewName = computed(() => pickLocalized(project.value?.review, 'name', 'name_en'));
 const reviewPosition = computed(() => pickLocalized(project.value?.review, 'position', 'position_en'));
 const reviewDescription = computed(() => pickLocalized(project.value?.review, 'description', 'description_en'));
 
-// آرایه‌ی عکس‌ها رو می‌گیریم و اگه کمتر از ۳ تا بود (خیلی وقتا فقط یه cover هست)
-// با چرخش همون عکس‌ها پرش می‌کنیم تا چیدمان پله‌ای سه‌تایی خراب نشه.
+// ساخت آرایه سه‌تایی عکس‌ها برای چیدمان پله‌ای گالری
 const galleryImages = computed(() => {
   const imgs = resumeImages(project.value);
   if (imgs.length === 0) return [];
   return [imgs[0 % imgs.length], imgs[1 % imgs.length], imgs[2 % imgs.length]];
 });
 
+// چک وجود نظر مشتری
 const hasReview = computed(() => !!project.value?.review?.description);
 
 // --- مودال نمایش عکس ---
 const isModalOpen = ref(false);
 const activeImage = ref(null);
 
+// باز کردن مودال با عکس انتخاب‌شده
 function openImageModal(src) {
   activeImage.value = src;
   isModalOpen.value = true;
 }
 
+// بستن مودال و ریست کردن زرّه‌بین
 function closeImageModal() {
   isModalOpen.value = false;
   activeImage.value = null;
+  showLens.value = false;
 }
 
+// قفل کردن اسکرول صفحه پشت مودال هنگام باز بودنش
 watch(isModalOpen, (open) => {
   if (import.meta.client) {
     document.body.style.overflow = open ? 'hidden' : '';
   }
 });
 
+// بستن مودال با کلید Escape
 function handleKeydown(e) {
   if (e.key === 'Escape') closeImageModal();
 }
@@ -56,18 +61,60 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
   if (import.meta.client) document.body.style.overflow = '';
 });
+
+// --- زرّه‌بین (Magnifier) ---
+const modalImgWrap = ref(null); // والد نسبی که دقیقاً هم‌اندازه‌ی عکسه
+const modalImg = ref(null);
+const showLens = ref(false);
+const lensStyle = ref({});
+const lensSize = 180; // سایز دایره زرّه‌بین
+const zoomLevel = 2.5; // میزان بزرگنمایی
+
+// محاسبه موقعیت و بک‌گراند زرّه‌بین دقیقاً زیر مکان موس
+function handleMouseMove(e) {
+  if (!modalImg.value) return;
+  const rect = modalImg.value.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+    showLens.value = false;
+    return;
+  }
+
+  showLens.value = true;
+  lensStyle.value = {
+    width: lensSize + 'px',
+    height: lensSize + 'px',
+    left: (x - lensSize / 2) + 'px',
+    top: (y - lensSize / 2) + 'px',
+    backgroundImage: `url(${activeImage.value})`,
+    backgroundSize: `${rect.width * zoomLevel}px ${rect.height * zoomLevel}px`,
+    backgroundPositionX: `${-(x * zoomLevel - lensSize / 2)}px`,
+    backgroundPositionY: `${-(y * zoomLevel - lensSize / 2)}px`,
+    backgroundRepeat: 'no-repeat',
+  };
+}
+
+// مخفی کردن زرّه‌بین هنگام خروج موس از روی عکس
+function handleMouseLeave() {
+  showLens.value = false;
+}
 </script>
 
 <template>
+  <!-- حالت لودینگ -->
   <div v-if="pending" class="min-h-screen flex items-center justify-center text-[#747893] dark:text-dark-text">
     {{ $t('portfolio.resume.loading') }}
   </div>
 
+  <!-- حالت خطا یا نبود پروژه -->
   <div v-else-if="error || !project" class="min-h-screen flex items-center justify-center text-red-500 dark:text-red-400">
     {{ $t('portfolio.resume.notFound') }}
   </div>
 
   <div v-else class="min-h-screen p-5 sm:p-8 lg:p-10 bg-[#BFD1D5] dark:bg-dark-bg -mt-[80px] lg:-mt-[100px] overflow-hidden">
+    <!-- تیتر شعاری صفحه (فارسی/انگلیسی) -->
     <div class="text-center mt-[120px] lg:mt-[120px] flex flex-wrap justify-center items-center gap-1 sm:gap-2 px-2">
       <h2
         v-if="locale === 'fa'"
@@ -96,6 +143,7 @@ onBeforeUnmount(() => {
 </h2>
     </div>
 
+    <!-- بخش دایره پس‌زمینه و گالری پله‌ای عکس‌ها -->
     <div class="relative w-full py-10 lg:py-20 mt-[50px]">
       <div
   class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] lg:w-[654px] lg:h-[654px] rounded-full z-0 -mt-[60px] lg:-mt-[100px]
@@ -128,6 +176,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
+    <!-- عنوان و توضیحات پروژه -->
     <div class="mb-8 lg:mb-10">
       <h2 class="text-teal-800 dark:text-dark-highlight text-[19px] sm:text-[22px] lg:text-[26px] font-bold mb-2">{{ projectTitle }}</h2>
       <p class="text-[13px] lg:text-[14px] text-[#0F184B] dark:text-dark-text leading-[28px] sm:leading-[36px] lg:leading-[45px] font-roboto mt-[24px] lg:mt-[40px]">
@@ -166,6 +215,7 @@ onBeforeUnmount(() => {
       </div>
     </div> -->
 
+    <!-- مودال تمام‌صفحه نمایش عکس با زرّه‌بین -->
     <Teleport to="body">
       <Transition name="fade">
         <div
@@ -173,6 +223,7 @@ onBeforeUnmount(() => {
           class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
           @click.self="closeImageModal"
         >
+          <!-- دکمه بستن مودال -->
           <button
             @click="closeImageModal"
             class="absolute top-4 left-4 sm:top-6 sm:left-6 z-[10000] w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white text-2xl transition-colors"
@@ -181,15 +232,33 @@ onBeforeUnmount(() => {
             &times;
           </button>
 
+          <!-- کانتینر بیرونی: مسئول محدودیت سایز و اسکرول موبایل -->
           <div
-            class="w-full max-w-[95vw] sm:max-w-[85vw] lg:max-w-[75vw] max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-lg"
+            class="relative w-full max-w-[95vw] sm:max-w-[85vw] lg:max-w-[75vw] max-h-[90vh] overflow-y-auto sm:overflow-visible overflow-x-hidden rounded-lg flex items-center justify-center"
             @click.self="closeImageModal"
           >
-            <img
-              :src="activeImage"
-              class="block w-full h-auto mx-auto rounded-lg"
-              :alt="$t('portfolio.resume.fullImagePreview')"
-            />
+            <!-- کانتینر داخلی: دقیقاً هم‌اندازه‌ی عکس، مرجع زرّه‌بین -->
+            <div
+              ref="modalImgWrap"
+              class="relative inline-block leading-none"
+              @mousemove="handleMouseMove"
+              @mouseleave="handleMouseLeave"
+            >
+              <img
+                ref="modalImg"
+                :src="activeImage"
+                class="block w-full h-auto sm:w-auto sm:h-auto sm:max-w-full sm:max-h-[90vh] mx-auto rounded-lg object-contain select-none"
+                :alt="$t('portfolio.resume.fullImagePreview')"
+                draggable="false"
+              />
+
+              <!-- دایره زرّه‌بین که دقیقاً روی مکان موس می‌شینه -->
+              <div
+                v-if="showLens"
+                class="hidden sm:block pointer-events-none absolute rounded-full border-2 border-white shadow-2xl ring-1 ring-black/20"
+                :style="lensStyle"
+              ></div>
+            </div>
           </div>
         </div>
       </Transition>
