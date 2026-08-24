@@ -25,7 +25,7 @@
       <div class="order-1 md:order-none w-full max-w-[305px] min-[1920px]:max-w-[380px] md:w-[280px] lg:w-[305px] min-[1920px]:w-[380px] h-[260px] md:h-[290px] lg:h-[315px] min-[1920px]:h-[390px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] min-[1920px]:rounded-[56px] overflow-hidden">
         <img
           src="/images/content-order.jpeg"
-          class="w-full h-full object-cover"
+            class="w-full h-full object-cover object-top"
         />
 
         <div
@@ -90,10 +90,10 @@
 
       <div class="order-1 md:order-none w-full max-w-[305px] min-[1920px]:max-w-[380px] md:w-[280px] lg:w-[305px] min-[1920px]:w-[380px] h-[260px] md:h-[290px] lg:h-[315px] min-[1920px]:h-[390px] relative rounded-[36px] md:rounded-[42px] lg:rounded-[48px] min-[1920px]:rounded-[56px] overflow-hidden">
 
-        <img
-          src="/images/web-order.jpeg"
-          class="w-full h-full lg:h-[400px] object-cover"
-        />
+<img
+  src="/images/web-order.jpeg"
+  class="w-full h-full object-cover"
+/>
 
         <!-- Glass footer -->
         <div

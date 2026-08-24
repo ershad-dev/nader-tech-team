@@ -92,12 +92,12 @@
         />
         <div class="relative z-10 flex flex-col lg:flex-row items-center gap-6 lg:gap-8 xl:gap-12 min-[1920px]:gap-16 min-[1920px]:flex-nowrap">
           <div class="flex-1 w-full lg:max-w-[45%] xl:max-w-none">
-            <img 
-              :key="currentContent.image" 
-              :src="currentContent.image" 
-              :alt="currentContent.title"
-              class="w-full md:w-auto md:mx-auto lg:w-full lg:mx-0 h-[220px] lg:h-[280px] xl:w-[506px] xl:h-[386px] min-[1920px]:w-[650px] min-[1920px]:h-[480px] object-cover md:object-contain lg:object-cover rounded-tl-[17px] rounded-br-[17px] rounded-tr-[65px] rounded-bl-[65px] shadow-xl dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-500" 
-            />
+<img 
+  :key="currentContent.image" 
+  :src="currentContent.image" 
+  :alt="currentContent.title"
+  class="w-full md:w-[420px] md:mx-auto lg:w-full lg:mx-0 xl:w-[560px] min-[1920px]:w-[650px] aspect-[1500/964] object-cover rounded-tl-[17px] rounded-br-[17px] rounded-tr-[65px] rounded-bl-[65px] shadow-xl dark:shadow-none dark:ring-1 dark:ring-dark-border transition-all duration-500" 
+/>
           </div>
           
           <div
@@ -204,7 +204,7 @@ const contentMap = computed(() => ({
   web: {
     title: t('home.services.web.title'),
     description: t('home.services.web.description'),
-    image: '/images/web-showcase.png',
+    image: '/images/web-showcase.jpeg',
     buttonText: t('home.services.web.buttonText'),
     buttonLink: '/order/requestProject',
   },
