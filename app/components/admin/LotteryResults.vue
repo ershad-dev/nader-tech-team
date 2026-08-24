@@ -3,6 +3,7 @@ const props = defineProps({
   winners: { type: Array, default: () => [] },
 })
 
+// پنهان‌سازی بخشی از شماره موبایل برای نمایش امن
 const maskMobile = (mobile) => {
   if (!mobile || mobile.length < 7) return mobile
   return mobile.slice(0, 4) + '***' + mobile.slice(-4)
@@ -12,10 +13,12 @@ const maskMobile = (mobile) => {
 <template>
   <div class="min-h-screen flex flex-col items-center py-6 px-3 sm:py-8 sm:px-4 lg:py-12" dir="ltr">
     <div class="w-full max-w-[500px] sm:max-w-[600px] lg:max-w-[700px] bg-[#ffffff]/30 backdrop-blur-md border border-white/10 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] overflow-hidden shadow-2xl">
+      <!-- عنوان کارت -->
       <div class="bg-[#9A57B8]/80 py-3 sm:py-4 lg:py-5 text-center">
         <h2 class="text-white text-lg sm:text-xl lg:text-2xl font-bold">برندگان قرعه‌کشی</h2>
       </div>
 
+      <!-- لیست برندگان -->
       <div class="p-3 sm:p-5 lg:p-6">
         <div v-if="!winners.length" class="text-center text-white/70 py-6">
           برنده‌ای ثبت نشده است.

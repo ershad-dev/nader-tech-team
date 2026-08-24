@@ -101,9 +101,6 @@ const filteredUsers = computed(() => {
 })
 
 // --- جستجو ---
-// این endpoint هم مثل /api/admin/users فقط page/per_page می‌گیره، پارامتر فیلتر متنی نداره.
-// پس همون الگو رو پیاده می‌کنیم: کل درخواست‌ها رو یک‌بار (با گذر از تمام صفحات) می‌گیریم و کش می‌کنیم،
-// بعد فیلتر بر اساس موبایل/نام + تب فعال، سمت فرانت‌اند انجام میشه.
 const searchMode = ref('mobile') // 'mobile' | 'name'
 const searchQuery = ref('')
 let searchDebounceTimer = null

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useAdminAuth } from '@/composables/useAdminAuth'; // مسیر را مطابق پروژه تنظیم کنید
-import { useAdminPermissions } from '@/composables/useAdminPermissions'; // مسیر را مطابق پروژه تنظیم کنید
+import { useAdminAuth } from '@/composables/useAdminAuth';
+import { useAdminPermissions } from '@/composables/useAdminPermissions';
 
 // Tiptap
 import { EditorContent, useEditor } from '@tiptap/vue-3';
@@ -11,25 +11,15 @@ import Image from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 
-/* ---------------------------------------------------------
-   تنظیمات پایه‌ی API + احراز هویت
---------------------------------------------------------- */
+// تنظیمات پایه API
 const API_BASE = 'https://nadertechnologyteam.ir/api/admin/articles';
-// اندپوینت آپلود تصویر داخل متن مقاله (جدا از تصویر شاخص/thumbnail)
-// ⚠️ این آدرس را مطابق روت واقعی سمت Laravel خودتان اصلاح کنید
 const IMAGE_UPLOAD_URL = 'https://nadertechnologyteam.ir/api/admin/articles/upload-image';
 
+// احراز هویت و دسترسی ادمین
 const { initFromStorage, authHeader, clearAuth } = useAdminAuth();
 const { isReadOnly } = useAdminPermissions();
 
-// در سمت کلاینت، توکن را از localStorage بازیابی کن (بعد از رفرش صفحه)
 if (import.meta.client) initFromStorage();
-
-/* ===========================================================
-   سیستم متمرکز مدیریت خطا + Toast (اعلان)
-   هدف: هر خطایی که رخ می‌دهد باید برای کاربر قابل‌فهم،
-   دقیق و قابل‌اقدام باشد؛ نه یک پیام مبهم فنی.
-=========================================================== */
 
 // وضعیت آنلاین/آفلاین بودن مرورگر
 const isOffline = ref(import.meta.client ? !navigator.onLine : false);
@@ -40,6 +30,7 @@ function handleOffline() { isOffline.value = true; }
 const toasts = ref([]);
 let toastSeq = 0;
 
+// نمایش یک اعلان Toast جدید
 function showToast(type, message, duration) {
   const id = ++toastSeq;
   const finalDuration = duration ?? (type === 'error' ? 7000 : type === 'warning' ? 5500 : 3500);
@@ -49,16 +40,13 @@ function showToast(type, message, duration) {
   }
   return id;
 }
+// حذف یک اعلان Toast از صف
 function dismissToast(id) {
   toasts.value = toasts.value.filter((t) => t.id !== id);
 }
 
-/**
- * تبدیل هر نوع خطای دریافتی از $fetch/axios/شبکه به یک پیام فارسیِ روشن.
- * context: توضیح کوتاه از عملیاتی که در حال انجام بود (برای دقیق‌تر شدن پیام)
- */
+// تبدیل خطای دریافتی از سرور به پیام فارسی قابل‌فهم
 function getErrorMessage(err, context = '') {
-  // ۱. عدم اتصال به اینترنت (شناسایی‌شده توسط مرورگر)
   if (import.meta.client && !navigator.onLine) {
     return 'اتصال اینترنت شما برقرار نیست. لطفاً اتصال خود را بررسی و دوباره تلاش کنید.';
   }
@@ -66,7 +54,6 @@ function getErrorMessage(err, context = '') {
   const status = err?.response?.status ?? err?.statusCode ?? err?.status ?? null;
   const body = err?.response?._data ?? err?.data ?? null;
 
-  // ۲. هیچ status ای برنگشته یعنی اصلاً درخواست به سرور نرسیده (قطعی سرور، DNS، CORS، تایم‌اوت)
   if (status === null) {
     return `${context ? context + ': ' : ''}ارتباط با سرور برقرار نشد. ممکن است سرور موقتاً در دسترس نباشد، لطفاً چند لحظه دیگر دوباره تلاش کنید.`;
   }
@@ -103,29 +90,26 @@ function getErrorMessage(err, context = '') {
   }
 }
 
-/** آیا خطا به‌دلیل منقضی‌شدن نشست است؟ اگر بله، کاربر به لاگین هدایت می‌شود. */
+// بررسی اینکه آیا خطا به‌دلیل منقضی‌شدن نشست است
 function isUnauthorized(err) {
   const status = err?.response?.status ?? err?.statusCode ?? err?.status;
   return status === 401;
 }
 
+// مدیریت منقضی‌شدن نشست و انتقال به صفحه ورود
 function handleUnauthorized() {
   showToast('error', 'نشست شما منقضی شده است. در حال انتقال به صفحه ورود...');
   clearAuth();
   if (import.meta.client) {
-    setTimeout(() => navigateTo('/admin/login'), 1200); // مسیر صفحه‌ی لاگین را مطابق پروژه تنظیم کنید
+    setTimeout(() => navigateTo('/admin/login'), 1200);
   }
 }
 
-/* ---------------------------------------------------------
-   وضعیت نمایش (فرم / لیست)
---------------------------------------------------------- */
+// وضعیت نمایش فرم یا لیست
 const isFormVisible = ref(false);
 const isEditMode = computed(() => !!form.id);
 
-/* ---------------------------------------------------------
-   لیست مقالات + Pagination (سازگار با پاسخ API)
---------------------------------------------------------- */
+// لیست مقالات و اطلاعات صفحه‌بندی
 const articles = ref([]);
 const isLoadingList = ref(false);
 const listError = ref('');
@@ -138,6 +122,7 @@ const meta = reactive({
   total: 0,
 });
 
+// دریافت لیست مقالات از سرور
 async function fetchArticles(page = currentPage.value) {
   isLoadingList.value = true;
   listError.value = '';
@@ -163,12 +148,14 @@ async function fetchArticles(page = currentPage.value) {
   }
 }
 
+// تلاش مجدد برای دریافت لیست مقالات
 function retryFetchArticles() {
   fetchArticles(currentPage.value);
 }
 
 const totalPages = computed(() => meta.last_page || 1);
 
+// رفتن به صفحه مشخص در صفحه‌بندی
 function changePage(page) {
   if (page >= 1 && page <= totalPages.value && page !== currentPage.value) {
     currentPage.value = page;
@@ -176,12 +163,7 @@ function changePage(page) {
   }
 }
 
-/* ---------------------------------------------------------
-   فرم افزودن / ویرایش مقاله
-   دوزبانه‌سازی: هر مقاله فیلدهای انگلیسی زیر را دارد
-   title_en, content_en, thumbnail_alt_en, meta_title_en, meta_description_en
-   (thumbnail و slug دوزبانه نمی‌شوند)
---------------------------------------------------------- */
+// مقدار اولیه خالی فرم مقاله
 const emptyForm = () => ({
   id: null,
   title: '',
@@ -200,15 +182,15 @@ const emptyForm = () => ({
 
 const form = reactive(emptyForm());
 
-const thumbnailFile = ref(null);       // فایل جدید انتخاب‌شده (اختیاری در حالت ویرایش)
-const thumbnailPreview = ref('');      // برای نمایش پیش‌نمایش تصویر
-const thumbnailError = ref('');        // خطای اعتبارسنجی سمت کلاینت برای تصویر شاخص
+const thumbnailFile = ref(null);
+const thumbnailPreview = ref('');
+const thumbnailError = ref('');
 
 const isSaving = ref(false);
 const formErrors = ref({});
 const formErrorMessage = ref('');
 
-// خلاصه‌ی متنیِ همه‌ی خطاهای اعتبارسنجی، برای نمایش در یک بنر بالای فرم
+// خلاصه متنی خطاهای اعتبارسنجی فرم برای نمایش در بنر
 const formErrorSummary = computed(() => {
   const entries = Object.entries(formErrors.value || {});
   if (!entries.length) return [];
@@ -219,6 +201,7 @@ const formErrorSummary = computed(() => {
   }));
 });
 
+// تبدیل نام فیلد به برچسب فارسی قابل‌نمایش
 function fieldLabel(field) {
   const map = {
     title: 'نام مقاله',
@@ -238,9 +221,7 @@ function fieldLabel(field) {
   return map[field] || field;
 }
 
-/* ---------------------------------------------------------
-   Tiptap Editor - نسخه‌ی فارسی
---------------------------------------------------------- */
+// ویرایشگر Tiptap نسخه فارسی
 const editor = useEditor({
   content: '',
   editable: !isReadOnly.value,
@@ -262,9 +243,7 @@ const editor = useEditor({
   },
 });
 
-/* ---------------------------------------------------------
-   Tiptap Editor - نسخه‌ی انگلیسی (content_en)
---------------------------------------------------------- */
+// ویرایشگر Tiptap نسخه انگلیسی
 const editorEn = useEditor({
   content: '',
   editable: !isReadOnly.value,
@@ -286,6 +265,7 @@ const editorEn = useEditor({
   },
 });
 
+// پاکسازی ویرایشگرها و رویدادها هنگام آنمانت شدن کامپوننت
 onBeforeUnmount(() => {
   editor.value?.destroy();
   editorEn.value?.destroy();
@@ -295,19 +275,19 @@ onBeforeUnmount(() => {
   }
 });
 
+// درج یا حذف لینک در ویرایشگر
 function setLink(targetEditor) {
   if (isReadOnly.value) return;
   if (!targetEditor.value) return;
   const previousUrl = targetEditor.value.getAttributes('link').href;
   const url = window.prompt('آدرس لینک را وارد کنید:', previousUrl || 'https://');
-  if (url === null) return; // کاربر لغو کرد
+  if (url === null) return;
 
   if (url === '') {
     targetEditor.value.chain().focus().extendMarkRange('link').unsetLink().run();
     return;
   }
 
-  // اعتبارسنجی ساده‌ی آدرس برای جلوگیری از لینک‌های خراب/ناقص
   try {
     const normalized = /^https?:\/\//i.test(url) ? url : `https://${url}`;
     new URL(normalized);
@@ -317,12 +297,9 @@ function setLink(targetEditor) {
   }
 }
 
-/* ---------------------------------------------------------
-   آپلود تصویر داخل متن مقاله (Tiptap Image Extension)
-   نسخه‌ی عمومی که هم برای ادیتور فارسی و هم انگلیسی کار می‌کند
---------------------------------------------------------- */
-const contentImageInputFa = ref(null); // ref روی input فایل مخفی (فارسی)
-const contentImageInputEn = ref(null); // ref روی input فایل مخفی (انگلیسی)
+// آپلود تصویر داخل متن مقاله (مشترک بین ادیتور فارسی و انگلیسی)
+const contentImageInputFa = ref(null);
+const contentImageInputEn = ref(null);
 const isUploadingImage = ref(false);
 const isUploadingImageEn = ref(false);
 const imageUploadError = ref('');
@@ -332,6 +309,7 @@ const MAX_IMAGE_SIZE_MB = 5;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const ALLOWED_IMAGE_TYPES_LABEL = 'jpg, jpeg, png, webp, gif';
 
+// باز کردن پنجره انتخاب فایل تصویر (فارسی)
 function triggerImageUpload() {
   if (isReadOnly.value) return;
   if (isUploadingImage.value) return;
@@ -339,6 +317,7 @@ function triggerImageUpload() {
   contentImageInputFa.value?.click();
 }
 
+// باز کردن پنجره انتخاب فایل تصویر (انگلیسی)
 function triggerImageUploadEn() {
   if (isReadOnly.value) return;
   if (isUploadingImageEn.value) return;
@@ -346,6 +325,7 @@ function triggerImageUploadEn() {
   contentImageInputEn.value?.click();
 }
 
+// اعتبارسنجی، پیش‌نمایش و آپلود تصویر انتخاب‌شده داخل متن
 async function handleContentImageSelected(e, { targetEditor, isUploadingRef, errorRef }) {
   if (isReadOnly.value) {
     e.target.value = '';
@@ -353,7 +333,7 @@ async function handleContentImageSelected(e, { targetEditor, isUploadingRef, err
   }
 
   const file = e.target.files?.[0];
-  e.target.value = ''; // اجازه می‌دهد input بعداً همان فایل را دوباره انتخاب کند
+  e.target.value = '';
   if (!file) return;
 
   errorRef.value = '';
@@ -372,7 +352,6 @@ async function handleContentImageSelected(e, { targetEditor, isUploadingRef, err
     return;
   }
 
-  // پیش‌نمایش موقت و فوری با blob محلی، تا زمانی که آپلود واقعی تمام شود
   const localPreviewUrl = URL.createObjectURL(file);
   if (!targetEditor.value) return;
 
@@ -409,6 +388,7 @@ async function handleContentImageSelected(e, { targetEditor, isUploadingRef, err
   }
 }
 
+// هندلر انتخاب تصویر برای ادیتور فارسی
 function onContentImageSelected(e) {
   handleContentImageSelected(e, {
     targetEditor: editor,
@@ -417,6 +397,7 @@ function onContentImageSelected(e) {
   });
 }
 
+// هندلر انتخاب تصویر برای ادیتور انگلیسی
 function onContentImageSelectedEn(e) {
   handleContentImageSelected(e, {
     targetEditor: editorEn,
@@ -425,7 +406,7 @@ function onContentImageSelectedEn(e) {
   });
 }
 
-// جایگزین کردن src یک تصویر خاص در سند Tiptap (برای سوییچ از blob محلی به URL نهایی)
+// جایگزینی src تصویر در سند Tiptap پس از تکمیل آپلود
 function replaceImageSrcInEditor(targetEditor, oldSrc, newSrc) {
   if (!targetEditor.value) return;
   const { state, view } = targetEditor.value;
@@ -438,7 +419,7 @@ function replaceImageSrcInEditor(targetEditor, oldSrc, newSrc) {
   view.dispatch(tr);
 }
 
-// حذف یک تصویر خاص از سند Tiptap با src (برای حالت خطا در آپلود)
+// حذف تصویر از سند Tiptap در صورت شکست آپلود
 function removeImageFromEditorBySrc(targetEditor, src) {
   if (!targetEditor.value) return;
   const { state, view } = targetEditor.value;
@@ -455,6 +436,7 @@ function removeImageFromEditorBySrc(targetEditor, src) {
   view.dispatch(tr);
 }
 
+// باز کردن فرم خالی برای افزودن مقاله جدید
 function openCreateForm() {
   if (isReadOnly.value) return;
   Object.assign(form, emptyForm());
@@ -470,6 +452,7 @@ function openCreateForm() {
   editorEn.value?.commands.setContent('');
 }
 
+// باز کردن فرم با داده‌های یک مقاله برای ویرایش
 function openEditForm(article) {
   Object.assign(form, {
     id: article.id,
@@ -501,6 +484,7 @@ function openEditForm(article) {
 const THUMBNAIL_MAX_MB = 2;
 const THUMBNAIL_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
+// اعتبارسنجی و پیش‌نمایش تصویر شاخص انتخاب‌شده
 function onThumbnailChange(e) {
   if (isReadOnly.value) {
     e.target.value = '';
@@ -508,7 +492,7 @@ function onThumbnailChange(e) {
   }
 
   const file = e.target.files?.[0];
-  e.target.value = ''; // امکان انتخاب دوباره‌ی همان فایل را می‌دهد
+  e.target.value = '';
   if (!file) return;
 
   thumbnailError.value = '';
@@ -527,6 +511,7 @@ function onThumbnailChange(e) {
   thumbnailPreview.value = URL.createObjectURL(file);
 }
 
+// ساخت FormData از داده‌های فرم برای ارسال به API
 function buildFormData() {
   const fd = new FormData();
   fd.append('title', form.title);
@@ -545,13 +530,13 @@ function buildFormData() {
   return fd;
 }
 
+// ذخیره (ایجاد یا ویرایش) مقاله
 async function saveArticle() {
   if (isReadOnly.value) return;
 
   formErrors.value = {};
   formErrorMessage.value = '';
 
-  // ولیدیشن ساده‌ی سمت کلاینت طبق فیلدهای اجباری API — پیام‌های دقیق و مجزا
   const clientErrors = {};
   if (!form.title?.trim()) clientErrors.title = ['نام مقاله را وارد کنید.'];
   if (!form.content || form.content === '<p></p>') clientErrors.content = ['متن توضیحات مقاله نمی‌تواند خالی باشد.'];
@@ -575,7 +560,6 @@ async function saveArticle() {
     const fd = buildFormData();
     let url = API_BASE;
     if (isEditMode.value) {
-      // در Laravel برای ارسال FormData با متد PUT از method-spoofing استفاده می‌شود
       url = `${API_BASE}/${form.id}?_method=PUT`;
     }
 
@@ -609,9 +593,7 @@ async function saveArticle() {
   }
 }
 
-/* ---------------------------------------------------------
-   حذف مقاله
---------------------------------------------------------- */
+// حذف مقاله پس از تأیید کاربر
 const deletingId = ref(null);
 
 async function deleteArticle(article) {
@@ -632,7 +614,6 @@ async function deleteArticle(article) {
 
     showToast('success', `مقاله «${article.title}» با موفقیت حذف شد.`);
 
-    // اگر آخرین آیتم صفحه حذف شد و صفحه خالی از قلم افتاد، یک صفحه برگرد
     const isLastItemOnPage = articles.value.length === 1 && currentPage.value > 1;
     await fetchArticles(isLastItemOnPage ? currentPage.value - 1 : currentPage.value);
   } catch (err) {
@@ -646,9 +627,7 @@ async function deleteArticle(article) {
   }
 }
 
-/* ---------------------------------------------------------
-   کمکی: فرمت تاریخ برای نمایش
---------------------------------------------------------- */
+// فرمت‌دهی تاریخ برای نمایش
 function formatDate(dateStr) {
   if (!dateStr) return '';
   try {
@@ -661,6 +640,7 @@ function formatDate(dateStr) {
   }
 }
 
+// بارگذاری اولیه لیست و ثبت رویدادهای آنلاین/آفلاین
 onMounted(() => {
   fetchArticles();
   if (import.meta.client) {
@@ -706,7 +686,7 @@ onMounted(() => {
     </TransitionGroup>
   </div>
 
-  <!-- ۱. فرم افزودن/ویرایش مقاله -->
+  <!-- فرم افزودن/ویرایش مقاله -->
   <div v-if="isFormVisible" class="max-w-full lg:max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
     <button @click="isFormVisible = false" class="mb-4 text-sm font-bold text-gray-500 dark:text-dark-text">بازگشت ← </button>
 
@@ -723,7 +703,7 @@ onMounted(() => {
         شما فقط دسترسی مشاهده دارید و امکان ویرایش وجود ندارد.
       </div>
 
-      <!-- بنر خلاصه‌ی خطاهای فرم -->
+      <!-- بنر خلاصه خطاهای فرم -->
       <div
         v-if="formErrorMessage"
         class="mb-5 rounded-2xl border border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-800 p-4"
@@ -822,7 +802,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- متن توضیحات مقاله (Tiptap) - فارسی -->
+        <!-- ویرایشگر متن مقاله - فارسی -->
         <div>
           <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن توضیحات مقاله *</label>
 
@@ -831,7 +811,7 @@ onMounted(() => {
               class="w-full bg-white/20 dark:bg-dark-input/20 border rounded-2xl overflow-hidden"
               :class="formErrors.content ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             >
-              <!-- Toolbar -->
+              <!-- نوار ابزار ویرایشگر -->
               <div v-if="editor" class="flex flex-wrap items-center gap-1 border-b border-gray-300 dark:border-dark-border p-2">
                 <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleBold().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('bold') }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">B</button>
                 <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().toggleItalic().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('italic') }" class="px-2.5 py-1 rounded-lg text-sm italic dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">I</button>
@@ -860,7 +840,7 @@ onMounted(() => {
 
                 <button type="button" :disabled="isReadOnly" @click="setLink(editor)" :class="{ 'bg-gray-300 dark:bg-dark-input': editor.isActive('link') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">لینک</button>
 
-                <!-- دکمه‌ی درج تصویر داخل متن -->
+                <!-- دکمه درج تصویر داخل متن -->
                 <button
                   type="button"
                   @click="triggerImageUpload"
@@ -885,11 +865,11 @@ onMounted(() => {
                 <button type="button" :disabled="isReadOnly" @click="editor.chain().focus().redo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">↪</button>
               </div>
 
-              <!-- Editor Content -->
+              <!-- محتوای ویرایشگر -->
               <EditorContent :editor="editor" class="min-h-[180px] sm:min-h-[250px]" />
             </div>
 
-            <!-- Fallback هنگام SSR -->
+            <!-- حالت جایگزین هنگام SSR -->
             <template #fallback>
               <div class="w-full h-[180px] sm:h-[250px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-2xl flex items-center justify-center text-sm text-gray-400 dark:text-dark-text">
                 در حال بارگذاری ویرایشگر...
@@ -901,14 +881,14 @@ onMounted(() => {
           <p v-if="formErrors.content" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.content[0] }}</p>
         </div>
 
-        <!-- جداکننده -->
+        <!-- جداکننده بخش انگلیسی -->
         <div class="flex items-center gap-3 my-1">
           <span class="flex-1 h-px bg-gray-300 dark:bg-dark-border"></span>
           <span class="text-[11px] text-gray-400 dark:text-dark-text font-roboto font-bold">ENGLISH CONTENT</span>
           <span class="flex-1 h-px bg-gray-300 dark:bg-dark-border"></span>
         </div>
 
-        <!-- متن توضیحات مقاله (Tiptap) - انگلیسی -->
+        <!-- ویرایشگر متن مقاله - انگلیسی -->
         <div>
           <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">متن توضیحات مقاله (English)</label>
 
@@ -917,7 +897,7 @@ onMounted(() => {
               class="w-full bg-white/20 dark:bg-dark-input/20 border rounded-2xl overflow-hidden"
               :class="formErrors.content_en ? 'border-red-500' : 'border-gray-300 dark:border-dark-border'"
             >
-              <!-- Toolbar -->
+              <!-- نوار ابزار ویرایشگر -->
               <div v-if="editorEn" class="flex flex-wrap items-center gap-1 border-b border-gray-300 dark:border-dark-border p-2" dir="ltr">
                 <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleBold().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('bold') }" class="px-2.5 py-1 rounded-lg text-sm font-bold dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">B</button>
                 <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().toggleItalic().run()" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('italic') }" class="px-2.5 py-1 rounded-lg text-sm italic dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">I</button>
@@ -946,7 +926,7 @@ onMounted(() => {
 
                 <button type="button" :disabled="isReadOnly" @click="setLink(editorEn)" :class="{ 'bg-gray-300 dark:bg-dark-input': editorEn.isActive('link') }" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">Link</button>
 
-                <!-- دکمه‌ی درج تصویر داخل متن -->
+                <!-- دکمه درج تصویر داخل متن -->
                 <button
                   type="button"
                   @click="triggerImageUploadEn"
@@ -971,11 +951,11 @@ onMounted(() => {
                 <button type="button" :disabled="isReadOnly" @click="editorEn.chain().focus().redo().run()" class="px-2.5 py-1 rounded-lg text-sm dark:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-input/70 disabled:opacity-50 disabled:cursor-not-allowed">↪</button>
               </div>
 
-              <!-- Editor Content -->
+              <!-- محتوای ویرایشگر -->
               <EditorContent :editor="editorEn" class="min-h-[180px] sm:min-h-[250px]" />
             </div>
 
-            <!-- Fallback هنگام SSR -->
+            <!-- حالت جایگزین هنگام SSR -->
             <template #fallback>
               <div class="w-full h-[180px] sm:h-[250px] bg-white/20 dark:bg-dark-input/20 border border-gray-300 dark:border-dark-border rounded-2xl flex items-center justify-center text-sm text-gray-400 dark:text-dark-text">
                 Loading editor...
@@ -987,7 +967,7 @@ onMounted(() => {
           <p v-if="formErrors.content_en" class="text-xs text-red-600 mt-1 flex items-center gap-1">⛔ {{ formErrors.content_en[0] }}</p>
         </div>
 
-        <!-- سئو (اختیاری) - فارسی -->
+        <!-- فیلدهای سئو - فارسی -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">عنوان سئو</label>
@@ -1011,7 +991,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- سئو (اختیاری) - انگلیسی -->
+        <!-- فیلدهای سئو - انگلیسی -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-dark-text">عنوان سئو (English)</label>
@@ -1064,7 +1044,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <!-- ۲. لیست مقالات -->
+  <!-- لیست مقالات -->
   <div v-else class="max-w-full lg:max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
 
     <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
@@ -1095,7 +1075,7 @@ onMounted(() => {
 
     <!-- حالت خطا با امکان تلاش مجدد -->
     <div v-else-if="listError" class="flex flex-col items-center justify-center py-16 gap-4 text-center px-4">
-      <span class="text-3xl">⛔</span>
+      
       <p class="text-sm font-bold text-red-600 max-w-md">{{ listError }}</p>
       <button
         @click="retryFetchArticles"
@@ -1118,6 +1098,7 @@ onMounted(() => {
       </button>
     </div>
 
+    <!-- کارت‌های مقاله -->
     <div v-else class="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-5 lg:gap-6">
       <div
         v-for="article in articles"
@@ -1183,7 +1164,7 @@ onMounted(() => {
 </template>
 
 <style>
-/* استایل پایه‌ی محتوای Tiptap - در صورت نداشتن پلاگین @tailwindcss/typography لازم است */
+/* استایل پایه محتوای Tiptap */
 .ProseMirror {
   outline: none;
 }

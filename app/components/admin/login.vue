@@ -1,10 +1,10 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
+import { useAdminAuth } from '@/composables/useAdminAuth'
 
 const { setAuth } = useAdminAuth()
 
-const identifier = ref('') // مقدار به فیلد "login" در API نگاشت می‌شود (username یا email)
+const identifier = ref('')
 const password = ref('')
 const loading = ref(false)
 
@@ -14,20 +14,18 @@ const errors = ref({
   general: ''
 })
 
-// پاک کردن خطاها هنگام تایپ مجدد
+// پاک کردن خطاها هنگام تایپ مجدد کاربر
 watch([identifier, password], () => {
   errors.value = { identifier: '', password: '', general: '' }
 })
 
-// متد ورود
+// انجام عملیات ورود و مدیریت خطاهای احتمالی
 const handleLogin = async () => {
   errors.value = { identifier: '', password: '', general: '' }
 
   const loginValue = identifier.value.trim()
   const passwordValue = password.value.trim()
 
-  // اعتبارسنجی سبک سمت کلاینت (اعتبارسنجی اصلی سمت سرور انجام می‌شود چون
-  // فیلد "login" هم می‌تواند username باشد هم email)
   if (!loginValue) errors.value.identifier = 'نام کاربری یا ایمیل الزامی است'
   if (!passwordValue) errors.value.password = 'رمز عبور الزامی است'
 
@@ -44,7 +42,6 @@ const handleLogin = async () => {
       },
     })
 
-    // ساختار پاسخ موفق: { message, data: { access_token, token_type, admin } }
     const { access_token, admin } = response.data
     setAuth(access_token, admin)
 
@@ -56,7 +53,6 @@ const handleLogin = async () => {
     if (status === 401) {
       errors.value.general = body?.message || 'اطلاعات ورود نادرست است.'
     } else if (status === 422) {
-      // نمایش اولین خطای validation برای هر فیلد در صورت وجود
       const fieldErrors = body?.errors || {}
       errors.value.identifier = fieldErrors.login?.[0] || ''
       errors.value.password = fieldErrors.password?.[0] || ''
@@ -75,6 +71,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
+  <!-- فرم ورود ادمین -->
   <form @submit.prevent="handleLogin">
     <div class="min-h-[400px] w-full flex items-center justify-center p-4 sm:p-6" dir="rtl">
       <div class="w-full max-w-[400px] lg:w-auto lg:max-w-none">
@@ -83,6 +80,7 @@ const handleLogin = async () => {
         </h1>
 
         <div class="space-y-4 text-right w-full lg:w-[400px]">
+          <!-- فیلد نام کاربری -->
           <div>
             <AuthInput
               v-model="identifier"
@@ -96,6 +94,7 @@ const handleLogin = async () => {
             </p>
           </div>
 
+          <!-- فیلد رمز عبور -->
           <div>
             <AuthInput
               v-model="password"
@@ -113,6 +112,7 @@ const handleLogin = async () => {
             {{ errors.general }}
           </p>
 
+          <!-- دکمه ارسال فرم -->
           <AuthButton type="submit" :disabled="loading" class="w-full mt-8 !bg-[#2d6a66]">
             {{ loading ? 'در حال ورود...' : 'ورود' }}
           </AuthButton>

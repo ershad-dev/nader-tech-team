@@ -1,54 +1,50 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { useAdminAuth } from '~/composables/useAdminAuth' // مسیر رو مطابق پروژه‌ت تنظیم کن
+import { useAdminAuth } from '~/composables/useAdminAuth'
 import { useAdminPermissions } from '~/composables/useAdminPermissions'
 
-// ==================== تنظیمات پایه ====================
+// آدرس پایه API
 const API_BASE = 'https://nadertechnologyteam.ir'
 
+// احراز هویت ادمین
 const { authHeader, initFromStorage } = useAdminAuth()
 initFromStorage()
 
-// دسترسی read-only
+// دسترسی مشاهده‌فقط کاربر
 const { isReadOnly } = useAdminPermissions()
 
-// ==================== وضعیت نمایش ====================
+// وضعیت نمایش (لیست یا فرم)
 const activeView = ref('list') // 'list' | 'form'
 const selectedItem = ref(null)
 
+// وضعیت‌های بارگذاری و خطا
 const isLoadingList = ref(false)
 const isLoadingForm = ref(false)
 const isSaving = ref(false)
 const isDeleting = ref(false)
 const errorMessage = ref('')
 
-// ==================== لیست + صفحه‌بندی (از API) ====================
+// داده‌های لیست و صفحه‌بندی
 const resumeItems = ref([])
 const currentPage = ref(1)
 const perPage = ref(6)
 const totalPages = ref(1)
 
-// ==================== فیلتر دسته‌بندی (تب‌ها) ====================
-// ⚠️ قبلاً با category_slug روی /api/admin/resumes امتحان شد و فیلتر نمی‌کرد.
-// طبق composable عمومی useResumes (که روی /api/resumes درست کار می‌کنه)،
-// پارامتر درست category_id هست، نه slug. چون هر دو endpoint احتمالاً از
-// همون منبع داده می‌خونن، اینجا هم با category_id امتحان می‌کنیم.
-// اگه بازم فیلتر نکرد، یعنی /api/admin/resumes اصلاً این پارامتر رو
-// پیاده‌سازی نکرده و باید از بک‌اند بپرسیم.
+// شناسه دسته‌بندی فعال برای فیلتر
 const activeCategoryId = ref(null)
 
+// انتخاب تب دسته‌بندی و بارگذاری مجدد لیست
 const selectCategoryTab = (id) => {
   if (activeCategoryId.value === id) return
   activeCategoryId.value = id
   fetchResumes(1)
 }
 
+// دریافت لیست رزومه‌ها از سرور
 const fetchResumes = async (page = 1) => {
   isLoadingList.value = true
   errorMessage.value = ''
   try {
-    // نکته: در $fetch از کلید "query" استفاده می‌کنیم نه "params"
-    // مسیر واقعی طبق پروژه: /api/admin/resumes (plural)
     const query = { page, per_page: perPage.value }
     if (activeCategoryId.value) {
       query.category_id = activeCategoryId.value
@@ -76,6 +72,7 @@ const fetchResumes = async (page = 1) => {
   }
 }
 
+// رفتن به صفحه مشخص در صفحه‌بندی
 const goToPage = (page) => {
   if (page < 1 || page > totalPages.value || page === currentPage.value) return
   fetchResumes(page)
@@ -83,17 +80,13 @@ const goToPage = (page) => {
 
 fetchResumes(1)
 
-// ==================== دسته‌بندی‌ها (از Services) ====================
-//   1  = طراحی سایت (وب‌سایت)
-//   8  = تولید محتوا
-//   15 = برگزاری ایونت
-// اگه بعداً بک‌اند یک راه تشخیص برنامه‌نویسی‌شده (مثلاً یک فیلد is_main_category
-// یا endpoint جدا) اضافه کرد، این لیست هاردکد باید حذف بشه.
+// شناسه دسته‌بندی‌های اصلی رزومه
 const MAIN_CATEGORY_IDS = [1, 8, 15]
 
 const categories = ref([])
 const isLoadingCategories = ref(false)
 
+// دریافت لیست دسته‌بندی‌ها از سرویس‌ها
 const fetchCategories = async () => {
   isLoadingCategories.value = true
   try {
@@ -101,8 +94,6 @@ const fetchCategories = async () => {
       method: 'GET',
     })
 
-    // ساختار پاسخ: { data: { services: [...] } }
-    // برای اطمینان، چند حالت محتمل دیگه رو هم پشتیبانی می‌کنیم
     const services =
       res?.data?.services ??
       (Array.isArray(res?.data) ? res.data : null) ??
@@ -110,12 +101,9 @@ const fetchCategories = async () => {
       (Array.isArray(res) ? res : null) ??
       []
 
-    // فقط سه دسته‌بندی اصلی رزومه رو (بر اساس id هاردکد شده) نگه می‌داریم
     categories.value = services.filter((s) => MAIN_CATEGORY_IDS.includes(s.id))
   } catch (err) {
     console.error(err)
-    // اگه گرفتن دسته‌بندی‌ها خطا داد، فرم همچنان قابل استفاده می‌مونه
-    // فقط select دسته‌بندی و تب‌های فیلتر خالی می‌مونن
   } finally {
     isLoadingCategories.value = false
   }
@@ -123,7 +111,7 @@ const fetchCategories = async () => {
 
 fetchCategories()
 
-// ==================== فرم افزودن/ویرایش ====================
+// مقدار اولیه خالی فرم
 const emptyForm = () => ({
   id: null,
   title: '',
@@ -133,35 +121,33 @@ const emptyForm = () => ({
   description_en: '',
   is_published: true,
   category_id: null,
-  category_name: '', // فقط برای نمایش (سرور در حالت ویرایش category_id برنمی‌گردونه، فقط نام category)
+  category_name: '',
   customer_name: '',
   customer_name_en: '',
   customer_position: '',
   customer_position_en: '',
-  customer_avatar: null,        // فایل جدید (اختیاری)
-  customer_avatar_preview: null, // برای نمایش
+  customer_avatar: null,
+  customer_avatar_preview: null,
   customer_description: '',
   customer_description_en: '',
-  images: [],           // فایل‌های جدید (File[])
-  images_preview: [],   // پیش‌نمایش فایل‌های جدید
-  existing_images: [],  // تصاویر موجود از سرور (فقط برای نمایش موقع ویرایش)
+  images: [],
+  images_preview: [],
+  existing_images: [],
 })
 
 const form = reactive(emptyForm())
 
+// بازنشانی فرم به حالت اولیه
 const resetForm = () => Object.assign(form, emptyForm())
 
+// باز کردن فرم افزودن یا ویرایش و بارگذاری داده آیتم
 const openForm = async (item = null) => {
-  // گارد read-only: یوزر مشاهده‌فقط اجازه‌ی باز کردن فرم افزودن جدید را ندارد
-  // (ولی می‌تونه فرم ویرایش رو برای مشاهده باز کنه، چون همه‌ی اینپوت‌ها و
-  // دکمه‌ی ذخیره داخل خود فرم غیرفعال می‌شن)
   if (!item && isReadOnly.value) return
 
   resetForm()
   selectedItem.value = item
   activeView.value = 'form'
 
-  // مطمئن می‌شیم لیست دسته‌بندی‌ها موجوده (مثلاً اگه فراخوانی اول شکست خورده بود)
   if (categories.value.length === 0 && !isLoadingCategories.value) {
     fetchCategories()
   }
@@ -170,7 +156,6 @@ const openForm = async (item = null) => {
     isLoadingForm.value = true
     errorMessage.value = ''
     try {
-      // مسیر واقعی: /api/admin/resumes/{id}
       const res = await $fetch(`${API_BASE}/api/admin/resumes/${item.id}`, {
         method: 'GET',
         headers: { ...authHeader() },
@@ -207,13 +192,14 @@ const openForm = async (item = null) => {
   }
 }
 
+// بستن فرم و بازگشت به لیست
 const closeForm = () => {
   activeView.value = 'list'
   selectedItem.value = null
   resetForm()
 }
 
-// ---- آپلود آواتار مشتری ----
+// انتخاب و پیش‌نمایش آواتار جدید مشتری
 const onAvatarChange = (e) => {
   if (isReadOnly.value) return
   const file = e.target.files?.[0]
@@ -222,13 +208,14 @@ const onAvatarChange = (e) => {
   form.customer_avatar_preview = URL.createObjectURL(file)
 }
 
+// حذف آواتار انتخاب‌شده
 const removeAvatar = () => {
   if (isReadOnly.value) return
   form.customer_avatar = null
   form.customer_avatar_preview = null
 }
 
-// ---- آپلود تصاویر پروژه ----
+// انتخاب و پیش‌نمایش تصاویر جدید پروژه
 const onImagesChange = (e) => {
   if (isReadOnly.value) return
   const files = Array.from(e.target.files || [])
@@ -236,22 +223,24 @@ const onImagesChange = (e) => {
     form.images.push(file)
     form.images_preview.push(URL.createObjectURL(file))
   })
-  e.target.value = '' // امکان انتخاب دوباره‌ی همون فایل
+  e.target.value = ''
 }
 
+// حذف یک تصویر جدید از لیست انتخاب‌شده‌ها
 const removeNewImage = (index) => {
   if (isReadOnly.value) return
   form.images.splice(index, 1)
   form.images_preview.splice(index, 1)
 }
 
+// حذف یک تصویر موجود روی سرور
 const removeExistingImage = (id) => {
   if (isReadOnly.value) return
 
   form.existing_images = form.existing_images.filter((img) => img.id !== id)
 }
 
-// ---- ساخت FormData مطابق اسکیمای API ----
+// ساخت FormData از داده‌های فرم برای ارسال به API
 const buildFormData = () => {
   const fd = new FormData()
   fd.append('title', form.title)
@@ -275,8 +264,8 @@ const buildFormData = () => {
   return fd
 }
 
+// ذخیره (ایجاد یا ویرایش) رزومه
 const saveChanges = async () => {
-  // گارد read-only: حتی اگر مستقیم از Console صدا زده بشه، اینجا متوقف می‌شود
   if (isReadOnly.value) return
 
   if (!form.title || !form.description || !form.customer_name || !form.customer_description) {
@@ -298,7 +287,6 @@ const saveChanges = async () => {
         body: fd,
       })
     } else {
-      // ایجاد جدید
       await $fetch(`${API_BASE}/api/admin/resumes`, {
         method: 'POST',
         headers: { ...authHeader() },
@@ -316,21 +304,18 @@ const saveChanges = async () => {
   }
 }
 
-// ---- حذف رزومه ----
+// حذف یک رزومه پس از تأیید کاربر
 const deleteItem = async (id) => {
-  // گارد read-only: حتی اگر مستقیم از Console صدا زده بشه، اینجا متوقف می‌شود
   if (isReadOnly.value) return
 
   if (!confirm('آیا از حذف این رزومه مطمئن هستید؟')) return
   isDeleting.value = true
   errorMessage.value = ''
   try {
-    // مسیر واقعی: /api/admin/resumes/{id}
     await $fetch(`${API_BASE}/api/admin/resumes/${id}`, {
       method: 'DELETE',
       headers: { ...authHeader() },
     })
-    // اگه آخرین آیتم صفحه حذف شد و صفحه خالی موند، برو صفحه قبل
     const targetPage =
       resumeItems.value.length === 1 && currentPage.value > 1
         ? currentPage.value - 1
@@ -348,7 +333,7 @@ const deleteItem = async (id) => {
 <template>
   <div class="p-4 sm:p-5 lg:p-6 min-h-screen" dir="rtl">
 
-    <!-- بنر هشدار read-only -->
+    <!-- بنر هشدار دسترسی مشاهده‌فقط -->
     <div
       v-if="isReadOnly"
       class="max-w-[812px] mx-auto mb-4 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-sm rounded-xl px-4 py-3 font-bold text-center"
@@ -356,7 +341,7 @@ const deleteItem = async (id) => {
       شما دسترسی مشاهده‌فقط دارید و نمی‌توانید رزومه‌ها را ایجاد، ویرایش یا حذف کنید.
     </div>
 
-    <!-- پیام خطای عمومی -->
+    <!-- نمایش پیام خطا -->
     <div
       v-if="errorMessage"
       class="max-w-[812px] mx-auto mb-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-xl px-4 py-3"
@@ -364,7 +349,7 @@ const deleteItem = async (id) => {
       {{ errorMessage }}
     </div>
 
-    <!-- وضعیت نمایش لیست کارت‌ها -->
+    <!-- بخش لیست رزومه‌ها -->
     <div v-if="activeView === 'list'">
       <div class="flex items-center justify-between w-full max-w-[812px] lg:w-[812px] h-[54px] lg:h-[60px] mx-auto mb-6 lg:mb-8 px-4 lg:px-6 bg-white dark:bg-dark-surface rounded-[27px]">
         <h2 class="text-[16px] sm:text-[18px] lg:text-[20px] font-bold text-[#1a2333] dark:text-dark-text">کنترل رزومه</h2>
@@ -414,6 +399,7 @@ const deleteItem = async (id) => {
         رزومه‌ای در این دسته‌بندی یافت نشد
       </div>
 
+      <!-- کارت‌های رزومه -->
       <div v-else class="grid grid-cols-2 lg:flex lg:flex-wrap gap-3 sm:gap-5 lg:gap-6 justify-items-center lg:justify-center max-w-full lg:max-w-[900px] mx-auto mb-10">
         <div
           v-for="item in resumeItems"
@@ -436,7 +422,7 @@ const deleteItem = async (id) => {
         </div>
       </div>
 
-      <!-- Pagination -->
+      <!-- بخش صفحه‌بندی -->
       <div v-if="resumeItems.length > 0" class="flex justify-center lg:justify-end items-center mt-8">
         <div dir="ltr" class="flex items-center gap-2 lg:ml-[150px]">
           <button
@@ -469,12 +455,12 @@ const deleteItem = async (id) => {
       </div>
     </div>
 
-    <!-- فرم افزودن/ویرایش -->
+    <!-- بخش فرم افزودن/ویرایش رزومه -->
     <div v-else class="max-w-full lg:max-w-[1200px] mx-auto bg-[#F4F6F8] dark:bg-dark-surface p-4 sm:p-6 lg:p-8 rounded-[24px] lg:rounded-[40px] border border-gray-200 dark:border-dark-border/30 shadow-inner" dir="rtl">
 
       <button @click="closeForm" class="mb-6 lg:mb-8 text-gray-500 dark:text-dark-text/70 font-bold hover:text-black dark:hover:text-dark-text">← بازگشت</button>
 
-      <!-- بنر هشدار read-only داخل فرم -->
+      <!-- بنر هشدار مشاهده‌فقط داخل فرم -->
       <div
         v-if="isReadOnly"
         class="mb-6 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-sm rounded-xl px-4 py-3 font-bold text-center"
@@ -487,7 +473,7 @@ const deleteItem = async (id) => {
       <fieldset v-else :disabled="isReadOnly" class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 min-w-0 border-0 p-0 m-0">
 
         <div class="flex flex-col gap-6 lg:gap-8">
-          <!-- اطلاعات پروژه -->
+          <!-- بخش اطلاعات پروژه -->
           <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
             <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
               <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div> <h3>اطلاعات پروژه</h3>
@@ -595,14 +581,14 @@ const deleteItem = async (id) => {
 
         <div class="flex flex-col gap-6 lg:gap-8">
 
-<!-- اطلاعات مشتری -->
+<!-- بخش اطلاعات مشتری -->
 <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
   <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
     <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div>
     <h3>اطلاعات مشتری</h3>
   </div>
 
-  <!-- آواتار -->
+  <!-- بخش آواتار مشتری -->
   <div class="flex items-center gap-4 mb-5">
     <img
       :src="form.customer_avatar_preview || '/images/avatar-placeholder.png'"
@@ -622,7 +608,7 @@ const deleteItem = async (id) => {
     </div>
   </div>
 
-  <!-- نام مشتری -->
+  <!-- فیلدهای نام مشتری -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
     <div>
       <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نام مشتری *</label>
@@ -645,7 +631,7 @@ const deleteItem = async (id) => {
     </div>
   </div>
 
-  <!-- سمت مشتری -->
+  <!-- فیلدهای سمت مشتری -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
     <div>
       <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">سمت مشتری</label>
@@ -668,7 +654,7 @@ const deleteItem = async (id) => {
     </div>
   </div>
 
-  <!-- نظر مشتری -->
+  <!-- فیلدهای نظر مشتری -->
   <div class="space-y-3">
     <div>
       <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نظر مشتری درباره پروژه *</label>
@@ -691,7 +677,7 @@ const deleteItem = async (id) => {
     </div>
   </div>
 </div>
-                    <!-- تصاویر پروژه -->
+                    <!-- بخش تصاویر پروژه -->
                     <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
             <div class="flex items-center justify-between mb-4 lg:mb-6">
               <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base dark:text-dark-text"><div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div> تصاویر پروژه</h3>
@@ -704,7 +690,7 @@ const deleteItem = async (id) => {
               </label>
             </div>
             <div class="flex flex-wrap gap-2 sm:gap-3 lg:gap-4">
-              <!-- تصاویر موجود (موقع ویرایش) -->
+              <!-- نمایش تصاویر موجود روی سرور -->
               <div
                 v-for="img in form.existing_images"
                 :key="'existing-' + img.id"
@@ -718,7 +704,7 @@ const deleteItem = async (id) => {
                 >×</button>
               </div>
 
-              <!-- تصاویر جدید انتخاب‌شده -->
+              <!-- نمایش تصاویر جدید انتخاب‌شده -->
               <div
                 v-for="(src, index) in form.images_preview"
                 :key="'new-' + index"
@@ -745,6 +731,7 @@ const deleteItem = async (id) => {
         
       </fieldset>
 
+      <!-- دکمه ذخیره فرم -->
       <div v-if="!isReadOnly" class="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 sm:gap-4 mt-8 lg:mt-10 pt-6 border-t border-gray-200 dark:border-dark-border/30" dir="ltr">
         <button
           @click="saveChanges"

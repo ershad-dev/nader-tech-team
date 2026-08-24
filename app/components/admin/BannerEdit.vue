@@ -14,7 +14,7 @@
       شما فقط دسترسی مشاهده دارید و امکان ویرایش وجود ندارد.
     </div>
 
-    <!-- پیام خطا / بارگذاری کلی لیست -->
+    <!-- وضعیت بارگذاری یا خطای لیست -->
     <div v-if="loadingList" class="text-center text-[#0F184B] dark:text-dark-text font-bold py-6">
       در حال بارگذاری بنرها...
     </div>
@@ -23,24 +23,12 @@
       <button @click="fetchBanners" class="underline mr-2">تلاش مجدد</button>
     </div>
 
+    <!-- شبکه اسلات‌های بنر -->
     <div
       v-else
       class="grid grid-cols-2 gap-x-4 sm:gap-x-6 lg:gap-x-10 gap-y-6 sm:gap-y-8 lg:gap-y-10 justify-items-center"
       dir="ltr"
     >
-      <!--
-        همیشه دو ستونه (grid-cols-2 ثابت). اما برخلاف قبل، هیچ آیتمی
-        عرض پیکسلیِ ثابت (مثل w-[437px]) نداره؛ همه w-full با max-w-[437px] هستن.
-        یعنی هر ستون از گرید عرض 1fr (نصف عرض واقعیِ خودِ container) می‌گیره
-        و کارت داخلش خودش رو با همون عرض تطبیق می‌ده. پس وقتی سایدبار باز
-        می‌شه و عرض واقعی محتوا کم می‌شه (مثلا در iPad Pro)، دو ستون همچنان
-        کنار هم می‌مونن ولی هر دو کمی کوچیک‌تر می‌شن، نه اینکه روی هم بیفتن.
-
-        همیشه دقیقا ۶ اسلات ثابت رندر می‌شه (slotIndex از 0 تا 5).
-        slots[i] از روی slotMap[i] (که یک id بنر یا null هست) ساخته می‌شه،
-        نه از روی ایندکس آرایه‌ی banners. یعنی با حذف یک بنر، فقط همون
-        اسلات خالی می‌شه و بقیه‌ی اسلات‌ها جابه‌جا نمی‌شن.
-      -->
       <div
         v-for="(slot, slotIndex) in slots"
         :key="'slot-' + slotIndex"
@@ -76,6 +64,7 @@
             </div>
           </div>
 
+          <!-- دکمه‌های فعال‌سازی و حذف بنر -->
           <div class="flex justify-center gap-3 lg:gap-4 mt-4 w-full">
             <button
               @click="toggleActive(slot)"
@@ -105,7 +94,7 @@
           </p>
         </template>
 
-        <!-- اسلات خالی: هم برای جایگزینی و هم برای بنر کاملا جدید از همینجا آپلود می‌شه -->
+        <!-- اسلات خالی برای آپلود بنر جدید -->
         <div
           v-else
           class="relative w-full aspect-[437/325] border-4 border-dashed border-[#BFD1D5] dark:border-dark-border rounded-[20px] lg:rounded-[27px] flex flex-col items-center justify-center transition-all"
@@ -145,22 +134,17 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
-import { useAdminPermissions } from '@/composables/useAdminPermissions' // مسیر رو با ساختار پروژه‌تون تطبیق بدید
+import { useAdminAuth } from '@/composables/useAdminAuth'
+import { useAdminPermissions } from '@/composables/useAdminPermissions'
 
 const { authHeader, initFromStorage, isLoggedIn, clearAuth } = useAdminAuth()
 const { isReadOnly } = useAdminPermissions()
 
-// همون دامنه‌ای که در صفحه‌ی لاگین استفاده شده
 const BASE_URL = 'https://nadertechnologyteam.ir/api/admin/banners'
 const MAX_BANNERS = 6
 const SLOT_MAP_STORAGE_KEY = 'admin-banner-slot-map-v1'
 
-/**
- * لایه‌ی نازک روی $fetch نوکس:
- * - هدر Authorization رو خودکار اضافه می‌کنه
- * - اگه 401 بگیریم یعنی توکن نامعتبر/منقضی شده، auth رو پاک و به لاگین هدایت می‌کنیم
- */
+// لایه واسط روی $fetch برای افزودن هدر احراز هویت و مدیریت خطاها
 async function apiFetch(url, options = {}) {
   try {
     return await $fetch(url, {
@@ -176,7 +160,7 @@ async function apiFetch(url, options = {}) {
 
     if (status === 401) {
       clearAuth()
-      await navigateTo('/admin/login') // مسیر صفحه‌ی لاگین رو در صورت نیاز تطبیق بدید
+      await navigateTo('/admin/login')
       throw new Error('نشست شما منقضی شده. لطفا دوباره وارد شوید.')
     }
 
@@ -188,24 +172,19 @@ async function apiFetch(url, options = {}) {
   }
 }
 
-/** ====== state ====== */
-// banners: همه‌ی بنرهایی که واقعا در بک‌اند وجود دارن، به همراه busy/error محلی
+// لیست بنرهای دریافتی از سرور
 const banners = ref([])
 const loadingList = ref(false)
 const listError = ref('')
 
-// وضعیت آپلود برای اسلات‌های خالی (بر اساس ایندکس اسلات 0..5)
+// وضعیت آپلود برای اسلات‌های خالی
 const emptySlotBusy = ref({})
 const emptySlotError = ref({})
 
-/**
- * نگاشت ثابتِ "شماره اسلات → id بنر".
- * slotMap[i] یا null هست (اسلات خالی) یا id یک بنر.
- * این آرایه مستقل از ترتیب آرایه‌ی banners مدیریت می‌شه و در localStorage
- * ذخیره می‌شه تا بعد از رفرش صفحه هم ترتیب و جای خالی‌ها حفظ بمونه.
- */
+// نگاشت ثابت شماره اسلات به id بنر، برای حفظ چیدمان بین رفرش‌ها
 const slotMap = ref(Array(MAX_BANNERS).fill(null))
 
+// بازیابی نگاشت اسلات‌ها از localStorage
 function loadSlotMap() {
   try {
     const raw = localStorage.getItem(SLOT_MAP_STORAGE_KEY)
@@ -215,24 +194,20 @@ function loadSlotMap() {
       slotMap.value = parsed
     }
   } catch (e) {
-    // اگه چیز خرابی در استوریج بود، نادیده بگیر و از حالت پیش‌فرض استفاده کن
   }
 }
 
+// ذخیره نگاشت اسلات‌ها در localStorage
 function saveSlotMap() {
   try {
     localStorage.setItem(SLOT_MAP_STORAGE_KEY, JSON.stringify(slotMap.value))
   } catch (e) {
-    // نبود دسترسی به localStorage نباید کل کامپوننت رو خراب کنه
   }
 }
 
 watch(slotMap, saveSlotMap, { deep: true })
 
-/**
- * ۶ اسلات ثابت برای نمایش، بر اساس slotMap ساخته می‌شن، نه ایندکس آرایه‌ی banners.
- * slots[i] = بنری که id اش برابر slotMap[i] هست، یا null.
- */
+// ساخت لیست ۶ اسلات نمایشی بر اساس slotMap
 const slots = computed(() => {
   return slotMap.value.map((id) => {
     if (id == null) return null
@@ -240,24 +215,17 @@ const slots = computed(() => {
   })
 })
 
-/**
- * تطبیق بنرهای دریافتی از بک‌اند با slotMap فعلی:
- * - اگه id ای که قبلاً در یک اسلات بوده، دیگه در لیست بک‌اند نباشه، همون اسلات null می‌شه.
- * - اگه بنری از بک‌اند بیاد که در هیچ اسلاتی نیست (مثلاً از جای دیگه‌ای اضافه شده)،
- *   به اولین اسلات خالی اختصاص داده می‌شه.
- */
+// همگام‌سازی slotMap با بنرهای واقعی دریافتی از سرور
 function reconcileSlotMap(fetchedBanners) {
   const fetchedIds = new Set(fetchedBanners.map((b) => b.id))
 
-  // پاک کردن اسلات‌هایی که بنرشون دیگه وجود نداره
   const newMap = slotMap.value.map((id) => (id != null && fetchedIds.has(id) ? id : null))
 
-  // اضافه کردن بنرهایی که هنوز در نقشه جا نگرفتن
   const mappedIds = new Set(newMap.filter((id) => id != null))
   for (const b of fetchedBanners) {
     if (mappedIds.has(b.id)) continue
     const emptyIndex = newMap.findIndex((id) => id == null)
-    if (emptyIndex === -1) break // دیگه جا نیست (بیشتر از MAX_BANNERS)
+    if (emptyIndex === -1) break
     newMap[emptyIndex] = b.id
     mappedIds.add(b.id)
   }
@@ -265,7 +233,7 @@ function reconcileSlotMap(fetchedBanners) {
   slotMap.value = newMap
 }
 
-/** ====== دریافت لیست بنرها ====== */
+// دریافت لیست بنرها از سرور
 const fetchBanners = async () => {
   loadingList.value = true
   listError.value = ''
@@ -285,23 +253,18 @@ const fetchBanners = async () => {
   }
 }
 
+// بارگذاری اولیه توکن، نگاشت اسلات‌ها و لیست بنرها
 onMounted(() => {
-  // اول توکن رو از localStorage بازیابی کن، بعد slotMap و لیست رو بگیر
   initFromStorage()
   if (!isLoggedIn()) {
-    navigateTo('/admin/login') // مسیر صفحه‌ی لاگین رو در صورت نیاز تطبیق بدید
+    navigateTo('/admin/login')
     return
   }
   loadSlotMap()
   fetchBanners()
 })
 
-/**
- * ====== تغییر وضعیت فعال/غیرفعال (دکمه‌ی تایید) ======
- * گارد isReadOnly یک لایه‌ی دفاعی اضافه در فرانت هست (کنار disabled روی دکمه)،
- * تا حتی با فراخوانی مستقیم تابع از DevTools هم کاری انجام نشه.
- * جلوگیری واقعی و قطعی باید سمت بک‌اند روی همین اندپوینت اعمال بشه.
- */
+// تغییر وضعیت فعال/غیرفعال یک بنر
 const toggleActive = async (banner) => {
   if (isReadOnly.value) return
 
@@ -321,11 +284,7 @@ const toggleActive = async (banner) => {
   }
 }
 
-/**
- * ====== حذف بنر ======
- * فقط id بنر رو از آرایه‌ی banners حذف می‌کنیم و اسلات مربوطه در slotMap
- * رو null می‌کنیم. به بقیه‌ی slotMap دست نمی‌زنیم، پس بقیه اسلات‌ها جابه‌جا نمی‌شن.
- */
+// حذف یک بنر و خالی کردن اسلات مربوطه
 const deleteBanner = async (banner, slotIndex) => {
   if (isReadOnly.value) return
   if (!confirm('آیا از حذف این بنر مطمئن هستید؟')) return
@@ -342,11 +301,7 @@ const deleteBanner = async (banner, slotIndex) => {
   }
 }
 
-/**
- * ====== آپلود در یک اسلات خالی خاص ======
- * بنر جدید در بک‌اند ساخته می‌شه (POST) و سپس id اون دقیقا در همون
- * slotIndex ای که کاربر از روش آپلود کرده قرار می‌گیره، نه انتهای لیست.
- */
+// آپلود بنر جدید در یک اسلات خالی مشخص
 const uploadToSlot = async (event, slotIndex) => {
   if (isReadOnly.value) {
     event.target.value = ''
@@ -357,7 +312,6 @@ const uploadToSlot = async (event, slotIndex) => {
   if (!file) return
 
   if (slotMap.value[slotIndex] != null) {
-    // این اسلات از قبل پر شده (مثلاً با یک تب دیگه) - جلوی بازنویسی رو می‌گیریم
     emptySlotError.value = { ...emptySlotError.value, [slotIndex]: 'این اسلات خالی نیست.' }
     event.target.value = ''
     return

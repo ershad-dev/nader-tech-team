@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-full w-full p-4 sm:p-6 lg:p-8" dir="rtl">
-    <!-- Header -->
+    <!-- هدر صفحه و دکمه افزودن -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       <div>
         <h1 class="text-[20px] lg:text-[24px] font-bold text-[#0F184B] dark:text-dark-text">سوالات متداول</h1>
@@ -27,7 +27,7 @@
       شما فقط دسترسی مشاهده دارید و امکان افزودن، ویرایش یا حذف سوالات وجود ندارد.
     </div>
 
-    <!-- Error banner -->
+    <!-- بنر خطا -->
     <transition name="fade">
       <div
         v-if="errorMessage"
@@ -38,13 +38,13 @@
       </div>
     </transition>
 
-    <!-- Loading state -->
+    <!-- حالت بارگذاری -->
     <div v-if="isLoading" class="flex flex-col items-center justify-center py-24 gap-3">
       <div class="w-10 h-10 border-4 border-[#67A9A8] border-t-transparent rounded-full animate-spin"></div>
       <p class="text-[13px] text-gray-400 dark:text-dark-text">در حال بارگذاری سوالات...</p>
     </div>
 
-    <!-- Empty state -->
+    <!-- حالت خالی -->
     <div
       v-else-if="!faqs.length"
       class="flex flex-col items-center justify-center py-24 gap-3 bg-white dark:bg-dark-surface rounded-[24px] shadow-sm"
@@ -62,7 +62,7 @@
       </button>
     </div>
 
-    <!-- FAQ list -->
+    <!-- لیست سوالات متداول -->
     <div v-else class="flex flex-col gap-3">
       <div
         v-for="item in sortedFaqs"
@@ -149,7 +149,7 @@
       </div>
     </div>
 
-    <!-- Create / Edit Modal -->
+    <!-- مودال افزودن/ویرایش سوال -->
     <transition name="fade">
       <div
         v-if="isFormModalOpen && !isReadOnly"
@@ -169,7 +169,7 @@
           </div>
 
           <form @submit.prevent="submitForm" class="flex flex-col gap-4">
-            <!-- فارسی -->
+            <!-- فیلدهای فارسی -->
             <div>
               <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">سوال</label>
               <input
@@ -199,7 +199,7 @@
               <span class="flex-1 h-px bg-[#ECEDF4] dark:bg-dark-border"></span>
             </div>
 
-            <!-- انگلیسی -->
+            <!-- فیلدهای انگلیسی -->
             <div>
               <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">سوال (English)</label>
               <input
@@ -272,7 +272,7 @@
       </div>
     </transition>
 
-    <!-- Delete Confirm Modal -->
+    <!-- مودال تایید حذف -->
     <transition name="fade">
       <div
         v-if="isDeleteModalOpen && !isReadOnly"
@@ -312,23 +312,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useAdminAuth } from '@/composables/useAdminAuth' // مسیر را مطابق پروژه تنظیم کنید
-import { useAdminPermissions } from '@/composables/useAdminPermissions' // مسیر را مطابق پروژه تنظیم کنید
+import { useAdminAuth } from '@/composables/useAdminAuth'
+import { useAdminPermissions } from '@/composables/useAdminPermissions'
 
-/**
- * این کامپوننت با اندپوینت‌های زیر کار می‌کند (طبق Swagger ارسالی):
- *   GET    /api/admin/faqs
- *   POST   /api/admin/faqs
- *   GET    /api/admin/faqs/{faq}
- *   PUT    /api/admin/faqs/{faq}
- *   DELETE /api/admin/faqs/{faq}
- *
- * توکن احراز هویت از همان composable پروژه (useAdminAuth) گرفته می‌شود.
- *
- * دوزبانه‌سازی: هر آیتم FAQ دو فیلد اضافه‌ی متنی دارد: question_en, answer_en
- * (مشابه الگوی title_en/description_en که در services استفاده شده)
- */
-
+// احراز هویت و دسترسی ادمین
 const { authHeader, initFromStorage } = useAdminAuth()
 const { isReadOnly } = useAdminPermissions()
 
@@ -348,6 +335,7 @@ const editingId = ref(null)
 const isDeleteModalOpen = ref(false)
 const deleteTarget = ref(null)
 
+// مقدار اولیه خالی فرم سوال متداول
 const emptyForm = () => ({
   question: '',
   question_en: '',
@@ -358,16 +346,19 @@ const emptyForm = () => ({
 })
 const form = ref(emptyForm())
 
+// لیست سوالات مرتب‌شده بر اساس ترتیب نمایش
 const sortedFaqs = computed(() =>
   [...faqs.value].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
 )
 
+// ساخت هدرهای مشترک درخواست‌ها
 const authHeaders = () => ({
   'Content-Type': 'application/json',
   Accept: 'application/json',
   ...authHeader()
 })
 
+// دریافت لیست سوالات متداول از سرور
 const fetchFaqs = async () => {
   isLoading.value = true
   errorMessage.value = ''
@@ -383,10 +374,12 @@ const fetchFaqs = async () => {
   }
 }
 
+// باز و بسته کردن آکاردئون یک سوال
 const toggleExpand = (id) => {
   expandedId.value = expandedId.value === id ? null : id
 }
 
+// باز کردن مودال با فرم خالی برای افزودن سوال جدید
 const openCreateModal = () => {
   if (isReadOnly.value) return
   isEditing.value = false
@@ -399,6 +392,7 @@ const openCreateModal = () => {
   isFormModalOpen.value = true
 }
 
+// باز کردن مودال با داده‌های یک سوال برای ویرایش
 const openEditModal = (item) => {
   if (isReadOnly.value) return
   isEditing.value = true
@@ -415,11 +409,13 @@ const openEditModal = (item) => {
   isFormModalOpen.value = true
 }
 
+// بستن مودال فرم
 const closeFormModal = () => {
   if (isSubmitting.value) return
   isFormModalOpen.value = false
 }
 
+// ارسال فرم برای ایجاد یا ویرایش سوال
 const submitForm = async () => {
   if (isReadOnly.value) return
 
@@ -450,18 +446,21 @@ const submitForm = async () => {
   }
 }
 
+// باز کردن مودال تایید حذف
 const openDeleteModal = (item) => {
   if (isReadOnly.value) return
   deleteTarget.value = item
   isDeleteModalOpen.value = true
 }
 
+// بستن مودال تایید حذف
 const closeDeleteModal = () => {
   if (isSubmitting.value) return
   isDeleteModalOpen.value = false
   deleteTarget.value = null
 }
 
+// حذف قطعی سوال پس از تایید کاربر
 const confirmDelete = async () => {
   if (isReadOnly.value) return
   if (!deleteTarget.value) return
@@ -485,6 +484,7 @@ const confirmDelete = async () => {
   }
 }
 
+// فرمت‌دهی تاریخ برای نمایش
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
   try {
@@ -498,6 +498,7 @@ const formatDate = (dateStr) => {
   }
 }
 
+// بارگذاری اولیه احراز هویت و لیست سوالات
 onMounted(() => {
   initFromStorage()
   fetchFaqs()
