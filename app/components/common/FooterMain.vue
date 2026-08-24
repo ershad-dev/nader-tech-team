@@ -2,9 +2,10 @@
 
   <footer v-if="!isLotteryPage" class="w-full" :dir="isRtl ? 'rtl' : 'ltr'">
 
+  <!-- بخش سبز فوتر (تبلیغاتی) -->
   <div v-if="showGreenSection" class="relative w-full">
 
-    <!-- ===================== نسخه دسکتاپ ===================== -->
+    <!-- نسخه دسکتاپ -->
     <div class="hidden lg:block relative w-full">
 
       <div class="bg-[#2C7379] dark:bg-[#407B80] h-[200px] w-full flex flex-col items-center justify-center gap-3">
@@ -31,7 +32,7 @@
 
     </div>
 
-<!-- ===================== نسخه موبایل/تبلت - ارتفاع کاهش‌یافته ===================== -->
+<!-- نسخه موبایل/تبلت -->
 <div class="lg:hidden relative w-full">
 
   <div class="bg-[#2C7379] dark:bg-[#407B80] w-full min-h-[140px] sm:min-h-[170px] py-10 sm:py-12 px-4 flex flex-col items-center justify-center gap-2 sm:gap-3">
@@ -56,10 +57,12 @@
 
   </div>
 
+<!-- بخش پایینی فوتر (لینک‌ها و اطلاعات تماس) -->
 <div class="bg-[#BFD1D5] dark:bg-dark-footer w-full pt-8 sm:pt-10 lg:pt-16 transition-colors duration-300">
 
 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 sm:gap-8 lg:gap-12 text-center pb-8 sm:pb-10 lg:pb-12 px-4 lg:px-6 xl:px-8">
 
+  <!-- لینک‌های فوتر -->
   <div class="flex flex-col items-center leading-[26px] sm:leading-[32px] lg:leading-[32px] xl:leading-[40px] font-roboto">
 
     <h3 class="!mt-[20px] lg:!mt-0 text-[#2D4745] dark:text-dark-text text-[16px] sm:text-[18px] lg:text-[16px] xl:text-[20px] mb-4 whitespace-nowrap">{{ $t('footer.linksTitle') }}</h3>
@@ -85,6 +88,7 @@
     </ul>
   </div>
 
+  <!-- تگ‌لاین و اطلاعات تماس -->
   <div class="flex flex-col items-center gap-4 sm:gap-5 lg:gap-6">
 
     <p class="text-[#0F184B] dark:text-dark-text font-bold text-[13px] sm:text-[15px] lg:text-[14px] xl:text-[18px] whitespace-normal lg:whitespace-nowrap px-2 lg:px-0">
@@ -111,6 +115,7 @@
 
   </div>
 
+  <!-- نمادهای اعتماد -->
   <div class="flex flex-row lg:flex-col gap-3 sm:gap-4 lg:gap-4 items-center">
     <img src="/images/enamad2.png" alt="Enamad" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[110px] lg:h-[113px] xl:w-[153px] xl:h-[157px] object-contain" />
     <img src="/images/zarrinpall.png" alt="Zarrinpal" class="w-[80px] h-[82px] sm:w-[100px] sm:h-[103px] lg:w-[110px] lg:h-[113px] xl:w-[153px] xl:h-[157px] object-contain" />
@@ -138,7 +143,7 @@
   const localePath = useLocalePath()
   const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-  // به‌جای متن ثابت، کلید ترجمه ذخیره می‌شود؛ اسم واقعی با $t(link.nameKey) نمایش داده می‌شود
+  // لیست لینک‌های فوتر (کلید ترجمه به‌جای متن ثابت)
   const links = [
   // { nameKey: 'footer.links.home', path: '/' },
   { nameKey: 'footer.links.order', path: '/order' },
@@ -150,16 +155,13 @@
 
   const showTermsModal = ref(false);
 
-  // ---------------------------------------------------------
-  // متن‌های رندوم بخش سبز فوتر
-  // promoTexts.json الان به‌ازای هر زبان یک آرایه دارد: { "fa": [...], "en": [...] }
-  // اگر زبان فعلی در فایل نبود، به فارسی برمی‌گردد (fallback)
-  // ---------------------------------------------------------
+  // متن‌های رندوم نمایش‌داده‌شده در بخش سبز فوتر
   const randomTitle = ref('');
   const randomText = ref('');
 
   const currentPromoTexts = computed(() => promoTexts?.[locale.value] || promoTexts?.fa || []);
 
+  // انتخاب یک ایندکس تصادفی از استخر متن‌ها با حذف مقادیر تکراری
   function getRandomIndex(pool, excludeValues = []) {
     if (!pool?.length) return -1;
     let idx = Math.floor(Math.random() * pool.length);
@@ -171,6 +173,7 @@
     return idx;
   }
 
+  // انتخاب متن رندوم جدید برای عنوان و زیرعنوان
   function pickRandomText() {
     const pool = currentPromoTexts.value;
     if (!pool?.length) return;
@@ -187,7 +190,7 @@
     pickRandomText();
   });
 
-  // هر بار مسیر یا زبان عوض شد یک متن رندوم جدید نشون بده
+  // به‌روزرسانی متن رندوم هنگام تغییر مسیر یا زبان
   watch(() => route.path, () => {
     pickRandomText();
   });
@@ -195,8 +198,7 @@
     pickRandomText();
   });
 
-  // چون با strategy: prefix_except_default مسیر انگلیسی پیشوند /en می‌گیرد،
-  // بررسی روی route.name (که مستقل از زبان است) انجام می‌شود، نه route.path
+  // نام پایه مسیر مستقل از زبان
   const routeBaseName = computed(() => route.name?.toString().split('___')[0]);
 
   const lotteryRouteNames = [
@@ -212,19 +214,13 @@
     'order-request'
   ];
 
+  // بررسی اینکه آیا صفحه فعلی متعلق به قرعه‌کشی است
   const isLotteryPage = computed(() => lotteryRouteNames.includes(routeBaseName.value));
 
+  // تعیین نمایش یا عدم نمایش بخش سبز فوتر
   const showGreenSection = computed(() => {
     return !hiddenGreenSectionBaseNames.some(name => routeBaseName.value?.startsWith(name));
   });
-
-  // توجه: رنگ shape دیگر با JS ref (colorMode.value) کنترل نمی‌شود.
-  // چون colorMode.value یک ref واکنش‌گرای Vue است و مقدار درستش تا قبل از
-  // hydration کامل (mount شدن Vue) sync نمی‌شود. کلاس "dark" روی <html>
-  // توسط اسکریپت no-flash قبل از mount ست می‌شود، اما inline :style که به
-  // colorMode.value وابسته بود، این تغییر را نمی‌دید تا یک toggle دستی رخ بدهد.
-  // با استفاده از کلاس‌های Tailwind (`dark:bg-dark-shape`) رنگ‌گیری کاملاً
-  // توسط CSS/کلاس html انجام می‌شود و از همان رفرش اول درست است.
 
   defineProps({
     title: String,

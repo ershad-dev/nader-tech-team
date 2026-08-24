@@ -1,4 +1,5 @@
 <script setup>
+// پراپ‌های نوع و غیرفعال بودن دکمه
 defineProps({
   type: {
     type: String,
@@ -12,6 +13,7 @@ defineProps({
 </script>
 
 <template>
+  <!-- دکمه عمومی قابل استفاده مجدد -->
   <button
     :type="type"
     :disabled="disabled"

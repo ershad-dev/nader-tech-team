@@ -1,13 +1,14 @@
 <template>
+  <!-- نوار ناوبری اصلی، فقط در صفحات لاتاری مخفی میشه -->
   <nav v-if="!isLotteryPage" class="sticky top-6 z-[999] w-[95%] sm:w-[92%] min-[1100px]:w-[92%] xl:w-[1110px] min-[1920px]:w-[1600px] h-auto min-[1100px]:h-[70px] min-[1920px]:h-[88px] mx-auto bg-white dark:bg-[#CECDCD] rounded-[1.75rem] sm:rounded-[2rem] min-[1100px]:rounded-full px-4 sm:px-6 min-[1920px]:px-10 py-2.5 sm:py-3 flex flex-col min-[1100px]:flex-row items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-dark-border/30 transition-all duration-300" dir="ltr" :class="isRtl ? 'nav-mobile-rtl' : 'nav-mobile-ltr'">
 
-    <!-- Header (لوگو و همبرگر) -->
+    <!-- هدر شامل لوگو، دکمه همبرگری و لینک‌های اصلی موبایل -->
 <div
   class="relative flex w-full min-[1100px]:w-auto justify-between items-center px-1 min-[1100px]:px-0 order-first"
   :class="isRtl ? 'min-[1100px]:order-last' : 'min-[1100px]:order-first'"
 >
 
-      <!-- آیکون همبرگر (سمت چپ) - انیمیشن تبدیل به ضربدر -->
+      <!-- دکمه همبرگری برای باز/بسته کردن منوی موبایل -->
       <button
         @click="isOpen = !isOpen"
         class="min-[1100px]:hidden relative z-10 w-9 h-9 sm:w-10 sm:h-10 flex flex-col items-center justify-center gap-[6px] p-1.5 sm:p-2 text-[#0F184B] dark:text-dark-text-deep"
@@ -27,7 +28,7 @@
         ></span>
       </button>
 
-<!-- لینک‌های اصلی (بین لوگو و دکمه‌ی همبرگری) - فقط زیر breakpoint 1100 -->
+<!-- لینک‌های اصلی که فقط زیر برک‌پوینت ۱۱۰۰ نمایش داده میشن -->
       <div
         class="min-[1100px]:hidden flex items-center gap-2 sm:gap-2.5 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal whitespace-nowrap"
         :class="locale === 'en' ? 'text-[10px] sm:text-[12px]' : 'text-[13px] sm:text-[14px]'"
@@ -38,7 +39,7 @@
         <NuxtLink :to="localePath('/about')" exact-active-class="!font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.about') }}</NuxtLink>
       </div>
 
-      <!-- لوگو (سمت راست در موبایل / یک باکس مجزا در دسکتاپ) -->
+      <!-- لوگوی سایت -->
 <div class="flex items-center">
   <NuxtLink :to="localePath('/')" @click="isOpen = false">
     <img src="/images/ntt-logo.png" alt="Logo" class="w-[35px] h-[35px] sm:w-[50px] sm:h-[50px] min-[1920px]:w-[80px] min-[1920px]:h-[80px] object-contain" />
@@ -47,7 +48,7 @@
 
     </div>
 
-    <!-- بدنه اصلی منو -->
+    <!-- بدنه اصلی منو که با باز/بسته شدن همبرگری انیمیت میشه -->
     <div
       class="w-full flex flex-col overflow-hidden transition-all ease-[cubic-bezier(0.4,0,0.2,1)] duration-500
              min-[1100px]:flex min-[1100px]:items-center min-[1100px]:overflow-visible min-[1100px]:max-h-none min-[1100px]:opacity-100 min-[1100px]:translate-y-0 min-[1100px]:mt-0 min-[1100px]:gap-6"
@@ -59,7 +60,7 @@
       ]"
     >
 
-      <!-- ۱. دکمه‌ی ورود/ثبت‌نام یا پروفایل (سمت راست‌ترین آیتم در دسکتاپ) -->
+      <!-- دکمه ورود/ثبت‌نام یا نمایش پروفایل در دسکتاپ -->
       <div class="hidden min-[1100px]:flex items-center justify-end shrink-0">
         <ClientOnly>
           <NuxtLink
@@ -98,7 +99,7 @@
         </ClientOnly>
       </div>
 
-<!-- ۲. آیکون تم + دکمه EN/FA (بین دکمه‌ی ثبت‌نام و لینک‌ها) -->
+<!-- سوییچ زبان و تغییر حالت روشن/تاریک در دسکتاپ -->
 <div
   class="hidden min-[1100px]:flex items-center gap-2 border-gray-200 dark:border-dark-border/40 shrink-0"
   :class="isRtl ? 'pl-4 border-l' : 'pr-4 border-r'"
@@ -132,7 +133,7 @@
   </button>
 </div>
 
-      <!-- ۳. لینک‌های وسط (چپ‌ترین گروه در دسکتاپ) -->
+      <!-- لینک‌های وسط منو (خانه، سفارش، رویدادها، مقالات، درباره ما، سوالات متداول) -->
       <div
         class="flex flex-col items-center justify-center gap-3 sm:gap-5 min-[1100px]:gap-8 min-[1920px]:gap-10 text-[#0F184B] dark:text-dark-text-deep font-roboto font-normal text-[14px] sm:text-[15px] min-[1100px]:text-[16px] min-[1920px]:text-[24px] w-full min-[1100px]:flex-1 min-[1100px]:whitespace-nowrap"
         :class="isRtl ? 'min-[1100px]:flex-row-reverse' : 'min-[1100px]:flex-row'"
@@ -144,10 +145,10 @@
         <NuxtLink :to="localePath('/about')" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="hidden min-[1100px]:block hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.about') }}</NuxtLink>
         <NuxtLink :to="localePath('/faq')" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.faq') }}</NuxtLink>
 
-        <!-- نمونه پروژه ها - فقط داخل منوی همبرگری -->
+        <!-- لینک نمونه پروژه‌ها، فقط داخل منوی همبرگری موبایل -->
         <NuxtLink :to="localePath('/order/moreProject')" exact-active-class="!text-[#0F184B] dark:!text-dark-text-deep !font-bold" class="min-[1100px]:hidden hover:text-teal-700 dark:hover:text-dark-accent transition" @click="isOpen = false">{{ $t('nav.moreProjects') }}</NuxtLink>
 
-        <!-- قوانین و مقررات (بازکننده مودال) - فقط داخل منوی همبرگری -->
+        <!-- دکمه باز کردن مودال قوانین و مقررات، فقط داخل منوی همبرگری موبایل -->
         <button
           type="button"
           class="min-[1100px]:hidden hover:text-teal-700 dark:hover:text-dark-accent transition"
@@ -156,7 +157,7 @@
           {{ $t('nav.terms') }}
         </button>
 
-        <!-- دکمه‌ی تغییر حالت روشن/تاریک + EN/FA (موبایل) -->
+        <!-- سوییچ زبان و تغییر حالت روشن/تاریک، نسخه موبایل -->
         <div class="min-[1100px]:hidden flex items-center gap-4 mt-1">
           <button
             @click="toggleLang"
@@ -186,6 +187,7 @@
           </button>
         </div>
 
+        <!-- دکمه‌های ورود/ثبت‌نام یا پروفایل، نسخه موبایل -->
         <ClientOnly>
           <div v-if="!isLoggedIn" class="flex flex-col gap-2 w-full min-[1100px]:hidden mt-2">
             <NuxtLink :to="localePath('/auth/login')" class="w-full text-center py-2 sm:py-2.5 text-[#2D7A6F] dark:text-dark-accent font-bold border border-[#2D7A6F] dark:border-dark-accent rounded-full text-[14px] sm:text-[16px]" @click="isOpen = false">{{ $t('nav.login') }}</NuxtLink>
@@ -214,7 +216,7 @@
     </div>
   </nav>
 
-  <!-- مودال قوانین و مقررات (همون کامپوننت مشترک فوتر) -->
+  <!-- مودال قوانین و مقررات -->
   <TermsModal v-model="showTermsModal" />
 </template>
 
@@ -227,8 +229,7 @@ const isOpen = ref(false)
 const showTermsModal = ref(false)
 const isLoggedIn = computed(() => !!token.value)
 
-// روت‌بیس‌نیم مستقل از پیشوند زبان (چون با strategy: prefix_except_default
-// مسیر انگلیسی چیزی مثل events-lottery-register___en میشه)
+// تشخیص صفحات لاتاری بدون توجه به پیشوند زبان
 const routeBaseName = computed(() => route.name?.toString().split('___')[0])
 const isLotteryPage = computed(() => [
   'events-lottery-register',
@@ -240,6 +241,7 @@ const isLotteryPage = computed(() => [
 ].includes(routeBaseName.value))
 
 const colorMode = useColorMode()
+// جابجایی بین حالت روشن و تاریک
 function toggleColorMode() {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   isOpen.value = false
@@ -253,6 +255,7 @@ const switchLocalePath = useSwitchLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 const langLabel = computed(() => (locale.value === 'fa' ? 'EN' : 'FA'))
 
+// جابجایی زبان سایت و ریدایرکت به مسیر معادل
 async function toggleLang() {
   const target = locale.value === 'fa' ? 'en' : 'fa'
   await navigateTo(switchLocalePath(target))
@@ -261,6 +264,7 @@ async function toggleLang() {
 </script>
 
 <style scoped>
+/* جهت متن نوار در حالت موبایل بر اساس زبان */
 @media (max-width: 1099px) {
   nav.nav-mobile-rtl {
     direction: rtl;

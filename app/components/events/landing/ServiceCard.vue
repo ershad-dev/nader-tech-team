@@ -1,5 +1,5 @@
 <template>
-  <!-- نمایش لیست کارت‌ها با استفاده از v-for -->
+  <!-- نمایش لیست کارت‌های خدمات -->
   <div 
     v-for="(service, index) in services" 
     :key="index"
@@ -7,12 +7,12 @@
     class="bg-white dark:bg-[#435056] rounded-[24px] sm:rounded-[35px] md:rounded-[40px] xl:rounded-[49px] min-[1920px]:rounded-[56px] flex items-center shadow-sm overflow-hidden h-[110px] sm:h-[150px] md:h-[160px] xl:h-[180.11px] min-[1920px]:h-[210px] w-full xl:w-[860px] min-[1920px]:w-[1000px] cursor-pointer"
   >
     
-    <!-- تصویر -->
+    <!-- تصویر سرویس -->
     <div class="w-[35%] sm:w-[30%] md:w-[32%] xl:w-[209px] min-[1920px]:w-[245px] h-full shrink-0 self-stretch">
       <img :src="service.image" :alt="service.title" class="w-full h-full object-cover rounded-[24px] sm:rounded-[35px] md:rounded-[40px] xl:rounded-[49px] min-[1920px]:rounded-[56px]" />
     </div>
 
-    <!-- متن -->
+    <!-- عنوان و توضیحات سرویس -->
     <div 
       class="flex-1 flex items-center py-2 sm:py-3 md:py-3 xl:py-0 min-w-0 h-full"
       :class="isRtl 
@@ -31,7 +31,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- مودال نمایش جزئیات کامل سرویس انتخاب‌شده -->
   <Teleport to="body">
     <div 
       v-if="selectedService"
@@ -40,7 +40,7 @@
     >
       <div class="relative bg-white dark:bg-[#435056] rounded-[24px] sm:rounded-[32px] w-full max-w-md max-h-[85vh] overflow-y-auto p-5 sm:p-7">
         
-        <!-- دکمه بستن -->
+        <!-- دکمه بستن مودال -->
         <button 
           @click="closeModal"
           class="absolute top-4 rtl:left-4 ltr:right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition"
@@ -84,10 +84,12 @@ defineProps({
 
 const selectedService = ref(null)
 
+// باز کردن مودال با سرویس انتخاب‌شده
 function openModal(service) {
   selectedService.value = service
 }
 
+// بستن مودال
 function closeModal() {
   selectedService.value = null
 }

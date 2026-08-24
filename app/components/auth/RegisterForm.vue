@@ -5,13 +5,15 @@ import * as yup from 'yup'
 
 import TermsAgreement from '~/components/Terms/TermsAgreement.vue'
 
+// تنظیم لایوت صفحات احراز هویت
 definePageMeta({ layout: 'auth' })
 
 const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
+// جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// ==================== اسکیما ولیدیشن ====================
+// اسکیمای اعتبارسنجی کامل فرم ثبت‌نام
 const schema = yup.object({
 
   username: yup
@@ -19,8 +21,7 @@ const schema = yup.object({
     .matches(/^[a-zA-Z0-9_]+$/, t('auth.register.validation.usernameFormat'))
     .required(t('auth.register.validation.usernameRequired')),
 
-  // نکته: این فیلد طبق قانون سیستم همیشه باید فارسی باشد (تطبیق با مدارک هویتی)،
-  // مستقل از زبان نمایش سایت — این یک محدودیت واقعی است، نه صرفاً زبان رابط کاربری
+  // نام و نام‌خانوادگی طبق مدارک هویتی همیشه باید فارسی باشد
   full_name: yup
     .string()
     .matches(/^[\u0600-\u06FF\s]+$/, t('auth.register.validation.fullNameFormat'))
@@ -47,7 +48,7 @@ const schema = yup.object({
     .length(10, t('auth.register.validation.nationalCodeLength'))
     .required(t('auth.register.validation.nationalCodeRequired')),
 
-  // مقدار ورودی همچنان شمسی است (نمایش به کاربر)، اما هنگام ارسال به میلادی تبدیل می‌شود
+  // تاریخ تولد به صورت شمسی وارد و اعتبارسنجی می‌شود
   birth_date: yup
     .string()
     .matches(
@@ -87,7 +88,7 @@ const schema = yup.object({
 
 const { handleSubmit, setErrors } = useForm({ validationSchema: schema })
 
-// ==================== فیلدها ====================
+// فیلدهای فرم و پیام‌های خطای هرکدام
 const { value: username, errorMessage: usernameError } = useField('username')
 const { value: full_name, errorMessage: fullNameError } = useField('full_name')
 const { value: email, errorMessage: emailError } = useField('email')
@@ -105,19 +106,20 @@ const showPasswordConfirm = ref(false)
 const loading = ref(false)
 const toast = ref({ message: '', type: '' })
 
+// نمایش پیام toast
 const showToast = (message, type = 'error') => {
   toast.value = { message, type }
   setTimeout(() => { toast.value = { message: '', type: '' } }, 4000)
 }
 
-// ==================== هندلرهای input ====================
-
+// فیلتر کاراکترهای غیرمجاز از نام کاربری
 const handleUsernameInput = (e) => {
   const filtered = e.target.value.replace(/[^a-zA-Z0-9_]/g, '')
   username.value = filtered
   e.target.value = filtered
 }
 
+// جلوگیری از تایپ کاراکتر غیرفارسی در نام و نام‌خانوادگی
 const handleFullNameKeydown = (e) => {
   const char = e.key
   if (char && char.length === 1 && /[a-zA-Z0-9!@#$%^&*()\-=\[\]{};':"\\|,.<>\/?]/.test(char)) {
@@ -125,18 +127,21 @@ const handleFullNameKeydown = (e) => {
   }
 }
 
+// فیلتر ورودی شماره موبایل (فقط عدد، حداکثر 11 رقم)
 const handleMobileInput = (e) => {
   const digits = e.target.value.replace(/\D/g, '').slice(0, 11)
   mobile.value = digits
   e.target.value = digits
 }
 
+// فیلتر ورودی کد ملی (فقط عدد، حداکثر 10 رقم)
 const handleNationalCodeInput = (e) => {
   const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
   national_code.value = digits
   e.target.value = digits
 }
 
+// فرمت‌دهی خودکار تاریخ تولد به شکل YYYY/MM/DD
 const handleBirthDateInput = (e) => {
   let raw = e.target.value.replace(/\D/g, '').slice(0, 8)
   let formatted = raw
@@ -146,6 +151,7 @@ const handleBirthDateInput = (e) => {
   e.target.value = formatted
 }
 
+// فیلتر ورودی کد پستی (فقط عدد، حداکثر 10 رقم)
 const handlePostalCodeInput = (e) => {
   const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
   postal_code.value = digits
@@ -154,27 +160,31 @@ const handlePostalCodeInput = (e) => {
 
 const PERSIAN_REGEX = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/g
 
+// فیلتر کردن کاراکترهای فارسی از رمز عبور
 const handlePasswordInput = (e) => {
   const filtered = e.target.value.replace(PERSIAN_REGEX, '')
   password.value = filtered
   e.target.value = filtered
 }
 
+// جلوگیری از تایپ کاراکتر فارسی در رمز عبور
 const handlePasswordKeydown = (e) => {
   if (e.key?.length === 1 && PERSIAN_REGEX.test(e.key)) e.preventDefault()
 }
 
+// فیلتر کردن کاراکترهای فارسی از تکرار رمز عبور
 const handlePasswordConfirmInput = (e) => {
   const filtered = e.target.value.replace(PERSIAN_REGEX, '')
   password_confirmation.value = filtered
   e.target.value = filtered
 }
 
+// جلوگیری از تایپ کاراکتر فارسی در تکرار رمز عبور
 const handlePasswordConfirmKeydown = (e) => {
   if (e.key?.length === 1 && PERSIAN_REGEX.test(e.key)) e.preventDefault()
 }
 
-// ==================== FIX: تبدیل تاریخ شمسی به میلادی ====================
+// تبدیل تاریخ عددی شمسی به میلادی
 function jalaliToGregorian(jy, jm, jd) {
   let gy
   if (jy > 979) {
@@ -221,6 +231,7 @@ function jalaliToGregorian(jy, jm, jd) {
   return { gy, gm, gd }
 }
 
+// تبدیل رشته تاریخ شمسی به فرمت ISO میلادی
 function convertJalaliStringToGregorianISO(jalaliStr) {
   const [jy, jm, jd] = jalaliStr.split('/').map(Number)
   const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd)
@@ -228,7 +239,7 @@ function convertJalaliStringToGregorianISO(jalaliStr) {
   return `${gy}-${pad(gm)}-${pad(gd)}`
 }
 
-// ==================== ثبت‌نام ====================
+// ارسال فرم ثبت‌نام به سرور
 const registerUser = handleSubmit(async (values) => {
   loading.value = true
   try {
@@ -286,7 +297,7 @@ const registerUser = handleSubmit(async (values) => {
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
-    <!-- Toast -->
+    <!-- پیام toast -->
     <div
       v-if="toast.message"
       :class="['fixed top-5 p-4 rounded text-white z-50 transition-all', isRtl ? 'left-5' : 'right-5', toast.type === 'success' ? 'bg-green-500' : 'bg-red-500']"
@@ -294,16 +305,17 @@ const registerUser = handleSubmit(async (values) => {
       {{ toast.message }}
     </div>
 
+    <!-- عنوان صفحه -->
     <h1 class="text-lg font-bold text-[#000000] dark:text-dark-text-deep mb-8 font-roboto">
       {{ $t('auth.register.heading') }}
     </h1>
 
+    <!-- فرم ثبت‌نام -->
     <form @submit.prevent="registerUser" novalidate>
-      <!-- نکته: این گرید عمداً dir="ltr" ثابت مونده (نه isRtl) چون نیمی از فیلدها محتوای لاتین/عددی
-           دارن و نیمی فارسی؛ ترتیب فیلدها رو مستقل از زبان صفحه پایدار نگه می‌داریم -->
+      <!-- گرید اصلی فیلدها (ترتیب فیلدها مستقل از زبان صفحه ثابت نگه داشته می‌شود) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5" dir="ltr">
 
-        <!-- نام کاربری -->
+        <!-- فیلد نام کاربری -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.username') }}</label>
           <input
@@ -321,7 +333,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="usernameError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ usernameError }}</p>
         </div>
 
-        <!-- نام و نام خانوادگی (باید همیشه فارسی باشد - محدودیت واقعی سیستم) -->
+        <!-- فیلد نام و نام‌خانوادگی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.fullName') }}</label>
           <input
@@ -339,7 +351,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="fullNameError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ fullNameError }}</p>
         </div>
 
-        <!-- ایمیل -->
+        <!-- فیلد ایمیل -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.email') }}</label>
           <input
@@ -356,7 +368,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="emailError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ emailError }}</p>
         </div>
 
-        <!-- شماره تماس -->
+        <!-- فیلد شماره تماس -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.mobile') }}</label>
           <input
@@ -376,7 +388,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="mobileError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ mobileError }}</p>
         </div>
 
-        <!-- کد ملی -->
+        <!-- فیلد کد ملی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.nationalCode') }}</label>
           <input
@@ -395,7 +407,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="nationalCodeError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ nationalCodeError }}</p>
         </div>
 
-        <!-- تاریخ تولد شمسی -->
+        <!-- فیلد تاریخ تولد -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.birthDate') }}</label>
           <input
@@ -414,7 +426,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="birthDateError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ birthDateError }}</p>
         </div>
 
-        <!-- استان -->
+        <!-- فیلد استان -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.province') }}</label>
           <input
@@ -430,7 +442,7 @@ const registerUser = handleSubmit(async (values) => {
           <p v-if="provinceError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ provinceError }}</p>
         </div>
 
-        <!-- کد پستی -->
+        <!-- فیلد کد پستی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
           <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.postalCode') }}</label>
           <input
@@ -451,7 +463,7 @@ const registerUser = handleSubmit(async (values) => {
 
       </div>
 
-      <!-- آدرس -->
+      <!-- فیلد آدرس -->
       <div class="flex flex-col mt-5" :class="isRtl ? 'text-right' : 'text-left'">
         <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.address') }}</label>
         <textarea
@@ -467,7 +479,7 @@ const registerUser = handleSubmit(async (values) => {
         <p v-if="addressError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ addressError }}</p>
       </div>
 
-      <!-- رمز عبور -->
+      <!-- فیلد رمز عبور -->
       <div class="flex flex-col mt-5" :class="isRtl ? 'text-right' : 'text-left'">
         <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.password') }}</label>
         <div class="relative">
@@ -484,6 +496,7 @@ const registerUser = handleSubmit(async (values) => {
             @input="handlePasswordInput"
             @keydown="handlePasswordKeydown"
           />
+          <!-- دکمه نمایش/مخفی کردن رمز عبور -->
           <button
             type="button"
             class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/60 hover:text-[#0F184B] dark:hover:text-dark-accent transition-colors"
@@ -504,7 +517,7 @@ const registerUser = handleSubmit(async (values) => {
         </p>
       </div>
 
-      <!-- تکرار رمز عبور -->
+      <!-- فیلد تکرار رمز عبور -->
       <div class="flex flex-col mt-5" :class="isRtl ? 'text-right' : 'text-left'">
         <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.passwordConfirm') }}</label>
         <div class="relative">
@@ -521,6 +534,7 @@ const registerUser = handleSubmit(async (values) => {
             @input="handlePasswordConfirmInput"
             @keydown="handlePasswordConfirmKeydown"
           />
+          <!-- دکمه نمایش/مخفی کردن تکرار رمز عبور -->
           <button
             type="button"
             class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-deep/60 hover:text-[#0F184B] dark:hover:text-dark-accent transition-colors"
@@ -538,7 +552,7 @@ const registerUser = handleSubmit(async (values) => {
         <p v-if="passwordConfirmError" class="text-red-500 dark:text-red-400 text-[11px] mt-1">{{ passwordConfirmError }}</p>
       </div>
 
-      <!-- اطلاع‌رسانی پذیرش قوانین و مقررات -->
+      <!-- پذیرش قوانین و مقررات -->
       <div class="mt-[30px]" :class="isRtl ? 'text-right' : 'text-left'">
         <TermsAgreement />
       </div>
@@ -553,6 +567,7 @@ const registerUser = handleSubmit(async (values) => {
       </div>
     </form>
 
+    <!-- لینک بازگشت به صفحه ورود -->
     <div class="mt-[20px] text-sm text-[#1a2333] dark:text-dark-text-deep font-bold cursor-pointer underline font-roboto">
       <NuxtLink :to="localePath('/auth/login')">{{ $t('auth.register.loginLink') }}</NuxtLink>
     </div>

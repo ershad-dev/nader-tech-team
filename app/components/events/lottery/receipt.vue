@@ -20,8 +20,7 @@
         </div>
 
         <template v-else>
-          <!-- کد قرعه‌کشی: طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره
-               که همون کد قرعه‌کشی/بلیط کاربره؛ دیگه نیازی به حدس زدن اسم فیلد نیست -->
+          <!-- نمایش کد قرعه‌کشی کاربر -->
           <div class="text-center mb-8">
             <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">{{ $t('events.lottery.register.lotteryCode') }}</div>
             <p v-if="registration.code" class="text-2xl font-bold text-[#2C7379] dark:text-dark-highlight font-roboto">{{ registration.code }}</p>
@@ -32,6 +31,7 @@
             {{ $t('events.lottery.register.saveCodeHint') }}
           </p>
 
+          <!-- نمایش اطلاعات کاربر و مبلغ پرداختی -->
           <div class="bg-[#BFD1D580]/50 dark:bg-dark-input/40 border border-[#6F78B780] dark:border-dark-border rounded-2xl p-4 md:p-6 mb-8 w-full">
             <div class="space-y-4 text-gray-600 dark:text-dark-text-deep text-sm md:text-base">
               <div class="flex justify-between border-b dark:border-dark-border/50 pb-3 font-roboto">
@@ -66,6 +66,7 @@
             </div>
           </div>
 
+          <!-- نمایش عنوان قرعه‌کشی و تاریخ ثبت‌نام -->
           <div class="text-center mb-8">
             <div class="bg-[#C5E0E3] dark:bg-dark-accent/30 text-[#2D7A6F] dark:text-dark-highlight px-6 py-2 rounded-full inline-block font-bold mb-3 text-sm">{{ $t('events.lottery.register.lotteryLabel') }}</div>
             <p class="text-lg md:text-xl font-bold text-[#2C7379] dark:text-dark-highlight">{{ registration.lottery.title }}</p>
@@ -76,6 +77,7 @@
             {{ $t('events.lottery.register.screenshotHint') }}
           </p>
 
+          <!-- دکمه‌های دانلود PDF و بازگشت به صفحه رویدادها -->
           <div class="flex flex-col items-center w-full px-6 md:px-10 mb-8 gap-4">
 
             <button
@@ -103,20 +105,18 @@ import { onMounted, ref } from 'vue'
 
 const pdfTarget = ref(null)
 
-// --- i18n ---
+// تنظیمات زبان و جهت صفحه
 const { locale, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// این مقدار در pages/register.vue بعد از موفقیت‌آمیز بودن
-// POST /api/lotteris/{lottery}/register داخل useState('lottery-registration', ...) ذخیره شده
-// طبق سند جدید Swagger، پاسخ register یه فیلد "code" واقعی داره که همون کد قرعه‌کشی/بلیط کاربره
+// اطلاعات ثبت‌نام قرعه‌کشی که از صفحه ثبت‌نام ذخیره شده
 const registration = useState('lottery-registration', () => null)
 
-// چون useState فقط تو حافظه‌ی کلاینت زنده‌ست و با یه رفرش واقعی مرورگر از بین میره،
-// یه لحظه لودینگ نگه می‌داریم تا اول از sessionStorage (اگه بود) بازیابی کنیم
+// وضعیت بارگذاری تا زمان بازیابی اطلاعات
 const loading = ref(true)
 
+// بازیابی اطلاعات ثبت‌نام از sessionStorage بعد از رفرش صفحه
 onMounted(() => {
   if (!registration.value && process.client) {
     try {
@@ -125,24 +125,27 @@ onMounted(() => {
         registration.value = JSON.parse(cached)
       }
     } catch (e) {
-      // داده خراب یا sessionStorage در دسترس نیست؛ همون notFound نمایش داده میشه
+      // داده خراب یا sessionStorage در دسترس نیست
     }
   }
   loading.value = false
 })
 
+// فرمت کردن تاریخ بر اساس زبان فعلی
 function formatDate(value) {
   if (!value) return '-'
   const localeCode = locale.value === 'fa' ? 'fa-IR' : 'en-US'
   return new Date(value).toLocaleDateString(localeCode, { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+// فرمت کردن مبلغ بر اساس زبان فعلی
 function formatPrice(value) {
   if (value == null) return '-'
   const localeCode = locale.value === 'fa' ? 'fa-IR' : 'en-US'
   return new Intl.NumberFormat(localeCode).format(value)
 }
 
+// تبدیل کارت ثبت‌نام به فایل PDF و دانلود آن
 const downloadPDF = async () => {
   const html2canvas = (await import('html2canvas')).default
   const { jsPDF } = await import('jspdf')
@@ -150,8 +153,6 @@ const downloadPDF = async () => {
   const el = pdfTarget.value
   if (!el) return
 
-  // جهت و زبان سند خروجی PDF باید مطابق زبان فعلی کاربر باشه، نه همیشه فارسی،
-  // چون این عکس/PDF دقیقاً نمای همون صفحه‌ایه که کاربر می‌بینه
   const pdfDir = isRtl.value ? 'rtl' : 'ltr'
   const pdfLang = locale.value
 
@@ -171,8 +172,7 @@ const downloadPDF = async () => {
 
   const imgData = canvas.toDataURL('image/jpeg', 0.98)
 
-  // سایز PDF رو دقیقاً از روی ابعاد خود canvas می‌سازیم (نه گرد کردن px->mm جدا)
-  const pxToMm = (px) => (px * 25.4) / 96 / 2 // تقسیم بر scale چون canvas دو برابر شده
+  const pxToMm = (px) => (px * 25.4) / 96 / 2
   const widthMm = pxToMm(canvas.width)
   const heightMm = pxToMm(canvas.height)
 
@@ -182,7 +182,6 @@ const downloadPDF = async () => {
     format: [widthMm, heightMm]
   })
 
-  // تصویر رو دقیقاً به اندازه کل صفحه می‌چسبونیم - بدون مارجین و بدون کسری که باعث صفحه دوم بشه
   pdf.addImage(imgData, 'JPEG', 0, 0, widthMm, heightMm, undefined, 'FAST')
 
   pdf.save('Lottery-Registration.pdf')

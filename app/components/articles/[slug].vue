@@ -1,4 +1,5 @@
 <template>
+  <!-- کانتینر اصلی صفحه تک مقاله -->
   <div class="max-w-[1100px] mx-auto py-8 sm:py-12 md:py-16 px-4 sm:px-5 md:px-6 bg-[#ABD7D8]/25 dark:bg-[#ABD7D857] rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[3rem] mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8 md:mb-10 shadow-xl" :dir="isRtl ? 'rtl' : 'ltr'">
 
     <!-- لودینگ -->
@@ -10,17 +11,21 @@
       <NuxtLink :to="localePath('/articles')" class="text-[#2D7A6F] dark:text-dark-highlight underline">{{ $t('articles.backToArticles') }}</NuxtLink>
     </div>
 
+    <!-- محتوای مقاله -->
     <template v-else-if="article">
+      <!-- عنوان مقاله -->
       <h1 class="text-[20px] sm:text-[26px] md:text-[32px] font-bold text-center mb-5 sm:mb-6 md:mb-8 leading-snug dark:text-dark-text">
         {{ pickLocalized(article, 'title', 'title_en') }}
       </h1>
 
+      <!-- تصویر شاخص مقاله -->
       <img
         :src="article.thumbnail"
         :alt="pickLocalized(article, 'thumbnail_alt', 'thumbnail_alt_en') || pickLocalized(article, 'title', 'title_en')"
         class="w-full h-[180px] sm:h-[280px] md:h-[400px] object-cover rounded-[1.2rem] sm:rounded-[1.6rem] md:rounded-[2rem] mb-4"
       />
 
+      <!-- تاریخ انتشار -->
       <div class="flex justify-center items-center gap-4 mb-6 sm:mb-8">
         <div class="flex items-center gap-2 text-slate-500 dark:text-dark-text/70 text-sm">
           <svg width="16" height="16" class="sm:w-[18px] sm:h-[18px] md:w-[20px] md:h-[20px]" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,7 +36,7 @@
         <!-- <span class="text-slate-400 dark:text-dark-text/50 text-xs">{{ article.views_count }} بازدید</span> -->
       </div>
 
-      <!-- content از سرور HTML است -->
+      <!-- بدنه اصلی مقاله (HTML از سرور) -->
       <div
         class="prose prose-lg max-w-none space-y-4 sm:space-y-5 md:space-y-6 text-justify leading-[26px] sm:leading-[36px] md:leading-[50px] text-[14px] sm:text-[17px] md:text-[20px] text-[#0F184B] dark:text-dark-text font-noto-regular"
         v-html="pickLocalized(article, 'content', 'content_en')"
@@ -42,30 +47,35 @@
 
 <script setup>
 const route = useRoute();
-const apiBase = 'https://nadertechnologyteam.ir'; // یا از config.public.apiBase استفاده کن
+const apiBase = 'https://nadertechnologyteam.ir'; // آدرس پایه API
 
 const localePath = useLocalePath();
 const { locale, localeProperties } = useI18n();
+// جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
+// اسلاگ مقاله از پارامتر مسیر
 const slug = computed(() => route.params.slug);
 
+// دریافت اطلاعات مقاله از API
 const { data, pending, error } = await useFetch(
   () => `${apiBase}/api/articles/${slug.value}`
 );
 
+// داده مقاله دریافت‌شده
 const article = computed(() => data.value?.data ?? null);
 
-// انتخاب نسخه‌ی فارسی/انگلیسی هر فیلد بر اساس زبان فعلی، با fallback به فارسی
-// اگر ترجمه‌ی انگلیسی موجود نباشه یا خالی باشه (مقالاتی که هنوز ترجمه نشدن)
+// انتخاب فیلد فارسی یا انگلیسی بر اساس زبان فعلی
 function pickLocalized(item, faKey, enKey) {
   const enVal = item?.[enKey];
   return (locale.value === 'en' && enVal) ? enVal : item?.[faKey];
 }
 
 const colorMode = useColorMode();
+// رنگ آیکون تاریخ بر اساس حالت روشن/تاریک
 const dateIconFill = computed(() => (colorMode.value === 'dark' ? '#E9F1F2' : '#747893'));
 
+// فرمت‌دهی تاریخ بر اساس زبان
 function formatDate(dateStr) {
   if (!dateStr) return '';
   try {

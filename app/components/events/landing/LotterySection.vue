@@ -1,4 +1,5 @@
 <script setup>
+// وضعیت لاگین کاربر و مقداردهی اولیه احراز هویت
 const { token, initAuth } = useAuth()
 const isLoggedIn = computed(() => !!token.value)
 
@@ -11,16 +12,19 @@ const localePath = useLocalePath()
 const { localeProperties, locale } = useI18n()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
+// تصویر بنر قرعه‌کشی بسته به زبان فعلی
 const lotteryBannerImage = computed(() =>
   locale.value === 'en' ? '/images/rebon-lottery-en.png' : '/images/rebon-lottery1.png'
 )
 
+// هدایت به صفحه ثبت‌نام قرعه‌کشی (یا لاگین در صورت نیاز)
 function goToRegister() {
   router.push(isLoggedIn.value
     ? localePath('/events/lottery/register')
     : localePath(`/auth/login?redirect=/events/lottery/register`))
 }
 
+// هدایت به صفحه ورود قرعه‌کشی (یا لاگین در صورت نیاز)
 function goToLoginPage() {
   router.push(isLoggedIn.value
     ? localePath('/events/lottery/login')
@@ -29,20 +33,21 @@ function goToLoginPage() {
 </script>
 
 <template>
+  <!-- بخش بنر قرعه‌کشی رویدادها -->
   <div class="w-full px-4 sm:px-5 md:px-8 lg:px-10 xl:px-14 min-[1920px]:px-32 mb-[50px]">
     <section
       class="relative w-full max-w-[1400px] mx-auto
              aspect-[1110/629] rounded-2xl overflow-hidden
              mt-[24px] sm:mt-[32px] md:mt-[40px] lg:mt-[50px]"
     >
-      <!-- بک‌گراند -->
+      <!-- تصویر پس‌زمینه -->
       <img
         src="/images/bglottery.png"
         :alt="$t('events.lottery.landing.bgAlt')"
         class="absolute inset-0 w-full h-full object-cover object-center"
       />
 
-      <!-- کانتینر بیرونی -->
+      <!-- کانتینر محتوای روی پس‌زمینه -->
 <div
   :dir="isRtl ? 'rtl' : 'ltr'"
   :class="[
@@ -51,7 +56,7 @@ function goToLoginPage() {
     locale === 'en' ? '-mr-[24px] sm:-mr-[52px] md:-mr-[48px] lg:-mr-[40px] xl:mr-0' : ''
   ]"
 >
-        <!-- بلوک محتوا -->
+        <!-- بلوک محتوا: لوگوی بنر، خط جداکننده، متن و دکمه ثبت‌نام -->
         <div class="flex flex-col items-center text-center">
           <img
             :src="lotteryBannerImage"
@@ -74,6 +79,7 @@ function goToLoginPage() {
             {{ $t('events.lottery.landing.line1') }}<br />
             {{ $t('events.lottery.landing.line2') }}
           </p>
+<!-- دکمه ثبت‌نام در قرعه‌کشی -->
 <button
   @click="goToRegister"
   class="bg-white/90 text-[#333B6A]

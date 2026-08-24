@@ -15,23 +15,23 @@ const showLotteryPage = ref(false)
 const entries = ref([])
 const loading = ref(true)
 const errorMsg = ref('')
-const currentLottery = ref(null) // آبجکت کامل قرعه‌کشی جاری
+const currentLottery = ref(null)
 const lotteryId = ref(null)
 
 const showInfoModal = ref(false)
 
-// رنگ اسکرول‌بار بر اساس حالت رنگی (دارک/لایت)
+// رنگ اسکرول‌بار بر اساس حالت دارک/لایت
 const scrollbarThumbColor = computed(() =>
   colorMode.value === 'dark' ? '#72A6A6' : '#67A9A8'
 )
+// رنگ هاور اسکرول‌بار بر اساس حالت دارک/لایت
 const scrollbarThumbHoverColor = computed(() =>
   colorMode.value === 'dark' ? '#ADE9EA' : '#4d9aa0'
 )
 
-// پیدا کردن قرعه‌کشی جاری: اول فعال‌ترین، اگر نبود آخرین مورد کلی
+// پیدا کردن قرعه‌کشی جاری (فعال یا در نبود آن، آخرین مورد)
 const resolveCurrentLottery = async () => {
   try {
-    // تلاش اول: قرعه‌کشی فعال
     const activeRes = await $fetch(`${API_BASE}/admin/lotteries`, {
       headers: authHeader(),
       query: { page: 1, per_page: 1, status: 'active' },
@@ -41,7 +41,6 @@ const resolveCurrentLottery = async () => {
       return activeRes.data[0]
     }
 
-    // fallback: بدون فیلتر status، آخرین قرعه‌کشی موجود
     const allRes = await $fetch(`${API_BASE}/admin/lotteries`, {
       headers: authHeader(),
       query: { page: 1, per_page: 1 },
@@ -54,6 +53,7 @@ const resolveCurrentLottery = async () => {
   }
 }
 
+// دریافت لیست شرکت‌کنندگان قرعه‌کشی جاری
 const fetchEntries = async () => {
   loading.value = true
   errorMsg.value = ''
@@ -90,19 +90,19 @@ const fetchEntries = async () => {
   }
 }
 
-// وقتی اطلاعات قرعه‌کشی از مودال ویرایش شد، هدر همین صفحه هم آپدیت بشه
+// همگام‌سازی اطلاعات قرعه‌کشی جاری پس از ویرایش در مودال
 const onLotteryUpdated = (updatedLottery) => {
   if (isReadOnly.value) return
   currentLottery.value = { ...currentLottery.value, ...updatedLottery }
 }
 
-// ورود به صفحه‌ی برگزاری قرعه‌کشی؛ برای کاربر فقط-نمایش مسدود است
-// چون LotteryDraw.vue عملیات نوشتنی (اجرای واقعی قرعه‌کشی) انجام می‌دهد.
+// باز کردن صفحه‌ی برگزاری قرعه‌کشی (غیرفعال برای کاربر فقط-نمایش)
 const openLotteryDraw = () => {
   if (isReadOnly.value) return
   showLotteryPage.value = true
 }
 
+// مقداردهی اولیه احراز هویت و دریافت داده‌ها هنگام لود کامپوننت
 onMounted(() => {
   initFromStorage()
   fetchEntries()
@@ -112,7 +112,7 @@ onMounted(() => {
 <template>
   <div v-if="!showLotteryPage" class="max-w-full lg:max-w-[1000px] min-[1920px]:max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 min-[1920px]:p-12" dir="rtl">
 
-    <!-- بنر اطلاع‌رسانی حالت فقط-نمایش -->
+    <!-- بنر اطلاع‌رسانی وضعیت فقط-نمایش -->
     <div
       v-if="isReadOnly"
       class="mb-5 text-center bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold py-2.5 px-4 rounded-xl text-sm"
@@ -120,6 +120,7 @@ onMounted(() => {
       شما فقط دسترسی مشاهده دارید و امکان برگزاری یا ویرایش قرعه‌کشی وجود ندارد.
     </div>
 
+    <!-- هدر اطلاعات قرعه‌کشی و دکمه‌ی جزئیات -->
     <div class="bg-white dark:bg-dark-input flex items-center justify-center gap-3 py-3 lg:py-4 min-[1920px]:py-6 rounded-2xl mb-6 lg:mb-8 min-[1920px]:mb-10 font-bold text-[#1a2333] dark:text-dark-text-deep shadow-sm text-sm sm:text-base min-[1920px]:text-lg relative">
       <div class="text-center">
         اطلاعات قرعه‌کشی
@@ -137,11 +138,12 @@ onMounted(() => {
       </button>
     </div>
 
+    <!-- وضعیت بارگذاری و خطا -->
     <div v-if="loading" class="text-center py-10 text-gray-500 dark:text-dark-text/70">در حال بارگذاری...</div>
     <div v-else-if="errorMsg" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ errorMsg }}</div>
 
     <template v-else>
-<!-- دسکتاپ -->
+<!-- جدول شرکت‌کنندگان برای نمایش دسکتاپ -->
 <div class="hidden lg:block bg-[#F5F3ED] dark:bg-dark-surface rounded-3xl overflow-hidden border border-gray-200 dark:border-dark-border shadow-sm">
   <div class="max-h-[360px] min-[1920px]:max-h-[440px] overflow-y-auto entries-scroll">
     <table class="w-full text-center">
@@ -165,7 +167,7 @@ onMounted(() => {
   </div>
 </div>
 
-      <!-- موبایل و تبلت -->
+      <!-- لیست شرکت‌کنندگان برای نمایش موبایل و تبلت -->
 <div class="lg:hidden max-h-[420px] overflow-y-auto entries-scroll flex flex-col gap-3 sm:gap-4 pr-1">
   <div
     v-for="entry in entries"
@@ -192,6 +194,7 @@ onMounted(() => {
       </div>
     </template>
 
+    <!-- دکمه‌ی شروع برگزاری قرعه‌کشی -->
     <div class="mt-6 lg:mt-8 min-[1920px]:mt-12 flex justify-center">
       <button
         @click="openLotteryDraw"
@@ -203,6 +206,7 @@ onMounted(() => {
       </button>
     </div>
 
+    <!-- مودال جزئیات و ویرایش قرعه‌کشی -->
     <LotteryInfoModal
       v-if="lotteryId"
       :show="showInfoModal"
@@ -213,6 +217,7 @@ onMounted(() => {
     />
   </div>
 
+<!-- صفحه‌ی برگزاری قرعه‌کشی -->
 <LotteryDraw v-else :lottery-id="lotteryId" :read-only="isReadOnly" @back="showLotteryPage = false" />
 </template>
 

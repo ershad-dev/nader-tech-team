@@ -9,7 +9,7 @@
       </h2>
     </div>
 
-<!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا (لوپ + انیمیشن + سواپ با انگشت) -->
+<!-- اسلایدر موبایل: کارت مرکزی بزرگ + کارت‌های قبل/بعد نیمه‌پیدا، با سواپ لمسی -->
 <div
   class="relative flex md:hidden items-center justify-center h-[300px] mb-6 overflow-hidden touch-pan-y"
   @touchstart="onTouchStart"
@@ -42,7 +42,7 @@
   </div>
 </div>
 
-    <!-- تبلت و دسکتاپ: لیست کارت‌های تصاویر (طرح اصلی، لوپ) -->
+    <!-- اسلایدر تبلت/دسکتاپ: ردیف کارت‌های تصویر -->
     <div class="relative w-full hidden md:flex flex-col items-center gap-6 min-[1920px]:gap-10 mb-6">
       <div class="flex gap-3 sm:gap-4 md:gap-6 min-[1920px]:gap-10 overflow-hidden w-full justify-center">
         <div
@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
+    <!-- دکمه‌های next/prev اسلایدر، فقط تبلت و دسکتاپ -->
     <div class="hidden md:flex justify-center items-center gap-2 mt-6 sm:mt-8 min-[1920px]:mt-10">
       <IconsSliderButton
         :direction="isRtl ? 'left' : 'right'"
@@ -79,13 +79,13 @@
       />
     </div>
 
-    <!-- بخش نمایش متن انتخاب شده (در صورت انتخاب یک کارت) -->
+    <!-- باکس نمایش متن نظر انتخاب‌شده -->
     <div
   v-if="selectedIndex !== null"
   class="testimonial-box relative bg-[#ABD7D840] dark:bg-[#D9D9D9]/20 w-full sm:w-[85%] md:w-[90%] md:max-w-[919px] min-[1920px]:w-[1100px] min-h-[180px] sm:min-h-[210px] md:min-h-[239px] min-[1920px]:min-h-[280px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] min-[1920px]:rounded-[48px] p-4 sm:p-6 md:p-8 min-[1920px]:p-10 mt-8 sm:mt-10 md:mt-12 min-[1920px]:mt-14 mx-auto transition-all duration-500"
 >
 
-      <!-- نشانگر زبانه (Indicator) - در موبایل ثابت و وسط، در تبلت/دسکتاپ داینامیک -->
+      <!-- نشانگر (notch) اشاره‌گر به کارت انتخاب‌شده -->
 <div 
   class="notch absolute -top-[20px] sm:-top-[26px] md:-top-[30px] min-[1920px]:-top-[34px] w-[90px] sm:w-[110px] md:w-[120px] transition-all duration-500 ease-out flex justify-center items-center z-10 mt-[20px] sm:mt-[26px] md:mt-[30px] min-[1920px]:mt-[34px]"
   :style="[
@@ -98,7 +98,7 @@
   <img src="/images/arrow-on-team3.png" alt="arrow" class="notch-arrow mt-[12px] sm:-mt-[28px] md:mt-[13px] min-[1920px]:mt-[15px] h-[40px] sm:h-[50px] md:h-[60px] min-[1920px]:h-[70px]">
 </div>
 
-      <!-- متن نظرات -->
+      <!-- متن نظر انتخاب‌شده -->
       <h1
         :class="[
           'font-bold text-[#0F184B] dark:text-dark-text text-[18px] sm:text-[22px] md:text-[26px] min-[1920px]:text-[30px] mt-[30px] sm:mt-[40px] md:mt-[40px] min-[1920px]:mt-[56px]',
@@ -122,7 +122,7 @@ import { useMobileSlider } from '@/composables/useMobileSlider'
 const { localeProperties } = useI18n()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// رنگ notch وابسته به حالت دارک/لایت — دقیقاً همون الگویی که تو LeadMembers.vue استفاده شد
+// رنگ notch بسته به حالت دارک/لایت
 const colorMode = useColorMode()
 const notchColor = computed(() => (colorMode.value === 'dark' ? '#435056' : '#F7F3EB'))
 
@@ -133,8 +133,7 @@ const notchWidth = ref(140);
 const isMobile = ref(false);
 const visibleCount = ref(3);
 
-// نکته: متن نظرات (text) دیگه اینجا هاردکد نیست؛ فقط تصویر نگه داشته می‌شه
-// و متن واقعی هرکدوم از i18n با کلید events.landing.testimonials.<index>.text خونده می‌شه
+// داده تصاویر نظرات؛ متن هرکدوم از i18n خونده می‌شه
 const testimonials = [
   { image: '/images/img-services.png' },
   { image: '/images/eventheader.jpg' },
@@ -143,7 +142,7 @@ const testimonials = [
   { image: '/images/eventheader.jpg' }
 ];
 
-// تابع محاسبه موقعیت نشانگر (فقط برای تبلت/دسکتاپ استفاده می‌شود)
+// محاسبه موقعیت نشانگر نسبت به کارت انتخاب‌شده (فقط تبلت/دسکتاپ)
 const updateIndicator = async () => {
   await nextTick()
 
@@ -175,7 +174,7 @@ const updateIndicator = async () => {
   )
 }
 
-// تشخیص سایز صفحه و تعیین تعداد کارت‌های قابل نمایش
+// تعیین تعداد کارت‌های قابل‌نمایش و اندازه‌ها بر اساس سایز صفحه
 const updateResponsiveValues = () => {
   const w = window.innerWidth;
 
@@ -200,7 +199,7 @@ const updateResponsiveValues = () => {
 
 let resizeHandler = null;
 
-// اجرای محاسبه موقعیت در لحظه لود شدن صفحه
+// راه‌اندازی مقادیر ریسپانسیو و گوش دادن به تغییر سایز صفحه
 onMounted(() => {
   updateResponsiveValues();
   updateIndicator();
@@ -219,14 +218,13 @@ onUnmounted(() => {
   }
 });
 
-// انتخاب کارت در دسکتاپ/تبلت: فقط هایلایت می‌کنه، بدون جابه‌جایی پنجره‌ی اسلایدر
+// انتخاب کارت در دسکتاپ/تبلت بدون جابه‌جایی پنجره اسلایدر
 const selectCard = (index) => { 
   selectedIndex.value = index; 
   updateIndicator();
 };
 
-// --- اسلایدر موبایل + دکمه‌های next/prev + سواپ لمسی (composable مشترک) ---
-// هر بار اسلاید عوض بشه (سواپ، دکمه، یا کلیک روی کارت موبایل)، هم selectedIndex هم indicator آپدیت می‌شن
+// اسلایدر موبایل + دکمه‌های next/prev + سواپ لمسی (composable مشترک)
 const {
   mobileVisibleItems: mobileVisibleTestimonials,
   visibleItems,
@@ -248,6 +246,7 @@ const visibleTestimonials = visibleItems(visibleCount)
 
 <style scoped>
 
+/* شکل هندسی notch با clip-path */
 .notch {
   position: absolute;
   height: 38px;
@@ -265,7 +264,7 @@ const visibleTestimonials = visibleItems(visibleCount)
   );
 }
 
-/* آرو باید دوباره فلیپ بشه چون والدش (.notch) فلیپ خورده */
+/* فلیپ مجدد فلش چون والد notch فلیپ شده */
 .notch-arrow {
   transform: scaleY(-1);
 }

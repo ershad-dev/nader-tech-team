@@ -1,5 +1,6 @@
 <template>
   <div class="p-4 sm:p-6">
+    <!-- عنوان صفحه -->
     <div
       class="w-full max-w-[812px] lg:w-[812px] bg-[#F7F3EB] dark:bg-dark-surface text-[#0F184B] dark:text-dark-text py-3 px-4 lg:px-6 rounded-full mx-auto mb-6 lg:mb-8 font-bold text-[18px] sm:text-[20px] lg:text-[24px] flex justify-center items-center shadow-xl"
     >
@@ -85,7 +86,7 @@
 
     <template v-else>
       <div class="w-full text-black dark:text-dark-text text-[14px] sm:text-[16px] lg:text-[20px] font-noto-light font-medium">
-        <!-- Table Header (فقط دسکتاپ) -->
+        <!-- هدر جدول (فقط دسکتاپ) -->
         <div class="hidden lg:grid grid-cols-4 bg-[#BFD1D5] dark:bg-dark-surface py-4 px-6 rounded-t-2xl font-bold text-center">
           <div>کد کاربری</div>
           <div>نام و نام خانوادگی</div>
@@ -93,7 +94,7 @@
           <div>ایمیل</div>
         </div>
 
-        <!-- بدون کاربر -->
+        <!-- حالت بدون نتیجه -->
         <div
           v-if="!(loading || (isSearching && searchLoading)) && displayedUsers.length === 0"
           class="text-center py-10 text-gray-500 dark:text-dark-text/60 bg-[#F7F3EB] dark:bg-dark-bg rounded-2xl lg:rounded-none"
@@ -101,12 +102,13 @@
           کاربری یافت نشد
         </div>
 
+        <!-- لیست کاربران با جزئیات قابل بازشدن -->
         <div
           v-for="user in displayedUsers"
           :key="user.id"
           class="border-b border-[#E5E5E5] dark:border-dark-border/30 last:border-none bg-[#F7F3EB] dark:bg-dark-bg rounded-2xl lg:rounded-none mb-3 lg:mb-0 shadow-sm lg:shadow-none overflow-hidden"
         >
-          <!-- Row: دسکتاپ همون گرید قبلی / موبایل و تبلت کارت عمودی -->
+          <!-- ردیف اصلی کاربر (دسکتاپ: جدول / موبایل: کارت) -->
           <div
             @click="toggleUser(user.id)"
             class="cursor-pointer hover:bg-[#FDFBF7] dark:hover:bg-dark-surface/50 transition-all
@@ -134,12 +136,11 @@
             </div>
           </div>
 
-          <!-- Expanded Details -->
+          <!-- جزئیات باز شده‌ی کاربر -->
           <div
             v-if="expandedId === user.id"
             class="px-4 pb-4 lg:px-6 lg:pb-6 bg-[#F7F3EB] dark:bg-dark-bg"
           >
-            <!-- لودینگ جزئیات (در صورت فراخوانی GET /api/admin/users/{user}) -->
             <div v-if="detailLoading" class="text-center py-4 text-sm text-gray-500 dark:text-dark-text/60">
               در حال دریافت جزئیات...
             </div>
@@ -228,7 +229,7 @@
         </div>
       </div>
 
-      <!-- Pagination (فقط وقتی سرچ فعال نیست، چون نتایج سرچ کل لیست فیلترشده رو یک‌جا نشون می‌ده) -->
+      <!-- صفحه‌بندی (فقط وقتی جستجو فعال نیست) -->
       <div
         v-if="!isSearching && meta && meta.last_page > 1"
         class="flex justify-center items-center gap-2 mt-6 flex-wrap"
@@ -260,7 +261,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
-// هدر Authorization از همان composable مشترک لاگین گرفته می‌شود
+// هدر Authorization از composable مشترک لاگین
 const { authHeader, initFromStorage } = useAdminAuth()
 
 const users = ref([])
@@ -275,10 +276,7 @@ const detailLoading = ref(false)
 const currentPage = ref(1)
 const perPage = ref(15)
 
-// --- جستجو ---
-// نکته مهم: API فعلی (/api/admin/users) هیچ پارامتر فیلتری (مثل mobile/full_name) پشتیبانی نمی‌کنه،
-// فقط page و per_page داره. پس جستجو رو سمت فرانت‌اند انجام می‌دیم: کل کاربران رو یک‌بار
-// (با per_page حداکثری) می‌گیریم، کش می‌کنیم و فیلتر روی همون لیست کامل انجام میشه.
+// حالت جستجو: سمت فرانت‌اند روی کش کامل کاربران انجام می‌شود
 const searchMode = ref('mobile') // 'mobile' | 'name'
 const searchQuery = ref('')
 let searchDebounceTimer = null
@@ -289,6 +287,7 @@ const searchLoading = ref(false)
 
 const isSearching = computed(() => searchQuery.value.trim().length > 0)
 
+// فیلتر کاربران کش‌شده بر اساس عبارت جستجو
 const searchResults = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
   if (!q) return []
@@ -298,13 +297,13 @@ const searchResults = computed(() => {
   })
 })
 
-// چیزی که واقعاً توی جدول نمایش داده میشه: یا نتیجه‌ی سرچ، یا لیست صفحه‌بندی‌شده‌ی عادی
+// انتخاب لیست نمایشی: نتیجه‌ی سرچ یا لیست صفحه‌بندی‌شده‌ی عادی
 const displayedUsers = computed(() => (isSearching.value ? searchResults.value : users.value))
 
 const API_BASE = 'https://nadertechnologyteam.ir'
 const DEFAULT_AVATAR = '/images/user-avatar.jpg'
 
-// کل کاربران رو (با گذر از تمام صفحات بک‌اند) فقط یک‌بار برای سرچ می‌گیره و کش می‌کنه
+// دریافت کامل تمام کاربران (با گذر از همه‌ی صفحات) برای استفاده در جستجو
 const loadAllUsersForSearch = async () => {
   if (allUsersLoaded.value) return
   searchLoading.value = true
@@ -313,13 +312,13 @@ const loadAllUsersForSearch = async () => {
     const collected = []
     let page = 1
     let lastPage = 1
-    const MAX_PAGES_SAFETY = 50 // جلوگیری از حلقه بی‌نهایت در صورت خطای غیرمنتظره بک‌اند
+    const MAX_PAGES_SAFETY = 50
 
     do {
       const data = await $fetch(`${API_BASE}/api/admin/users`, {
         method: 'GET',
         headers: authHeader(),
-        params: { page, per_page: 100 }, // ۱۰۰ حداکثر مقداریه که بک‌اند طبق مستندات قبول می‌کنه
+        params: { page, per_page: 100 },
       })
       collected.push(...data.data)
       lastPage = data.meta.last_page
@@ -336,6 +335,7 @@ const loadAllUsersForSearch = async () => {
   }
 }
 
+// دریافت لیست صفحه‌بندی‌شده‌ی کاربران
 const fetchUsers = async (page = currentPage.value) => {
   loading.value = true
   errorMessage.value = ''
@@ -370,12 +370,13 @@ const fetchUsers = async (page = currentPage.value) => {
   }
 }
 
+// رفتن به صفحه‌ی مشخص از لیست کاربران
 const goToPage = (page) => {
   if (page < 1 || (meta.value && page > meta.value.last_page)) return
   fetchUsers(page)
 }
 
-// در صورت نیاز به جزئیات کامل‌تر از GET /api/admin/users/{user}
+// دریافت جزئیات کامل‌تر یک کاربر خاص
 const fetchUserDetail = async (id) => {
   detailLoading.value = true
   try {
@@ -388,24 +389,23 @@ const fetchUserDetail = async (id) => {
       users.value[index] = { ...users.value[index], ...data.data }
     }
   } catch (err) {
-    // در صورت خطا، اطلاعات پایه‌ای که از لیست داریم همچنان نمایش داده می‌شود
     console.error('خطا در دریافت جزئیات کاربر', err)
   } finally {
     detailLoading.value = false
   }
 }
 
+// باز/بسته کردن جزئیات یک کاربر
 const toggleUser = (id) => {
   if (expandedId.value === id) {
     expandedId.value = null
     return
   }
   expandedId.value = id
-  fetchUserDetail(id) // برای دریافت جزئیات به‌روز کاربر (اختیاری)
+  fetchUserDetail(id)
 }
 
-// جابجایی بین حالت جستجوی موبایل و نام — چون فیلتر سمت فرانت‌اند روی کش انجام میشه،
-// فقط کافیه لیست کامل (اگر قبلاً لود نشده) آماده باشه؛ فیلتر کردن خودش computed و آنی است
+// جابجایی بین حالت جستجوی موبایل و نام
 const setSearchMode = (mode) => {
   if (searchMode.value === mode) return
   searchMode.value = mode
@@ -414,11 +414,12 @@ const setSearchMode = (mode) => {
   }
 }
 
+// پاک کردن عبارت جستجو
 const clearSearch = () => {
   searchQuery.value = ''
 }
 
-// با debounce فقط برای جلوگیری از فراخوانی زودهنگام loadAllUsersForSearch با هر keypress
+// اجرای جستجو با تاخیر (debounce) برای جلوگیری از فراخوانی زودهنگام
 const triggerSearch = (delay = 400) => {
   clearTimeout(searchDebounceTimer)
   searchDebounceTimer = setTimeout(() => {
@@ -438,6 +439,7 @@ onBeforeUnmount(() => {
   clearTimeout(searchDebounceTimer)
 })
 
+// فرمت‌دهی تاریخ به شکل فارسی
 const formatDate = (dateStr) => {
   if (!dateStr) return '—'
   try {
@@ -447,7 +449,7 @@ const formatDate = (dateStr) => {
   }
 }
 
-// ساخت آدرس کامل آواتار: اگر مسیر نسبی از سرور باشد (مثل /avatars/xxx.webp) با API_BASE ترکیب می‌شود
+// ساخت آدرس کامل آواتار کاربر
 const getAvatarUrl = (avatarPath) => {
   if (!avatarPath) return DEFAULT_AVATAR
   if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
@@ -456,13 +458,14 @@ const getAvatarUrl = (avatarPath) => {
   return `${API_BASE}${avatarPath}`
 }
 
-// اگر عکس آواتار لود نشد (خراب یا ۴۰۴)، به عکس پیش‌فرض برگردد
+// جایگزینی آواتار خراب با تصویر پیش‌فرض
 const onAvatarError = (event) => {
   event.target.src = DEFAULT_AVATAR
 }
 
+// مقداردهی اولیه احراز هویت و دریافت لیست کاربران
 onMounted(() => {
-  initFromStorage() // اطمینان از بازیابی توکن قبل از اولین درخواست
+  initFromStorage()
   fetchUsers()
 })
 </script>

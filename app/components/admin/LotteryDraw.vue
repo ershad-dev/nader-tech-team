@@ -1,5 +1,5 @@
 <template>
-  <!-- لایه بک‌گراند مخصوص موبایل/تبلت: کل صفحه را با dvh می‌گیرد و ثابت می‌ماند -->
+  <!-- لایه بک‌گراند مخصوص موبایل/تبلت -->
   <div
     class="fixed inset-0 w-full h-[100dvh] bg-[url('/images/bg-lottery.png')] bg-cover bg-center bg-no-repeat -z-10 lg:hidden"
   ></div>
@@ -9,7 +9,7 @@
     dir="rtl"
   >
 
-
+      <!-- دکمه بازگشت -->
       <button
   @click="goBack"
   class="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-lg hover:bg-white/25 transition-colors"
@@ -29,6 +29,7 @@
     </div>
 
     <template v-else>
+      <!-- گرید دایره‌های شماره‌ی شرکت‌کنندگان -->
       <div
         v-if="!showResults"
         class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-[repeat(6,max-content)] justify-items-center lg:justify-center gap-2 sm:gap-3 lg:gap-4 min-[1920px]:gap-6 mb-6 sm:mb-8 lg:mb-10 min-[1920px]:mb-8 w-full lg:w-auto mx-auto"
@@ -52,10 +53,11 @@
         </div>
       </div>
 
+      <!-- نمایش نتایج قرعه‌کشی -->
       <LotteryResults v-else :lottery-id="resolvedLotteryId" :winners="finalWinners" />
 
+      <!-- پیام‌های وضعیت و دکمه‌های کنترل قرعه‌کشی -->
       <div v-if="!showResults" class="flex flex-col items-center gap-3 sm:gap-4 min-[1920px]:gap-6 px-2 sm:px-0">
-        <!-- بنر هشدار read-only: اولویت با این پیام است -->
         <p v-if="isReadOnly" class="text-amber-200 text-sm font-medium text-center bg-black/20 rounded-xl px-4 py-2">
           شما دسترسی مشاهده‌فقط دارید و نمی‌توانید قرعه‌کشی را برگزار کنید.
         </p>
@@ -64,6 +66,7 @@
         </p>
         <p v-if="drawError" class="text-red-300 text-sm font-medium text-center">{{ drawError }}</p>
 
+        <!-- دکمه شروع قرعه‌کشی -->
         <button
           @click="startDraw"
           :disabled="isDrawing || !entries.length || !canDraw || isReadOnly"
@@ -83,6 +86,7 @@
 </svg>
         </button>
 
+        <!-- دکمه نمایش نتایج -->
         <button 
           @click="showResults = true"
           :disabled="!finalWinners.length"
@@ -112,7 +116,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, inject, defineAsyncComponent } from 'vue';
 import { useAdminPermissions } from '~/composables/useAdminPermissions'
-// وارد کردن کامپوننت نتایج که قبلاً ساختیم
+// کامپوننت نمایش نتایج قرعه‌کشی
 const LotteryResults = defineAsyncComponent(() => import('./LotteryResults.vue'));
 
 const props = defineProps({
@@ -121,10 +125,10 @@ const props = defineProps({
 
 const emit = defineEmits(['back'])
 
-// دسترسی read-only
+// دسترسی حالت فقط-نمایش
 const { isReadOnly } = useAdminPermissions()
 
-// اگر lotteryId به‌عنوان prop پاس داده نشده باشد، از query param آدرس خونده می‌شود
+// در نبود prop، شناسه از query param آدرس خونده می‌شود
 const route = useRoute()
 const resolvedLotteryId = computed(() => props.lotteryId ?? route.query.lottery)
 
@@ -139,19 +143,20 @@ const errorMsg = ref('')
 
 const isDrawing = ref(false)
 const drawError = ref('')
-const highlightedIndex = ref(null) // ایندکس (0-based) شماره‌ای که الان در حال چرخش، هایلایت شده
-const winnerIndexes = ref([])       // ایندکس‌های (0-based) شماره‌هایی که به‌عنوان برنده قفل شده‌اند
-const finalWinners = ref([])        // [{ user, position }]
+const highlightedIndex = ref(null)
+const winnerIndexes = ref([])
+const finalWinners = ref([])
 
-// تعداد دایره‌ها = تعداد شرکت‌کنندگان واقعی (تا زمانی که دیتا لود نشده، ۳۶ تای پیش‌فرض نمایش داده می‌شود)
+// تعداد دایره‌ها برابر تعداد شرکت‌کنندگان (پیش‌فرض ۳۶ تا قبل از لود دیتا)
 const totalCircles = computed(() => entries.value.length || 36)
 
-// طبق مستندات API: قرعه‌کشی فقط بعد از رسیدن به تاریخ پایان (ends_at) قابل برگزاری‌ست
+// بررسی رسیدن به زمان مجاز برای برگزاری قرعه‌کشی
 const canDraw = computed(() => {
-  if (!lottery.value?.ends_at) return true // اگر تاریخ پایان مشخص نبود، اجازه بده و بذار خود سرور تصمیم بگیرد
+  if (!lottery.value?.ends_at) return true
   return new Date(lottery.value.ends_at).getTime() <= Date.now()
 })
 
+// فرمت‌دهی تاریخ و ساعت به‌صورت فارسی
 const formatDateTime = (value) => {
   if (!value) return ''
   try {
@@ -161,6 +166,7 @@ const formatDateTime = (value) => {
   }
 }
 
+// دریافت لیست شرکت‌کنندگان و اطلاعات قرعه‌کشی
 const loadData = async () => {
   if (!resolvedLotteryId.value) {
     errorMsg.value = 'شناسه‌ی قرعه‌کشی در آدرس مشخص نشده است (؟lottery=ID)'
@@ -185,15 +191,13 @@ const loadData = async () => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// یک دور اسپین: بین شماره‌های باقی‌مانده به‌صورت نامنظم/رندوم می‌چرخد
-// و در قدم‌های پایانی سرعتش کم می‌شود تا روی یک شماره بایستد
+// انیمیشن چرخش تصادفی برای انتخاب یک برنده از بین گزینه‌های باقی‌مانده
 const spinToWinner = async (availableIndexes) => {
   const totalSteps = 18 + Math.floor(Math.random() * 6)
   let delay = 45
   for (let step = 0; step < totalSteps; step++) {
     highlightedIndex.value = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
     await sleep(delay)
-    // در ۶ قدم آخر، سرعت رو به کندی می‌رود (افکت ایستادن روی شماره)
     delay += step > totalSteps - 6 ? 35 : 6
   }
   const finalPick = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
@@ -202,8 +206,8 @@ const spinToWinner = async (availableIndexes) => {
   return finalPick
 }
 
+// اجرای کامل فرآیند قرعه‌کشی و ثبت نتیجه در سرور
 const startDraw = async () => {
-  // گارد read-only: حتی اگر از Console صدا زده بشه، اینجا متوقف می‌شود
   if (isReadOnly.value) return
   if (isDrawing.value || loadingData.value || !entries.value.length) return
   if (!canDraw.value) {
@@ -216,11 +220,9 @@ const startDraw = async () => {
   winnerIndexes.value = []
   finalWinners.value = []
 
-  // تعداد جایزه‌ها از خود قرعه‌کشی خونده می‌شود، اگر نبود پیش‌فرض ۱
   const winnerCount = Math.min(lottery.value?.winner_count || 1, entries.value.length)
   let available = entries.value.map((_, idx) => idx)
 
-  // برای هر جایزه، یک اسپین جدا انجام می‌شود تا شماره‌ی برنده مشخص شود
   for (let position = 1; position <= winnerCount; position++) {
     const picked = await spinToWinner(available)
     winnerIndexes.value.push(picked)
@@ -247,7 +249,6 @@ const startDraw = async () => {
     } else {
       drawError.value = serverMsg || 'خطا در ثبت نتیجه‌ی قرعه‌کشی. لطفاً دوباره تلاش کنید.'
     }
-    // چون قرعه‌کشی توسط سرور رد شد، وضعیت انتخاب برنده‌ها رو هم پاک می‌کنیم
     winnerIndexes.value = []
     finalWinners.value = []
     highlightedIndex.value = null
@@ -258,6 +259,7 @@ const startDraw = async () => {
 
 const setGalaxyTheme = inject('setGalaxyTheme')
 
+// فعال/غیرفعال کردن تم گالاکسی هنگام ورود و خروج از صفحه
 onMounted(() => {
   setGalaxyTheme(true)
   loadData()
@@ -269,6 +271,7 @@ onUnmounted(() => {
 
 
 const router = useRouter()
+// بازگشت به صفحه‌ی قبلی
 const goBack = () => {
   emit('back')
 }

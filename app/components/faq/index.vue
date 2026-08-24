@@ -23,7 +23,7 @@
       {{ $t('faq.empty') }}
     </div>
 
-    <!-- لیست FAQ ها -->
+    <!-- لیست سوالات متداول با قابلیت باز/بسته شدن -->
     <div v-else class="flex flex-col gap-4 2xl:gap-5">
       <div 
         v-for="(item, index) in faqs" 
@@ -61,7 +61,7 @@
             </span>
         </button>
         
-        <!-- انیمیشن نرم باز/بسته شدن با ترفند grid-template-rows + easing سفارشی -->
+        <!-- انیمیشن باز/بسته شدن پنل پاسخ -->
         <div class="faq-panel grid" :class="isOpen === index ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
           <div class="overflow-hidden">
             <div 
@@ -82,43 +82,42 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+// تنظیمات زبان و جهت صفحه
 const { locale, localeProperties, t } = useI18n();
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
+// مدیریت باز/بسته بودن هر آیتم FAQ
 const isOpen = ref(null);
 const toggle = (index) => { isOpen.value = isOpen.value === index ? null : index; };
 
-// آدرس پایه API - در صورت نیاز می‌توانید آن را در runtimeConfig یا .env قرار دهید
+// آدرس پایه API
 const API_BASE = 'https://nadertechnologyteam.ir';
 
-// دریافت لیست FAQ های فعال از API
-// نکته: هر آیتم علاوه بر question/answer فارسی، ممکنه فیلدهای
-// question_en / answer_en هم داشته باشه (مشابه الگوی title_en در services)
+// دریافت لیست سوالات متداول از سرور
 const { data, pending, error } = await useFetch(`${API_BASE}/api/faqs`, {
   key: 'faqs-list',
 });
 
-// استخراج و مرتب‌سازی بر اساس sort_order (طبق توضیح مستندات: ordered by sort order)
+// مرتب‌سازی سوالات بر اساس ترتیب تعیین‌شده
 const faqs = computed(() => {
   const list = data.value?.data?.faqs ?? [];
   return [...list].sort((a, b) => a.sort_order - b.sort_order);
 });
 
-// انتخاب نسخه‌ی فارسی/انگلیسی هر فیلد بر اساس زبان فعلی، با fallback به فارسی
-// اگر ترجمه‌ی انگلیسی موجود نباشه یا خالی باشه
+// انتخاب متن فارسی یا انگلیسی هر فیلد بر اساس زبان فعلی
 const pickLocalized = (item, faKey, enKey) => {
   const enVal = item?.[enKey];
   return (locale.value === 'en' && enVal) ? enVal : item?.[faKey];
 };
 
+// تنظیم عنوان و رنگ فوتر صفحه
 const footerConfig = useState('footerConfig');
 footerConfig.value = {
   title: t('faq.footerTitle'),
   bgColor: 'bg-purple-800'
 };
 
-
-
+// تنظیم رنگ اسکرول‌بار صفحه
 const scrollbarConfig = useScrollbarConfig();
 scrollbarConfig.value = {
   light: '#72A6A6',

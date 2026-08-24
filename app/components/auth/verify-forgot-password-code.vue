@@ -5,7 +5,7 @@ definePageMeta({ layout: 'auth' })
 
 const config = useRuntimeConfig()
 
-// --- i18n ---
+// تنظیمات چندزبانگی
 const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
@@ -20,6 +20,7 @@ let interval = null
 onMounted(() => startTimer())
 onBeforeUnmount(() => { if (interval) clearInterval(interval) })
 
+// شروع شمارش معکوس زمان اعتبار کد
 const startTimer = () => {
   timer.value = 180
   if (interval) clearInterval(interval)
@@ -29,19 +30,20 @@ const startTimer = () => {
   }, 1000)
 }
 
+// نمایش زمان باقی‌مانده به‌صورت دقیقه:ثانیه
 const formattedTimer = computed(() => {
   const m = Math.floor(timer.value / 60)
   const s = timer.value % 60
   return `${m}:${s.toString().padStart(2, '0')}`
 })
 
-// نمایش پیام toast
+// نمایش پیام توست موقت
 const showToast = (message, type = 'error') => {
   toast.value = { message, type }
   setTimeout(() => { toast.value = { message: '', type: '' } }, 4000)
 }
 
-// تابع ارسال مجدد کد
+// درخواست ارسال مجدد کد تایید
 const resendCode = async () => {
   const login = localStorage.getItem('reset_login')
 
@@ -57,17 +59,20 @@ const resendCode = async () => {
   }
 }
 
+// جابه‌جایی خودکار فوکوس بین اینپوت‌های کد
 const handleInput = (index) => {
   otp.value[index] = otp.value[index].replace(/\D/g, '')
   if (otp.value[index] && index < 5) inputRefs.value[index + 1]?.focus()
 }
 
+// بازگشت فوکوس به اینپوت قبلی هنگام پاک کردن
 const handleBackspace = (event, index) => {
   if (event.key === 'Backspace' && !otp.value[index] && index > 0) {
     inputRefs.value[index - 1]?.focus()
   }
 }
 
+// بررسی و تایید کد وارد‌شده توسط کاربر
 const verifyCode = async () => {
   const login = localStorage.getItem('reset_login')
   const codeValue = otp.value.join('')
@@ -97,6 +102,7 @@ const verifyCode = async () => {
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
+    <!-- پیام توست -->
     <div
       v-if="toast.message"
       :class="[
@@ -111,10 +117,7 @@ const verifyCode = async () => {
     <h1 class="text-xl font-bold text-[#0F184B] dark:text-dark-text-deep mb-20 font-roboto">{{ $t('auth.verifyForgotPassword.title') }}</h1>
 
     <form @submit.prevent="verifyCode">
-      <!-- اینپوت‌های کد -->
-      <!-- توجه: dir="ltr" اینجا عمداً ثابت نگه داشته شده، چون ترتیب ورود ارقام
-           کد تایید طبق قرارداد رایج فرم‌های OTP همیشه چپ‌به‌راست است، مستقل
-           از جهت رابط کاربری -->
+      <!-- اینپوت‌های کد تایید -->
       <div class="flex justify-center gap-2 mb-6" dir="ltr">
         <input
           v-for="(_, index) in otp"
@@ -130,10 +133,12 @@ const verifyCode = async () => {
         />
       </div>
 
+      <!-- نمایش زمان باقی‌مانده -->
       <div class="mb-10 text-sm text-[#1a2333] dark:text-dark-text-deep font-medium">
         {{ formattedTimer }}
       </div>
 
+      <!-- دکمه ارسال فرم -->
       <AuthButton
         type="submit"
         :disabled="loading"

@@ -1,12 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+// تنظیم لایوت صفحات احراز هویت
 definePageMeta({
   layout: 'auth'
 })
 
 const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
+// جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const config = useRuntimeConfig()
@@ -21,7 +23,7 @@ const errors = ref({
   login: ''
 })
 
-// تابع ارسال کد
+// ارسال درخواست کد بازیابی رمز عبور
 const sendResetCode = async () => {
   // پاک کردن خطاهای قبلی
   errors.value.login = ''
@@ -75,7 +77,7 @@ const sendResetCode = async () => {
   }
 }
 
-// تابع محدودکننده برای فقط عدد و حداکثر 11 رقم
+// محدود کردن ورودی به فقط عدد و حداکثر 11 رقم
 const handleInput = () => {
   form.value.login = form.value.login.replace(/\D/g, '').slice(0, 11)
   errors.value.login = ''
@@ -85,6 +87,7 @@ const handleInput = () => {
 <template>
   <div class="text-center" :dir="isRtl ? 'rtl' : 'ltr'">
 
+<!-- پیام خوش‌آمدگویی -->
 <h1
   class="font-bold text-[#0F184B] dark:text-dark-text-deep mt-[30px] sm:mt-0 mb-8 font-roboto whitespace-nowrap"
   :class="isRtl ? 'text-[16px] sm:text-xl' : 'text-[17px] sm:text-xl'"
@@ -92,6 +95,7 @@ const handleInput = () => {
   {{ $t('auth.forgotPassword.welcome') }}
 </h1>
 
+    <!-- عنوان فرم فراموشی رمز عبور -->
     <h3
       class="w-fit whitespace-nowrap mx-auto font-roboto mb-4 text-[#0F184B] dark:text-dark-text-deep text-[16px] border-b border-[#0F184B] dark:border-dark-border"
       :class="isRtl ? 'text-right' : 'text-left'"
@@ -99,6 +103,7 @@ const handleInput = () => {
       {{ $t('auth.forgotPassword.title') }}
     </h3>
 
+    <!-- فرم دریافت شماره موبایل -->
     <form @submit.prevent="sendResetCode">
       <div class="mb-6">
         <AuthInput
@@ -110,6 +115,7 @@ const handleInput = () => {
           @input="handleInput"
         />
 
+<!-- پیام خطای اعتبارسنجی -->
 <div
   v-if="errors.login"
   class="text-red-500 dark:text-red-400 text-[12px] mt-1 px-1 font-roboto"
@@ -119,6 +125,7 @@ const handleInput = () => {
 </div>
       </div>
 
+      <!-- دکمه ارسال فرم -->
       <div class="mt-[10px] text-[18px] font-roboto">
         <AuthButton
           type="submit"
@@ -129,6 +136,7 @@ const handleInput = () => {
       </div>
     </form>
 
+    <!-- لینک بازگشت به صفحه ورود -->
     <div class="mt-[10px] text-sm text-[#1a2333] dark:text-dark-text-deep font-medium cursor-pointer underline font-roboto">
       <NuxtLink :to="localePath('/auth/login')">
         {{ $t('auth.forgotPassword.backToLogin') }}

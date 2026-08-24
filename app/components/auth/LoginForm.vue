@@ -3,10 +3,12 @@ import { ref, computed } from 'vue'
 import * as yup from 'yup'
 import TermsAgreement from '~/components/Terms/TermsAgreement.vue'
 
+// تنظیم لایوت صفحات احراز هویت
 definePageMeta({ layout: 'auth' })
 
 const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
+// جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const config = useRuntimeConfig()

@@ -18,12 +18,12 @@ const loading = ref(false)
 const saving = ref(false)
 const isEditing = ref(false)
 
-// خطای بارگذاری اولیه (fetchDetails) -> کل مودال را جایگزین می‌کند
+// خطای بارگذاری اولیه که کل مودال را جایگزین می‌کند
 const loadError = ref('')
-// خطای فرم / ذخیره‌سازی (save) -> فقط بالای فرم نمایش داده می‌شود، فرم را حذف نمی‌کند
+// خطای فرم/ذخیره‌سازی که فقط بالای فرم نمایش داده می‌شود
 const formError = ref('')
 
-const lottery = ref(null) // داده‌ی اصلی (فقط نمایش)
+const lottery = ref(null)
 const form = reactive({
   title: '',
   title_en: '',
@@ -46,15 +46,17 @@ const statusOptions = [
   { value: 'drawn', label: 'قرعه‌کشی‌شده' },
 ]
 
+// برگرداندن برچسب فارسی وضعیت
 const statusLabel = (value) =>
   statusOptions.find((s) => s.value === value)?.label || value || '—'
 
+// تبدیل تاریخ ISO به فرمت قابل استفاده در date-picker
 const toLocalInput = (isoStr) => {
   if (!isoStr) return ''
-  // به جای slice(0,16) که برای datetime-local بود
   return isoStr.replace('T', ' ').slice(0, 19)
 }
 
+// فرمت‌دهی تاریخ برای نمایش فارسی
 const formatDate = (isoStr) => {
   if (!isoStr) return '—'
   try {
@@ -64,6 +66,7 @@ const formatDate = (isoStr) => {
   }
 }
 
+// پر کردن فرم با داده‌های قرعه‌کشی
 const fillForm = (data) => {
   form.title = data.title || ''
   form.title_en = data.title_en || ''
@@ -79,6 +82,7 @@ const fillForm = (data) => {
   form.location_en = data.location_en || ''
 }
 
+// دریافت جزئیات قرعه‌کشی از سرور
 const fetchDetails = async () => {
   loading.value = true
   loadError.value = ''
@@ -103,22 +107,23 @@ const fetchDetails = async () => {
   }
 }
 
+// ورود به حالت ویرایش (غیرفعال برای کاربر فقط-نمایش)
 const startEdit = () => {
-  // گارد read-only: یوزر مشاهده‌فقط اجازه‌ی ورود به حالت ویرایش را ندارد
   if (isReadOnly.value) return
   if (lottery.value) fillForm(lottery.value)
   formError.value = ''
   isEditing.value = true
 }
 
+// انصراف از ویرایش و بازگردانی داده‌های اصلی
 const cancelEdit = () => {
   if (lottery.value) fillForm(lottery.value)
   formError.value = ''
   isEditing.value = false
 }
 
+// اعتبارسنجی و ذخیره‌ی تغییرات قرعه‌کشی در سرور
 const save = async () => {
-  // گارد read-only: حتی اگر با دستکاری DevTools این تابع مستقیم صدا زده بشه، اینجا متوقف می‌شود
   if (isReadOnly.value) return
 
   formError.value = ''
@@ -145,7 +150,7 @@ const save = async () => {
         starts_at: form.starts_at,
         ends_at: form.ends_at,
         capacity: Number(form.capacity),
-        update: Number(form.price), // نکته: بک‌اند این فیلد رو به اسم "update" می‌خواد نه "price"
+        update: Number(form.price), // بک‌اند این فیلد رو "update" می‌خواد نه "price"
         winner_count: Number(form.winner_count),
         status: form.status,
         location: form.location,
@@ -172,6 +177,7 @@ const save = async () => {
   }
 }
 
+// بستن مودال
 const closeModal = () => {
   if (saving.value) return
   isEditing.value = false
@@ -179,6 +185,7 @@ const closeModal = () => {
   emit('close')
 }
 
+// بارگذاری جزئیات هنگام باز شدن مودال
 watch(
   () => props.show,
   (val) => {
@@ -196,7 +203,7 @@ watch(
       @click.self="closeModal"
     >
       <div class="bg-white dark:bg-dark-surface w-full max-w-lg rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-        <!-- هدر -->
+        <!-- هدر مودال و دکمه‌های ویرایش/ذخیره/بستن -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-dark-border sticky top-0 bg-white dark:bg-dark-surface rounded-t-2xl">
           <h2 class="font-bold text-[#1a2333] dark:text-white text-base sm:text-lg">جزئیات قرعه‌کشی</h2>
 
@@ -238,7 +245,7 @@ watch(
           </div>
         </div>
 
-        <!-- بدنه -->
+        <!-- بدنه‌ی مودال: وضعیت بارگذاری/خطا یا فرم جزئیات -->
         <div class="p-5">
           <div v-if="loading" class="text-center py-10 text-gray-500 dark:text-white/70">در حال بارگذاری...</div>
           <div v-else-if="loadError" class="text-center py-10 text-red-500 dark:text-red-400 font-bold">{{ loadError }}</div>
@@ -252,7 +259,7 @@ watch(
               شما دسترسی مشاهده‌فقط دارید و نمی‌توانید این قرعه‌کشی را ویرایش کنید.
             </div>
 
-            <!-- خطای فرم / ذخیره‌سازی: فقط بالای فرم نشون داده میشه، فرم حذف نمیشه -->
+            <!-- خطای فرم/ذخیره‌سازی -->
             <div
               v-if="formError"
               class="text-sm text-red-600 dark:text-red-400 font-bold bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg px-3 py-2"
@@ -310,6 +317,7 @@ watch(
               <p v-else dir="ltr" class="text-sm text-gray-700 dark:text-white whitespace-pre-line text-left">{{ lottery?.description_en || '—' }}</p>
             </div>
 
+            <!-- فیلدهای تاریخ، ظرفیت، قیمت، مکان، برندگان و وضعیت -->
             <div class="grid grid-cols-2 gap-4">
               <!-- تاریخ شروع -->
               <div>
@@ -415,7 +423,7 @@ watch(
               </div>
             </div>
 
-            <!-- زمان قرعه‌کشی (فقط نمایش) -->
+            <!-- زمان انجام قرعه‌کشی (فقط نمایش) -->
             <div v-if="lottery?.drawn_at">
               <label class="block text-xs font-bold text-gray-500 dark:text-white/70 mb-1">زمان انجام قرعه‌کشی</label>
               <p class="text-sm text-gray-700 dark:text-white">{{ formatDate(lottery.drawn_at) }}</p>

@@ -1,11 +1,7 @@
 <template>
+  <!-- کانتینر اصلی بخش خدمات رویدادها -->
   <section class="relative bg-[#ABD7D8] dark:bg-[#96ACB1] p-5 sm:p-8 md:p-9 xl:p-10 min-[1920px]:p-12 rounded-[16px] md:rounded-[18px] xl:rounded-[20px] min-[1920px]:rounded-[24px] mt-8 mx-auto w-full xl:w-[1110px] min-[1920px]:w-[1400px] max-w-full" :dir="isRtl ? 'rtl' : 'ltr'">
 
-    <!-- <img
-      src="/images/texture.png"
-      alt=""
-      class="absolute w-[220px] sm:w-[380px] md:w-[550px] xl:w-[900px] min-[1920px]:w-[1050px] h-auto object-contain opacity-30 dark:opacity-15 pointer-events-none -mt-[60px] sm:-mt-[120px] md:-mt-[200px] xl:-mt-[350px] min-[1920px]:-mt-[420px] -mr-[20px] sm:-mr-[40px] md:-mr-[60px] xl:-mr-[100px] min-[1920px]:-mr-[130px] top-0 right-0 xl:top-auto xl:right-auto"
-    /> -->
 
     <!-- بخش توضیحات -->
     <div
@@ -27,6 +23,7 @@
       </p>
     </div>
 
+    <!-- عنوان بخش خدمات -->
     <h2
       :class="[
         'relative z-10 text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] text-[#A36C53] dark:[#A36C53] font-bold mb-4 text-center',
@@ -34,12 +31,12 @@
       ]"
     >{{ $t('events.landing.servicesTitle') }}</h2>
 
-    <!-- لیست کارت‌ها (فراخوانی کامپوننت با ارسال services به عنوان prop) -->
+    <!-- لیست کارت‌های خدمات -->
     <div class="relative z-10 space-y-6 mb-10 md:mb-11 xl:mb-12 flex flex-col items-center text-center">
       <ServiceCard :services="services" />
     </div>
 
-<!-- بخش سوالات (questions) -->
+<!-- بخش سوالات (در صورت وجود) -->
 <div
   v-if="questions.length"
   :class="[
@@ -69,10 +66,10 @@
   </ul>
 </div>
 
-    <!-- بخش دکمه و فلش -->
+    <!-- بخش دعوت به همکاری (متن + فلش + دکمه) -->
     <div class="relative z-10 flex flex-col xl:flex-row items-center xl:justify-between mt-6 md:mt-8 xl:mt-10 px-2 md:px-4 gap-6 md:gap-7 xl:gap-0">
 
-      <!-- متن -->
+      <!-- متن دعوت به همکاری -->
       <div
         :class="[
           'text-center mt-0 xl:-mt-[100px] min-[1920px]:-mt-[115px] order-1 lg:mt-0.5',
@@ -83,7 +80,7 @@
   <span class="whitespace-nowrap text-[18px] sm:text-[20px] md:text-[22px] xl:text-[24px] min-[1920px]:text-[28px] font-bold text-[#747893] dark:text-dark-text/80 block">{{ $t('events.landing.ctaLine2') }}</span>
 </div>
 
-      <!-- فلش (وسط) - فقط در دسکتاپ واقعی نمایش داده می‌شود -->
+      <!-- فلش تزئینی، فقط دسکتاپ -->
       <div class="hidden xl:flex flex-1 justify-center px-4 order-2">
         <img
           src="/images/curved-arrow.png"
@@ -93,7 +90,7 @@
         />
       </div>
 
-      <!-- دکمه ( درخواست همکاری) -->
+      <!-- دکمه درخواست همکاری -->
       <NuxtLink :to="localePath('/order/requestProject')" class="order-3">
         <button class="bg-[#ECD0A0] dark:bg-dark-gold px-10 py-4 rounded-[16px] font-bold shadow-md hover:bg-[#dcc090] dark:hover:bg-dark-gold/80 dark:text-dark-text-deep transition w-full max-w-[263px] md:w-[263px] xl:w-[263px] min-[1920px]:w-[300px] h-[48px] min-[1920px]:h-[54px] mt-0 xl:mt-[90px] min-[1920px]:mt-[105px]">
           {{ $t('events.landing.cooperateButton') }}
@@ -113,7 +110,7 @@ const { locale, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// ── Image URL resolver ──────────────────────────────────────
+// ── تبدیل مسیر تصویر نسبی به URL کامل استوریج ──────────────
 const STORAGE_BASE = 'https://nadertechnologyteam.ir/storage/'
 
 const resolveImageUrl = (value) => {
@@ -122,21 +119,14 @@ const resolveImageUrl = (value) => {
   return STORAGE_BASE + value.replace(/^\/+/, '')
 }
 
-// تصاویر پیش‌فرض (در صورتی که برای اون سرویس تصویر خاصی از API نیومده باشه)
+// تصاویر پیش‌فرض برای سرویس‌هایی که تصویر خاصی از API ندارن
 const defaultImages = [
   '/images/event-card-1.png',
   '/images/event-card-2.jpg',
   '/images/event-card-3.jpg'
 ]
 
-// =====================================================
-// اتصال به API صفحه events + دوزبانه‌سازی
-// -----------------------------------------------------
-// آرایه‌ی خام رو نگه می‌داریم تا با تغییر locale، بدون فچ مجدد،
-// دوباره محاسبه بشه. برای هر کلید متنی، اگه نسخه‌ی «key_en»
-// وجود داشته و پر باشه و زبان فعلی en باشه، از اون استفاده میشه؛
-// وگرنه fallback به نسخه‌ی فارسی همون کلید.
-// =====================================================
+// دریافت داده‌های خام صفحه events از API
 const rawItems = ref([])
 
 const { data: eventsRes, error: eventsError } = await useFetch(
@@ -149,6 +139,7 @@ if (eventsRes.value && eventsRes.value.data) {
   console.error('خطا در دریافت اطلاعات صفحه events:', eventsError.value)
 }
 
+// نگاشت کلید به آیتم برای دسترسی سریع
 const rawMap = computed(() => {
   const map = {}
   rawItems.value.forEach((item) => {
@@ -157,7 +148,7 @@ const rawMap = computed(() => {
   return map
 })
 
-// کلید فارسی/انگلیسی رو می‌گیره و مقدار مناسب رو برمی‌گردونه
+// انتخاب مقدار مناسب بر اساس زبان فعلی (fallback به فارسی)
 const pickValue = (key) => {
   const faEntry = rawMap.value[key]
   const enEntry = rawMap.value[`${key}_en`]
@@ -165,15 +156,13 @@ const pickValue = (key) => {
   return (useEn ? enEntry.value : faEntry?.value) || ''
 }
 
-// ── description_1 / description_2 ───────────────────────────
+// متن‌های توضیحات صفحه
 const pageData = computed(() => ({
   description_1: pickValue('description_1'),
   description_2: pickValue('description_2')
 }))
 
-// ── services (service_N / service_N_image) ──────────────────
-// نکته: تصویر (service_N_image) دوزبانه نمیشه چون خودِ عکسه، نه متن؛
-// پس همیشه از نسخه‌ی اصلی (بدون _en) خونده میشه.
+// ساخت لیست سرویس‌ها از کلیدهای service_N
 const services = computed(() => {
   const serviceKeyRegex = /^service_(\d+)$/
   const serviceNumbers = new Set()
@@ -203,7 +192,7 @@ const services = computed(() => {
   })
 })
 
-// ── questions (آرایه‌ی JSON، با fallback بین questions/questions_en) ─
+// پارس آرایه سوالات از JSON خام
 const questions = computed(() => {
   const raw = pickValue('questions')
   if (!raw) return []
@@ -216,7 +205,7 @@ const questions = computed(() => {
   }
 })
 
-// اولین آیتم questions به عنوان تایتل و بقیه به عنوان لیست سوالات
+// آیتم اول به عنوان تایتل، بقیه به عنوان لیست سوالات
 const questionsTitle = computed(() => questions.value[0] || '')
 const questionsList = computed(() => questions.value.slice(1))
 </script>

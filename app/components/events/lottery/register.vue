@@ -9,7 +9,7 @@
 
       <div class="px-6 md:px-10 ">
 
-        <!-- حالت لودینگ اولیه (در حال گرفتن اطلاعات قرعه‌کشی) -->
+        <!-- حالت لودینگ اولیه -->
         <div v-if="pending" class="py-10 text-center text-gray-400 dark:text-dark-text/60 text-sm">
           {{ $t('events.lottery.registerForm.loading') }}
         </div>
@@ -27,7 +27,7 @@
             {{ pickLocalized(lottery, 'description', 'description_en') }}
           </p>
 
-          <!-- اطلاعات قرعه‌کشی که از API واقعی میاد (تاریخ شروع، پایان، مکان و ظرفیت) -->
+          <!-- نمایش زمان‌بندی، مکان و ظرفیت قرعه‌کشی -->
           <div class="bg-[#ebebeb] dark:bg-dark-input rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm mb-8 overflow-hidden">
             <div class="flex items-center p-3 md:p-4 border-b border-gray-300 dark:border-dark-border/60">
               <Icon name="heroicons:calendar-days" class="text-gray-500 dark:text-dark-text-deep/70 ml-3 text-xl md:text-2xl" />
@@ -49,7 +49,7 @@
 
           <p class="text-lg font-bold text-gray-800 dark:text-dark-text mb-2 text-center">{{ $t('events.lottery.registerForm.price') }}: {{ formatPrice(lottery.price) }} {{ $t('events.lottery.register.currency') }}</p>
 
-          <!-- پیام خطای ثبت‌نام (ظرفیت تکمیل، قبلاً ثبت‌نام شده، عدم احراز هویت و ...) -->
+          <!-- نمایش خطای ثبت‌نام -->
           <p v-if="submitError" class="text-red-500 dark:text-red-400 text-sm text-center mb-4">{{ submitError }}</p>
 
           <button
@@ -70,23 +70,25 @@ import { onMounted, ref } from 'vue'
 import { apiFetch, LOTTERIES_PATH } from '~/composables/useApi'
 import { useActiveLottery } from '~/composables/useActiveLottery'
 
-// --- i18n ---
+// تنظیمات زبان و جهت صفحه
 const { locale, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
+// گرفتن قرعه‌کشی فعال
 const { lottery, pending, fetchActiveLottery } = useActiveLottery()
 
 const loadError = ref('')
 const submitting = ref(false)
 const submitError = ref('')
 
-// انتخاب فیلد فارسی/انگلیسی بر اساس زبان فعال (بک‌اند این مدل رو با هدر X-Language لوکالایز نمی‌کنه)
+// انتخاب متن فارسی یا انگلیسی بر اساس زبان فعال
 const pickLocalized = (obj, faKey, enKey) => {
   const enVal = obj?.[enKey]
   return (locale.value === 'en' && enVal) ? enVal : obj?.[faKey]
 }
 
+// بارگذاری اطلاعات قرعه‌کشی فعال هنگام ورود به صفحه
 onMounted(async () => {
   try {
     await fetchActiveLottery()
@@ -95,48 +97,44 @@ onMounted(async () => {
   }
 })
 
+// فرمت کردن تاریخ بر اساس زبان فعلی
 function formatDate(value) {
   if (!value) return '-'
   const localeCode = locale.value === 'fa' ? 'fa-IR' : 'en-US'
   return new Date(value).toLocaleDateString(localeCode, { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+// فرمت کردن مبلغ بر اساس زبان فعلی
 function formatPrice(value) {
   if (value == null) return '-'
   const localeCode = locale.value === 'fa' ? 'fa-IR' : 'en-US'
   return new Intl.NumberFormat(localeCode).format(value)
 }
 
+// ارسال درخواست ثبت‌نام در قرعه‌کشی و انتقال به صفحه موفقیت
 async function handleRegister() {
   if (!lottery.value) return
   submitting.value = true
   submitError.value = ''
 
   try {
-    // POST /api/lotteris/{lottery}/register  (مسیر واقعی سرور، نه lotteries)
     const res = await apiFetch(`${LOTTERIES_PATH}/${lottery.value.id}/register`, {
       method: 'POST'
     })
 
-    // اطلاعات ثبت‌نام (کاربر، قرعه‌کشی، تاریخ ثبت‌نام) رو برای صفحه رسید نگه می‌داریم
     const registration = useState('lottery-registration', () => null)
     registration.value = res.data
 
-    // fallback: چون useState فقط تو حافظه‌ست و با رفرش واقعی صفحه پاک میشه،
-    // یه کپی هم تو sessionStorage نگه می‌داریم تا صفحه success بتونه بعد از رفرش بازیابیش کنه
     if (process.client) {
       try {
         sessionStorage.setItem('lottery-registration', JSON.stringify(res.data))
       } catch (e) {
-        // اگه sessionStorage در دسترس نبود (مثلاً حالت خصوصی مرورگر)، بی‌خیال میشیم
-        // چون useState همچنان برای navigation عادی کار می‌کنه
+        // sessionStorage در دسترس نیست
       }
     }
 
     await navigateTo(localePath('/events/lottery/success'))
   } catch (err) {
-    // بر اساس کدهای پاسخ سند Swagger: 400 (ظرفیت تکمیل)، 401 (عدم احراز هویت)،
-    // 409 (قبلاً ثبت‌نام کرده)، 422 (قرعه‌کشی فعال نیست)
     submitError.value = err.data?.message || err.message
   } finally {
     submitting.value = false

@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 
+// تنظیم لایوت صفحات احراز هویت
 definePageMeta({ layout: 'auth' })
 
 const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
+// جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
 const config = useRuntimeConfig()
@@ -146,10 +148,12 @@ const verifyCode = async () => {
       {{ toast.message }}
     </div>
 
+    <!-- عنوان صفحه -->
     <h1 class="text-xl font-bold text-[#1a2333] dark:text-dark-text-deep mb-10">
       {{ $t('auth.verify.title') }}
     </h1>
 
+    <!-- فرم وارد کردن کد تایید -->
     <form @submit.prevent="verifyCode">
       <!-- جعبه‌های OTP همیشه چپ‌به‌راست می‌مونن (ترتیب رقم‌ها نباید با تغییر زبان برعکس بشه) -->
       <div class="flex justify-center gap-2 mb-6" dir="ltr">
@@ -172,6 +176,7 @@ const verifyCode = async () => {
         {{ formattedTimer }}
       </div>
 
+      <!-- دکمه تایید کد -->
       <AuthButton type="submit">
         {{ $t('auth.verify.submit') }}
       </AuthButton>
