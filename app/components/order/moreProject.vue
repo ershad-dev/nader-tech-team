@@ -1,14 +1,12 @@
 <template>
   <div class="py-6 sm:py-8 lg:py-10 bg-[#FAF9F6] dark:bg-dark-bg" :dir="isRtl ? 'rtl' : 'ltr'">
 
+    <!-- بخش عنوان صفحه و تب‌های فیلتر دسته‌بندی -->
     <section class="max-w-6xl mx-auto px-4 text-center mt-[50px]">
       <h1 class="text-[22px] sm:text-[26px] lg:text-[32px] font-bold text-[#0F184B] dark:text-dark-text mb-3 sm:mb-4 lg:mb-6">{{ $t('portfolio.heading') }}</h1>
       <p class="text-[#747893] dark:text-dark-text/80 text-[13px] sm:text-[14px] lg:text-base mb-6 sm:mb-8 lg:mb-10">{{ $t('portfolio.subheading') }}</p>
 
-      <!--
-        فیلتر واقعیه: با انتخاب هر تب، category_id متناظر به GET /api/resumes
-        فرستاده می‌شه. «مشاهده همه» یعنی category_id اصلاً فرستاده نشه (لیست کامل).
-      -->
+      <!-- تب‌های فیلتر دسته‌بندی پروژه‌ها -->
       <div class="flex justify-center mb-8 lg:mb-10 px-2">
         <div class="w-full max-w-[846px] lg:w-[846px] h-auto lg:h-[59px] bg-white dark:bg-dark-input rounded-[30px] lg:rounded-[48px] p-1 shadow-sm border border-gray-100 dark:border-dark-border flex flex-nowrap items-center justify-center gap-1 sm:gap-2 overflow-hidden">
           <button
@@ -27,6 +25,7 @@
       </div>
     </section>
 
+    <!-- بخش نمایش گرید پروژه‌ها و کنترل اسلایدر صفحه‌بندی -->
     <section class="max-w-6xl mx-auto px-4 pb-12 sm:pb-16 lg:pb-20">
       <h2 class="text-[17px] sm:text-[20px] lg:text-[28px] font-normal text-[#0F184B] dark:text-dark-text mb-5 sm:mb-6 lg:mb-8">{{ $t('portfolio.previewHeading') }}</h2>
 
@@ -34,6 +33,7 @@
       <div v-else-if="error" class="text-center py-20 text-red-500 dark:text-red-400">{{ $t('portfolio.error') }}</div>
       <div v-else-if="items.length === 0" class="text-center py-20 text-[#747893] dark:text-dark-text">{{ $t('portfolio.empty') }}</div>
 
+      <!-- گرید کارت‌های پروژه -->
       <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         <NuxtLink
           v-for="project in visibleProjects"
@@ -54,6 +54,7 @@
         </NuxtLink>
       </div>
 
+      <!-- دکمه‌های اسلاید و نشانگرهای صفحه -->
       <div
         v-if="!pending && !error"
         class="flex items-center justify-between mt-8 sm:mt-10 lg:mt-12 px-4 max-w-6xl mx-auto"
@@ -85,18 +86,17 @@ const localePath = useLocalePath();
 const { t, locale, localeProperties } = useI18n();
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
-// نگاشت کلید داخلی (زبان‌مستقل) به category_id واقعی که به API فرستاده می‌شه
+// نگاشت کلید داخلی تب‌ها به category_id واقعی برای ارسال به API
 const categoryMap = {
   web: RESUME_CATEGORY_IDS.web,
   content: RESUME_CATEGORY_IDS.content,
   event: RESUME_CATEGORY_IDS.event,
 }
 
-// state داخلی بر اساس کلید انگلیسی/زبان‌مستقل نگه داشته می‌شه، نه متن نمایشی؛
-// این باعث می‌شه با سوییچ زبان، هم متن دکمه‌ها درست عوض بشه و هم منطق فیلتر خراب نشه
+// دسته‌بندی فعال (بر اساس کلید زبان‌مستقل، نه متن نمایشی)
 const activeCategoryKey = ref('all')
 
-// لیست تب‌ها برای نمایش: هر آیتم یه id ثابت + یه label ترجمه‌شده داره
+// لیست تب‌های قابل نمایش با برچسب ترجمه‌شده
 const tabList = computed(() => [
   { id: 'all', label: t('portfolio.categories.all') },
   { id: 'web', label: t('portfolio.categories.web') },
@@ -104,18 +104,15 @@ const tabList = computed(() => [
   { id: 'event', label: t('portfolio.categories.event') },
 ])
 
-// وقتی «مشاهده همه» انتخابه، null می‌فرستیم (یعنی بدون فیلتر)؛
-// در غیر این صورت category_id متناظر با تب انتخاب‌شده
+// تبدیل کلید دسته‌بندی انتخاب‌شده به category_id برای فراخوانی API
 const activeCategoryId = computed(() =>
   activeCategoryKey.value === 'all' ? null : categoryMap[activeCategoryKey.value]
 )
 
+// دریافت لیست پروژه‌ها بر اساس دسته‌بندی فعال
 const { items, pending, error } = useResumes(activeCategoryId)
 
-// --- انتخاب فیلد صحیح بر اساس زبان فعلی ---
-// API همیشه هم نسخه فارسی (title/alt) و هم انگلیسی (title_en/alt_en) رو
-// در یک پاسخ برمی‌گردونه؛ پس نیازی به ری‌فچ با تغییر زبان نیست،
-// فقط باید موقع نمایش فیلد درست رو انتخاب کنیم.
+// انتخاب عنوان پروژه بر اساس زبان فعلی
 const resumeTitle = (project) => {
   if (locale.value === 'en' && project.title_en) {
     return project.title_en
@@ -123,6 +120,7 @@ const resumeTitle = (project) => {
   return project.title
 }
 
+// انتخاب متن جایگزین تصویر بر اساس زبان فعلی
 const resumeAlt = (project) => {
   const cover = project.cover
   if (!cover) return resumeTitle(project)
@@ -133,8 +131,7 @@ const resumeAlt = (project) => {
   return cover.alt || resumeTitle(project)
 }
 
-// اگه تابع resumeCover رو از جای دیگه (مثلاً یک composable) ایمپورت نکردید،
-// می‌تونید همینجا تعریفش کنید تا مطمئن بشید مسیر عکس درست ساخته میشه:
+// استخراج آدرس تصویر کاور پروژه
 const resumeCover = (project) => {
   return project?.cover?.image || ''
 }
@@ -142,24 +139,27 @@ const resumeCover = (project) => {
 const currentIndex = ref(0)
 const itemsPerPage = 12
 
-// با تغییر دسته‌بندی، useResumes به‌صورت خودکار (چون activeCategoryId ریشه‌ی
-// reactive داره) درخواست جدید می‌زنه؛ اینجا فقط اسلایدر رو ریست می‌کنیم
+// ریست اسلایدر هنگام تغییر دسته‌بندی
 watch(activeCategoryKey, () => {
   currentIndex.value = 0
 })
 
+// محاسبه تعداد کل صفحات اسلایدر
 const totalSlides = computed(() => Math.ceil(items.value.length / itemsPerPage))
 
+// استخراج پروژه‌های قابل نمایش در صفحه فعلی
 const visibleProjects = computed(() => {
   const start = currentIndex.value * itemsPerPage
   return items.value.slice(start, start + itemsPerPage)
 })
 
+// رفتن به اسلاید بعدی (با چرخش به ابتدا)
 const nextSlide = () => {
   if (currentIndex.value < totalSlides.value - 1) currentIndex.value++
   else currentIndex.value = 0
 }
 
+// رفتن به اسلاید قبلی (با چرخش به انتها)
 const prevSlide = () => {
   if (currentIndex.value > 0) currentIndex.value--
   else currentIndex.value = totalSlides.value - 1

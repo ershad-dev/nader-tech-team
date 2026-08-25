@@ -3,15 +3,15 @@ import { computed } from 'vue'
 import { useMobileSlider } from '@/composables/useMobileSlider'
 import { RESUME_CATEGORY_IDS } from '@/composables/useResumes'
 
-// --- i18n ---
+// تنظیمات زبان و جهت صفحه
 const { locale, localeProperties, t } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// این بخش فقط پروژه‌های دسته‌بندی «طراحی سایت» رو نشون می‌ده،
-// پس category_id واقعی (1) مستقیم پاس داده می‌شه.
+// دریافت پروژه‌های دسته «طراحی سایت»
 const { items: webProjects } = useResumes(RESUME_CATEGORY_IDS.web)
 
+// منطق اسلایدر موبایل و دسکتاپ
 const {
   mobileVisibleItems: mobileVisibleProjects,
   visibleItems,
@@ -23,28 +23,10 @@ const {
 
 const visibleProjects = visibleItems(3)
 
-// ── فرایند همکاری (steps) ────────────────────────────────────
-// این مراحل قبلاً یک آرایه‌ی ثابت (hardcoded) بودن. الان از پنل ادمین
-// (تب «سفارش» → آیتم key="workflow", type="json") مدیریت می‌شن، پس
-// از همون endpoint عمومی صفحه‌ی order خونده می‌شن:
-//   GET /api/page/order  ->  { data: [ { key: "workflow", value: "<json-string>", type: "json", ... } ] }
-//
-// برخلاف بقیه‌ی محتوای کلید-مقدار این پروژه (که نسخه‌ی انگلیسی یا ردیف
-// جداست یا فیلد _en روی خودِ آبجکته)، اینجا چون value خودش یک آرایه‌ی
-// JSON از چند آیتمه، نسخه‌ی انگلیسی هر آیتم داخل خودِ همون آیتم میاد:
-//   { id, title, content, title_en, content_en }
-// یعنی فقط یک ردیف "workflow" هست (نه "workflow_en")، و باید بر اساس
-// زبان فعلی بین title/content و title_en/content_en هر آیتم سوییچ کنیم.
-//
-// content و content_en هر دو از ادیتور Tiptap در پنل ادمین ساخته می‌شن
-// (HTML)، پس در تمپلیت با v-html رندر می‌شن.
-//
-// اگر fetch با خطا مواجه بشه، آیتم workflow خالی/نامعتبر باشه، یا برای
-// یک آیتم نسخه‌ی en پر نشده باشه، به ترتیب: نسخه‌ی en آیتم → نسخه‌ی fa
-// همون آیتم → (اگر کل workflow خالی/نامعتبر بود) fallbackSteps کاملاً
-// ثابت و دوزبانه از i18n.
+// آدرس پایه API
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 
+// مراحل پیش‌فرض فرایند همکاری (در صورت نبود داده از سرور)
 const fallbackSteps = computed(() => ([
   { title: t('order.workflow.fallback.order.title'), desc: t('order.workflow.fallback.order.desc') },
   { title: t('order.workflow.fallback.analysis.title'), desc: t('order.workflow.fallback.analysis.desc') },
@@ -53,8 +35,10 @@ const fallbackSteps = computed(() => ([
   { title: t('order.workflow.fallback.support.title'), desc: t('order.workflow.fallback.support.desc') },
 ]))
 
+// دریافت محتوای صفحه سفارش از سرور
 const { data: orderPageRes } = await useFetch(`${API_BASE}/page/order`)
 
+// استخراج و آماده‌سازی مراحل فرایند همکاری بر اساس زبان فعلی
 const steps = computed(() => {
   const list = orderPageRes.value?.data ?? []
   const workflowItem = list.find(i => i.key === 'workflow')
@@ -70,18 +54,18 @@ const steps = computed(() => {
       }))
     }
   } catch {
-    // مقدار JSON نامعتبر بود — سکوت و بازگشت به fallback
+    // خطای JSON — بازگشت به مقدار پیش‌فرض
   }
   return fallbackSteps.value
 })
 
-// شماره‌ی مراحل بر اساس زبان فعلی با فرمت اعداد فارسی یا انگلیسی نمایش داده بشه
+// نمایش شماره مراحل با فرمت عددی متناسب با زبان
 const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR' : 'en-US')
 </script>
 
 <template>
 <div class="relative z-0 min-h-[560px] md:min-h-[650px] xl:h-[900px] xxl:h-[1024px] py-10 -mt-[80px] md:-mt-[70px] xl:-mt-[80px] xxl:-mt-[90px] dark:bg-dark-bg" :dir="isRtl ? 'rtl' : 'ltr'">
-    <!-- لایه‌ی پس‌زمینه، جدا از محتوا -->
+    <!-- تصویر پس‌زمینه صفحه -->
     <div
       class="absolute inset-0 -z-10
       bg-[url('/images/order-bg.png')]
@@ -89,16 +73,16 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
       xl:bg-[length:1920px_100%]
       dark:brightness-[0.55] dark:contrast-125"
     ></div>
-    <!-- لایه‌ی تیره‌ی مکمل، فقط روی دارک‌مود، فقط روی بک‌گراند -->
 
     <div class="relative z-10 max-w-[1054px] xxl:max-w-[1440px] mx-auto px-4 xl:px-0">
+<!-- برچسب عنوان بخش سفارش سایت -->
 <h1
   class="ml-auto bg-[#fcfaf4] dark:bg-[#ADE9EA] w-[140px] h-[36px] text-[14px] md:w-[160px] md:h-[40px] md:text-[16px] xl:w-[178px] xl:h-[43px] xl:text-[18px] xxl:w-[200px] xxl:h-[48px] xxl:text-[20px] text-[#2d6a66] dark:text-[#407B80] flex items-center justify-center rounded-[19px] shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border mt-[80px] md:mt-[70px] xl:mt-[100px] xxl:mt-[120px]"
 >
   <span class="mt-[5px]">{{ $t('order.siteOrder.badge') }}</span>
 </h1>
 
-      <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + پشتیبانی از سواپ انگشت -->
+      <!-- اسلایدر پروژه‌ها در حالت موبایل با پشتیبانی سواپ -->
       <div
         class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden touch-pan-y"
         @touchstart="onTouchStart"
@@ -127,8 +111,7 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
         </div>
       </div>
 
-      <!-- تبلت و دسکتاپ: همون منطق قبلی (جاری به بعد) -->
-<!-- اسلایدر ۳ کارته -->
+      <!-- اسلایدر پروژه‌ها در تبلت و دسکتاپ -->
 <div class="hidden md:flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-4 xl:gap-[70px] xxl:gap-[100px] xl:h-80 xxl:h-[420px] mt-8 md:mt-10 xl:mt-[50px] xxl:mt-[70px]">
   <div
     v-for="(item, index) in visibleProjects"
@@ -149,7 +132,7 @@ const formatStepNumber = (n) => n.toLocaleString(locale.value === 'fa' ? 'fa-IR'
   </div>
 </div>
 
-      <!-- دکمه‌های اسلایدر: فقط از md به بالا نمایش داده می‌شن -->
+      <!-- دکمه‌های کنترل اسلایدر -->
       <div class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[115px] xxl:mt-[100px]">
         <IconsSliderButton
 direction="left"
@@ -166,12 +149,13 @@ direction="right"
     </div>
   </div>
 
+  <!-- بخش نمایش مراحل فرایند همکاری -->
   <div
   class="relative z-20 -mt-20 md:-mt-20 xl:-mt-[150px] xxl:-mt-[190px] py-14 md:py-16 xl:py-20 xxl:py-24 px-4 w-full max-w-[1200px] xxl:max-w-[1600px] min-h-[420px] xxl:min-h-[480px]
   rounded-[50px] xxl:rounded-[60px] overflow-visible text-center mx-auto flex flex-col items-center"
   :dir="isRtl ? 'rtl' : 'ltr'"
 >
-  <!-- لایه‌ی پس‌زمینه‌ی جدا -->
+  <!-- تصویر و دکوراسیون پس‌زمینه بخش -->
 <div
   class="absolute inset-0 -z-10 rounded-[50px] xxl:rounded-[60px] overflow-hidden
   bg-[url('/images/bg-flow3.png')]
@@ -196,11 +180,13 @@ direction="right"
 </div>
 
 <div class="relative z-10 max-w-6xl xxl:max-w-[1300px] mx-auto">
+  <!-- عنوان و زیرعنوان بخش فرایند همکاری -->
   <div class="flex flex-col items-center text-center mb-8 md:mb-10 xxl:mb-14">
     <h3 class="text-[#2d6a66] md:text-white dark:text-dark-text text-[18px] md:text-[22px] xl:text-[26px] xxl:text-[30px] xxl:mt-[50px] font-medium mb-2">{{ $t('order.workflow.smallTitle') }}</h3>
     <h1 class="text-[#0F184B] dark:text-dark-text text-[22px] md:text-[29px] xl:text-[32px] xxl:text-[38px] font-bold">{{ $t('order.workflow.title') }}</h1>
   </div>
 
+<!-- لیست کارت‌های مراحل فرایند -->
 <div class="flex flex-wrap xxl:flex-nowrap justify-center gap-3 sm:gap-4 md:gap-3 xl:gap-12 xxl:gap-10 items-start md:items-center xl:items-start">
 <div
   v-for="(step, index) in steps"

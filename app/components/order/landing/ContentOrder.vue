@@ -7,10 +7,10 @@ const { localeProperties } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// این بخش فقط پروژه‌های دسته‌بندی «تولید محتوا» رو نشون می‌ده،
-// پس category_id واقعی (8) مستقیم پاس داده می‌شه.
+// دریافت پروژه‌های دسته‌بندی تولید محتوا
 const { items: projects, pending, error } = useResumes(RESUME_CATEGORY_IDS.content);
 
+// اتصال به کامپوزبل اسلایدر برای مدیریت نمایش و سواپ موبایل
 const {
   mobileVisibleItems: mobileVisibleProjects,
   visibleItems,
@@ -20,6 +20,7 @@ const {
   onTouchEnd,
 } = useMobileSlider(projects, { swipeThreshold: 40 });
 
+// پروژه‌های قابل نمایش در حالت تبلت و دسکتاپ
 const visibleProjects = visibleItems(4);
 
 </script>
@@ -36,7 +37,7 @@ const visibleProjects = visibleItems(4);
         {{ $t('order.contentOrder.badge') }}
       </h1>
 
-      <!-- حالت لودینگ / خطا / خالی -->
+      <!-- نمایش وضعیت لودینگ، خطا یا خالی بودن لیست -->
       <div v-if="pending" class="text-center text-[#747893] mt-10">
         {{ $t('order.contentOrder.loading') }}
       </div>
@@ -51,7 +52,7 @@ const visibleProjects = visibleItems(4);
       </div>
 
       <template v-else>
-        <!-- موبایل: کارت وسط بزرگ + کارت‌های قبلی/بعدی نیمه‌پیدا + سواپ با انگشت -->
+        <!-- اسلایدر پروژه‌ها برای حالت موبایل -->
         <div
           class="relative flex md:hidden items-center justify-center h-[280px] mt-8 overflow-hidden touch-pan-y"
           @touchstart="onTouchStart"
@@ -80,43 +81,38 @@ const visibleProjects = visibleItems(4);
           </div>
         </div>
 
-        <!--
-        تبلت و دسکتاپ: گرید نسبی (fr-based) به‌جای عرض ثابت پیکسلی.
-        md/lg (۷۶۸ تا ۱۲۷۹ - iPad mini/Air/Pro در پرتره و لندسکیپ): ۳ ستون
-        xl/2xl (۱۲۸۰ به بالا): ۴ ستون
-        min-[1920px]: تنظیمات اختصاصی برای مانیتورهای Full HD (۱۹۲۰x۱۰۸۰ / ۱۹۲۰x۱۰۲۴)
-      -->
-<div
-  class="hidden md:grid grid-cols-4 gap-4 md:gap-5 lg:gap-6 xl:gap-8 2xl:gap-[60px] justify-items-center mt-8 md:mt-10 xl:mt-[50px] min-[1920px]:gap-[80px] min-[1920px]:mt-[70px]"
->
-  <div
-    v-for="(item, index) in visibleProjects"
-    :key="item.realIndex"
-    class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
-    :class="[
-      index % 2 === 0
-        ? 'md:-translate-y-4 xl:-translate-y-6 min-[1920px]:-translate-y-8'
-        : 'md:translate-y-4 xl:translate-y-6 min-[1920px]:translate-y-8',
-    ]"
-  >
-    <NuxtLink :to="localePath(`/order/${item.data.slug}`)">
-      <img
-        :src="resumeCover(item.data)"
-        class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
-        :alt="item.data.title"
-      />
-    </NuxtLink>
-  </div>
-</div>
+        <!-- گرید پروژه‌ها برای حالت تبلت و دسکتاپ -->
+        <div
+          class="hidden md:grid grid-cols-4 gap-4 md:gap-5 lg:gap-6 xl:gap-8 2xl:gap-[60px] justify-items-center mt-8 md:mt-10 xl:mt-[50px] min-[1920px]:gap-[80px] min-[1920px]:mt-[70px]"
+        >
+          <div
+            v-for="(item, index) in visibleProjects"
+            :key="item.realIndex"
+            class="w-full max-w-[200px] md:max-w-[220px] lg:max-w-[250px] xl:max-w-[280px] 2xl:max-w-[312px] min-[1920px]:max-w-[340px] aspect-[312/358] bg-white rounded-[30px] xl:rounded-[40px] shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
+            :class="[
+              index % 2 === 0
+                ? 'md:-translate-y-4 xl:-translate-y-6 min-[1920px]:-translate-y-8'
+                : 'md:translate-y-4 xl:translate-y-6 min-[1920px]:translate-y-8',
+            ]"
+          >
+            <NuxtLink :to="localePath(`/order/${item.data.slug}`)">
+              <img
+                :src="resumeCover(item.data)"
+                class="w-full h-full object-cover rounded-[30px] xl:rounded-[40px]"
+                :alt="item.data.title"
+              />
+            </NuxtLink>
+          </div>
+        </div>
       </template>
 
-      <!-- دکمه‌های اسلایدر: فقط در تبلت و دسکتاپ نمایش داده می‌شن -->
-<div
-  class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6"
->
-  <IconsSliderButton direction="left" @click="prevSlide" />
-  <IconsSliderButton direction="right" @click="nextSlide" />
-</div>
+      <!-- دکمه‌های ناوبری اسلایدر (فقط تبلت و دسکتاپ) -->
+      <div
+        class="hidden md:flex justify-center gap-4 z-20 mt-8 md:mt-10 xl:mt-[130px] min-[1920px]:mt-[160px] min-[1920px]:gap-6"
+      >
+        <IconsSliderButton direction="left" @click="prevSlide" />
+        <IconsSliderButton direction="right" @click="nextSlide" />
+      </div>
     </div>
   </div>
 </template>

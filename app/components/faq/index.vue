@@ -68,9 +68,10 @@
               class="faq-content px-4 md:px-6 2xl:px-8 pb-6 2xl:pb-8 pt-0 text-[#616474] dark:text-dark-text/70 text-[16px] md:text-[18px] 2xl:text-[20px] leading-[22px] md:leading-[30px] 2xl:leading-[34px] font-roboto"
               :class="isOpen === index ? 'translate-y-0 blur-0' : '-translate-y-3 blur-[2px]'"
             >
-              <div class="pt-4 2xl:pt-5 border-t border-[#2C7379]/10 dark:border-dark-border/20">
-                {{ pickLocalized(item, 'answer', 'answer_en') }}
-              </div>
+              <div
+                class="tiptap-render pt-4 2xl:pt-5 border-t border-[#2C7379]/10 dark:border-dark-border/20"
+                v-html="pickLocalized(item, 'answer', 'answer_en')"
+              ></div>
             </div>
           </div>
         </div>
@@ -154,5 +155,46 @@ scrollbarConfig.value = {
   .faq-item, .faq-panel, .faq-content, .faq-icon-wrap, .faq-icon {
     transition-duration: 0.01ms !important;
   }
+}
+
+/* استایل خروجی HTML ادیتور Tiptap برای متن پاسخ */
+.tiptap-render :deep(p) {
+  margin: 0 0 0.8em 0;
+}
+.tiptap-render :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.tiptap-render :deep(h2) {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 0.8em 0 0.4em 0;
+}
+.tiptap-render :deep(h3) {
+  font-size: 1.08em;
+  font-weight: 700;
+  margin: 0.6em 0 0.3em 0;
+}
+.tiptap-render :deep(ul) {
+  list-style: disc;
+  padding-inline-start: 1.5em;
+  margin: 0.5em 0;
+}
+.tiptap-render :deep(ol) {
+  list-style: decimal;
+  padding-inline-start: 1.5em;
+  margin: 0.5em 0;
+}
+.tiptap-render :deep(blockquote) {
+  border-inline-start: 3px solid #2c7379;
+  padding-inline-start: 1em;
+  margin: 0.6em 0;
+  opacity: 0.85;
+}
+.tiptap-render :deep(a) {
+  color: #2c7379;
+  text-decoration: underline;
+}
+.tiptap-render :deep(strong) {
+  font-weight: 700;
 }
 </style>

@@ -135,12 +135,18 @@
             <div class="border-t border-[#ECEDF4] dark:border-dark-border pt-4 flex flex-col gap-3">
               <div>
                 <p class="text-[11px] text-gray-400 dark:text-dark-text mb-1 font-bold">فارسی</p>
-                <p class="text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 whitespace-pre-line">{{ item.answer }}</p>
+                <div
+                  class="tiptap-render text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7"
+                  v-html="item.answer"
+                ></div>
               </div>
               <div v-if="item.question_en || item.answer_en" dir="ltr" class="text-left">
                 <p class="text-[11px] text-gray-400 dark:text-dark-text mb-1 font-bold">English</p>
                 <p class="text-[13px] lg:text-[14px] font-bold text-[#0F184B] dark:text-dark-text mb-1">{{ item.question_en }}</p>
-                <p class="text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 whitespace-pre-line font-roboto">{{ item.answer_en }}</p>
+                <div
+                  class="tiptap-render text-[13px] lg:text-[14px] text-gray-600 dark:text-dark-text leading-7 font-roboto"
+                  v-html="item.answer_en"
+                ></div>
               </div>
               <p class="text-[11px] text-gray-600 dark:text-dark-text font-roboto">{{ formatDate(item.created_at) }}</p>
             </div>
@@ -183,13 +189,7 @@
 
             <div>
               <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">پاسخ</label>
-              <textarea
-                v-model="form.answer"
-                required
-                rows="5"
-                placeholder="متن پاسخ را وارد کنید"
-                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none bg-white/20"
-              ></textarea>
+              <RichTextEditor v-model="form.answer" dir="rtl" height="160px" />
             </div>
 
             <!-- جداکننده -->
@@ -213,13 +213,7 @@
 
             <div>
               <label class="block text-[13px] font-bold text-[#0F184B] dark:text-dark-text mb-2">پاسخ (English)</label>
-              <textarea
-                v-model="form.answer_en"
-                rows="5"
-                dir="ltr"
-                placeholder="Answer in English"
-                class="w-full px-4 py-2.5 rounded-2xl border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-[#67A9A8] transition-all duration-200 resize-none bg-white/20 font-roboto text-left"
-              ></textarea>
+              <RichTextEditor v-model="form.answer_en" dir="ltr" height="160px" />
             </div>
 
             <div class="flex items-center gap-4">
@@ -314,6 +308,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAdminAuth } from '@/composables/useAdminAuth'
 import { useAdminPermissions } from '@/composables/useAdminPermissions'
+import RichTextEditor from '~/components/RichTextEditor.vue'
 
 // احراز هویت و دسترسی ادمین
 const { authHeader, initFromStorage } = useAdminAuth()
@@ -529,5 +524,43 @@ onMounted(() => {
 .expand-leave-from {
   max-height: 500px;
   opacity: 1;
+}
+
+/* استایل خروجی HTML ادیتور Tiptap برای پیش‌نمایش آکاردئون */
+.tiptap-render :deep(p) {
+  margin: 0 0 0.6em 0;
+}
+.tiptap-render :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.tiptap-render :deep(h2) {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin: 0.6em 0 0.3em 0;
+}
+.tiptap-render :deep(h3) {
+  font-size: 1.05em;
+  font-weight: 700;
+  margin: 0.5em 0 0.3em 0;
+}
+.tiptap-render :deep(ul) {
+  list-style: disc;
+  padding-inline-start: 1.25rem;
+  margin: 0.4em 0;
+}
+.tiptap-render :deep(ol) {
+  list-style: decimal;
+  padding-inline-start: 1.25rem;
+  margin: 0.4em 0;
+}
+.tiptap-render :deep(blockquote) {
+  border-inline-start: 3px solid #67a9a8;
+  padding-inline-start: 0.75rem;
+  margin: 0.5em 0;
+  opacity: 0.85;
+}
+.tiptap-render :deep(a) {
+  color: #2d6a66;
+  text-decoration: underline;
 }
 </style>

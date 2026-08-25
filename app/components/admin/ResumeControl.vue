@@ -2,6 +2,7 @@
 import { ref, reactive } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
 import { useAdminPermissions } from '~/composables/useAdminPermissions'
+import RichTextEditor from '~/components/RichTextEditor.vue'
 
 // آدرس پایه API
 const API_BASE = 'https://nadertechnologyteam.ir'
@@ -549,23 +550,12 @@ const deleteItem = async (id) => {
 
               <div>
                 <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text/80">جزییات پروژه *</label>
-                <textarea
-                  v-model="form.description"
-                  rows="3"
-                  placeholder="توضیحات کامل پروژه"
-                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
-                ></textarea>
+                <RichTextEditor v-model="form.description" dir="rtl" :disabled="isReadOnly" height="180px" />
               </div>
 
               <div>
                 <label class="block mb-2 text-[13px] sm:text-[14px] font-medium text-gray-700 dark:text-dark-text/80">Project Details (English)</label>
-                <textarea
-                  v-model="form.description_en"
-                  rows="3"
-                  dir="ltr"
-                  placeholder="Full project description in English"
-                  class="w-full px-4 py-2 rounded-[17px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
-                ></textarea>
+                <RichTextEditor v-model="form.description_en" dir="ltr" :disabled="isReadOnly" height="180px" />
               </div>
 
               <div class="flex items-center gap-2">
@@ -658,22 +648,11 @@ const deleteItem = async (id) => {
   <div class="space-y-3">
     <div>
       <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نظر مشتری درباره پروژه *</label>
-      <textarea
-        v-model="form.customer_description"
-        rows="3"
-        placeholder="نظر مشتری درباره پروژه"
-        class="w-full text-sm text-gray-600 dark:text-dark-text/80 bg-gray-50 dark:bg-dark-input/30 dark:placeholder:text-dark-text/40 p-3 rounded-xl focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
-      ></textarea>
+      <RichTextEditor v-model="form.customer_description" dir="rtl" :disabled="isReadOnly" height="140px" />
     </div>
     <div>
       <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Review (English)</label>
-      <textarea
-        v-model="form.customer_description_en"
-        rows="3"
-        dir="ltr"
-        placeholder="Customer's review in English"
-        class="w-full text-sm text-gray-600 dark:text-dark-text/80 bg-gray-50 dark:bg-dark-input/30 dark:placeholder:text-dark-text/40 p-3 rounded-xl focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
-      ></textarea>
+      <RichTextEditor v-model="form.customer_description_en" dir="ltr" :disabled="isReadOnly" height="140px" />
     </div>
   </div>
 </div>

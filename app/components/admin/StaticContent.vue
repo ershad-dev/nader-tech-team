@@ -52,6 +52,7 @@
     <div class="flex-1 overflow-y-auto px-5 py-5 lg:px-8 lg:py-6 hide-scrollbar">
 
       <!-- ══════════════════ SERVICES (خدمات) TAB ══════════════════ -->
+      <!-- توجه: این تب عمداً از RichTextEditor استفاده نمی‌کند چون متن توضیحات خدمات کوتاه است -->
       <template v-if="activePage === 'services'">
 
         <!-- Add new service toggle -->
@@ -134,24 +135,12 @@
 
             <div>
               <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">توضیحات (فارسی)</label>
-              <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
-                <span class="hidden">{{ newServiceEditorState.tick }}</span>
-                <div v-if="newServiceEditorState.editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
-                  <button type="button" @click="newServiceEditorState.editor.chain().focus().toggleBold().run()" :class="editorBtnClass(newServiceEditorState.editor.isActive('bold'))"><b>B</b></button>
-                  <button type="button" @click="newServiceEditorState.editor.chain().focus().toggleItalic().run()" :class="editorBtnClass(newServiceEditorState.editor.isActive('italic'))"><i>I</i></button>
-                  <button type="button" @click="newServiceEditorState.editor.chain().focus().toggleUnderline().run()" :class="editorBtnClass(newServiceEditorState.editor.isActive('underline'))"><u>U</u></button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="newServiceEditorState.editor.chain().focus().toggleBulletList().run()" :class="editorBtnClass(newServiceEditorState.editor.isActive('bulletList'))">•</button>
-                  <button type="button" @click="newServiceEditorState.editor.chain().focus().toggleOrderedList().run()" :class="editorBtnClass(newServiceEditorState.editor.isActive('orderedList'))">1.</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="setEditorLink(newServiceEditorState.editor)" :class="editorBtnClass(newServiceEditorState.editor.isActive('link'))">لینک</button>
-                </div>
-                <editor-content
-                  v-if="newServiceEditorState.editor"
-                  :editor="newServiceEditorState.editor"
-                  class="prosemirror-wrap px-3 py-2 min-h-[100px] max-h-[260px] overflow-y-auto text-[13px] text-[#0F184B] dark:text-white"
-                />
-              </div>
+              <textarea
+                v-model="newService.description"
+                rows="4"
+                placeholder="توضیح کوتاه خدمت..."
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
             </div>
 
             <div>
@@ -306,12 +295,33 @@
                   />
                 </div>
               </div>
+
+              <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1">
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">توضیحات (فارسی)</label>
+                  <textarea
+                    v-model="entry.node.description"
+                    rows="3"
+                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                  />
+                </div>
+                <div class="flex-1">
+                  <label class="block text-[11px] text-[#454C6A]/70 dark:text-white mb-1">Description (English)</label>
+                  <textarea
+                    v-model="entry.node.description_en"
+                    rows="3"
+                    dir="ltr"
+                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </template>
 
       <!-- ══════════════════ KEY-VALUE PAGE CONTENT (about / events / order) ══════════════════ -->
+      <!-- این سه تب همگی برای فیلدهای نوع html از RichTextEditor استفاده می‌کنند -->
       <template v-else>
 
         <!-- Service images quick panel (only on the events page) -->
@@ -402,53 +412,14 @@
             <div>
               <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">مقدار فارسی (value)</label>
 
-              <!-- text -->
-              <textarea
-                v-if="newItem.type === 'text'"
+              <!-- text / html: RichTextEditor -->
+              <RichTextEditor
+                v-if="newItem.type === 'text' || newItem.type === 'html'"
                 v-model="newItem.value"
-                rows="2"
-                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                dir="rtl"
+                :height="newItem.type === 'html' ? '200px' : '120px'"
+                :disabled="isReadOnly"
               />
-
-              <!-- html: Tiptap -->
-              <div
-                v-else-if="newItem.type === 'html'"
-                class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20"
-              >
-                <span class="hidden">{{ newItemEditorState.tick }}</span>
-                <div v-if="newItemEditorState.editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleBold().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('bold'))"><b>B</b></button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleItalic().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('italic'))"><i>I</i></button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleUnderline().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('underline'))"><u>U</u></button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleStrike().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('strike'))"><s>S</s></button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().setParagraph().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('paragraph'))">P</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="editorBtnClass(newItemEditorState.editor.isActive('heading', { level: 2 }))">H2</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="editorBtnClass(newItemEditorState.editor.isActive('heading', { level: 3 }))">H3</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleBulletList().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('bulletList'))">•</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleOrderedList().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('orderedList'))">1.</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().toggleBlockquote().run()" :class="editorBtnClass(newItemEditorState.editor.isActive('blockquote'))">”</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().setTextAlign('right').run()" :class="editorBtnClass(newItemEditorState.editor.isActive({ textAlign: 'right' }))">راست</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().setTextAlign('center').run()" :class="editorBtnClass(newItemEditorState.editor.isActive({ textAlign: 'center' }))">وسط</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().setTextAlign('left').run()" :class="editorBtnClass(newItemEditorState.editor.isActive({ textAlign: 'left' }))">چپ</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="setEditorLink(newItemEditorState.editor)" :class="editorBtnClass(newItemEditorState.editor.isActive('link'))">لینک</button>
-                  <label class="px-2 py-1 rounded text-[11px] font-bold cursor-pointer hover:bg-[#67A9A8]/15 dark:hover:bg-dark-accent/15 text-[#454C6A] dark:text-white/80">
-                    تصویر
-                    <input type="file" accept="image/*" class="hidden" :disabled="isReadOnly" @change="insertEditorImage($event, newItemEditorState.editor)" />
-                  </label>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().undo().run()">↶</button>
-                  <button type="button" @click="newItemEditorState.editor.chain().focus().redo().run()">↷</button>
-                </div>
-                <editor-content
-                  v-if="newItemEditorState.editor"
-                  :editor="newItemEditorState.editor"
-                  class="prosemirror-wrap px-3 py-2 min-h-[120px] max-h-[320px] overflow-y-auto text-[13px] text-[#0F184B] dark:text-white"
-                />
-              </div>
 
               <!-- json -->
               <textarea
@@ -497,19 +468,27 @@
               />
             </div>
 
-            <!-- نسخه انگلیسی (متن، HTML و JSON قابل ترجمه‌ست) -->
-            <div v-if="newItem.type === 'text' || newItem.type === 'html' || newItem.type === 'json'">
+            <!-- نسخه انگلیسی (JSON) -->
+            <div v-if="newItem.type === 'json'">
               <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">English value (اختیاری — با کلید «{{ (newItem.key || 'key') + '_en' }}» ذخیره می‌شود)</label>
               <textarea
                 v-model="newItem.value_en"
-                :rows="newItem.type === 'json' ? 5 : 2"
+                rows="5"
                 dir="ltr"
-                :spellcheck="newItem.type === 'json' ? false : true"
-                placeholder="English text / HTML / JSON..."
-                :class="[
-                  'w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20',
-                  newItem.type === 'json' ? 'text-[12px] font-mono' : 'text-[13px] font-roboto'
-                ]"
+                spellcheck="false"
+                placeholder="English JSON..."
+                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+              />
+            </div>
+
+            <!-- نسخه انگلیسی (متن / HTML): RichTextEditor -->
+            <div v-else-if="newItem.type === 'text' || newItem.type === 'html'">
+              <label class="block text-[11px] text-[#0F184B] dark:text-white mb-1">English value (اختیاری — با کلید «{{ (newItem.key || 'key') + '_en' }}» ذخیره می‌شود)</label>
+              <RichTextEditor
+                v-model="newItem.value_en"
+                dir="ltr"
+                :height="newItem.type === 'html' ? '200px' : '120px'"
+                :disabled="isReadOnly"
               />
             </div>
 
@@ -587,71 +566,22 @@
               </div>
             </div>
 
-            <!-- text -->
-            <template v-if="item.type === 'text'">
+            <!-- text / html: RichTextEditor (فارسی + انگلیسی) -->
+            <template v-if="item.type === 'text' || item.type === 'html'">
               <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1">فارسی</label>
-              <textarea
+              <RichTextEditor
                 v-model="item.value"
-                rows="2"
-                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                dir="rtl"
+                :height="item.type === 'html' ? '200px' : '120px'"
+                :disabled="isReadOnly"
               />
+
               <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1 mt-2">English</label>
-              <textarea
+              <RichTextEditor
                 v-model="item.value_en"
-                rows="2"
                 dir="ltr"
-                placeholder="English text..."
-                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
-              />
-            </template>
-
-            <!-- html: Tiptap (فارسی) + textarea ساده برای انگلیسی -->
-            <template v-else-if="item.type === 'html'">
-              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1">فارسی</label>
-              <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20">
-                <span class="hidden">{{ item._editorTick }}</span>
-                <div v-if="item._editor" class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
-                  <button type="button" @click="item._editor.chain().focus().toggleBold().run()" :class="editorBtnClass(item._editor.isActive('bold'))"><b>B</b></button>
-                  <button type="button" @click="item._editor.chain().focus().toggleItalic().run()" :class="editorBtnClass(item._editor.isActive('italic'))"><i>I</i></button>
-                  <button type="button" @click="item._editor.chain().focus().toggleUnderline().run()" :class="editorBtnClass(item._editor.isActive('underline'))"><u>U</u></button>
-                  <button type="button" @click="item._editor.chain().focus().toggleStrike().run()" :class="editorBtnClass(item._editor.isActive('strike'))"><s>S</s></button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="item._editor.chain().focus().setParagraph().run()" :class="editorBtnClass(item._editor.isActive('paragraph'))">P</button>
-                  <button type="button" @click="item._editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="editorBtnClass(item._editor.isActive('heading', { level: 2 }))">H2</button>
-                  <button type="button" @click="item._editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="editorBtnClass(item._editor.isActive('heading', { level: 3 }))">H3</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="item._editor.chain().focus().toggleBulletList().run()" :class="editorBtnClass(item._editor.isActive('bulletList'))">•</button>
-                  <button type="button" @click="item._editor.chain().focus().toggleOrderedList().run()" :class="editorBtnClass(item._editor.isActive('orderedList'))">1.</button>
-                  <button type="button" @click="item._editor.chain().focus().toggleBlockquote().run()" :class="editorBtnClass(item._editor.isActive('blockquote'))">”</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="item._editor.chain().focus().setTextAlign('right').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'right' }))">راست</button>
-                  <button type="button" @click="item._editor.chain().focus().setTextAlign('center').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'center' }))">وسط</button>
-                  <button type="button" @click="item._editor.chain().focus().setTextAlign('left').run()" :class="editorBtnClass(item._editor.isActive({ textAlign: 'left' }))">چپ</button>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="setEditorLink(item._editor)" :class="editorBtnClass(item._editor.isActive('link'))">لینک</button>
-                  <label class="px-2 py-1 rounded text-[11px] font-bold cursor-pointer hover:bg-[#67A9A8]/15 dark:hover:bg-dark-accent/15 text-[#454C6A] dark:text-white/80">
-                    تصویر
-                    <input type="file" accept="image/*" class="hidden" :disabled="isReadOnly" @change="insertEditorImage($event, item._editor)" />
-                  </label>
-                  <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                  <button type="button" @click="item._editor.chain().focus().undo().run()">↶</button>
-                  <button type="button" @click="item._editor.chain().focus().redo().run()">↷</button>
-                </div>
-                <editor-content
-                  v-if="item._editor"
-                  :editor="item._editor"
-                  class="prosemirror-wrap px-3 py-2 min-h-[120px] max-h-[320px] overflow-y-auto text-[13px] text-[#0F184B] dark:text-white"
-                />
-              </div>
-
-              <!-- نسخه‌ی انگلیسی HTML: برای سادگی، textarea خام (بدون تولبار) -->
-              <label class="block text-[10px] text-[#454C6A]/60 dark:text-white/50 mb-1 mt-2">English (raw HTML)</label>
-              <textarea
-                v-model="item.value_en"
-                rows="4"
-                dir="ltr"
-                placeholder="<p>English HTML...</p>"
-                class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                :height="item.type === 'html' ? '200px' : '120px'"
+                :disabled="isReadOnly"
               />
             </template>
 
@@ -694,24 +624,15 @@
                   class="w-full mb-2 px-3 py-1.5 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] font-bold text-[#0F184B] dark:text-white focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                 />
 
-                <!-- content: Tiptap -->
-                <div class="border border-[#BFD1D5] dark:border-dark-border rounded-lg overflow-hidden bg-white/20 dark:bg-dark-input/20 mb-2">
-                  <span class="hidden">{{ stepEditorTick }}</span>
-                  <div class="flex flex-wrap items-center gap-1 px-2 py-1 border-b border-[#BFD1D5] dark:border-dark-border bg-[#F7F3EB]/60 dark:bg-dark-surface/60">
-                    <button type="button" @click="getStepEditor(item, step).chain().focus().toggleBold().run()" :class="editorBtnClass(getStepEditor(item, step).isActive('bold'))"><b>B</b></button>
-                    <button type="button" @click="getStepEditor(item, step).chain().focus().toggleItalic().run()" :class="editorBtnClass(getStepEditor(item, step).isActive('italic'))"><i>I</i></button>
-                    <button type="button" @click="getStepEditor(item, step).chain().focus().toggleUnderline().run()" :class="editorBtnClass(getStepEditor(item, step).isActive('underline'))"><u>U</u></button>
-                    <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                    <button type="button" @click="getStepEditor(item, step).chain().focus().toggleBulletList().run()" :class="editorBtnClass(getStepEditor(item, step).isActive('bulletList'))">•</button>
-                    <button type="button" @click="getStepEditor(item, step).chain().focus().toggleOrderedList().run()" :class="editorBtnClass(getStepEditor(item, step).isActive('orderedList'))">1.</button>
-                    <span class="w-px h-5 bg-[#BFD1D5] dark:bg-dark-border mx-1" />
-                    <button type="button" @click="setEditorLink(getStepEditor(item, step))" :class="editorBtnClass(getStepEditor(item, step).isActive('link'))">لینک</button>
-                  </div>
-                  <editor-content
-                    :editor="getStepEditor(item, step)"
-                    class="prosemirror-wrap px-3 py-2 min-h-[70px] text-[13px] text-[#0F184B] dark:text-white"
-                  />
-                </div>
+                <!-- content: RichTextEditor -->
+                <RichTextEditor
+                  :model-value="step.content"
+                  dir="rtl"
+                  height="120px"
+                  :disabled="isReadOnly"
+                  class="mb-2"
+                  @update:model-value="val => updateStepField(item, idx, 'content', val)"
+                />
 
                 <!-- نسخه انگلیسی مرحله -->
                 <div class="mt-2 pt-2 border-t border-dashed border-[#BFD1D5] dark:border-dark-border">
@@ -723,13 +644,12 @@
                     placeholder="Step title (English)"
                     class="w-full mb-2 px-3 py-1.5 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[13px] font-bold text-[#0F184B] dark:text-white font-roboto focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent bg-white/20"
                   />
-                  <textarea
-                    :value="step.content_en"
-                    @input="updateStepField(item, idx, 'content_en', $event.target.value)"
-                    rows="3"
+                  <RichTextEditor
+                    :model-value="step.content_en"
                     dir="ltr"
-                    placeholder="Step content (English, HTML allowed)"
-                    class="w-full px-3 py-2 rounded-lg border border-[#BFD1D5] dark:border-dark-border dark:bg-dark-input/20 text-[12px] text-[#0F184B] dark:text-white font-mono focus:outline-none focus:border-[#67A9A8] dark:focus:border-dark-accent resize-y bg-white/20"
+                    height="120px"
+                    :disabled="isReadOnly"
+                    @update:model-value="val => updateStepField(item, idx, 'content_en', val)"
                   />
                 </div>
               </div>
@@ -816,14 +736,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount, watch, markRaw } from 'vue'
-import { Editor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
-import ImageExtension from '@tiptap/extension-image'
-import TextAlign from '@tiptap/extension-text-align'
-
+import { ref, reactive, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import RichTextEditor from '~/components/RichTextEditor.vue'
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 const STORAGE_BASE = 'https://nadertechnologyteam.ir/storage/'
@@ -923,188 +837,6 @@ const quickAddServiceImage = (n) => {
   newItem.value = ''
 }
 
-// ── Tiptap: shared setup ────────────────────────────────────
-const buildExtensions = () => [
-  StarterKit,
-  Underline,
-  Link.configure({ openOnClick: false, autolink: true }),
-  ImageExtension,
-  TextAlign.configure({ types: ['heading', 'paragraph'] }),
-]
-
-const editorBtnClass = (active) => [
-  'px-2 py-1 rounded text-[12px] font-bold transition',
-  active
-    ? 'bg-[#67A9A8] dark:bg-dark-accent text-white'
-    : 'text-[#454C6A] dark:text-white/80 hover:bg-[#67A9A8]/15 dark:hover:bg-dark-accent/15',
-]
-
-const setEditorLink = (editor) => {
-  if (!editor) return
-  const previousUrl = editor.getAttributes('link').href
-  const url = window.prompt('آدرس لینک را وارد کنید:', previousUrl || 'https://')
-  if (url === null) return
-  if (url === '') {
-    editor.chain().focus().unsetLink().run()
-    return
-  }
-  editor.chain().focus().setLink({ href: url }).run()
-}
-
-const insertEditorImage = (event, editor) => {
-  if (isReadOnly.value) return
-  const file = event.target.files?.[0]
-  event.target.value = ''
-  if (!file || !editor) return
-  if (!file.type.startsWith('image/')) {
-    showToast('فایل انتخاب‌شده تصویر نیست', 'error')
-    return
-  }
-  if (file.size > MAX_IMAGE_SIZE) {
-    showToast('حجم تصویر نباید بیشتر از ۲ مگابایت باشد', 'error')
-    return
-  }
-  const reader = new FileReader()
-  reader.onload = () => {
-    editor.chain().focus().setImage({ src: reader.result }).run()
-  }
-  reader.onerror = () => showToast('خطا در خواندن فایل تصویر', 'error')
-  reader.readAsDataURL(file)
-}
-
-// ── Tiptap: per-item editor instances (type === 'html') — فقط نسخه فارسی ──
-const createEditorForItem = (item) => {
-  if (item.type !== 'html' || item._editor) return
-  item._editorTick = 0
-  const editor = new Editor({
-    content: item.value || '',
-    extensions: buildExtensions(),
-    onUpdate: ({ editor }) => {
-      item.value = editor.getHTML()
-      item._editorTick++
-    },
-    onTransaction: () => { item._editorTick++ },
-  })
-  item._editor = markRaw(editor)
-}
-
-const destroyItemEditor = (item) => {
-  item._editor?.destroy()
-  item._editor = null
-}
-
-const destroyAllItemEditors = () => {
-  items.value.forEach(destroyItemEditor)
-}
-
-// ── Tiptap: add-new-item editor instance ────────────────────
-const newItemEditorState = reactive({ editor: null, tick: 0 })
-
-const ensureNewItemEditor = () => {
-  if (newItemEditorState.editor) return
-  const editor = new Editor({
-    content: newItem.value || '',
-    extensions: buildExtensions(),
-    onUpdate: ({ editor }) => {
-      newItem.value = editor.getHTML()
-      newItemEditorState.tick++
-    },
-    onTransaction: () => { newItemEditorState.tick++ },
-  })
-  newItemEditorState.editor = markRaw(editor)
-}
-
-const destroyNewItemEditor = () => {
-  newItemEditorState.editor?.destroy()
-  newItemEditorState.editor = null
-}
-
-// ── Workflow (order page) steps editor ──────────────────────
-const isWorkflowItem = (item) => item.page === 'order' && item.type === 'json' && item.key === 'workflow'
-
-const parseSteps = (item) => {
-  try {
-    const parsed = JSON.parse(item.value || '[]')
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
-
-const writeSteps = (item, steps) => {
-  item.value = JSON.stringify(steps)
-}
-
-const updateStepField = (item, index, field, val) => {
-  if (isReadOnly.value) return
-  const steps = parseSteps(item)
-  if (!steps[index]) return
-  steps[index] = { ...steps[index], [field]: val }
-  writeSteps(item, steps)
-}
-
-const addStep = (item) => {
-  if (isReadOnly.value) return
-  const steps = parseSteps(item)
-  const nextId = steps.length ? Math.max(...steps.map(s => Number(s.id) || 0)) + 1 : 1
-  // title_en / content_en هم از همون ابتدا روی هر مرحله وجود دارن
-  steps.push({ id: nextId, title: '', content: '', title_en: '', content_en: '' })
-  writeSteps(item, steps)
-}
-
-const removeStep = (item, index) => {
-  if (isReadOnly.value) return
-  const steps = parseSteps(item)
-  const removed = steps[index]
-  steps.splice(index, 1)
-  writeSteps(item, steps)
-  if (removed) destroyStepEditor(item, removed)
-}
-
-const moveStep = (item, index, dir) => {
-  if (isReadOnly.value) return
-  const steps = parseSteps(item)
-  const target = index + dir
-  if (target < 0 || target >= steps.length) return
-  ;[steps[index], steps[target]] = [steps[target], steps[index]]
-  writeSteps(item, steps)
-}
-
-// ── Workflow step content editors (Tiptap) — فقط نسخه فارسی ─
-const stepEditors = reactive(new Map())
-const stepEditorTick = ref(0)
-
-const stepEditorKey = (item, step) => `${item.key}:${step.id}`
-
-const getStepEditor = (item, step) => {
-  const k = stepEditorKey(item, step)
-  if (!stepEditors.has(k)) {
-    const editor = new Editor({
-      content: step.content || '',
-      extensions: buildExtensions(),
-      onUpdate: ({ editor }) => {
-        const idx = parseSteps(item).findIndex(s => s.id === step.id)
-        if (idx !== -1) updateStepField(item, idx, 'content', editor.getHTML())
-        stepEditorTick.value++
-      },
-      onTransaction: () => { stepEditorTick.value++ },
-    })
-    stepEditors.set(k, markRaw(editor))
-  }
-  return stepEditors.get(k)
-}
-
-const destroyStepEditor = (item, step) => {
-  const k = stepEditorKey(item, step)
-  stepEditors.get(k)?.destroy()
-  stepEditors.delete(k)
-}
-
-const destroyAllStepEditors = () => {
-  stepEditors.forEach(e => e.destroy())
-  stepEditors.clear()
-}
-
 // ── image_path field upload ──────────────────────────────────
 const revokePreview = (target) => {
   if (target._previewUrl) {
@@ -1150,8 +882,6 @@ const normalizeIncoming = (raw) => {
     _saving: false,
     _deleting: false,
     _uploading: false,
-    _editor: null,
-    _editorTick: 0,
     _file: null,
     _previewUrl: null,
   }
@@ -1159,8 +889,6 @@ const normalizeIncoming = (raw) => {
 
 const fetchItems = async (page) => {
   isLoading.value = true
-  destroyAllItemEditors()
-  destroyAllStepEditors()
   items.value.forEach(revokePreview)
   try {
     const res = await $fetch(`${API_BASE}/page/${page}`)
@@ -1188,7 +916,6 @@ const fetchItems = async (page) => {
     })
 
     items.value = baseItems
-    items.value.forEach(createEditorForItem)
   } catch (err) {
     showToast('خطا در دریافت محتوای این صفحه', 'error')
     items.value = []
@@ -1303,10 +1030,6 @@ const doDelete = async (item) => {
   try {
     if (item.id) await deletePageItemRequest(item.id)
     if (item._enId) await deletePageItemRequest(item._enId) // نسخه‌ی انگلیسی هم حذف بشه
-    destroyItemEditor(item)
-    if (isWorkflowItem(item)) {
-      parseSteps(item).forEach(step => destroyStepEditor(item, step))
-    }
     revokePreview(item)
     items.value = items.value.filter(i => i !== item)
     showToast(`«${item.key}» حذف شد`)
@@ -1334,8 +1057,6 @@ watch(() => newItem.type, (type) => {
   newItem._file = null
   newItem.value = defaultValueForType(type)
   newItem.value_en = ''
-  if (type === 'html') ensureNewItemEditor()
-  else destroyNewItemEditor()
 })
 
 const resetNewItem = () => {
@@ -1345,7 +1066,6 @@ const resetNewItem = () => {
   newItem.value_en = ''
   revokePreview(newItem)
   newItem._file = null
-  destroyNewItemEditor()
 }
 
 const cancelAdd = () => {
@@ -1394,7 +1114,6 @@ const addItem = async () => {
     }
 
     items.value.push(pushed)
-    createEditorForItem(items.value[items.value.length - 1])
 
     showToast(`«${key}» اضافه شد`)
     cancelAdd()
@@ -1406,7 +1125,60 @@ const addItem = async () => {
 }
 
 // ══════════════════════════════════════════════════════════════
+// ── Workflow (order page) steps ──────────────────────────────
+// ══════════════════════════════════════════════════════════════
+
+const isWorkflowItem = (item) => item.page === 'order' && item.type === 'json' && item.key === 'workflow'
+
+const parseSteps = (item) => {
+  try {
+    const parsed = JSON.parse(item.value || '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+const writeSteps = (item, steps) => {
+  item.value = JSON.stringify(steps)
+}
+
+const updateStepField = (item, index, field, val) => {
+  if (isReadOnly.value) return
+  const steps = parseSteps(item)
+  if (!steps[index]) return
+  steps[index] = { ...steps[index], [field]: val }
+  writeSteps(item, steps)
+}
+
+const addStep = (item) => {
+  if (isReadOnly.value) return
+  const steps = parseSteps(item)
+  const nextId = steps.length ? Math.max(...steps.map(s => Number(s.id) || 0)) + 1 : 1
+  // title_en / content_en هم از همون ابتدا روی هر مرحله وجود دارن
+  steps.push({ id: nextId, title: '', content: '', title_en: '', content_en: '' })
+  writeSteps(item, steps)
+}
+
+const removeStep = (item, index) => {
+  if (isReadOnly.value) return
+  const steps = parseSteps(item)
+  steps.splice(index, 1)
+  writeSteps(item, steps)
+}
+
+const moveStep = (item, index, dir) => {
+  if (isReadOnly.value) return
+  const steps = parseSteps(item)
+  const target = index + dir
+  if (target < 0 || target >= steps.length) return
+  ;[steps[index], steps[target]] = [steps[target], steps[index]]
+  writeSteps(item, steps)
+}
+
+// ══════════════════════════════════════════════════════════════
 // ── SERVICES (خدمات) — hierarchical, parent/children ──
+// (عمداً بدون RichTextEditor، متن توضیحات کوتاهه)
 // ══════════════════════════════════════════════════════════════
 
 const servicesTree = ref([])
@@ -1421,8 +1193,6 @@ const normalizeServiceNodes = (nodes, parentId = null) => (nodes || []).map(n =>
     is_active: !!n.is_active,
     _saving: false,
     _deleting: false,
-    _editor: null,
-    _editorTick: 0,
   }
   node.children = n.children ? normalizeServiceNodes(n.children, n.id) : []
   return node
@@ -1442,37 +1212,12 @@ const flatServiceEntries = computed(() => flattenServiceNodes(servicesTree.value
 
 const topLevelServiceOptions = computed(() => flatServiceEntries.value.filter(e => e.level === 0))
 
-const createEditorForService = (node) => {
-  if (node._editor) return
-  const editor = new Editor({
-    content: node.description || '',
-    extensions: buildExtensions(),
-    onUpdate: ({ editor }) => {
-      node.description = editor.getHTML()
-      node._editorTick++
-    },
-    onTransaction: () => { node._editorTick++ },
-  })
-  node._editor = markRaw(editor)
-}
-
-const destroyServiceEditor = (node) => {
-  node._editor?.destroy()
-  node._editor = null
-}
-
-const destroyAllServiceEditors = () => {
-  flatServiceEntries.value.forEach(({ node }) => destroyServiceEditor(node))
-}
-
 const fetchServicesTree = async () => {
   isLoadingServices.value = true
-  destroyAllServiceEditors()
   try {
     const res = await $fetch(`${API_BASE}/services/tree`)
     const list = res?.data?.services ?? []
     servicesTree.value = normalizeServiceNodes(list)
-    flatServiceEntries.value.forEach(({ node }) => createEditorForService(node))
   } catch (err) {
     showToast('خطا در دریافت لیست خدمات', 'error')
     servicesTree.value = []
@@ -1541,31 +1286,9 @@ const newService = reactive({
   is_active: true,
 })
 
-const newServiceEditorState = reactive({ editor: null, tick: 0 })
-
-const ensureNewServiceEditor = () => {
-  if (newServiceEditorState.editor) return
-  const editor = new Editor({
-    content: newService.description || '',
-    extensions: buildExtensions(),
-    onUpdate: ({ editor }) => {
-      newService.description = editor.getHTML()
-      newServiceEditorState.tick++
-    },
-    onTransaction: () => { newServiceEditorState.tick++ },
-  })
-  newServiceEditorState.editor = markRaw(editor)
-}
-
-const destroyNewServiceEditor = () => {
-  newServiceEditorState.editor?.destroy()
-  newServiceEditorState.editor = null
-}
-
 const openAddServiceForm = () => {
   if (isReadOnly.value) return
   showAddServiceForm.value = true
-  ensureNewServiceEditor()
 }
 
 const cancelAddService = () => {
@@ -1578,7 +1301,6 @@ const cancelAddService = () => {
   newService.description_en = ''
   newService.sort_order = 1
   newService.is_active = true
-  destroyNewServiceEditor()
 }
 
 const addService = async () => {
@@ -1629,14 +1351,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  destroyAllItemEditors()
-  destroyAllStepEditors()
-  destroyNewItemEditor()
   items.value.forEach(revokePreview)
   revokePreview(newItem)
-
-  destroyAllServiceEditors()
-  destroyNewServiceEditor()
 })
 </script>
 
@@ -1645,17 +1361,4 @@ onBeforeUnmount(() => {
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
-</style>
-
-<style>
-.prosemirror-wrap .ProseMirror { outline: none; }
-.prosemirror-wrap .ProseMirror p { margin: 0.4em 0; }
-.prosemirror-wrap .ProseMirror img { max-width: 100%; border-radius: 8px; }
-.prosemirror-wrap .ProseMirror a { color: #2C7379; text-decoration: underline; }
-.prosemirror-wrap .ProseMirror blockquote {
-  border-right: 3px solid #67A9A8;
-  padding-right: 10px;
-  margin: 0.5em 0;
-  color: #6b7280;
-}
 </style>

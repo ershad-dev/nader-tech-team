@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen py-10 -mb-[50px]" :dir="isRtl ? 'rtl' : 'ltr'">
 
-    <!-- ۲. بخش تب‌ها و پروژه‌ها با منطق اسلایدر -->
+    <!-- بخش تب‌ها و گرید پروژه‌ها همراه با اسلایدر -->
     <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto py-8 lg:py-16 px-4">
       <div class="flex justify-center mb-8 lg:mb-10 px-2">
         <div class="w-full max-w-[846px] lg:w-[846px] min-[1920px]:w-[1000px] h-[52px] sm:h-[59px] min-[1920px]:h-[72px] bg-white dark:bg-dark-input rounded-[22px] lg:rounded-[48px] p-1.5 shadow-sm dark:shadow-none dark:ring-1 dark:ring-dark-border border border-gray-100 dark:border-transparent flex flex-nowrap items-center justify-center gap-1 sm:gap-2 overflow-hidden">
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <!-- گرید پروژه‌ها -->
+      <!-- گرید پروژه‌های نمایش داده‌شده در صفحه فعلی اسلایدر -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 min-[1920px]:gap-8">
         <div v-for="project in visibleProjects" :key="project.id" 
           class="relative w-full lg:max-w-[250px] min-[1920px]:max-w-[300px] mx-auto h-[220px] sm:h-[280px] lg:h-[350px] min-[1920px]:h-[420px] bg-white dark:bg-dark-input rounded-[24px] lg:rounded-[48px] border-[1px] border-gray-300 dark:border-dark-border shadow-lg dark:shadow-none hover:shadow-2xl dark:hover:ring-1 dark:hover:ring-dark-accent transition-all duration-300 overflow-hidden group">
@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <!-- کنترل‌های اسلایدر -->
+      <!-- دکمه‌های ناوبری و نشانگرهای اسلایدر پروژه‌ها -->
       <div class="flex items-center justify-between mt-8 lg:mt-12 px-2">
         <div class="flex justify-center gap-3 lg:gap-4 z-20">
           <IconsSliderButton direction="left" @click="prevSlide" />
@@ -81,11 +81,10 @@
       </div>
     </section>
 
-    <!-- ۱. بخش شوکیس (Showcase) داینامیک -->
+    <!-- بخش شوکیس داینامیک بر اساس دسته‌بندی انتخاب‌شده -->
     <section class="max-w-6xl min-[1920px]:max-w-[1600px] mx-auto px-4 mb-12 lg:mb-20">
       <div class="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden p-6 lg:p-8 xl:p-12 min-[1920px]:p-16 bg-[#67A9A8] lg:bg-white/20 dark:lg:bg-dark-bg">
 
-        <!-- عکس پس‌زمینه از ۱۰۲۴ به بعد نمایش داده می‌شه، ولی کاملاً ریسپانسیو -->
         <img 
           src="/images/bg-services.png" 
           class="hidden min-[1024px]:block absolute inset-0 w-full h-full object-cover z-0" 
@@ -138,20 +137,14 @@ const { locale, localeProperties, t } = useI18n()
 const localePath = useLocalePath()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// نکته‌ی مهم: قبلاً activeCategory مستقیم برابر متن فارسی تب بود (مثل 'طراحی سایت')
-// و از همون متن هم برای نگاشت به category_id و هم برای نگاشت به محتوای شوکیس استفاده می‌شد.
-// این با دوزبانه‌سازی جفت نمی‌شد، چون متن نمایشی باید بر اساس زبان عوض بشه ولی
-// «کلید» انتخاب‌شده باید همیشه ثابت و مستقل از زبان بمونه.
-// پس الان یک کلید پایدار (web/content/event) داریم که:
-// - به category_id واقعی نگاشت می‌شه (categoryMap)
-// - به محتوای شوکیس نگاشت می‌شه (contentMap)
-// - عنوان نمایشی‌اش از i18n با labelKey خونده می‌شه
+// نگاشت کلید پایدار تب به شناسه واقعی دسته‌بندی
 const categoryMap = {
   web: RESUME_CATEGORY_IDS.web,
   content: RESUME_CATEGORY_IDS.content,
   event: RESUME_CATEGORY_IDS.event,
 }
 
+// تعریف تب‌های دسته‌بندی و کلید ترجمه هرکدوم
 const categories = [
   { key: 'web', labelKey: 'home.services.categories.web' },
   { key: 'content', labelKey: 'home.services.categories.content' },
@@ -159,14 +152,11 @@ const categories = [
 ]
 
 const activeCategory = ref('web')
-// این computed یه رفرنس واکنشی از category_id واقعیه که به useResumes پاس داده می‌شه
+// شناسه واقعی دسته‌بندی فعال برای پاس دادن به useResumes
 const activeCategoryId = computed(() => categoryMap[activeCategory.value])
 const { items, pending } = useResumes(activeCategoryId)
 
-// --- انتخاب عنوان/آلت صحیح بر اساس زبان فعلی ---
-// دقیقاً همون مشکل صفحه‌ی پورتفولیو: API هم title (فارسی) و هم title_en
-// رو برمی‌گردونه، ولی تمپلیت مستقیم project.title رو نمایش می‌داد که
-// همیشه فارسیه و با تغییر زبان عوض نمی‌شه.
+// انتخاب عنوان پروژه بر اساس زبان فعلی
 const resumeTitle = (project) => {
   if (locale.value === 'en' && project.title_en) {
     return project.title_en
@@ -174,6 +164,7 @@ const resumeTitle = (project) => {
   return project.title
 }
 
+// انتخاب متن جایگزین تصویر بر اساس زبان فعلی
 const resumeAlt = (project) => {
   const cover = project.cover
   if (!cover) return resumeTitle(project)
@@ -187,6 +178,7 @@ const resumeAlt = (project) => {
 const currentIndex = ref(0)
 const itemsPerPage = ref(4)
 
+// تنظیم تعداد آیتم در هر صفحه بر اساس عرض صفحه
 const updateItemsPerPage = () => {
   itemsPerPage.value = window.innerWidth < 1024 ? 2 : 4
 }
@@ -198,8 +190,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateItemsPerPage)
 })
 
-// محتوای متنی شوکیس - استاتیک، بخشی از UI نه دیتای رزومه
-// حالا از i18n خونده می‌شه (کلید پایدار → کلید ترجمه)
+// محتوای متنی و تصویری شوکیس برای هر دسته‌بندی
 const contentMap = computed(() => ({
   web: {
     title: t('home.services.web.title'),
@@ -224,33 +215,37 @@ const contentMap = computed(() => ({
   },
 }))
 
+// محتوای شوکیس متناظر با دسته‌بندی فعال
 const currentContent = computed(() => contentMap.value[activeCategory.value])
 
+// تعداد کل صفحات اسلایدر پروژه‌ها
 const totalSlides = computed(() => Math.ceil(items.value.length / itemsPerPage.value))
 
+// پروژه‌های قابل نمایش در صفحه فعلی اسلایدر
 const visibleProjects = computed(() => {
   const all = items.value
   if (all.length === 0) return []
   const start = currentIndex.value * itemsPerPage.value
-  // فقط چیزی که واقعاً هست رو برمی‌گردونه، بدون چرخوندن و تکرار از اول
   return all.slice(start, start + itemsPerPage.value)
 })
 
+// رفتن به صفحه بعدی اسلایدر پروژه‌ها
 const nextSlide = () => {
   const total = Math.ceil(items.value.length / itemsPerPage.value)
   if (total > 0) currentIndex.value = (currentIndex.value + 1) % total
 }
+// رفتن به صفحه قبلی اسلایدر پروژه‌ها
 const prevSlide = () => {
   const total = Math.ceil(items.value.length / itemsPerPage.value)
   if (total > 0) currentIndex.value = (currentIndex.value - 1 + total) % total
 }
 
+// ریست ایندکس اسلایدر با تغییر دسته‌بندی فعال
 watch(activeCategory, () => {
   currentIndex.value = 0
 })
 
-// وقتی totalSlides عوض بشه (چه با تغییر دسته‌بندی، چه با resize که itemsPerPage
-// رو تغییر می‌ده)، اگه currentIndex از رنج جدید خارج شده باشه، ریستش می‌کنیم.
+// اصلاح ایندکس اسلایدر در صورت خارج شدن از رنج مجاز
 watch(totalSlides, (newTotal) => {
   if (currentIndex.value > newTotal - 1) {
     currentIndex.value = 0

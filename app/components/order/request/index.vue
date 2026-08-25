@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-5xl mx-auto p-4 sm:p-6 md:p-10 mt-[10px] sm:mt-[15px] md:mt-[20px]" :dir="isRtl ? 'rtl' : 'ltr'">
 
-    <!-- عنوان‌ها -->
+    <!-- عنوان و توضیح صفحه فرم درخواست -->
     <div class="text-center mb-6 sm:mb-8 md:mt-2 mt-8">
       <h2 class="text-[22px] sm:text-[28px] md:text-[34px] font-bold text-gray-800 dark:text-dark-text leading-snug">
         {{ $t('order.requestForm.titlePart1') }}
@@ -12,9 +12,10 @@
       <p class="text-gray-500 mt-4 sm:mt-5 md:mt-6 text-[#2C7379] dark:text-dark-text text-[12px] sm:text-[13px] md:text-[14px] font-roboto px-2">{{ $t('order.requestForm.subtitle') }}</p>
     </div>
 
-    <!-- بدنه اصلی (گرید) -->
+    <!-- بدنه اصلی: ستون معرفی مزایا + فرم درخواست -->
     <div class="bg-[#2C737938] dark:bg-dark-surface p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 
+      <!-- ستون معرفی مزایای همکاری -->
       <div
         :class="[
           'md:col-span-1 border-b-2 md:border-b-0 border-gray-300 dark:border-dark-border pb-6 md:pb-0 space-y-4 sm:space-y-6 md:space-y-8',
@@ -32,6 +33,7 @@
           {{ $t('order.requestForm.whyUs') }}
         </a>
 
+<!-- آیتم مزیت: سرعت -->
 <div
   class="flex flex-col md:flex-row items-center md:items-start gap-1.5 md:gap-4 text-center min-w-0"
   :class="isRtl ? 'md:text-right' : 'md:text-left'"
@@ -45,6 +47,7 @@
   </div>
 </div>
 
+<!-- آیتم مزیت: شخصی‌سازی -->
 <div
   class="flex flex-col md:flex-row items-center md:items-start gap-1.5 md:gap-4 text-center min-w-0"
   :class="isRtl ? 'md:text-right' : 'md:text-left'"
@@ -58,6 +61,7 @@
   </div>
 </div>
 
+<!-- آیتم مزیت: تیم باتجربه -->
 <div
   class="flex flex-col md:flex-row items-center md:items-start gap-1.5 md:gap-4 text-center min-w-0"
   :class="isRtl ? 'md:text-right' : 'md:text-left'"
@@ -72,10 +76,10 @@
 </div>
       </div>
 
-      <!-- فرم -->
+      <!-- فرم ثبت درخواست -->
       <form class="md:col-span-2 space-y-5 sm:space-y-6" @submit.prevent="submitForm">
 
-        <!-- پیام موفقیت -->
+        <!-- پیام موفقیت ارسال فرم -->
         <div
           v-if="successMessage"
           class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl text-[13px] sm:text-[14px]"
@@ -83,7 +87,7 @@
           {{ successMessage }}
         </div>
 
-        <!-- پیام خطای عمومی -->
+        <!-- پیام خطای عمومی ارسال فرم -->
         <div
           v-if="generalError"
           class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl text-[13px] sm:text-[14px]"
@@ -93,6 +97,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
+          <!-- فیلد نام -->
           <div>
             <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto text-[13px] sm:text-[14px] md:text-[16px]">{{ $t('order.requestForm.fields.name') }}</label>
             <div class="relative group">
@@ -113,6 +118,7 @@
             <p v-if="errors.name" class="text-red-600 dark:text-red-400 text-[11px] sm:text-[12px] mt-1">{{ errors.name[0] }}</p>
           </div>
 
+          <!-- فیلد موبایل -->
           <div>
             <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto text-[13px] sm:text-[14px] md:text-[16px]">
               {{ $t('order.requestForm.fields.mobile') }}
@@ -139,6 +145,7 @@
 
         </div>
 
+        <!-- فیلد ایمیل -->
         <div>
           <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto text-[13px] sm:text-[14px] md:text-[16px]">
             {{ $t('order.requestForm.fields.email') }}
@@ -163,6 +170,7 @@
           <p v-if="errors.email" class="text-red-600 dark:text-red-400 text-[11px] sm:text-[12px] mt-1">{{ errors.email[0] }}</p>
         </div>
 
+        <!-- فیلد انتخاب نوع درخواست (دراپ‌داون) -->
         <div>
           <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto mt-[30px] sm:mt-[40px] md:mt-[50px] text-[13px] sm:text-[14px] md:text-[16px]">
             {{ $t('order.requestForm.fields.requestFor') }}
@@ -200,6 +208,7 @@
           <p v-if="errors.service_id" class="text-red-600 dark:text-red-400 text-[11px] sm:text-[12px] mt-1">{{ errors.service_id[0] }}</p>
         </div>
 
+        <!-- فیلد توضیحات -->
         <div>
           <label class="block mb-2 text-[#0F184B] dark:text-dark-text font-medium font-roboto mt-[30px] sm:mt-[40px] md:mt-[50px] text-[13px] sm:text-[14px] md:text-[16px]">
             {{ $t('order.requestForm.fields.description') }}
@@ -213,6 +222,7 @@
           <p v-if="errors.description" class="text-red-600 dark:text-red-400 text-[11px] sm:text-[12px] mt-1">{{ errors.description[0] }}</p>
         </div>
 
+        <!-- دکمه ارسال فرم -->
         <button
           type="submit"
           :disabled="submitting"
@@ -229,33 +239,32 @@
 </template>
 
 <script setup>
-// --- i18n ---
+// تنظیمات زبان و جهت صفحه
 const { t, locale, localeProperties } = useI18n()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// ---- state لیست خدمات (درخواست برای) ----
-// دیتای خام از API رو جدا نگه می‌داریم و «options» رو بر اساس زبان فعلی
-// می‌سازیم؛ این‌جوری اگه کاربر وسط پر کردن فرم زبان رو عوض کنه، هم لیست
-// دراپ‌داون هم گزینه‌ی انتخاب‌شده خودکار به‌روز میشه (بدون فچ دوباره).
-// چون title_en فعلاً توی بک‌اند خالیه (null)، وقتی انگلیسی نبود fallback
-// به فارسی میاد تا دراپ‌داون خالی نمونه.
-const rawOptions = ref([])       // { id, title, title_en, ... } خام از سرور
+// داده خام لیست خدمات از سرور، برای ساخت گزینه‌های دراپ‌داون
+const rawOptions = ref([])
 const isOpen = ref(false)
 const selectedId = ref(null)
 const servicesLoading = ref(false)
 const dropdownRef = ref(null)
 
+// انتخاب عنوان خدمت بر اساس زبان فعلی
 const localizeTitle = (item) => {
   if (locale.value === 'en') return item.title_en || item.title
   return item.title
 }
 
+// لیست گزینه‌های دراپ‌داون با عنوان ترجمه‌شده
 const options = computed(() =>
   rawOptions.value.map((o) => ({ ...o, title: localizeTitle(o) }))
 )
 
+// گزینه انتخاب‌شده فعلی
 const selected = computed(() => options.value.find((o) => o.id === selectedId.value) || null)
 
+// انتخاب یک گزینه از دراپ‌داون
 const select = (option) => {
   selectedId.value = option.id
   form.type_id = option.id
@@ -263,20 +272,20 @@ const select = (option) => {
   if (errors.value.type_id) delete errors.value.type_id
 }
 
-// --- بستن دراپ‌داون با کلیک بیرون ---
+// بستن دراپ‌داون با کلیک بیرون از آن
 const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     isOpen.value = false
   }
 }
 
+// دریافت لیست خدمات از سرور
 const fetchServices = async () => {
   servicesLoading.value = true
   try {
     const res = await $fetch(`https://nadertechnologyteam.ir/api/requests/types`)
     rawOptions.value = res?.data || res || []
   } catch (e) {
-    // این لاگ فقط برای دیباگ در کنسوله، کاربر نمی‌بینتش، نیازی به ترجمه نداره
     console.error('خطا در دریافت لیست خدمات:', e)
   } finally {
     servicesLoading.value = false
@@ -292,7 +301,7 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-// ---- state فرم ----
+// وضعیت فیلدهای فرم
 const form = reactive({
   type_id: null,
   name: '',
@@ -306,6 +315,7 @@ const generalError = ref('')
 const successMessage = ref('')
 const submitting = ref(false)
 
+// بازگرداندن فرم به حالت اولیه
 const resetForm = () => {
   form.type_id = null
   form.name = ''
@@ -315,8 +325,7 @@ const resetForm = () => {
   selectedId.value = null
 }
 
-// --- اعتبارسنجی سمت کلاینت قبل از ارسال ---
-// پیام‌های خطا حالا از i18n خونده می‌شن، نه هاردکد فارسی
+// اعتبارسنجی فیلدهای فرم قبل از ارسال
 const validateClientSide = () => {
   const localErrors = {}
   if (!form.name.trim()) localErrors.name = [t('order.requestForm.validation.nameRequired')]
@@ -327,6 +336,7 @@ const validateClientSide = () => {
   return Object.keys(localErrors).length === 0
 }
 
+// ارسال فرم به سرور
 const submitForm = async () => {
   errors.value = {}
   generalError.value = ''

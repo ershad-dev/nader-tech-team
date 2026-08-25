@@ -3,30 +3,34 @@ const { locale } = useI18n();
 const route = useRoute();
 const { resume: project, pending, error } = useResume(route.params.slug);
 
-// انتخاب فیلد فارسی/انگلیسی بر اساس زبان فعلی
+// انتخاب مقدار فارسی یا انگلیسی بر اساس زبان فعلی
 const pickLocalized = (obj, faKey, enKey) => {
   const enVal = obj?.[enKey];
   return (locale.value === 'en' && enVal) ? enVal : obj?.[faKey];
 };
 
-// عنوان و توضیحات پروژه بر اساس زبان
+// عنوان پروژه بر اساس زبان
 const projectTitle = computed(() => pickLocalized(project.value, 'title', 'title_en'));
+// توضیحات پروژه بر اساس زبان (خروجی HTML ادیتور Tiptap)
 const projectDescription = computed(() => pickLocalized(project.value, 'description', 'description_en'));
+// نام مشتری در نظر
 const reviewName = computed(() => pickLocalized(project.value?.review, 'name', 'name_en'));
+// سمت مشتری در نظر
 const reviewPosition = computed(() => pickLocalized(project.value?.review, 'position', 'position_en'));
+// متن نظر مشتری (خروجی HTML ادیتور Tiptap)
 const reviewDescription = computed(() => pickLocalized(project.value?.review, 'description', 'description_en'));
 
-// ساخت آرایه سه‌تایی عکس‌ها برای چیدمان پله‌ای گالری
+// ساخت لیست عکس‌های گالری برای نمایش پله‌ای
 const galleryImages = computed(() => {
   const imgs = resumeImages(project.value);
   if (imgs.length === 0) return [];
   return [imgs[0 % imgs.length], imgs[1 % imgs.length], imgs[2 % imgs.length]];
 });
 
-// چک وجود نظر مشتری
+// بررسی وجود نظر مشتری برای پروژه
 const hasReview = computed(() => !!project.value?.review?.description);
 
-// --- مودال نمایش عکس ---
+// وضعیت مودال نمایش عکس
 const isModalOpen = ref(false);
 const activeImage = ref(null);
 
@@ -36,14 +40,14 @@ function openImageModal(src) {
   isModalOpen.value = true;
 }
 
-// بستن مودال و ریست کردن زرّه‌بین
+// بستن مودال و ریست کردن حالت زرّه‌بین
 function closeImageModal() {
   isModalOpen.value = false;
   activeImage.value = null;
   showLens.value = false;
 }
 
-// قفل کردن اسکرول صفحه پشت مودال هنگام باز بودنش
+// قفل/آزاد کردن اسکرول صفحه هنگام باز و بسته شدن مودال
 watch(isModalOpen, (open) => {
   if (import.meta.client) {
     document.body.style.overflow = open ? 'hidden' : '';
@@ -54,23 +58,25 @@ watch(isModalOpen, (open) => {
 function handleKeydown(e) {
   if (e.key === 'Escape') closeImageModal();
 }
+// ثبت لیسنر کلید هنگام مانت شدن کامپوننت
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
 });
+// پاکسازی لیسنر و استایل هنگام آنمانت شدن
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
   if (import.meta.client) document.body.style.overflow = '';
 });
 
-// --- زرّه‌بین (Magnifier) ---
-const modalImgWrap = ref(null); // والد نسبی که دقیقاً هم‌اندازه‌ی عکسه
+// رفرنس‌ها و تنظیمات زرّه‌بین عکس در مودال
+const modalImgWrap = ref(null);
 const modalImg = ref(null);
 const showLens = ref(false);
 const lensStyle = ref({});
-const lensSize = 180; // سایز دایره زرّه‌بین
-const zoomLevel = 2.5; // میزان بزرگنمایی
+const lensSize = 180;
+const zoomLevel = 2.5;
 
-// محاسبه موقعیت و بک‌گراند زرّه‌بین دقیقاً زیر مکان موس
+// محاسبه موقعیت و بزرگنمایی زرّه‌بین زیر مکان موس
 function handleMouseMove(e) {
   if (!modalImg.value) return;
   const rect = modalImg.value.getBoundingClientRect();
@@ -96,14 +102,14 @@ function handleMouseMove(e) {
   };
 }
 
-// مخفی کردن زرّه‌بین هنگام خروج موس از روی عکس
+// مخفی کردن زرّه‌بین هنگام خروج موس از عکس
 function handleMouseLeave() {
   showLens.value = false;
 }
 </script>
 
 <template>
-  <!-- حالت لودینگ -->
+  <!-- حالت لودینگ صفحه -->
   <div v-if="pending" class="min-h-screen flex items-center justify-center text-[#747893] dark:text-dark-text">
     {{ $t('portfolio.resume.loading') }}
   </div>
@@ -114,7 +120,7 @@ function handleMouseLeave() {
   </div>
 
   <div v-else class="min-h-screen p-5 sm:p-8 lg:p-10 bg-[#BFD1D5] dark:bg-dark-bg -mt-[80px] lg:-mt-[100px] overflow-hidden">
-    <!-- تیتر شعاری صفحه (فارسی/انگلیسی) -->
+    <!-- تیتر شعاری صفحه با چیدمان کج و متمایل کلمات -->
     <div class="text-center mt-[120px] lg:mt-[120px] flex flex-wrap justify-center items-center gap-1 sm:gap-2 px-2">
       <h2
         v-if="locale === 'fa'"
@@ -143,7 +149,7 @@ function handleMouseLeave() {
 </h2>
     </div>
 
-    <!-- بخش دایره پس‌زمینه و گالری پله‌ای عکس‌ها -->
+    <!-- دایره تزئینی پس‌زمینه و گالری پله‌ای عکس‌های پروژه -->
     <div class="relative w-full py-10 lg:py-20 mt-[50px]">
       <div
   class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] lg:w-[654px] lg:h-[654px] rounded-full z-0 -mt-[60px] lg:-mt-[100px]
@@ -179,9 +185,11 @@ function handleMouseLeave() {
     <!-- عنوان و توضیحات پروژه -->
     <div class="mb-8 lg:mb-10">
       <h2 class="text-teal-800 dark:text-dark-highlight text-[19px] sm:text-[22px] lg:text-[26px] font-bold mb-2">{{ projectTitle }}</h2>
-      <p class="text-[13px] lg:text-[14px] text-[#0F184B] dark:text-dark-text leading-[28px] sm:leading-[36px] lg:leading-[45px] font-roboto mt-[24px] lg:mt-[40px]">
-        {{ projectDescription }}
-      </p>
+      <div
+        class="tiptap-render text-[13px] lg:text-[14px] text-[#0F184B] dark:text-dark-text leading-[28px] sm:leading-[36px] lg:leading-[45px] font-roboto mt-[24px] lg:mt-[40px]"
+        :dir="locale === 'en' ? 'ltr' : 'rtl'"
+        v-html="projectDescription"
+      ></div>
     </div>
 
     <!-- <div class="w-full sm:w-3/4 mx-auto mb-8 lg:mb-10 h-[1.5px] bg-gradient-to-r from-white/75 dark:from-dark-highlight/20 to-gray-400 dark:to-dark-border"></div>  -->
@@ -208,14 +216,16 @@ function handleMouseLeave() {
           <h4 class="text-[#0F184B] dark:text-white font-robot font-bold mb-3 text-[14px] lg:text-[16px] mt-[10px] lg:mt-[20px]">
             {{ $t('portfolio.resume.reviewHeading') }}
           </h4>
-          <p class="text-[#616474] dark:text-white leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular">
-            "{{ reviewDescription }}"
-          </p>
+          <div
+            class="tiptap-render text-[#616474] dark:text-white leading-[26px] sm:leading-[32px] lg:leading-[40px] text-[13px] lg:text-[14px] font-noto-regular"
+            :dir="locale === 'en' ? 'ltr' : 'rtl'"
+            v-html="reviewDescription"
+          ></div>
         </div>
       </div>
     </div> -->
 
-    <!-- مودال تمام‌صفحه نمایش عکس با زرّه‌بین -->
+    <!-- مودال تمام‌صفحه نمایش عکس همراه با زرّه‌بین -->
     <Teleport to="body">
       <Transition name="fade">
         <div
@@ -232,12 +242,12 @@ function handleMouseLeave() {
             &times;
           </button>
 
-          <!-- کانتینر بیرونی: مسئول محدودیت سایز و اسکرول موبایل -->
+          <!-- کانتینر بیرونی برای محدودیت سایز و اسکرول موبایل -->
           <div
             class="relative w-full max-w-[95vw] sm:max-w-[85vw] lg:max-w-[75vw] max-h-[90vh] overflow-y-auto sm:overflow-visible overflow-x-hidden rounded-lg flex items-center justify-center"
             @click.self="closeImageModal"
           >
-            <!-- کانتینر داخلی: دقیقاً هم‌اندازه‌ی عکس، مرجع زرّه‌بین -->
+            <!-- کانتینر داخلی، مرجع محاسبات زرّه‌بین -->
             <div
               ref="modalImgWrap"
               class="relative inline-block leading-none"
@@ -252,7 +262,7 @@ function handleMouseLeave() {
                 draggable="false"
               />
 
-              <!-- دایره زرّه‌بین که دقیقاً روی مکان موس می‌شینه -->
+              <!-- دایره زرّه‌بین روی مکان موس -->
               <div
                 v-if="showLens"
                 class="hidden sm:block pointer-events-none absolute rounded-full border-2 border-white shadow-2xl ring-1 ring-black/20"
@@ -274,5 +284,46 @@ function handleMouseLeave() {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* استایل خروجی HTML ادیتور Tiptap (هم برای توضیحات پروژه هم نظر مشتری) */
+.tiptap-render :deep(p) {
+  margin: 0 0 1em 0;
+}
+.tiptap-render :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.tiptap-render :deep(h2) {
+  font-size: 1.2em;
+  font-weight: 700;
+  margin: 1em 0 0.5em 0;
+}
+.tiptap-render :deep(h3) {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin: 0.8em 0 0.4em 0;
+}
+.tiptap-render :deep(ul) {
+  list-style: disc;
+  padding-inline-start: 1.5em;
+  margin: 0.6em 0;
+}
+.tiptap-render :deep(ol) {
+  list-style: decimal;
+  padding-inline-start: 1.5em;
+  margin: 0.6em 0;
+}
+.tiptap-render :deep(blockquote) {
+  border-inline-start: 3px solid #2c7379;
+  padding-inline-start: 1em;
+  margin: 0.8em 0;
+  opacity: 0.85;
+}
+.tiptap-render :deep(a) {
+  color: #2c7379;
+  text-decoration: underline;
+}
+.tiptap-render :deep(strong) {
+  font-weight: 700;
 }
 </style>
