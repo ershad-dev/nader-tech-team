@@ -156,11 +156,11 @@ const canDraw = computed(() => {
   return new Date(lottery.value.ends_at).getTime() <= Date.now()
 })
 
-// فرمت‌دهی تاریخ و ساعت به‌صورت فارسی
+// فرمت‌دهی تاریخ و ساعت به‌صورت فارسی (هم‌سان با LotteryInfoModal.vue)
 const formatDateTime = (value) => {
-  if (!value) return ''
+  if (!value) return '—'
   try {
-    return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+    return new Date(value).toLocaleString('fa-IR')
   } catch {
     return value
   }

@@ -50,10 +50,25 @@ const statusOptions = [
 const statusLabel = (value) =>
   statusOptions.find((s) => s.value === value)?.label || value || '—'
 
-// تبدیل تاریخ ISO به فرمت قابل استفاده در date-picker
+// تبدیل تاریخ ISO (UTC) به فرمت محلی قابل استفاده در date-picker
+// نکته: باید هم‌راستا با formatDate باشد که از toLocaleString استفاده می‌کند
 const toLocalInput = (isoStr) => {
   if (!isoStr) return ''
-  return isoStr.replace('T', ' ').slice(0, 19)
+  const d = new Date(isoStr)
+  if (isNaN(d.getTime())) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+}
+
+// تبدیل مقدار محلی انتخاب‌شده در date-picker (YYYY-MM-DD HH:mm:ss) به ISO/UTC برای ارسال به سرور
+const localInputToISO = (localStr) => {
+  if (!localStr) return ''
+  const [datePart, timePart = '00:00:00'] = localStr.split(' ')
+  const [year, month, day] = datePart.split('-').map(Number)
+  const [hour, minute, second] = timePart.split(':').map(Number)
+  const d = new Date(year, (month || 1) - 1, day || 1, hour || 0, minute || 0, second || 0)
+  if (isNaN(d.getTime())) return localStr
+  return d.toISOString()
 }
 
 // فرمت‌دهی تاریخ برای نمایش فارسی
@@ -147,8 +162,8 @@ const save = async () => {
         title_en: form.title_en,
         description: form.description,
         description_en: form.description_en,
-        starts_at: form.starts_at,
-        ends_at: form.ends_at,
+        starts_at: localInputToISO(form.starts_at),
+        ends_at: localInputToISO(form.ends_at),
         capacity: Number(form.capacity),
         update: Number(form.price), // بک‌اند این فیلد رو "update" می‌خواد نه "price"
         winner_count: Number(form.winner_count),
