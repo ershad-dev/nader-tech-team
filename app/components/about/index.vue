@@ -18,16 +18,15 @@
   </div>
       <!-- عنوان -->
       <h1
-        class="text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] lg:text-[34px] 2xl:text-[40px] mb-6 leading-tight mt-8 font-roboto"
+        class="tiptap-render text-[#0F184B] dark:text-dark-text font-black text-[28px] sm:text-[30px] lg:text-[34px] 2xl:text-[40px] mb-6 leading-tight mt-8 font-roboto"
         v-html="pageData.title"
       ></h1>
   
   <!-- متن مقدماتی -->
-  <p
-    class="text-[#0F184B] dark:text-dark-text leading-relaxed text-[14px] md:text-[16px] 2xl:text-[19px] rokh-light mb-8 max-w-[600px] sm:max-w-[750px] lg:max-w-[1100px] 2xl:max-w-[1450px] mx-auto font-roboto"
-  >
-    {{ pageData.intro_text }}
-  </p>
+  <div
+    class="tiptap-render text-[#0F184B] dark:text-dark-text leading-relaxed text-[14px] md:text-[16px] 2xl:text-[19px] rokh-light mb-8 max-w-[600px] sm:max-w-[750px] lg:max-w-[1100px] 2xl:max-w-[1450px] mx-auto font-roboto"
+    v-html="pageData.intro_text"
+  ></div>
   
   <!-- فلش تزئینی (فقط از lg به بالا) -->
   <div class="hidden lg:flex justify-center px-4 w-full">
@@ -58,13 +57,16 @@
       class="w-full h-[250px] sm:h-[350px] md:h-[490px] 2xl:h-[600px] object-cover rounded-[1.5rem] md:rounded-[3rem]" 
     />
     
-    <p class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-8 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] dark:text-dark-text px-2 md:px-0">
-      {{ pageData.description_top }}
-    </p>  
+    <div
+      class="tiptap-render text-[14px] md:text-[16px] 2xl:text-[19px] mt-8 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] dark:text-dark-text px-2 md:px-0"
+      v-html="pageData.description_top"
+    ></div>
   
-    <p v-if="pageData.description_bottom" class="text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] dark:text-dark-text px-2 md:px-0">
-      {{ pageData.description_bottom }}
-    </p>
+    <div
+      v-if="pageData.description_bottom"
+      class="tiptap-render text-[14px] md:text-[16px] 2xl:text-[19px] mt-4 leading-[30px] md:leading-[50px] 2xl:leading-[52px] font-roboto font-normal text-[#0F184B] dark:text-dark-text px-2 md:px-0"
+      v-html="pageData.description_bottom"
+    ></div>
   </section>
   
       <!-- بخش اسلایدر اعضای تیم -->
@@ -470,6 +472,48 @@
   .fade-enter-from,
   .fade-leave-to {
     opacity: 0;
+  }
+
+  /* استایل‌های محتوای HTML که از RichTextEditor پنل ادمین می‌آید،
+     هماهنگ با استایل خودِ ادیتور تا آنچه ادمین می‌نویسد همان‌طور نمایش داده شود */
+  .tiptap-render :deep(p) {
+    margin: 0 0 0.6em 0;
+  }
+  .tiptap-render :deep(p:last-child) {
+    margin-bottom: 0;
+  }
+  .tiptap-render :deep(h2) {
+    font-size: 1.15em;
+    font-weight: 700;
+    margin: 0.6em 0 0.3em 0;
+  }
+  .tiptap-render :deep(h3) {
+    font-size: 1.05em;
+    font-weight: 700;
+    margin: 0.5em 0 0.3em 0;
+  }
+  .tiptap-render :deep(ul) {
+    list-style: disc;
+    padding-inline-start: 1.25rem;
+    margin: 0.4em 0;
+  }
+  .tiptap-render :deep(ol) {
+    list-style: decimal;
+    padding-inline-start: 1.25rem;
+    margin: 0.4em 0;
+  }
+  .tiptap-render :deep(blockquote) {
+    border-inline-start: 3px solid #2d6a66;
+    padding-inline-start: 0.75rem;
+    margin: 0.5em 0;
+    opacity: 0.85;
+  }
+  .tiptap-render :deep(a) {
+    color: #2d6a66;
+    text-decoration: underline;
+  }
+  .tiptap-render :deep(strong) {
+    font-weight: 700;
   }
   
   </style>

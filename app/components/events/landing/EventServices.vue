@@ -11,16 +11,19 @@
       ]"
     >
 
-      <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#A36C53] dark:text-[#A36C53] text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
-        {{ pageData.description_1 }}
+      <!-- description_1 و description_2 از فیلدهای RichTextEditor پنل ادمین می‌آیند،
+           بنابراین با v-html رندر می‌شوند نه {{ }}. قبلاً این دو با <br><br> از هم جدا
+           می‌شدند؛ چون خروجی RichTextEditor خودش پاراگراف‌بندی (margin) دارد، آن <br>ها
+           حذف شدند و به‌جایش یک فاصله‌ی ثابت (mt-4) بین دو بلوک گذاشته شده. -->
+      <div
+        class="tiptap-render max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-400 text-[#A36C53] dark:text-[#A36C53] text-[20px] sm:text-[22px] md:text-[24px] xl:text-[26px] min-[1920px]:text-[30px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]"
+        v-html="pageData.description_1"
+      ></div>
 
-        <br>
-        <br>
-      <p class="max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-roboto font-light text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]">
-        {{ pageData.description_2 }}
-      </p>
-
-      </p>
+      <div
+        class="tiptap-render mt-4 max-w-full xl:max-w-[865px] min-[1920px]:max-w-[1100px] font-roboto font-light text-[#0F184B] dark:text-dark-text-deep text-[14px] sm:text-[15px] md:text-[15px] xl:text-[16px] min-[1920px]:text-[18px] leading-[26px] sm:leading-[32px] md:leading-[34px] xl:leading-[40px] min-[1920px]:leading-[44px]"
+        v-html="pageData.description_2"
+      ></div>
     </div>
 
     <!-- عنوان بخش خدمات -->
@@ -162,6 +165,29 @@ const pageData = computed(() => ({
   description_2: pickValue('description_2')
 }))
 
+// ── جدا کردن «عنوان» از «توضیحات» در خروجی HTML یک فیلد RichTextEditor ──
+// قبلاً این کار با split('\n') انجام می‌شد چون ادیتور ساده بود و هر Enter
+// یک '\n' واقعی می‌ساخت. الان خروجی RichTextEditor به‌جای \n از تگ‌های
+// بلاک (<p>, <h2>, <h3>, <ul>, <ol>, <blockquote>) استفاده می‌کند، پس باید
+// بر همین اساس جدا کنیم: اولین بلوک = عنوان، بقیه‌ی بلوک‌ها = توضیحات.
+const splitTitleAndDescription = (html) => {
+  if (!html) return { title: '', description: '' }
+
+  const blockRegex = /<(p|h2|h3|ul|ol|blockquote)[^>]*>[\s\S]*?<\/\1>/gi
+  const blocks = html.match(blockRegex)
+
+  // اگر هیچ تگ بلاکی پیدا نشد (مثلاً یک متن ساده‌ی قدیمی بدون HTML)،
+  // کل مقدار را به‌عنوان عنوان در نظر می‌گیریم تا داده‌ی قدیمی از دست نرود
+  if (!blocks || !blocks.length) {
+    return { title: html, description: '' }
+  }
+
+  return {
+    title: blocks[0],
+    description: blocks.slice(1).join(''),
+  }
+}
+
 // ساخت لیست سرویس‌ها از کلیدهای service_N
 const services = computed(() => {
   const serviceKeyRegex = /^service_(\d+)$/
@@ -176,9 +202,7 @@ const services = computed(() => {
 
   return sortedNumbers.map((n, index) => {
     const rawValue = pickValue(`service_${n}`)
-    const lines = rawValue.split('\n')
-    const title = lines[0] || ''
-    const description = lines.slice(1).join('\n').trim()
+    const { title, description } = splitTitleAndDescription(rawValue)
 
     const imageFromApi = rawMap.value[`service_${n}_image`]?.value
 
@@ -209,3 +233,52 @@ const questions = computed(() => {
 const questionsTitle = computed(() => questions.value[0] || '')
 const questionsList = computed(() => questions.value.slice(1))
 </script>
+
+<style scoped>
+/* استایل‌های محتوای HTML که از RichTextEditor پنل ادمین می‌آید،
+   هماهنگ با استایل خودِ ادیتور تا آنچه ادمین می‌نویسد همان‌طور نمایش داده شود.
+   font-size/line-height/font-weight به‌صورت صریح inherit شده‌اند تا اندازه‌ی
+   متن از کلاس‌های بیرونی (text-[..px]) پیروی کند نه از پیش‌فرض مرورگر. */
+.tiptap-render :deep(p) {
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  margin: 0 0 0.6em 0;
+}
+.tiptap-render :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.tiptap-render :deep(h2) {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 0.6em 0 0.3em 0;
+}
+.tiptap-render :deep(h3) {
+  font-size: 1.05em;
+  font-weight: 700;
+  margin: 0.5em 0 0.3em 0;
+}
+.tiptap-render :deep(ul) {
+  list-style: disc;
+  padding-inline-start: 1.25rem;
+  margin: 0.4em 0;
+}
+.tiptap-render :deep(ol) {
+  list-style: decimal;
+  padding-inline-start: 1.25rem;
+  margin: 0.4em 0;
+}
+.tiptap-render :deep(blockquote) {
+  border-inline-start: 3px solid #2d6a66;
+  padding-inline-start: 0.75rem;
+  margin: 0.5em 0;
+  opacity: 0.85;
+}
+.tiptap-render :deep(a) {
+  color: #2d6a66;
+  text-decoration: underline;
+}
+.tiptap-render :deep(strong) {
+  font-weight: 700;
+}
+</style>
