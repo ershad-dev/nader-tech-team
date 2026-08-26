@@ -20,12 +20,26 @@ const reviewPosition = computed(() => pickLocalized(project.value?.review, 'posi
 // متن نظر مشتری (خروجی HTML ادیتور Tiptap)
 const reviewDescription = computed(() => pickLocalized(project.value?.review, 'description', 'description_en'));
 
+// حداکثر تعداد تصویری که در گالری پله‌ای نمایش داده می‌شود
+const MAX_GALLERY_IMAGES = 3;
+
 // ساخت لیست عکس‌های گالری برای نمایش پله‌ای
+// نکته: دیگر عکس‌ها تکرار نمی‌شوند؛ فقط به تعداد عکس‌های واقعی رزومه (حداکثر ۳) نمایش داده می‌شود
 const galleryImages = computed(() => {
   const imgs = resumeImages(project.value);
-  if (imgs.length === 0) return [];
-  return [imgs[0 % imgs.length], imgs[1 % imgs.length], imgs[2 % imgs.length]];
+  return imgs.slice(0, MAX_GALLERY_IMAGES);
 });
+
+// کلاس‌های چیدمان پله‌ای بر اساس موقعیت عکس در گالری (۰، ۱ یا ۲)
+const galleryItemClass = (index) => {
+  if (index === 0) {
+    return 'w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] -mt-16 sm:-mt-28 lg:-mt-40 shadow-xl';
+  }
+  if (index === 1) {
+    return 'w-[95px] h-[220px] sm:w-[210px] sm:h-[440px] lg:w-[321px] lg:h-[640px] shadow-2xl';
+  }
+  return 'w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] shadow-2xl mt-16 sm:mt-28 lg:mt-40';
+};
 
 // بررسی وجود نظر مشتری برای پروژه
 const hasReview = computed(() => !!project.value?.review?.description);
@@ -160,24 +174,15 @@ function handleMouseLeave() {
       <div class="hidden sm:block absolute bottom-20 right-20 w-10 h-10 lg:w-16 lg:h-16 bg-teal-700 rounded-full opacity-80 dark:bg-[#ADE9EA]"></div>
       <div class="absolute top-0 right-0 w-[40%] h-full bg-[#a8c1c3]/20 rounded-l-full -z-20"></div>
 
+      <!-- هر عکس در کادر مخصوص خودش نمایش داده می‌شود؛ تعداد کادرها دقیقا برابر تعداد عکس‌های واقعی است -->
       <div v-if="galleryImages.length" class="flex justify-center items-center gap-3 sm:gap-6 lg:gap-14 mb-10 lg:mb-16 px-4 mt-[20px] lg:mt-[30px] z-10">
         <div
-          class="w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] rounded-[14px] lg:rounded-[25px] overflow-hidden -mt-16 sm:-mt-28 lg:-mt-40 shadow-xl z-20 cursor-pointer"
-          @click="openImageModal(galleryImages[0])"
+          v-for="(img, index) in galleryImages"
+          :key="index"
+          :class="['rounded-[14px] lg:rounded-[25px] overflow-hidden z-20 cursor-pointer', galleryItemClass(index)]"
+          @click="openImageModal(img)"
         >
-          <img :src="galleryImages[0]" class="w-full h-full object-cover" :alt="projectTitle" />
-        </div>
-        <div
-          class="w-[95px] h-[220px] sm:w-[210px] sm:h-[440px] lg:w-[321px] lg:h-[640px] shadow-2xl rounded-[14px] lg:rounded-[25px] overflow-hidden z-20 cursor-pointer"
-          @click="openImageModal(galleryImages[1])"
-        >
-          <img :src="galleryImages[1]" class="w-full h-full object-cover" :alt="projectTitle" />
-        </div>
-        <div
-          class="w-[80px] h-[180px] sm:w-[180px] sm:h-[380px] lg:w-[321px] lg:h-[640px] shadow-2xl rounded-[14px] lg:rounded-[25px] overflow-hidden mt-16 sm:mt-28 lg:mt-40 z-20 cursor-pointer"
-          @click="openImageModal(galleryImages[2])"
-        >
-          <img :src="galleryImages[2]" class="w-full h-full object-cover" :alt="projectTitle" />
+          <img :src="img" class="w-full h-full object-cover" :alt="projectTitle" />
         </div>
       </div>
     </div>

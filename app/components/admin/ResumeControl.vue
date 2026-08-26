@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
 import { useAdminPermissions } from '~/composables/useAdminPermissions'
-import RichTextEditor from '~/components/RichTextEditor.vue'
+import RichTextEditor from '~/components/tiptap/RichTextEditor.vue'
 
 // آدرس پایه API
 const API_BASE = 'https://nadertechnologyteam.ir'
@@ -24,6 +24,9 @@ const isLoadingForm = ref(false)
 const isSaving = ref(false)
 const isDeleting = ref(false)
 const errorMessage = ref('')
+
+// حداکثر تعداد عکس مجاز برای هر رزومه
+const MAX_IMAGES = 3
 
 // داده‌های لیست و صفحه‌بندی
 const resumeItems = ref([])
@@ -134,9 +137,14 @@ const emptyForm = () => ({
   images: [],
   images_preview: [],
   existing_images: [],
+  // شناسه تصاویر موجودی که کاربر حذفشان کرده (برای اطلاع به سرور)
+  removed_image_ids: [],
 })
 
 const form = reactive(emptyForm())
+
+// تعداد کل تصاویر فعلی (موجود + جدید)
+const totalImagesCount = computed(() => form.existing_images.length + form.images.length)
 
 // بازنشانی فرم به حالت اولیه
 const resetForm = () => Object.assign(form, emptyForm())
@@ -216,14 +224,33 @@ const removeAvatar = () => {
   form.customer_avatar_preview = null
 }
 
-// انتخاب و پیش‌نمایش تصاویر جدید پروژه
+// انتخاب و پیش‌نمایش تصاویر جدید پروژه (با رعایت محدودیت MAX_IMAGES)
 const onImagesChange = (e) => {
   if (isReadOnly.value) return
   const files = Array.from(e.target.files || [])
-  files.forEach((file) => {
+  if (files.length === 0) return
+
+  const remainingSlots = MAX_IMAGES - totalImagesCount.value
+
+  if (remainingSlots <= 0) {
+    errorMessage.value = `حداکثر ${MAX_IMAGES} عکس برای هر رزومه مجاز است`
+    e.target.value = ''
+    return
+  }
+
+  const filesToAdd = files.slice(0, remainingSlots)
+
+  filesToAdd.forEach((file) => {
     form.images.push(file)
     form.images_preview.push(URL.createObjectURL(file))
   })
+
+  if (files.length > filesToAdd.length) {
+    errorMessage.value = `حداکثر ${MAX_IMAGES} عکس مجاز است؛ فقط ${filesToAdd.length} عکس اضافه شد`
+  } else {
+    errorMessage.value = ''
+  }
+
   e.target.value = ''
 }
 
@@ -234,10 +261,11 @@ const removeNewImage = (index) => {
   form.images_preview.splice(index, 1)
 }
 
-// حذف یک تصویر موجود روی سرور
+// حذف یک تصویر موجود روی سرور (فقط از فرم حذف می‌شود؛ شناسه‌اش برای اطلاع سرور نگه داشته می‌شود)
 const removeExistingImage = (id) => {
   if (isReadOnly.value) return
 
+  form.removed_image_ids.push(id)
   form.existing_images = form.existing_images.filter((img) => img.id !== id)
 }
 
@@ -259,6 +287,14 @@ const buildFormData = () => {
   fd.append('customer_description', form.customer_description)
   if (form.customer_description_en) fd.append('customer_description_en', form.customer_description_en)
 
+  // شناسه‌ی تصاویر قبلی که باید نگه داشته شوند — تا سرور فقط این‌ها را حفظ کند
+  // و بقیه‌ی عکس‌های ارسال‌نشده (چون کاربر آن‌ها را عوض نکرده) پاک نشوند.
+  // مهم: بک‌اند باید این پارامتر را بخواند و منطق "جایگزینی کامل تصاویر" را
+  // بر اساس آن اصلاح کند، وگرنه مشکل پاک‌شدن عکس‌های قبلی برطرف نمی‌شود.
+  form.existing_images.forEach((img) => fd.append('existing_images[]', img.id))
+
+  // شناسه‌ی تصاویری که کاربر آگاهانه حذف کرده (اختیاری، اگر بک‌اند از آن پشتیبانی کند)
+  form.removed_image_ids.forEach((id) => fd.append('removed_images[]', id))
 
   form.images.forEach((file) => fd.append('images[]', file))
 
@@ -659,13 +695,19 @@ const deleteItem = async (id) => {
                     <!-- بخش تصاویر پروژه -->
                     <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
             <div class="flex items-center justify-between mb-4 lg:mb-6">
-              <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base dark:text-dark-text"><div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div> تصاویر پروژه</h3>
+              <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base dark:text-dark-text">
+                <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div>
+                تصاویر پروژه
+                <span class="text-xs font-normal text-gray-400 dark:text-dark-text/50">
+                  ({{ totalImagesCount }}/{{ MAX_IMAGES }})
+                </span>
+              </h3>
               <label
-                class="px-3 sm:px-4 py-1 border dark:border-dark-border/40 rounded-xl text-xs font-bold bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep"
-                :class="isReadOnly ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
+                v-if="!isReadOnly && totalImagesCount < MAX_IMAGES"
+                class="px-3 sm:px-4 py-1 border dark:border-dark-border/40 rounded-xl text-xs font-bold bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep cursor-pointer"
               >
                 افزودن
-                <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" :disabled="isReadOnly" @change="onImagesChange" />
+                <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" @change="onImagesChange" />
               </label>
             </div>
             <div class="flex flex-wrap gap-2 sm:gap-3 lg:gap-4">
@@ -698,7 +740,7 @@ const deleteItem = async (id) => {
               </div>
 
               <label
-                v-if="!isReadOnly"
+                v-if="!isReadOnly && totalImagesCount < MAX_IMAGES"
                 class="w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input/30 rounded-2xl border border-dashed dark:border-dark-border/50 flex items-center justify-center text-2xl text-gray-400 dark:text-dark-text/40 cursor-pointer"
               >
                 +

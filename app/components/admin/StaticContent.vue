@@ -737,7 +737,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount, watch } from 'vue'
-import RichTextEditor from '~/components/RichTextEditor.vue'
+import RichTextEditor from '~/components/tiptap/RichTextEditor.vue'
 
 const API_BASE = 'https://nadertechnologyteam.ir/api'
 const STORAGE_BASE = 'https://nadertechnologyteam.ir/storage/'

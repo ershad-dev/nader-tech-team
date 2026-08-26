@@ -85,6 +85,7 @@
 <script setup>
 import ArrowUpRight from './icons/ArrowUpRight.vue';
 import DateVector from './icons/DateVector.vue';
+import { useFormatDate } from '~/composables/useFormatDate';
 
 const config = useRuntimeConfig();
 const apiBase = 'https://nadertechnologyteam.ir'; // آدرس پایه API
@@ -124,14 +125,10 @@ function goToPage(newPage) {
   router.push({ query: { ...route.query, page: newPage } });
 }
 
-// فرمت‌دهی تاریخ بر اساس زبان
+// فرمت‌دهی تاریخ بر اساس زبان (تابع مشترک با admin و [slug].vue)
+const { formatDate: formatDateShared } = useFormatDate();
 function formatDate(dateStr) {
-  if (!dateStr) return '';
-  try {
-    return new Date(dateStr).toLocaleDateString(locale.value === 'fa' ? 'fa-IR' : 'en-US');
-  } catch {
-    return dateStr;
-  }
+  return formatDateShared(dateStr, { locale: locale.value });
 }
 
 // تنظیم رنگ اسکرول‌بار سفارشی
@@ -140,10 +137,7 @@ scrollbarConfig.value = {
   light: '#ECD0A0',
   dark: '#ECD0A0'
 };
-
 </script>
-
-
 
 <style scoped>
 /* استایل برش گوشه‌های تصویر بندانگشتی */

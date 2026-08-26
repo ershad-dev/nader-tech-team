@@ -46,6 +46,8 @@
 </template>
 
 <script setup>
+import { useFormatDate } from '~/composables/useFormatDate';
+
 const route = useRoute();
 const apiBase = 'https://nadertechnologyteam.ir'; // آدرس پایه API
 
@@ -75,13 +77,9 @@ const colorMode = useColorMode();
 // رنگ آیکون تاریخ بر اساس حالت روشن/تاریک
 const dateIconFill = computed(() => (colorMode.value === 'dark' ? '#E9F1F2' : '#747893'));
 
-// فرمت‌دهی تاریخ بر اساس زبان
+// فرمت‌دهی تاریخ بر اساس زبان (تابع مشترک با admin و لیست مقالات)
+const { formatDate: formatDateShared } = useFormatDate();
 function formatDate(dateStr) {
-  if (!dateStr) return '';
-  try {
-    return new Date(dateStr).toLocaleDateString(locale.value === 'fa' ? 'fa-IR' : 'en-US');
-  } catch {
-    return dateStr;
-  }
+  return formatDateShared(dateStr, { locale: locale.value });
 }
 </script>

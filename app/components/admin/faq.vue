@@ -308,7 +308,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAdminAuth } from '@/composables/useAdminAuth'
 import { useAdminPermissions } from '@/composables/useAdminPermissions'
-import RichTextEditor from '~/components/RichTextEditor.vue'
+import RichTextEditor from '~/components/tiptap/RichTextEditor.vue'
 
 // احراز هویت و دسترسی ادمین
 const { authHeader, initFromStorage } = useAdminAuth()
