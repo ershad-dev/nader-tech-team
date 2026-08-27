@@ -195,7 +195,7 @@ const contentMap = computed(() => ({
   web: {
     title: t('home.services.web.title'),
     description: t('home.services.web.description'),
-    image: '/images/web-showcase.jpeg',
+    image: '/images/web-showcase.png',
     buttonText: t('home.services.web.buttonText'),
     buttonLink: '/order/requestProject',
   },
