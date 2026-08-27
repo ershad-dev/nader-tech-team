@@ -47,37 +47,41 @@
 
 <script setup>
 import { useFormatDate } from '~/composables/useFormatDate';
+import { useAuth } from '~/composables/useAuth';
 
 const route = useRoute();
 const apiBase = 'https://nadertechnologyteam.ir'; // آدرس پایه API
 
 const localePath = useLocalePath();
 const { locale, localeProperties } = useI18n();
-// جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
-// اسلاگ مقاله از پارامتر مسیر
 const slug = computed(() => route.params.slug);
 
-// دریافت اطلاعات مقاله از API
+// آماده‌سازی توکن کاربر (اگه لاگین باشه) قبل از فچ مقاله
+// چون بازدید همین fetch رو سمت بک‌اند افزایش می‌ده، توکن باید همینجا فرستاده بشه
+const { token, initAuth } = useAuth();
+if (import.meta.client) initAuth();
+
 const { data, pending, error } = await useFetch(
-  () => `${apiBase}/api/articles/${slug.value}`
+  () => `${apiBase}/api/articles/${slug.value}`,
+  {
+    headers: computed(() => {
+      return token.value ? { Authorization: `Bearer ${token.value}` } : {};
+    }),
+  }
 );
 
-// داده مقاله دریافت‌شده
 const article = computed(() => data.value?.data ?? null);
 
-// انتخاب فیلد فارسی یا انگلیسی بر اساس زبان فعلی
 function pickLocalized(item, faKey, enKey) {
   const enVal = item?.[enKey];
   return (locale.value === 'en' && enVal) ? enVal : item?.[faKey];
 }
 
 const colorMode = useColorMode();
-// رنگ آیکون تاریخ بر اساس حالت روشن/تاریک
 const dateIconFill = computed(() => (colorMode.value === 'dark' ? '#E9F1F2' : '#747893'));
 
-// فرمت‌دهی تاریخ بر اساس زبان (تابع مشترک با admin و لیست مقالات)
 const { formatDate: formatDateShared } = useFormatDate();
 function formatDate(dateStr) {
   return formatDateShared(dateStr, { locale: locale.value });
