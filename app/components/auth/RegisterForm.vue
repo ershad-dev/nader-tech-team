@@ -13,6 +13,103 @@ const localePath = useLocalePath()
 // جهت چیدمان بر اساس زبان
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
+// اعتبارسنجی رقم کنترلی کدملی ایرانی
+function isValidIranianNationalCode(code) {
+  if (!/^\d{10}$/.test(code)) return false
+  if (new Set(code.split('')).size === 1) return false // همه ارقام یکسان مجاز نیست
+
+  const factors = [10, 9, 8, 7, 6, 5, 4, 3, 2]
+  const checksum = factors.reduce((sum, factor, i) => sum + Number(code[i]) * factor, 0)
+  const remainder = checksum % 11
+  const lastDigit = Number(code[9])
+
+  return remainder < 2 ? remainder === lastDigit : 11 - remainder === lastDigit
+}
+
+// بازه‌ی تقریبی پیش‌شماره‌ی کدپستی به ازای هر استان (بر اساس ۲ رقم اول)
+// توجه: کدپستی ایران فاقد رقم کنترلی رسمی است؛ این جدول صرفاً یک تخمین جغرافیایی
+// بر اساس منابع عمومی است و در برخی استان‌ها (مثل قم/مرکزی یا بوشهر/کهگیلویه) همپوشانی دارد.
+// برای دقت ۱۰۰٪ باید از وب‌سرویس رسمی شرکت ملی پست استعلام گرفت.
+const POSTAL_CODE_PROVINCE_RANGES = {
+  'آذربایجان شرقی': [[51, 55]],
+  'آذربایجان غربی': [[57, 59]],
+  'اردبیل': [[56, 56]],
+  'اصفهان': [[81, 87]],
+  'البرز': [[31, 31]],
+  'ایلام': [[69, 69]],
+  'بوشهر': [[75, 75]],
+  'تهران': [[11, 11], [13, 19]],
+  'چهارمحال و بختیاری': [[88, 88]],
+  'خراسان جنوبی': [[97, 97]],
+  'خراسان رضوی': [[91, 91], [93, 96]],
+  'خراسان شمالی': [[94, 94], [96, 96]],
+  'خوزستان': [[63, 64]],
+  'زنجان': [[45, 45]],
+  'سمنان': [[35, 36]],
+  'سیستان و بلوچستان': [[98, 99]],
+  'فارس': [[71, 71], [73, 74]],
+  'قزوین': [[34, 34]],
+  'قم': [[37, 37]],
+  'کردستان': [[66, 66]],
+  'کرمان': [[76, 78]],
+  'کرمانشاه': [[67, 67]],
+  'کهگیلویه و بویراحمد': [[75, 75]],
+  'گلستان': [[48, 49]],
+  'گیلان': [[43, 44]],
+  'لرستان': [[68, 68]],
+  'مازندران': [[46, 48]],
+  'مرکزی': [[37, 39]],
+  'هرمزگان': [[79, 79]],
+  'همدان': [[65, 65]],
+  'یزد': [[89, 89]],
+}
+
+// چک تطابق پیش‌شماره‌ی کدپستی با استان انتخاب‌شده
+// اگر استان در جدول نباشد یا ورودی ناقص باشد، عبور داده می‌شود (fail-open)
+function isPostalCodePlausibleForProvince(postalCode, provinceName) {
+  const ranges = POSTAL_CODE_PROVINCE_RANGES[provinceName?.trim()]
+  if (!ranges || !postalCode || postalCode.length < 2) return true
+
+  const prefix = Number(postalCode.slice(0, 2))
+  return ranges.some(([min, max]) => prefix >= min && prefix <= max)
+}
+
+// لیست ۳۱ استان کشور — دقیقاً همان کلیدهایی که در POSTAL_CODE_PROVINCE_RANGES استفاده شده‌اند
+// تا مقدار انتخابی از select همیشه با جدول match شود (به‌جای ورودی آزاد متنی)
+const PROVINCES = [
+  'آذربایجان شرقی',
+  'آذربایجان غربی',
+  'اردبیل',
+  'اصفهان',
+  'البرز',
+  'ایلام',
+  'بوشهر',
+  'تهران',
+  'چهارمحال و بختیاری',
+  'خراسان جنوبی',
+  'خراسان رضوی',
+  'خراسان شمالی',
+  'خوزستان',
+  'زنجان',
+  'سمنان',
+  'سیستان و بلوچستان',
+  'فارس',
+  'قزوین',
+  'قم',
+  'کردستان',
+  'کرمان',
+  'کرمانشاه',
+  'کهگیلویه و بویراحمد',
+  'گلستان',
+  'گیلان',
+  'لرستان',
+  'مازندران',
+  'مرکزی',
+  'هرمزگان',
+  'همدان',
+  'یزد',
+]
+
 // اسکیمای اعتبارسنجی کامل فرم ثبت‌نام
 const schema = yup.object({
 
@@ -46,7 +143,12 @@ const schema = yup.object({
     .string()
     .matches(/^\d+$/, t('auth.register.validation.nationalCodeDigitsOnly'))
     .length(10, t('auth.register.validation.nationalCodeLength'))
-    .required(t('auth.register.validation.nationalCodeRequired')),
+    .required(t('auth.register.validation.nationalCodeRequired'))
+    .test(
+      'national-code-checksum',
+      t('auth.register.validation.nationalCodeInvalid'),
+      (value) => (value ? isValidIranianNationalCode(value) : true)
+    ),
 
   // تاریخ تولد به صورت شمسی وارد و اعتبارسنجی می‌شود
   birth_date: yup
@@ -65,7 +167,15 @@ const schema = yup.object({
     .string()
     .matches(/^\d+$/, t('auth.register.validation.postalCodeDigitsOnly'))
     .length(10, t('auth.register.validation.postalCodeLength'))
-    .required(t('auth.register.validation.postalCodeRequired')),
+    .required(t('auth.register.validation.postalCodeRequired'))
+    .test(
+      'postal-code-province-match',
+      t('auth.register.validation.postalCodeProvinceMismatch'),
+      function (value) {
+        // this.parent به بقیه‌ی فیلدهای همین آبجکت (از جمله province) دسترسی می‌دهد
+        return isPostalCodePlausibleForProvince(value, this.parent.province)
+      }
+    ),
 
   address: yup
     .string()
@@ -86,7 +196,7 @@ const schema = yup.object({
     .required(t('auth.register.validation.passwordConfirmRequired')),
 })
 
-const { handleSubmit, setErrors } = useForm({ validationSchema: schema })
+const { handleSubmit, setErrors, validateField } = useForm({ validationSchema: schema })
 
 // فیلدهای فرم و پیام‌های خطای هرکدام
 const { value: username, errorMessage: usernameError } = useField('username')
@@ -156,7 +266,14 @@ const handlePostalCodeInput = (e) => {
   const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
   postal_code.value = digits
   e.target.value = digits
+  // بازبینی فوری تطابق کدپستی با استان در صورت وجود مقدار در هر دو فیلد
+  if (province.value) validateField('postal_code')
 }
+
+// بازبینی مجدد کدپستی هرگاه استان تغییر کند (چون تست تطابق به استان وابسته است)
+watch(province, () => {
+  if (postal_code.value?.length === 10) validateField('postal_code')
+})
 
 const PERSIAN_REGEX = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/g
 
@@ -432,20 +549,33 @@ useHead({
         </div>
 
         <!-- فیلد استان -->
-        <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
-          <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.province') }}</label>
-          <input
-            v-model="province"
-            type="text"
-            dir="rtl"
-            :placeholder="$t('auth.register.fields.provincePlaceholder')"
-            class="h-[44px] px-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors"
-            :class="provinceError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
-          />
-          <p v-if="provinceError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ provinceError }}</p>
-        </div>
+<div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
+  <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.province') }}</label>
+  
+  <div class="relative">
+    <select
+      v-model="province"
+      dir="rtl"
+      class="w-full h-[44px] pr-8 pl-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors bg-white appearance-none"
+      :class="provinceError
+        ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+        : 'border-gray-300 dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+    >
+      <option value="" disabled>{{ $t('auth.register.fields.provincePlaceholder') }}</option>
+      <option v-for="item in PROVINCES" :key="item" :value="item">{{ item }}</option>
+    </select>
+
+    <!-- آیکون فلش دلخواه -->
+    <svg
+      class="pointer-events-none absolute top-1/2 -translate-y-1/2 right-3 w-4 h-4 text-gray-400"
+      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+    >
+      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+    </svg>
+  </div>
+
+  <p v-if="provinceError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ provinceError }}</p>
+</div>
 
         <!-- فیلد کد پستی -->
         <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
