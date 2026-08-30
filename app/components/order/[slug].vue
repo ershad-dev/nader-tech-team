@@ -1,5 +1,5 @@
 <script setup>
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const route = useRoute();
 const { resume: project, pending, error } = useResume(route.params.slug);
 
@@ -19,6 +19,15 @@ const reviewName = computed(() => pickLocalized(project.value?.review, 'name', '
 const reviewPosition = computed(() => pickLocalized(project.value?.review, 'position', 'position_en'));
 // متن نظر مشتری (خروجی HTML ادیتور Tiptap)
 const reviewDescription = computed(() => pickLocalized(project.value?.review, 'description', 'description_en'));
+
+// عنوان تب مرورگر: بر اساس اسم پروژه، به‌صورت داینامیک و reactive
+useHead({
+  title: computed(() => {
+    if (pending.value) return t('portfolio.resume.loading');
+    if (error.value || !project.value) return t('portfolio.resume.notFound');
+    return projectTitle.value;
+  })
+});
 
 // حداکثر تعداد تصویری که در گالری پله‌ای نمایش داده می‌شود
 const MAX_GALLERY_IMAGES = 3;

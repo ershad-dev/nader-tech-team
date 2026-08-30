@@ -53,7 +53,7 @@ const route = useRoute();
 const apiBase = 'https://nadertechnologyteam.ir'; // آدرس پایه API
 
 const localePath = useLocalePath();
-const { locale, localeProperties } = useI18n();
+const { locale, localeProperties, t } = useI18n();
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
 
 const slug = computed(() => route.params.slug);
@@ -78,6 +78,15 @@ function pickLocalized(item, faKey, enKey) {
   const enVal = item?.[enKey];
   return (locale.value === 'en' && enVal) ? enVal : item?.[faKey];
 }
+
+// عنوان تب مرورگر: بر اساس عنوان مقاله، به‌صورت داینامیک و reactive
+useHead({
+  title: computed(() => {
+    if (pending.value) return t('articles.loading');
+    if (error.value || !article.value) return t('articles.notFound');
+    return pickLocalized(article.value, 'title', 'title_en');
+  })
+});
 
 const colorMode = useColorMode();
 const dateIconFill = computed(() => (colorMode.value === 'dark' ? '#E9F1F2' : '#747893'));

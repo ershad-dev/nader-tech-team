@@ -369,6 +369,11 @@ const logout = () => {
   localStorage.removeItem('access_token')
   window.location.href = localePath('/auth/login')
 }
+
+
+useHead({
+  title: computed(() => t('profile.pageTitle'))
+});
 </script>
 
 <template>

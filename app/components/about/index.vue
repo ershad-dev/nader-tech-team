@@ -452,6 +452,11 @@
     light: '#ECD0A0',
     dark: '#ECD0A0'
   };
+
+
+useHead({
+  title: computed(() => t('about.pageTitle'))
+});
   </script>
   
   <style scoped> 

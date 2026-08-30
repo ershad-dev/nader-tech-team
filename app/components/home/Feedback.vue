@@ -15,7 +15,6 @@
     <!-- حالت خطا -->
     <div v-else-if="error" class="text-center py-10 text-red-500 dark:text-red-400">{{ $t('home.feedback.error') }}</div>
 
-    <!-- اسلایدر افقی نظرات مشتریان -->
     <div
       v-else
       ref="scrollContainer"
@@ -39,7 +38,7 @@
             class="w-[120px] h-[100px] sm:w-[170px] sm:h-[145px] lg:w-[200px] lg:h-[170px] min-[1920px]:w-[230px] min-[1920px]:h-[195px] rounded-[14px] mx-auto mb-2 lg:mb-4 min-[1920px]:mb-6 object-cover object-top"
           />
 
-          <!-- نکته: اسم مشتری همیشه فارسی می‌مونه -->
+          <!-- نکته: اسم مشتری همیشه فارسی می‌مونه (اسامی معمولاً ترجمه نمی‌شن) -->
           <h3 class="text-[12px] lg:text-[13px] min-[1920px]:text-[15px] font-extrabold text-[#0F184B] dark:text-dark-text mb-1 rokh-bold text-center">
             {{ customer.name }}
           </h3>
@@ -49,7 +48,7 @@
           </p>
         </div>
 
-       <!-- بخش نظر مشتری -->
+       <!-- بخش نظر - flex-1 یعنی هر فضای باقی‌مونده از کارت رو پر می‌کنه، دیگه نیازی به ارتفاع دستی نیست -->
        <div class="bg-[#EDEDED] dark:bg-[#D5E2E53B] p-4 lg:p-6 min-[1920px]:p-8 flex-1 min-h-0 flex flex-col">
          <p
            class="comment-clamp text-[#747893] dark:text-dark-text/80 text-[12px] lg:text-[13px] min-[1920px]:text-[14px] leading-relaxed font-roboto -mt-[20px] flex-1"
@@ -61,16 +60,15 @@
       </div>
     </div>
 
-    <!-- دکمه‌های اسکرول و نشانگرهای اسلاید -->
     <div class="flex items-center justify-center sm:justify-between mt-4 gap-5">
 
 <div class="hidden sm:flex gap-2">
-        <SliderButton
+        <IconsSliderButton
           :direction="isRtl ? 'left' : 'right'"
           @click="scroll('right')"
           class=" hover:text-gray transition"
         />
-        <SliderButton
+        <IconsSliderButton
           :direction="isRtl ? 'right' : 'left'"
           @click="scroll('left')"
           class=" hover:text-gray transition"
@@ -96,11 +94,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 
-// تنظیمات زبان و جهت صفحه
 const { locale, localeProperties } = useI18n()
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 
-// ابزار ترجمه‌ی دستی نظرات مشتریان
 const { getTranslated, logMissingTranslation } = useManualTranslation('reviews')
 
 const sectionRef = ref(null);
@@ -115,7 +111,6 @@ const customers = ref([]);
 
 const config = useRuntimeConfig();
 
-// گرفتن لیست رزومه‌ها/نظرات از سرور
 const { items: resumeItems, pending: listPending, error: listError } = useResumes();
 
 const MAX_FEEDBACK_COUNT = 6;
@@ -123,25 +118,24 @@ const AUTOPLAY_INTERVAL_MS = 5000;
 const AUTOPLAY_RESUME_DELAY_MS = 4000;
 const MAX_DOTS = 3;
 
-// نمایش نقش مشتری، فارسی یا ترجمه‌شده
+/* ----------------- ترجمه‌ی دستی نظرات ----------------- */
 const displayRole = (customer) => {
   if (isRtl.value) return customer.role
   return getTranslated(customer.id, 'role', customer.role)
 }
 
-// نمایش متن نظر مشتری، فارسی یا ترجمه‌شده
 const displayComment = (customer) => {
   if (isRtl.value) return customer.comment
   return getTranslated(customer.id, 'comment', customer.comment)
 }
 
-// تعیین جهت متن نظر بر اساس وجود ترجمه
+// جهت پاراگراف نظر: اگه ترجمه‌ی دستی موجود بود انگلیسیه (ltr)، وگرنه فارسیه (rtl)
 const commentDir = (customer) => {
   if (isRtl.value) return 'rtl'
   return getTranslated(customer.id, 'comment', null) ? 'ltr' : 'rtl'
 }
 
-// ثبت مشتریانی که ترجمه‌ی دستی ندارن، در حالت انگلیسی
+// وقتی صفحه انگلیسیه، هر مشتری‌ای که ترجمه‌ی دستی نداره رو تو localStorage ثبت می‌کنیم
 watch([customers, locale], () => {
   if (isRtl.value) return
   customers.value.forEach((c) => logMissingTranslation(c, ['role', 'comment']))
@@ -154,7 +148,6 @@ const itemsPerDot = computed(() =>
   dotsCount.value > 0 ? Math.ceil(customers.value.length / dotsCount.value) : 1
 );
 
-// محاسبه عرض هر کارت برای اسکرول دقیق
 const updateCardWidth = () => {
   if (cardRefs.value && cardRefs.value.length > 0) {
     const firstCard = cardRefs.value[0];
@@ -163,7 +156,6 @@ const updateCardWidth = () => {
   }
 };
 
-// اسکرول دستی به چپ یا راست
 const scroll = (direction) => {
   if (scrollContainer.value) {
     scrollContainer.value.scrollBy({
@@ -173,7 +165,6 @@ const scroll = (direction) => {
   }
 };
 
-// به‌روزرسانی ایندکس فعال بر اساس موقعیت اسکرول
 const updateIndex = () => {
   if (scrollContainer.value) {
     const cardIndex = Math.round(Math.abs(scrollContainer.value.scrollLeft) / cardWidth.value);
@@ -182,7 +173,6 @@ const updateIndex = () => {
   }
 };
 
-// رفتن به اسلاید مشخص با کلیک روی نشانگر
 const goToSlide = (dotIndex) => {
   const cardIndex = dotIndex * itemsPerDot.value;
   const card = cardRefs.value[cardIndex];
@@ -198,7 +188,6 @@ let resumeTimeout = null;
 let sectionObserver = null;
 const isSectionVisible = ref(false);
 
-// توقف اتوپلی
 const stopAutoplay = () => {
   if (autoplayTimer) {
     clearInterval(autoplayTimer);
@@ -206,7 +195,6 @@ const stopAutoplay = () => {
   }
 };
 
-// شروع اتوپلی اسلایدر
 const startAutoplay = () => {
   stopAutoplay();
   if (!isSectionVisible.value || !cardRefs.value || cardRefs.value.length <= 1) return;
@@ -218,7 +206,7 @@ const startAutoplay = () => {
   }, AUTOPLAY_INTERVAL_MS);
 };
 
-// توقف موقت اتوپلی هنگام تعامل کاربر و ازسرگیری بعد از چند ثانیه
+// وقتی کاربر خودش اسکرول/سوایپ کرد، اتوپلی رو موقتاً متوقف می‌کنیم و بعد از چند ثانیه دوباره شروع می‌کنیم
 const pauseAutoplayTemporarily = () => {
   stopAutoplay();
   if (resumeTimeout) clearTimeout(resumeTimeout);
@@ -227,7 +215,6 @@ const pauseAutoplayTemporarily = () => {
   }, AUTOPLAY_RESUME_DELAY_MS);
 };
 
-// ساخت لیست نهایی نظرات از روی رزومه‌های دریافتی
 const buildFeedbacks = async (list) => {
   loading.value = true;
   error.value = false;
@@ -255,6 +242,7 @@ const buildFeedbacks = async (list) => {
     await nextTick();
     updateCardWidth();
 
+    // اگه سکشن همین الان دیده میشه، اتوپلی رو استارت کن
     if (isSectionVisible.value) startAutoplay();
   } catch (err) {
     error.value = true;
@@ -264,7 +252,6 @@ const buildFeedbacks = async (list) => {
   }
 };
 
-// اجرای ساخت نظرات پس از آماده شدن داده‌ها
 watch(
   listPending,
   (isPending) => {
@@ -281,11 +268,11 @@ watch(
   { immediate: true }
 );
 
-// راه‌اندازی گوش‌دهنده‌های اسکرول، تغییر سایز و دیده‌شدن سکشن
 onMounted(() => {
   scrollContainer.value?.addEventListener('scroll', updateIndex);
   window.addEventListener('resize', updateCardWidth);
 
+  // اتوپلی وقتی که کاربر با اسکرول به این بخش رسید شروع میشه و وقتی از دیدش خارج شد متوقف میشه
   if (typeof IntersectionObserver !== 'undefined' && sectionRef.value) {
     sectionObserver = new IntersectionObserver(
       (entries) => {
@@ -305,7 +292,6 @@ onMounted(() => {
   }
 });
 
-// پاکسازی گوش‌دهنده‌ها و تایمرها هنگام خروج از کامپوننت
 onUnmounted(() => {
   scrollContainer.value?.removeEventListener('scroll', updateIndex);
   window.removeEventListener('resize', updateCardWidth);

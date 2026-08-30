@@ -137,6 +137,11 @@ scrollbarConfig.value = {
   light: '#ECD0A0',
   dark: '#ECD0A0'
 };
+const { t } = useI18n();
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('articles.pageTitle'))
+});
 </script>
 
 <style scoped>

@@ -35,4 +35,10 @@ scrollbarConfig.value = {
   light: '#747893',
   dark: '#747893'
 };
+
+//تنظیم اسم سربرگ مرورگر
+const { t } = useI18n();
+useHead({
+  title: computed(() => t('events.pageTitle'))
+});
 </script>

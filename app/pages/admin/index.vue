@@ -328,6 +328,11 @@ const logout = () => {
   clearAuth()
   navigateTo('/admin/ntt20119')
 }
+
+// عنوان ثابت تب مرورگر برای پنل ادمین
+useHead({
+  title: 'پنل مدیریت'
+})
 </script>
 
 <style scoped>

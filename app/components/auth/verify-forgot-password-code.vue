@@ -97,6 +97,11 @@ const verifyCode = async () => {
     loading.value = false
   }
 }
+
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('auth.verifyForgotPassword.pageTitle'))
+});
 </script>
 
 <template>

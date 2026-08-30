@@ -164,4 +164,9 @@ const prevSlide = () => {
   if (currentIndex.value > 0) currentIndex.value--
   else currentIndex.value = totalSlides.value - 1
 }
+
+
+useHead({
+  title: computed(() => t('portfolio.pageTitle'))
+});
 </script>

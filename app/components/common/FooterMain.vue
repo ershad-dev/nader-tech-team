@@ -22,7 +22,7 @@
 
   <div class="shape bg-[#2C7379] dark:bg-[#407B80] flex items-center justify-center">
     <NuxtLink :to="localePath('/order/requestProject')">
-<button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] text-[20px] font-bold px-12 py-2 rounded-[16px] shadow-lg relative z-30 transition-all whitespace-nowrap flex items-center justify-center min-w-[270px]">
+<button class="btn-cooperate bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-[#435056] text-[20px] font-bold px-12 py-2 rounded-[16px] shadow-lg relative z-30 transition-all duration-300 ease-out whitespace-nowrap flex items-center justify-center min-w-[270px] hover:shadow-2xl">
         {{ $t('footer.cooperateButton') }}
       </button>
     </NuxtLink>
@@ -44,11 +44,13 @@
   <div class="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-center z-20">
 
     <div class=" shape-pill-mobile bg-[#2C7379] dark:bg-[#407B80]">
-      <NuxtLink :to="localePath('/order/requestProject')">
-        <button class="btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all flex items-center justify-center">
+        <button
+          type="button"
+          @click="handleMobileCooperateClick"
+          :class="['btn-cooperate-mobile bg-[#ECD0A0] dark:bg-dark-gold text-[#0F184B] dark:text-dark-text-deep text-[11px] sm:text-[14px] font-bold rounded-full shadow-md relative z-30 transition-all duration-300 ease-out flex items-center justify-center hover:shadow-xl', { 'btn-cooperate-mobile-clicked': isMobileButtonClicked }]"
+        >
         {{ $t('footer.cooperateButton') }}
       </button> 
-      </NuxtLink>
     </div>
 
   </div>
@@ -154,6 +156,19 @@
   const socialIcons = ['telegram', 'instagram', 'whatsapp', 'x', 'linkedin'];
 
   const showTermsModal = ref(false);
+
+  // انیمیشن کوتاه کلیک دکمه همکاری در موبایل و سپس رفتن به صفحه درخواست
+  const isMobileButtonClicked = ref(false);
+  const router = useRouter();
+
+  function handleMobileCooperateClick() {
+    if (isMobileButtonClicked.value) return;
+    isMobileButtonClicked.value = true;
+    setTimeout(() => {
+      isMobileButtonClicked.value = false;
+      router.push(localePath('/order/requestProject'));
+    }, 220);
+  }
 
   // متن‌های رندوم نمایش‌داده‌شده در بخش سبز فوتر
   const randomTitle = ref('');
@@ -261,6 +276,32 @@
 .btn-cooperate-mobile {
   width: 130px;
   height: 30px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-cooperate-mobile:hover {
+  transform: scale(1.06);
+}
+
+.btn-cooperate-mobile:active {
+  transform: scale(0.95);
+}
+
+.btn-cooperate-mobile-clicked {
+  animation: cooperate-tap 0.22s ease-out;
+}
+
+@keyframes cooperate-tap {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.88);
+    box-shadow: 0 0 0 6px rgba(236, 208, 160, 0.35);
+  }
+  100% {
+    transform: scale(1.05);
+  }
 }
 
 @media (min-width: 640px) {
@@ -274,8 +315,19 @@
   }
 }
 
+/* دکمه دسکتاپ به‌صورت پیش‌فرض scaleY(-1) دارد چون داخل .shape که برعکس شده قرار گرفته؛
+   برای همین اسکیل هاور هم باید داخل همین transform اضافه شود، نه جداگانه */
 .btn-cooperate {
   transform: scaleY(-1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-cooperate:hover {
+  transform: scaleY(-1) scale(1.08);
+}
+
+.btn-cooperate:active {
+  transform: scaleY(-1) scale(0.97);
 }
 
 </style>

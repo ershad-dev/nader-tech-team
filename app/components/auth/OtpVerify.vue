@@ -131,6 +131,11 @@ const verifyCode = async () => {
     showToast(t('auth.verify.errors.invalidOrExpired'))
   }
 }
+
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('auth.verify.pageTitle'))
+});
 </script>
 
 <template>

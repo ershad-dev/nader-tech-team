@@ -93,7 +93,12 @@ const resetPassword = async () => {
   } finally {
     loading.value = false
   }
-}
+};
+
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('auth.resetPassword.pageTitle'))
+});
 </script>
 
 <template>

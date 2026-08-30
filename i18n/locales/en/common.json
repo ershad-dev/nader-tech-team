@@ -14,6 +14,7 @@
     "terms": "Terms & Conditions"
   },
   "common": {
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "siteName": "NaderTech"
   }
 }

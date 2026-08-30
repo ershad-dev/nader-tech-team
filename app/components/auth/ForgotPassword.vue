@@ -82,6 +82,11 @@ const handleInput = () => {
   form.value.login = form.value.login.replace(/\D/g, '').slice(0, 11)
   errors.value.login = ''
 }
+
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('auth.forgotPassword.pageTitle'))
+});
 </script>
 
 <template>

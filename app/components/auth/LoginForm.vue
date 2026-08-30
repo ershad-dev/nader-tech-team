@@ -142,6 +142,11 @@ const loginUser = async () => {
     loading.value = false
   }
 }
+
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('auth.login.pageTitle'))
+});
 </script>
 
 <template>

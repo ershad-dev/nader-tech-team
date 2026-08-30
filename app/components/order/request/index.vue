@@ -378,4 +378,11 @@ const submitForm = async () => {
     submitting.value = false
   }
 }
+
+//requestForm
+
+
+useHead({
+  title: computed(() => t('order.requestForm.pageTitle'))
+});
 </script>

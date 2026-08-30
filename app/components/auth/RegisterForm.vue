@@ -292,6 +292,11 @@ const registerUser = handleSubmit(async (values) => {
     loading.value = false
   }
 })
+
+  // تنظیم تایتل در سربرگ مرورگر
+useHead({
+  title: computed(() => t('auth.register.pageTitle'))
+});
 </script>
 
 <template>
@@ -377,7 +382,7 @@ const registerUser = handleSubmit(async (values) => {
             dir="ltr"
             inputmode="numeric"
             maxlength="11"
-            placeholder="09xxxxxxxxx"
+            placeholder="09123456789"
             autocomplete="tel"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="mobileError
@@ -397,7 +402,7 @@ const registerUser = handleSubmit(async (values) => {
             dir="ltr"
             inputmode="numeric"
             maxlength="10"
-            placeholder="__________"
+            placeholder="1234567890"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="nationalCodeError
               ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
@@ -451,7 +456,7 @@ const registerUser = handleSubmit(async (values) => {
             dir="ltr"
             inputmode="numeric"
             maxlength="10"
-            placeholder="__________"
+            placeholder="1234567890"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="postalCodeError
               ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'

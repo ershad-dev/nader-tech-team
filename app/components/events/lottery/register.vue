@@ -140,4 +140,10 @@ async function handleRegister() {
     submitting.value = false
   }
 }
+
+//تنظیم اسم سربرگ مرورگر
+const { t } = useI18n();
+useHead({
+  title: computed(() => t('events.lottery.register.pageTitle'))
+});
 </script>

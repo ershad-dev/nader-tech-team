@@ -11,6 +11,10 @@
 <script setup>
 const { t } = useI18n();
 
+useHead({
+  title: computed(() => t('home.pageTitle'))
+});
+
 const footerConfig = useState('footerConfig');
 footerConfig.value = {
   title: t('home.footerTitle'),

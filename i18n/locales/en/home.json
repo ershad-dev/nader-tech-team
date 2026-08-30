@@ -1,5 +1,6 @@
 {
   "home": {
+    "pageTitle": "Home",
     "hero": {
       "titlePart1": "We think with care, we build with quality, and with courage we",
       "titleHighlight": "conquer",
@@ -55,14 +56,13 @@
       "previewTitle": "Project Preview",
       "viewMore": "View More"
     },
-"feedback": {
-  "title": "What Our Clients Say",
-  "loading": "Loading customer feedback...",
-  "error": "Failed to load customer feedback",
-  "goToSlide": "Go to slide {number}",
-  "translating": "Translating...",
-  "machineTranslated": "Machine translated"
-}
+    "feedback": {
+      "title": "What Our Clients Say",
+      "loading": "Loading customer feedback...",
+      "error": "Failed to load customer feedback",
+      "goToSlide": "Go to slide {number}",
+      "translating": "Translating...",
+      "machineTranslated": "Machine translated"
+    }
   }
-  
 }

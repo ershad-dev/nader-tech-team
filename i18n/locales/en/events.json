@@ -1,5 +1,6 @@
 {
   "events": {
+    "pageTitle": "Events",
     "hero": {
       "subtitle": "From ideation to final execution, we professionally manage every stage of your event."
     },
@@ -27,6 +28,7 @@
         "registerButton": "Register for the Lottery"
       },
       "register": {
+        "pageTitle": " Lottery",
         "successTitle": "Registration Successful",
         "notFound": "Registration information not found. Please register again.",
         "lotteryCode": "Lottery Code",

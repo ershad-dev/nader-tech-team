@@ -124,6 +124,11 @@ scrollbarConfig.value = {
   light: '#72A6A6',
   dark: '#72A6A6'
 };
+
+
+useHead({
+  title: computed(() => t('faq.pageTitle'))
+});
 </script>
 
 <style scoped>
