@@ -74,40 +74,40 @@ function isPostalCodePlausibleForProvince(postalCode, provinceName) {
   return ranges.some(([min, max]) => prefix >= min && prefix <= max)
 }
 
-// لیست ۳۱ استان کشور — دقیقاً همان کلیدهایی که در POSTAL_CODE_PROVINCE_RANGES استفاده شده‌اند
-// تا مقدار انتخابی از select همیشه با جدول match شود (به‌جای ورودی آزاد متنی)
+// لیست ۳۱ استان کشور — value همیشه رشته‌ی فارسی ثابت است (برای تطبیق با جدول کدپستی و ارسال به سرور)
+// key برای ترجمه‌ی متن نمایشی استفاده می‌شود (auth.register.provinces.<key>)
 const PROVINCES = [
-  'آذربایجان شرقی',
-  'آذربایجان غربی',
-  'اردبیل',
-  'اصفهان',
-  'البرز',
-  'ایلام',
-  'بوشهر',
-  'تهران',
-  'چهارمحال و بختیاری',
-  'خراسان جنوبی',
-  'خراسان رضوی',
-  'خراسان شمالی',
-  'خوزستان',
-  'زنجان',
-  'سمنان',
-  'سیستان و بلوچستان',
-  'فارس',
-  'قزوین',
-  'قم',
-  'کردستان',
-  'کرمان',
-  'کرمانشاه',
-  'کهگیلویه و بویراحمد',
-  'گلستان',
-  'گیلان',
-  'لرستان',
-  'مازندران',
-  'مرکزی',
-  'هرمزگان',
-  'همدان',
-  'یزد',
+  { key: 'eastAzerbaijan', value: 'آذربایجان شرقی' },
+  { key: 'westAzerbaijan', value: 'آذربایجان غربی' },
+  { key: 'ardabil', value: 'اردبیل' },
+  { key: 'isfahan', value: 'اصفهان' },
+  { key: 'alborz', value: 'البرز' },
+  { key: 'ilam', value: 'ایلام' },
+  { key: 'bushehr', value: 'بوشهر' },
+  { key: 'tehran', value: 'تهران' },
+  { key: 'chaharmahalBakhtiari', value: 'چهارمحال و بختیاری' },
+  { key: 'southKhorasan', value: 'خراسان جنوبی' },
+  { key: 'razaviKhorasan', value: 'خراسان رضوی' },
+  { key: 'northKhorasan', value: 'خراسان شمالی' },
+  { key: 'khuzestan', value: 'خوزستان' },
+  { key: 'zanjan', value: 'زنجان' },
+  { key: 'semnan', value: 'سمنان' },
+  { key: 'sistanBaluchestan', value: 'سیستان و بلوچستان' },
+  { key: 'fars', value: 'فارس' },
+  { key: 'qazvin', value: 'قزوین' },
+  { key: 'qom', value: 'قم' },
+  { key: 'kurdistan', value: 'کردستان' },
+  { key: 'kerman', value: 'کرمان' },
+  { key: 'kermanshah', value: 'کرمانشاه' },
+  { key: 'kohgiluyehBoyerAhmad', value: 'کهگیلویه و بویراحمد' },
+  { key: 'golestan', value: 'گلستان' },
+  { key: 'gilan', value: 'گیلان' },
+  { key: 'lorestan', value: 'لرستان' },
+  { key: 'mazandaran', value: 'مازندران' },
+  { key: 'markazi', value: 'مرکزی' },
+  { key: 'hormozgan', value: 'هرمزگان' },
+  { key: 'hamadan', value: 'همدان' },
+  { key: 'yazd', value: 'یزد' },
 ]
 
 // اسکیمای اعتبارسنجی کامل فرم ثبت‌نام
@@ -548,10 +548,10 @@ useHead({
           <p v-if="birthDateError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ birthDateError }}</p>
         </div>
 
-        <!-- فیلد استان -->
+<!-- فیلد استان -->
 <div class="flex flex-col" :class="isRtl ? 'text-right' : 'text-left'">
   <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.province') }}</label>
-  
+
   <div class="relative">
     <select
       v-model="province"
@@ -562,7 +562,7 @@ useHead({
         : 'border-gray-300 dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
     >
       <option value="" disabled>{{ $t('auth.register.fields.provincePlaceholder') }}</option>
-      <option v-for="item in PROVINCES" :key="item" :value="item">{{ item }}</option>
+      <option v-for="item in PROVINCES" :key="item.key" :value="item.value">{{ $t('auth.register.provinces.' + item.key) }}</option>
     </select>
 
     <!-- آیکون فلش دلخواه -->
