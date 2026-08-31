@@ -444,12 +444,12 @@ useHead({
             v-model="username"
             type="text"
             dir="ltr"
-            placeholder="username"
+            placeholder="ali_alaie"
             autocomplete="username"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="usernameError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleUsernameInput"
           />
           <p v-if="usernameError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ usernameError }}</p>
@@ -466,8 +466,8 @@ useHead({
             autocomplete="name"
             class="h-[44px] px-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors"
             :class="fullNameError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @keydown="handleFullNameKeydown"
           />
           <p v-if="fullNameError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ fullNameError }}</p>
@@ -484,8 +484,8 @@ useHead({
             autocomplete="email"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="emailError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
           />
           <p v-if="emailError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ emailError }}</p>
         </div>
@@ -503,8 +503,8 @@ useHead({
             autocomplete="tel"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="mobileError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleMobileInput"
           />
           <p v-if="mobileError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ mobileError }}</p>
@@ -522,8 +522,8 @@ useHead({
             placeholder="1234567890"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="nationalCodeError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleNationalCodeInput"
           />
           <p v-if="nationalCodeError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ nationalCodeError }}</p>
@@ -541,8 +541,8 @@ useHead({
             placeholder="1370/01/01"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="birthDateError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handleBirthDateInput"
           />
           <p v-if="birthDateError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ birthDateError }}</p>
@@ -553,17 +553,19 @@ useHead({
   <label class="text-sm font-medium text-[#3D3E41] dark:text-dark-text-deep mb-2 font-roboto">{{ $t('auth.register.fields.province') }}</label>
 
   <div class="relative">
-    <select
-      v-model="province"
-      dir="rtl"
-      class="w-full h-[44px] pr-8 pl-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors bg-white appearance-none"
-      :class="provinceError
-        ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-        : 'border-gray-300 dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
-    >
-      <option value="" disabled>{{ $t('auth.register.fields.provincePlaceholder') }}</option>
-      <option v-for="item in PROVINCES" :key="item.key" :value="item.value">{{ $t('auth.register.provinces.' + item.key) }}</option>
-    </select>
+   <select
+  v-model="province"
+  dir="rtl"
+  class="w-full h-[44px] pr-8 pl-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors bg-white appearance-none"
+  :class="provinceError
+    ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+    : 'border-gray-300 dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+>
+  <option value="" disabled class="text-black">{{ $t('auth.register.fields.provincePlaceholder') }}</option>
+  <option v-for="item in PROVINCES" :key="item.key" :value="item.value" class="text-black">
+    {{ $t('auth.register.provinces.' + item.key) }}
+  </option>
+</select>
 
     <!-- آیکون فلش دلخواه -->
     <svg
@@ -589,8 +591,8 @@ useHead({
             placeholder="1234567890"
             class="h-[44px] px-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="postalCodeError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handlePostalCodeInput"
           />
           <p v-if="postalCodeError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ postalCodeError }}</p>
@@ -608,8 +610,8 @@ useHead({
           :placeholder="$t('auth.register.fields.addressPlaceholder')"
           class="px-3 py-3 rounded-[25px] border text-right text-sm font-roboto outline-none transition-colors resize-none leading-7"
           :class="addressError
-            ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-            : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+            ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+            : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
         />
         <p v-if="addressError" class="text-red-500 dark:text-red-400 text-[11px] mt-1" :class="isRtl ? 'text-right' : 'text-left'">{{ addressError }}</p>
       </div>
@@ -626,8 +628,8 @@ useHead({
             autocomplete="new-password"
             class="h-[44px] w-full pl-10 pr-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="passwordError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handlePasswordInput"
             @keydown="handlePasswordKeydown"
           />
@@ -664,8 +666,8 @@ useHead({
             autocomplete="new-password"
             class="h-[44px] w-full pl-10 pr-3 rounded-[25px] border text-left text-sm font-roboto outline-none transition-colors"
             :class="passwordConfirmError
-              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
-              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
+              ? 'border-red-400 bg-red-50 dark:border-red-400 dark:bg-red-50/10 dark:text-black focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-300'
+              : 'border-gray-300 bg-white dark:border-dark-border dark:bg-[#D9D9D9CC] dark:text-black focus:border-[#0F184B] dark:focus:border-dark-accent focus:ring-2 focus:ring-[#0F184B]/20 dark:focus:ring-dark-accent/30'"
             @input="handlePasswordConfirmInput"
             @keydown="handlePasswordConfirmKeydown"
           />

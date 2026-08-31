@@ -3,8 +3,7 @@
   <div 
     v-for="(service, index) in services" 
     :key="index"
-    @click="openModal(service)"
-    class="bg-white dark:bg-[#435056] rounded-[24px] sm:rounded-[35px] md:rounded-[40px] xl:rounded-[49px] min-[1920px]:rounded-[56px] flex items-center shadow-sm overflow-hidden h-[110px] sm:h-[150px] md:h-[160px] xl:h-[180.11px] min-[1920px]:h-[210px] w-full xl:w-[860px] min-[1920px]:w-[1000px] cursor-pointer"
+    class="bg-white dark:bg-[#435056] rounded-[24px] sm:rounded-[35px] md:rounded-[40px] xl:rounded-[49px] min-[1920px]:rounded-[56px] flex items-center shadow-sm overflow-hidden h-[110px] sm:h-[150px] md:h-[160px] xl:h-[180.11px] min-[1920px]:h-[210px] w-full xl:w-[860px] min-[1920px]:w-[1000px]"
   >
     
     <!-- تصویر سرویس -->
@@ -14,8 +13,7 @@
 
     <!-- عنوان و توضیحات سرویس -->
     <!-- توجه: اینجا از متن خالص (stripHtml) استفاده می‌کنیم نه v-html، چون line-clamp
-         با تگ‌های بلاک داخل HTML (مثل <p> که خروجی RichTextEditor است) درست کار نمی‌کند.
-         نمایش کامل و فرمت‌شده در مودال جزئیات پایین همین فایل انجام می‌شود. -->
+         با تگ‌های بلاک داخل HTML (مثل <p> که خروجی RichTextEditor است) درست کار نمی‌کند. -->
     <div 
       class="flex-1 flex items-center py-2 sm:py-3 md:py-3 xl:py-0 min-w-0 h-full"
       :class="isRtl 
@@ -33,46 +31,10 @@
       </div>
     </div>
   </div>
-
-  <!-- مودال نمایش جزئیات کامل سرویس انتخاب‌شده -->
-  <Teleport to="body">
-    <div 
-      v-if="selectedService"
-      @click.self="closeModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-    >
-      <div class="relative bg-white dark:bg-[#435056] rounded-[24px] sm:rounded-[32px] w-full max-w-md max-h-[85vh] overflow-y-auto p-5 sm:p-7">
-        
-        <!-- دکمه بستن مودال -->
-        <button 
-          @click="closeModal"
-          class="absolute top-4 rtl:left-4 ltr:right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition"
-          aria-label="close"
-        >
-          ✕
-        </button>
-
-        <img 
-          :src="selectedService.image" 
-          :alt="stripHtml(selectedService.title)" 
-          class="w-full h-[160px] object-cover rounded-[18px] mb-4"
-        />
-
-        <div :class="isRtl ? 'text-right' : 'text-left'">
-          <!-- اینجا برخلاف کارت، چون محدودیت خط (line-clamp) نداریم،
-               از v-html کامل با فرمت‌بندی (بولد، لیست، پاراگراف و ...) استفاده می‌کنیم.
-               از div به‌جای h3 استفاده شده چون تو در تو کردن <p> داخل <h3> نامعتبر است. -->
-          <div role="heading" aria-level="3" class="tiptap-render text-[18px] sm:text-[20px] font-bold text-[#606792] dark:text-white mb-3" v-html="selectedService.title"></div>
-          <div class="tiptap-render text-[14px] sm:text-[15px] font-roboto text-[#606792] dark:text-white leading-relaxed" v-html="selectedService.description"></div>
-        </div>
-
-      </div>
-    </div>
-  </Teleport>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const { localeProperties } = useI18n();
 const isRtl = computed(() => localeProperties.value.dir === 'rtl');
@@ -84,23 +46,11 @@ defineProps({
   }
 })
 
-const selectedService = ref(null)
-
 // حذف تگ‌های HTML برای نمایش متن خالص در کارت‌های line-clamp شده
 // (خروجی فیلدهای متنی/HTML از RichTextEditor پنل ادمین می‌آید و همیشه شامل تگ‌هایی مثل <p> است)
 function stripHtml(html) {
   if (!html) return ''
   return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-}
-
-// باز کردن مودال با سرویس انتخاب‌شده
-function openModal(service) {
-  selectedService.value = service
-}
-
-// بستن مودال
-function closeModal() {
-  selectedService.value = null
 }
 </script>
 

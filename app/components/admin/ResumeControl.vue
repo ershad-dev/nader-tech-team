@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useAdminAuth } from '~/composables/useAdminAuth'
 import { useAdminPermissions } from '~/composables/useAdminPermissions'
 import RichTextEditor from '~/components/tiptap/RichTextEditor.vue'
@@ -116,6 +116,11 @@ const fetchCategories = async () => {
 fetchCategories()
 
 // مقدار اولیه خالی فرم
+// image_slots: آرایه‌ای با طول ثابت MAX_IMAGES.
+// هر خانه یکی از این حالت‌هاست:
+//   null                                  -> اسلات خالی
+//   { type: 'existing', id, image }       -> عکس موجود روی سرور
+//   { type: 'new', file, preview }        -> عکس جدید انتخاب‌شده توسط کاربر
 const emptyForm = () => ({
   id: null,
   title: '',
@@ -134,17 +139,15 @@ const emptyForm = () => ({
   customer_avatar_preview: null,
   customer_description: '',
   customer_description_en: '',
-  images: [],
-  images_preview: [],
-  existing_images: [],
-  // شناسه تصاویر موجودی که کاربر حذفشان کرده (برای اطلاع به سرور)
+  image_slots: Array(MAX_IMAGES).fill(null),
+  // شناسه تصاویر موجودی که کاربر حذفشان کرده یا جایگزین کرده (برای اطلاع به سرور)
   removed_image_ids: [],
 })
 
 const form = reactive(emptyForm())
 
-// تعداد کل تصاویر فعلی (موجود + جدید)
-const totalImagesCount = computed(() => form.existing_images.length + form.images.length)
+// تعداد کل تصاویر پرشده (اسلات‌های غیرخالی)
+const totalImagesCount = computed(() => form.image_slots.filter((s) => s !== null).length)
 
 // بازنشانی فرم به حالت اولیه
 const resetForm = () => Object.assign(form, emptyForm())
@@ -178,11 +181,9 @@ const openForm = async (item = null) => {
       form.description_en = d.description_en || ''
       form.is_published = !!d.is_published
 
-
       form.category_name = d.category || ''
       const matched = categories.value.find((c) => c.title === form.category_name)
       form.category_id = matched ? matched.id : null
-
 
       form.customer_name = d.review?.name || ''
       form.customer_name_en = d.review?.name_en || ''
@@ -191,7 +192,13 @@ const openForm = async (item = null) => {
       form.customer_avatar_preview = d.review?.avatar || null
       form.customer_description = d.review?.description || ''
       form.customer_description_en = d.review?.description_en || ''
-      form.existing_images = d.images || []
+
+      // پر کردن اسلات‌های تصویر بر اساس ترتیب دریافتی از سرور
+      const slots = Array(MAX_IMAGES).fill(null)
+      ;(d.images || []).slice(0, MAX_IMAGES).forEach((img, i) => {
+        slots[i] = { type: 'existing', id: img.id, image: img.image }
+      })
+      form.image_slots = slots
     } catch (err) {
       console.error(err)
       errorMessage.value = 'خطا در دریافت اطلاعات رزومه'
@@ -224,49 +231,42 @@ const removeAvatar = () => {
   form.customer_avatar_preview = null
 }
 
-// انتخاب و پیش‌نمایش تصاویر جدید پروژه (با رعایت محدودیت MAX_IMAGES)
-const onImagesChange = (e) => {
+// حذف تصویر یک اسلات مشخص (جای آن خالی می‌ماند تا بعداً بتوان دوباره آپلود کرد)
+const removeSlot = (index) => {
   if (isReadOnly.value) return
-  const files = Array.from(e.target.files || [])
-  if (files.length === 0) return
+  const slot = form.image_slots[index]
+  if (!slot) return
 
-  const remainingSlots = MAX_IMAGES - totalImagesCount.value
-
-  if (remainingSlots <= 0) {
-    errorMessage.value = `حداکثر ${MAX_IMAGES} عکس برای هر رزومه مجاز است`
-    e.target.value = ''
-    return
+  if (slot.type === 'existing') {
+    form.removed_image_ids.push(slot.id)
   }
 
-  const filesToAdd = files.slice(0, remainingSlots)
+  form.image_slots[index] = null
+  errorMessage.value = ''
+}
 
-  filesToAdd.forEach((file) => {
-    form.images.push(file)
-    form.images_preview.push(URL.createObjectURL(file))
-  })
+// آپلود/جایگزینی مستقیم عکس یک اسلات مشخص
+const onSlotFileChange = (index, e) => {
+  if (isReadOnly.value) return
+  const file = e.target.files?.[0]
+  if (!file) return
 
-  if (files.length > filesToAdd.length) {
-    errorMessage.value = `حداکثر ${MAX_IMAGES} عکس مجاز است؛ فقط ${filesToAdd.length} عکس اضافه شد`
-  } else {
-    errorMessage.value = ''
+  const slot = form.image_slots[index]
+
+  // اگر روی این اسلات یک عکس موجود بود و مستقیماً جایگزین شد،
+  // شناسه‌ی قبلی را برای اطلاع سرور به لیست حذف‌شده‌ها اضافه کن
+  if (slot && slot.type === 'existing') {
+    form.removed_image_ids.push(slot.id)
   }
 
+  form.image_slots[index] = {
+    type: 'new',
+    file,
+    preview: URL.createObjectURL(file),
+  }
+
+  errorMessage.value = ''
   e.target.value = ''
-}
-
-// حذف یک تصویر جدید از لیست انتخاب‌شده‌ها
-const removeNewImage = (index) => {
-  if (isReadOnly.value) return
-  form.images.splice(index, 1)
-  form.images_preview.splice(index, 1)
-}
-
-// حذف یک تصویر موجود روی سرور (فقط از فرم حذف می‌شود؛ شناسه‌اش برای اطلاع سرور نگه داشته می‌شود)
-const removeExistingImage = (id) => {
-  if (isReadOnly.value) return
-
-  form.removed_image_ids.push(id)
-  form.existing_images = form.existing_images.filter((img) => img.id !== id)
 }
 
 // ساخت FormData از داده‌های فرم برای ارسال به API
@@ -287,16 +287,25 @@ const buildFormData = () => {
   fd.append('customer_description', form.customer_description)
   if (form.customer_description_en) fd.append('customer_description_en', form.customer_description_en)
 
-  // شناسه‌ی تصاویر قبلی که باید نگه داشته شوند — تا سرور فقط این‌ها را حفظ کند
-  // و بقیه‌ی عکس‌های ارسال‌نشده (چون کاربر آن‌ها را عوض نکرده) پاک نشوند.
-  // مهم: بک‌اند باید این پارامتر را بخواند و منطق "جایگزینی کامل تصاویر" را
-  // بر اساس آن اصلاح کند، وگرنه مشکل پاک‌شدن عکس‌های قبلی برطرف نمی‌شود.
-  form.existing_images.forEach((img) => fd.append('existing_images[]', img.id))
+  // به ترتیب اسلات‌ها حرکت می‌کنیم تا ترتیب نهایی تصاویر حفظ شود.
+  // برای هر اسلات، هم شناسه‌ی موقعیت (position) و هم نوع محتوا ارسال می‌شود
+  // تا بک‌اند بتواند دقیقاً بداند هر عکس متعلق به کدام جایگاه است.
+  // مهم: بک‌اند باید این پارامترها را بخواند و منطق "جایگزینی کامل تصاویر"
+  // را بر اساس آن اصلاح کند، وگرنه مشکل به‌هم‌ریختن ترتیب یا پاک‌شدن
+  // عکس‌های قبلی برطرف نمی‌شود.
+  form.image_slots.forEach((slot, index) => {
+    if (!slot) return
+    if (slot.type === 'existing') {
+      fd.append('existing_images[]', slot.id)
+      fd.append('existing_images_positions[]', index)
+    } else {
+      fd.append('images[]', slot.file)
+      fd.append('images_positions[]', index)
+    }
+  })
 
-  // شناسه‌ی تصاویری که کاربر آگاهانه حذف کرده (اختیاری، اگر بک‌اند از آن پشتیبانی کند)
+  // شناسه‌ی تصاویری که کاربر آگاهانه حذف یا جایگزین کرده
   form.removed_image_ids.forEach((id) => fd.append('removed_images[]', id))
-
-  form.images.forEach((file) => fd.append('images[]', file))
 
   return fd
 }
@@ -316,7 +325,6 @@ const saveChanges = async () => {
     const fd = buildFormData()
 
     if (form.id) {
-
       await $fetch(`${API_BASE}/api/admin/resumes/${form.id}`, {
         method: 'POST',
         query: { _method: 'PUT' },
@@ -602,98 +610,98 @@ const deleteItem = async (id) => {
             </div>
           </div>
 
-
         </div>
 
         <div class="flex flex-col gap-6 lg:gap-8">
 
-<!-- بخش اطلاعات مشتری -->
-<div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
-  <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
-    <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div>
-    <h3>اطلاعات مشتری</h3>
-  </div>
+          <!-- بخش اطلاعات مشتری -->
+          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
+            <div class="flex items-center gap-2 text-[#1a2333] dark:text-dark-text font-bold mb-4 lg:mb-6">
+              <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div>
+              <h3>اطلاعات مشتری</h3>
+            </div>
 
-  <!-- بخش آواتار مشتری -->
-  <div class="flex items-center gap-4 mb-5">
-    <img
-      :src="form.customer_avatar_preview || '/images/avatar-placeholder.png'"
-      class="rounded-full h-[70px] w-[70px] sm:h-[90px] sm:w-[90px] object-cover shrink-0"
-    />
-    <div class="flex gap-2">
-      <label
-        class="px-4 py-1.5 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg text-center"
-        :class="isReadOnly ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
-      >
-        ویرایش تصویر
-        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" :disabled="isReadOnly" @change="onAvatarChange" />
-      </label>
-      <button @click="removeAvatar" :disabled="isReadOnly" class="px-4 py-1.5 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-        حذف تصویر
-      </button>
-    </div>
-  </div>
+            <!-- بخش آواتار مشتری -->
+            <div class="flex items-center gap-4 mb-5">
+              <img
+                :src="form.customer_avatar_preview || '/images/avatar-placeholder.png'"
+                class="rounded-full h-[70px] w-[70px] sm:h-[90px] sm:w-[90px] object-cover shrink-0"
+              />
+              <div class="flex gap-2">
+                <label
+                  class="px-4 py-1.5 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg text-center"
+                  :class="isReadOnly ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
+                >
+                  ویرایش تصویر
+                  <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" :disabled="isReadOnly" @change="onAvatarChange" />
+                </label>
+                <button @click="removeAvatar" :disabled="isReadOnly" class="px-4 py-1.5 text-[13px] sm:text-[14px] bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                  حذف تصویر
+                </button>
+              </div>
+            </div>
 
-  <!-- فیلدهای نام مشتری -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-    <div>
-      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نام مشتری *</label>
-      <input
-        v-model="form.customer_name"
-        type="text"
-        placeholder="نام مشتری"
-        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
-      />
-    </div>
-    <div>
-      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Name (English)</label>
-      <input
-        v-model="form.customer_name_en"
-        type="text"
-        dir="ltr"
-        placeholder="Customer name"
-        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
-      />
-    </div>
-  </div>
+            <!-- فیلدهای نام مشتری -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <div>
+                <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نام مشتری *</label>
+                <input
+                  v-model="form.customer_name"
+                  type="text"
+                  placeholder="نام مشتری"
+                  class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Name (English)</label>
+                <input
+                  v-model="form.customer_name_en"
+                  type="text"
+                  dir="ltr"
+                  placeholder="Customer name"
+                  class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+              </div>
+            </div>
 
-  <!-- فیلدهای سمت مشتری -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-    <div>
-      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">سمت مشتری</label>
-      <input
-        v-model="form.customer_position"
-        type="text"
-        placeholder="مثلاً مدیرعامل"
-        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
-      />
-    </div>
-    <div>
-      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Position (English)</label>
-      <input
-        v-model="form.customer_position_en"
-        type="text"
-        dir="ltr"
-        placeholder="e.g. CEO"
-        class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
-      />
-    </div>
-  </div>
+            <!-- فیلدهای سمت مشتری -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+              <div>
+                <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">سمت مشتری</label>
+                <input
+                  v-model="form.customer_position"
+                  type="text"
+                  placeholder="مثلاً مدیرعامل"
+                  class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Position (English)</label>
+                <input
+                  v-model="form.customer_position_en"
+                  type="text"
+                  dir="ltr"
+                  placeholder="e.g. CEO"
+                  class="w-full h-[40px] px-3 rounded-[14px] border border-gray-300 dark:border-dark-border/40 bg-white/20 dark:bg-dark-input/40 text-sm dark:text-dark-text dark:placeholder:text-dark-text/40 focus:outline-none focus:border-[#2D6A66] dark:focus:border-dark-accent disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+              </div>
+            </div>
 
-  <!-- فیلدهای نظر مشتری -->
-  <div class="space-y-3">
-    <div>
-      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نظر مشتری درباره پروژه *</label>
-      <RichTextEditor v-model="form.customer_description" dir="rtl" :disabled="isReadOnly" height="140px" />
-    </div>
-    <div>
-      <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Review (English)</label>
-      <RichTextEditor v-model="form.customer_description_en" dir="ltr" :disabled="isReadOnly" height="140px" />
-    </div>
-  </div>
-</div>
-                    <!-- بخش تصاویر پروژه -->
-                    <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
+            <!-- فیلدهای نظر مشتری -->
+            <div class="space-y-3">
+              <div>
+                <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">نظر مشتری درباره پروژه *</label>
+                <RichTextEditor v-model="form.customer_description" dir="rtl" :disabled="isReadOnly" height="140px" />
+              </div>
+              <div>
+                <label class="block mb-1.5 text-[13px] font-medium text-gray-700 dark:text-dark-text/80">Customer Review (English)</label>
+                <RichTextEditor v-model="form.customer_description_en" dir="ltr" :disabled="isReadOnly" height="140px" />
+              </div>
+            </div>
+          </div>
+
+          <!-- بخش تصاویر پروژه (اسلات‌محور با طول ثابت) -->
+          <div class="p-4 sm:p-5 lg:p-6 rounded-[24px] lg:rounded-[30px] border border-gray-100 dark:border-dark-border/20">
             <div class="flex items-center justify-between mb-4 lg:mb-6">
               <h3 class="font-bold flex items-center gap-2 text-sm sm:text-base dark:text-dark-text">
                 <div class="w-3 h-3 bg-[#BFD1D5] dark:bg-dark-accent rounded-full"></div>
@@ -702,54 +710,47 @@ const deleteItem = async (id) => {
                   ({{ totalImagesCount }}/{{ MAX_IMAGES }})
                 </span>
               </h3>
-              <label
-                v-if="!isReadOnly && totalImagesCount < MAX_IMAGES"
-                class="px-3 sm:px-4 py-1 border dark:border-dark-border/40 rounded-xl text-xs font-bold bg-[#BFD1D5] dark:bg-dark-input dark:text-dark-text-deep cursor-pointer"
-              >
-                افزودن
-                <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" @change="onImagesChange" />
-              </label>
             </div>
+
             <div class="flex flex-wrap gap-2 sm:gap-3 lg:gap-4">
-              <!-- نمایش تصاویر موجود روی سرور -->
               <div
-                v-for="img in form.existing_images"
-                :key="'existing-' + img.id"
+                v-for="(slot, index) in form.image_slots"
+                :key="'slot-' + index"
                 class="relative w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input/30 rounded-2xl overflow-hidden"
               >
-                <img :src="img.image" class="w-full h-full object-cover" />
-                <button
-                  v-if="!isReadOnly"
-                  @click="removeExistingImage(img.id)"
-                  class="absolute top-1 left-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                >×</button>
-              </div>
+                <!-- اسلات پر شده (عکس موجود یا عکس جدید) -->
+                <template v-if="slot">
+                  <img
+                    :src="slot.type === 'existing' ? slot.image : slot.preview"
+                    class="w-full h-full object-cover"
+                  />
+                  <button
+                    v-if="!isReadOnly"
+                    @click="removeSlot(index)"
+                    class="absolute top-1 left-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                  >×</button>
+                </template>
 
-              <!-- نمایش تصاویر جدید انتخاب‌شده -->
-              <div
-                v-for="(src, index) in form.images_preview"
-                :key="'new-' + index"
-                class="relative w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input/30 rounded-2xl overflow-hidden"
-              >
-                <img :src="src" class="w-full h-full object-cover" />
-                <button
-                  v-if="!isReadOnly"
-                  @click="removeNewImage(index)"
-                  class="absolute top-1 left-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                >×</button>
+                <!-- اسلات خالی: قابل کلیک برای آپلود عکس جدید در همین جایگاه -->
+                <label
+                  v-else
+                  class="w-full h-full border border-dashed dark:border-dark-border/50 flex items-center justify-center text-2xl text-gray-400 dark:text-dark-text/40"
+                  :class="isReadOnly ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'"
+                >
+                  +
+                  <input
+                    v-if="!isReadOnly"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    class="hidden"
+                    @change="onSlotFileChange(index, $event)"
+                  />
+                </label>
               </div>
-
-              <label
-                v-if="!isReadOnly && totalImagesCount < MAX_IMAGES"
-                class="w-[31%] aspect-[101/186] lg:w-[101px] lg:h-[186px] bg-gray-200 dark:bg-dark-input/30 rounded-2xl border border-dashed dark:border-dark-border/50 flex items-center justify-center text-2xl text-gray-400 dark:text-dark-text/40 cursor-pointer"
-              >
-                +
-                <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" @change="onImagesChange" />
-              </label>
             </div>
           </div>
         </div>
-        
+
       </fieldset>
 
       <!-- دکمه ذخیره فرم -->
